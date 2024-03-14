@@ -6,6 +6,7 @@ namespace Paranapiacaba.Dialogue {
         [SerializeField] private bool _debugLogs;
         [SerializeField] private SpeechEvent[] _events;
         private Dictionary<string, SpeechEvent> _eventsDictionary = new Dictionary<string, SpeechEvent>();
+        public SpeechEvent[] Events => _events;
 
         private void Start()
         {
@@ -32,7 +33,7 @@ namespace Paranapiacaba.Dialogue {
             {
                 _eventsDictionary[eventId].unityEvent?.Invoke();
             }
-        }
+        }       
 
     }
 }
