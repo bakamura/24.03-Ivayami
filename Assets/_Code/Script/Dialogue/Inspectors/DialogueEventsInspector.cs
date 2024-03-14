@@ -88,14 +88,14 @@ namespace Paranapiacaba.Dialogue
                 if (_dialogueAssets[i].onEndEventId == eventID)
                 {
                     _dialogueAssets[i].onEndEventId = null;
-                    return;
+                    //return;
                 }
                 for (int a = 0; a < _dialogueAssets[i].dialogue.Length; a++)
                 {
                     if (_dialogueAssets[i].dialogue[a].eventId == eventID)
                     {
                         _dialogueAssets[i].dialogue[a].eventId = null;
-                        return;
+                        //return;
                     }
                 }
             }
@@ -108,14 +108,14 @@ namespace Paranapiacaba.Dialogue
                 if (_dialogueAssets[i].onEndEventId == previousID && !string.IsNullOrEmpty(_dialogueAssets[i].onEndEventId))
                 {
                     _dialogueAssets[i].onEndEventId = currentID;
-                    return;
+                    //return;
                 }
                 for (int a = 0; a < _dialogueAssets[i].dialogue.Length; a++)
                 {
                     if (_dialogueAssets[i].dialogue[a].eventId == previousID && !string.IsNullOrEmpty(_dialogueAssets[i].dialogue[a].eventId))
                     {
                         _dialogueAssets[i].dialogue[a].eventId = currentID;
-                        return;
+                        //return;
                     }
                 }
             }
