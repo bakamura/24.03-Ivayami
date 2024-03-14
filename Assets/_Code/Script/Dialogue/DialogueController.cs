@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Collections;
 using TMPro;
 
+//https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
+
 namespace Paranapiacaba.Dialogue
 {
     [RequireComponent(typeof(CanvasGroup))]
@@ -52,7 +54,7 @@ namespace Paranapiacaba.Dialogue
 
         private void HandleContinueDialogue(InputAction.CallbackContext context)
         {
-            if (context.ReadValue<float>() == 1)
+            if (context.ReadValue<float>() == 1 && _currentDialogue)
             {
                 UpdateDialogue();
             }
@@ -67,17 +69,21 @@ namespace Paranapiacaba.Dialogue
             else if (_writtingCoroutine == null && _readyForNextSpeech)
             {
                 _currentSpeechIndex++;
+                //end of current dialogue
                 if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
                 {
                     //unlock player inputs
-                    ActivateDialogueEvents(_currentDialogue.onEndEventId);
-                    _readyForNextSpeech = true;
+                    _continueInput.action.Disable();
+                    ActivateDialogueEvents(_currentDialogue.onEndEventId);                    
+                    _currentSpeechIndex = 0;
                     _currentDialogue = null;
                     _canvasGroup.alpha = 0;
                     _canvasGroup.blocksRaycasts = false;
                 }
+                //continue current dialogue
                 else
                 {
+                    _continueDialogueIcon.SetActive(false);
                     _readyForNextSpeech = false;
                     _writtingCoroutine = StartCoroutine(WrittingCoroutine());
                 }
@@ -100,19 +106,36 @@ namespace Paranapiacaba.Dialogue
             char[] chars = _currentDialogue.dialogue[_currentSpeechIndex].content.ToCharArray();
             for(int i = 0; i < chars.Length; i++)
             {
-                _speechTextComponent.text += chars[i];
-                yield return _typeWrittingDelay;
+                if(chars[i] == '<')
+                {
+                    int index = i;
+                    while(chars[index] != '>')
+                    {
+                        _speechTextComponent.text += chars[index];
+                        index++;                        
+                    }
+                    _speechTextComponent.text += chars[index];
+                    i = index;
+                }
+                else
+                {
+                    _speechTextComponent.text += chars[i];
+                    yield return _typeWrittingDelay;
+                }
             }
+            _continueDialogueIcon.SetActive(true);
             _readyForNextSpeech = true;
             _writtingCoroutine = null;
         }
 
         private void FastForwardDialogue()
         {
+            StopCoroutine(_writtingCoroutine);
             _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].content;
             _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].announcerName;
             _continueDialogueIcon.SetActive(true);
             _readyForNextSpeech = true;
+            _writtingCoroutine = null;
         }
 
         public void SetCurrentDialogueEvents(DialogueEvents dialogueEvents)
@@ -122,7 +145,7 @@ namespace Paranapiacaba.Dialogue
 
         private void ActivateDialogueEvents(string eventID)
         {
-            if (_currentDialogueEvents) _currentDialogueEvents.TriggerEvent(eventID);
+            if (_currentDialogueEvents && !string.IsNullOrEmpty(eventID)) _currentDialogueEvents.TriggerEvent(eventID);
         }
 
         public void StartDialogue(string dialogueId)
@@ -130,6 +153,7 @@ namespace Paranapiacaba.Dialogue
             if(_dialogueDictionary.TryGetValue(dialogueId, out Dialogue dialogue) && _writtingCoroutine == null)
             {
                 //lock player gamlay inputs and unlock dialogue inputs
+                _continueInput.action.Enable();
                 if (_debugLogs) Debug.Log($"Starting dialogue {dialogueId}");
                 _canvasGroup.alpha = 1;
                 _canvasGroup.blocksRaycasts = true;
