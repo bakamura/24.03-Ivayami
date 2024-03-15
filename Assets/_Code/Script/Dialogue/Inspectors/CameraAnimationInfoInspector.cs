@@ -5,8 +5,8 @@ using Cinemachine;
 
 namespace Paranapiacaba.Dialogue
 {
-    [CustomEditor(typeof(CameraTransitionInfo))]
-    public class CameraTransitionInfoInspector : Editor
+    [CustomEditor(typeof(CameraAnimationInfo))]
+    public class CameraAnimationInfoInspector : Editor
     {
         SerializedProperty duration, positionCurve, rotationCurve;
         private Transform _dialogueCameraTransform;
@@ -19,7 +19,7 @@ namespace Paranapiacaba.Dialogue
             if (GUILayout.Button("CameraPreview"))
             {
                 if (!_dialogueCameraTransform) _dialogueCameraTransform = FindObjectOfType<DialogueCamera>().GetComponentInChildren<CinemachineVirtualCamera>().transform;
-                CameraTransitionInfo instance = (CameraTransitionInfo)target;
+                CameraAnimationInfo instance = (CameraAnimationInfo)target;
                 _dialogueCameraTransform.SetPositionAndRotation(instance.transform.position, instance.transform.rotation);
             }
 

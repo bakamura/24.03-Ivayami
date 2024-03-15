@@ -39,7 +39,7 @@ namespace Paranapiacaba.Dialogue {
             }
         }
 
-        public void MoveRotate(CameraTransitionInfo cameraTransitionInfo)
+        public void MoveRotate(CameraAnimationInfo cameraTransitionInfo)
         {
             if (_animationCoroutine == null && cameraTransitionInfo)
             {
