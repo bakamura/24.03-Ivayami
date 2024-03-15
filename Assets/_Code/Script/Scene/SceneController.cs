@@ -3,13 +3,11 @@ using UnityEngine;
 namespace Paranapiacaba.Scene {
     public class SceneController : MonoSingleton<SceneController> {
 
-        [SerializeField] private ChapterPointers[] _chapterPointers;
-
         public void LoadBaseScene() {
             Debug.LogWarning("Method Not Implemented Yet");
         }
 
-        public void StartLoad(byte sceneId) {
+        public void StartLoad(string sceneId) {
             Debug.LogWarning("Method Not Implemented Yet");
         }
 
