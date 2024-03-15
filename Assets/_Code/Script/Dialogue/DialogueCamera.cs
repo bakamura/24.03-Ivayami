@@ -45,7 +45,7 @@ namespace Paranapiacaba.Dialogue {
             {
                 _currentPositionCurve = cameraTransitionInfo.positionCurve;
                 _currentRotationCurve = cameraTransitionInfo.rotationCurve;
-                _finalPlacement = cameraTransitionInfo.GetValidTransform();
+                _finalPlacement = cameraTransitionInfo.transform;
                 _currentDuration = cameraTransitionInfo.duration;
                 _animationCoroutine = StartCoroutine(BlendAnimationCoroutine());
             }

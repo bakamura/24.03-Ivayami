@@ -14,7 +14,6 @@ namespace Paranapiacaba.Dialogue
         SerializedProperty debugLogs, events;
         private static Dialogue[] _dialogueAssets;
         private List<string> _previousIDs = new List<string>();
-        private SpeechEvent[] _previousEventArray;
         public override void OnInspectorGUI()
         {
             if (_dialogueAssets == null) UpdateDialoguesList();
@@ -37,9 +36,8 @@ namespace Paranapiacaba.Dialogue
         {
             DialogueEvents instance = (DialogueEvents)target;
             SpeechEvent[] dialogArray = instance.Events;
-            if (dialogArray != null && dialogArray.Length > 0)
+            if (dialogArray != null /*&& dialogArray.Length > 0*/)
             {
-
                 if (!updateCurrentValues)
                 {
                     _previousIDs.Clear();
@@ -47,24 +45,21 @@ namespace Paranapiacaba.Dialogue
                     {
                         if (!_previousIDs.Contains(dialogArray[i].id)) _previousIDs.Add(dialogArray[i].id);
                     }
-                    _previousEventArray = new SpeechEvent[dialogArray.Length];
-                    Array.Copy(dialogArray, _previousEventArray, dialogArray.Length);
                 }
                 else
                 {
                     int arrayLenght = _previousIDs.Count;
-                    if (dialogArray.Length < _previousEventArray.Length)
+                    if (dialogArray.Length < _previousIDs.Count)
                     {
                         arrayLenght = dialogArray.Length;
-                        List<SpeechEvent> temp = _previousEventArray.ToList();
+                        List<string> temp = new List<string>(_previousIDs);
                         for (int i = 0; i < dialogArray.Length; i++)
                         {
-                            //talvez n funciona pq ele pega uma copia
-                            temp.Remove(dialogArray[i]);
+                            temp.Remove(dialogArray[i].id);
                         }
                         for (int i = 0; i < temp.Count; i++)
                         {
-                            RemoveEventIDFromDialogeOrSpeech(temp[i].id);
+                            RemoveEventIDFromDialogeOrSpeech(temp[i]);
                         }
                     }
                     for (int i = 0; i < arrayLenght; i++)
