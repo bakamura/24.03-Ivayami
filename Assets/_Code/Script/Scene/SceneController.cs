@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-using System;
+using Paranapiacaba.Save;
 using UnityEngine.Events;
+using Paranapiacaba.Player;
 
 namespace Paranapiacaba.Scene
 {
@@ -28,6 +29,11 @@ namespace Paranapiacaba.Scene
         public void LoadBaseScene()
         {
             if (!string.IsNullOrEmpty(_baseSceneName)) SceneManager.LoadScene(_baseSceneName);
+        }
+
+        public void PositionPlayer()
+        {
+            PlayerMovement.Instance.transform.position = _chapterPointers[SaveSystem.Instance.Progress.currentChapter].playerPositionOnChapterStart;
         }
 
         public void StartLoad(string sceneId, UnityEvent onSceneLoad = null, UnityEvent onSceneUnload = null)
