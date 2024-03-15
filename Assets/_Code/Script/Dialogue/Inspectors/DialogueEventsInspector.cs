@@ -27,52 +27,56 @@ namespace Paranapiacaba.Dialogue
             HandleEventsValuesUpdate(true);
         }
 
-        private void HandleEventsValuesUpdate(bool updateCurrentValues)
-        {
-            DialogueEvents instance = (DialogueEvents)target;
-            SpeechEvent[] dialogArray = instance.Events;
-            if (!updateCurrentValues)
-            {
-                _previousIDs.Clear();
-                for (int i = 0; i < dialogArray.Length; i++)
-                {
-                    if (!_previousIDs.Contains(dialogArray[i].id)) _previousIDs.Add(dialogArray[i].id);
-                }
-                _previousEventArray = new SpeechEvent[dialogArray.Length];
-                Array.Copy(dialogArray, _previousEventArray, dialogArray.Length);
-            }
-            else
-            {
-                int arrayLenght = _previousIDs.Count;
-                if (dialogArray.Length < _previousEventArray.Length)
-                {
-                    arrayLenght = dialogArray.Length;
-                    List<SpeechEvent> temp = _previousEventArray.ToList();
-                    for (int i = 0; i < dialogArray.Length; i++)
-                    {
-                        //talvez n funciona pq ele pega uma copia
-                        temp.Remove(dialogArray[i]);
-                    }
-                    for (int i = 0; i < temp.Count; i++)
-                    {
-                        RemoveEventIDFromDialogeOrSpeech(temp[i].id);
-                    }
-                }                
-                for (int i = 0; i < arrayLenght; i++)
-                {
-                    if (_previousIDs[i] != dialogArray[i].id)
-                    {
-                        //Debug.Log($"previous {_previousIDs[i]}, current {dialogArray[i].id}");
-                        UpdateEventIDFromDialogeOrSpeech(_previousIDs[i], dialogArray[i].id);
-                    }
-                }
-            }
-        }
-
         private void OnEnable()
         {
             debugLogs = serializedObject.FindProperty("_debugLogs");
             events = serializedObject.FindProperty("_events");
+        }
+
+        private void HandleEventsValuesUpdate(bool updateCurrentValues)
+        {
+            DialogueEvents instance = (DialogueEvents)target;
+            SpeechEvent[] dialogArray = instance.Events;
+            if (dialogArray != null && dialogArray.Length > 0)
+            {
+
+                if (!updateCurrentValues)
+                {
+                    _previousIDs.Clear();
+                    for (int i = 0; i < dialogArray.Length; i++)
+                    {
+                        if (!_previousIDs.Contains(dialogArray[i].id)) _previousIDs.Add(dialogArray[i].id);
+                    }
+                    _previousEventArray = new SpeechEvent[dialogArray.Length];
+                    Array.Copy(dialogArray, _previousEventArray, dialogArray.Length);
+                }
+                else
+                {
+                    int arrayLenght = _previousIDs.Count;
+                    if (dialogArray.Length < _previousEventArray.Length)
+                    {
+                        arrayLenght = dialogArray.Length;
+                        List<SpeechEvent> temp = _previousEventArray.ToList();
+                        for (int i = 0; i < dialogArray.Length; i++)
+                        {
+                            //talvez n funciona pq ele pega uma copia
+                            temp.Remove(dialogArray[i]);
+                        }
+                        for (int i = 0; i < temp.Count; i++)
+                        {
+                            RemoveEventIDFromDialogeOrSpeech(temp[i].id);
+                        }
+                    }
+                    for (int i = 0; i < arrayLenght; i++)
+                    {
+                        if (_previousIDs[i] != dialogArray[i].id)
+                        {
+                            //Debug.Log($"previous {_previousIDs[i]}, current {dialogArray[i].id}");
+                            UpdateEventIDFromDialogeOrSpeech(_previousIDs[i], dialogArray[i].id);
+                        }
+                    }
+                }
+            }
         }
 
         public static void UpdateDialoguesList()

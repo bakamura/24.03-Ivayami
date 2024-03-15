@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using System.Collections;
 using TMPro;
+using System;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
 
@@ -11,13 +12,14 @@ namespace Paranapiacaba.Dialogue {
     public class DialogueController : MonoSingleton<DialogueController> {
 
         [SerializeField] private float _characterShowDelay;
+        [SerializeField] private InputActionAsset _inputActionMap;
         [SerializeField] private InputActionReference _continueInput;
         [SerializeField] private TMP_Text _speechTextComponent;
         [SerializeField] private TMP_Text _announcerNameTextComponent;
         [SerializeField] private GameObject _continueDialogueIcon;
         [SerializeField] private bool _debugLogs;
-        [SerializeField] private Dialogue[] _dialogues;
 
+        private Dialogue[] _dialogues;
         private CanvasGroup _canvasGroup;
         private Dictionary<string, Dialogue> _dialogueDictionary = new Dictionary<string, Dialogue>();
         private Coroutine _writtingCoroutine;
@@ -27,10 +29,15 @@ namespace Paranapiacaba.Dialogue {
         private bool _readyForNextSpeech = true;
         private sbyte _currentSpeechIndex;
 
+        public Action OnDialogeStart;
+        public Action OnDialogueEnd;
+        public Action OnSkipSpeech;
+
         protected override void Awake()
         {
             base.Awake();
 
+            _dialogues = Resources.LoadAll<Dialogue>("Dialogues");            
             _continueInput.action.performed += HandleContinueDialogue;
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
             _canvasGroup = GetComponent<CanvasGroup>();
@@ -63,7 +70,7 @@ namespace Paranapiacaba.Dialogue {
         {
             if (_writtingCoroutine != null)
             {
-                FastForwardDialogue();
+                SkipSpeech();
             }
             else if (_writtingCoroutine == null && _readyForNextSpeech)
             {
@@ -71,13 +78,14 @@ namespace Paranapiacaba.Dialogue {
                 //end of current dialogue
                 if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
                 {
-                    //unlock player inputs
                     _continueInput.action.Disable();
                     ActivateDialogueEvents(_currentDialogue.onEndEventId);
                     _currentSpeechIndex = 0;
                     _currentDialogue = null;
                     _canvasGroup.alpha = 0;
                     _canvasGroup.blocksRaycasts = false;
+                    OnDialogueEnd?.Invoke();
+                    _inputActionMap.actionMaps[0].Enable();
                 }
                 //continue current dialogue
                 else
@@ -87,13 +95,7 @@ namespace Paranapiacaba.Dialogue {
                     _writtingCoroutine = StartCoroutine(WrittingCoroutine());
                 }
             }
-        }
-
-        [ContextMenu("LoadDialogues")]
-        private void LoadDialogues()
-        {
-            _dialogues = Resources.LoadAll<Dialogue>("Dialogues");
-        }
+        }        
 
         private IEnumerator WrittingCoroutine()
         {
@@ -127,13 +129,14 @@ namespace Paranapiacaba.Dialogue {
             _writtingCoroutine = null;
         }
 
-        private void FastForwardDialogue()
+        private void SkipSpeech()
         {
             StopCoroutine(_writtingCoroutine);
             _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].content;
             _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].announcerName;
             _continueDialogueIcon.SetActive(true);
             _readyForNextSpeech = true;
+            OnSkipSpeech?.Invoke();
             _writtingCoroutine = null;
         }
 
@@ -151,12 +154,13 @@ namespace Paranapiacaba.Dialogue {
         {
             if (_dialogueDictionary.TryGetValue(dialogueId, out Dialogue dialogue) && _writtingCoroutine == null)
             {
-                //lock player gamlay inputs and unlock dialogue inputs
+                _inputActionMap.actionMaps[0].Disable();
                 _continueInput.action.Enable();
                 if (_debugLogs) Debug.Log($"Starting dialogue {dialogueId}");
                 _canvasGroup.alpha = 1;
                 _canvasGroup.blocksRaycasts = true;
                 _currentDialogue = dialogue;
+                OnDialogeStart?.Invoke();
                 _writtingCoroutine = StartCoroutine(WrittingCoroutine());
             }
             else
