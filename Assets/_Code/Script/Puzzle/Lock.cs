@@ -12,36 +12,43 @@ namespace Paranapiacaba.Puzzle
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
         [SerializeField] private InputActionAsset _inputActionMap;
+
         [SerializeField] private InteractionTypes _interactionType;
         [SerializeField, Tooltip("if empty, will not require it")] private InventoryItem[] _itemsRequired;
         [SerializeField] private CanvasGroup _deliverItemsUI;
+
         [SerializeField, Tooltip("if null, will not require it")] private string _passwordRequired;
-        [SerializeField] private TMP_InputField _passwordTextField;
         [SerializeField] private CanvasGroup _passwordUI;
+        [SerializeField] private TMP_InputField _passwordTextField;
+
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private UnityEvent _onCancelInteraction;
 
         [System.Serializable]
-        private enum InteractionTypes
+        public enum InteractionTypes
         {
             RequireItems,
             RequirePassword
         }
         private Button _initialPasswordButton;
+        private TMP_Text _deliverItemFeedbackText;
+        private const string _incorrectPasswordText = "INCORRECT";
 
         private void Awake()
         {
             _cancelInteractionInput.action.performed += HandleExitInteraction;
             _initialPasswordButton = _passwordUI.GetComponentInChildren<Button>();
+            _deliverItemFeedbackText = _deliverItemsUI.GetComponentInChildren<TMP_Text>();
         }
 
+        [ContextMenu("Interact")]
         public void Interact()
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
             if (_interactionType == InteractionTypes.RequirePassword)
             {
-                UpdatePasswordUI(true);                
+                UpdatePasswordUI(true);
             }
             else
             {
@@ -59,11 +66,13 @@ namespace Paranapiacaba.Puzzle
                     if (!PlayerInventory.Instance.CheckInventoryFor(_itemsRequired[i].id))
                     {
                         hasItems = false;
+                        _deliverItemFeedbackText.text = "DONT HAVE REQUIRED ITEMS";
                         break;
                     }
                 }
             }
             bool isPasswordCorrect = string.IsNullOrEmpty(_passwordRequired) || _passwordRequired == _passwordTextField.text;
+            if (!isPasswordCorrect && !string.IsNullOrEmpty(_passwordRequired)) _passwordTextField.text = _incorrectPasswordText;
             if (hasItems && isPasswordCorrect)
             {
                 UpdatePasswordUI(false);
@@ -92,16 +101,21 @@ namespace Paranapiacaba.Puzzle
         }
 
         private void UpdatePasswordUI(bool isActive)
-        {            
+        {
             _passwordUI.alpha = isActive ? 1 : 0;
             _passwordUI.interactable = isActive;
             _passwordUI.blocksRaycasts = isActive;
-            if(isActive) EventSystem.current.SetSelectedGameObject(_initialPasswordButton.gameObject);
+            if (isActive)
+            {
+                _passwordTextField.text = "";
+                EventSystem.current.SetSelectedGameObject(_initialPasswordButton.gameObject);
+            }
         }
 
         public void InsertCharacter(TMP_Text text)
         {
-            _passwordTextField.text += text.text;
+            if (_passwordTextField.text == _incorrectPasswordText) _passwordTextField.text = "";
+            if (_passwordTextField.text.Length + 1 <= _passwordTextField.characterLimit) _passwordTextField.text += text.text;
         }
 
         private void UpdateDeliverItemUI(bool isActive)

@@ -5,8 +5,8 @@ namespace Paranapiacaba.Puzzle
     [RequireComponent(typeof(Animator))]
     public class ActivableAnimation : Activable, IInteractable
     {
-        [SerializeField] private bool _animateByInteraction;
-        [SerializeField] private string _animationNameToPlay;
+        private const string _animationToPlayOnInteract = "interact";
+        private const string _animationToPlayOnActivate = "activate";
 
         private Animator _animator;
 
@@ -18,22 +18,18 @@ namespace Paranapiacaba.Puzzle
 
         public void Interact()
         {
-            if (IsActive && _animateByInteraction) TriggerAnimation();
+            if (IsActive) TriggerAnimation(_animationToPlayOnInteract);
         }
 
-        public void TriggerAnimation()
+        public void TriggerAnimation(string boolName)
         {
-            if (IsActive)
-            {
-                if (!string.IsNullOrEmpty(_animationNameToPlay)) _animator.Play(_animationNameToPlay);
-                else _animator.SetBool("activate", !_animator.GetBool("activate"));
-            }
+            _animator.SetBool(boolName, !_animator.GetBool(boolName));
         }
-
+        
         protected override void HandleOnActivate()
         {
             base.HandleOnActivate();
-            TriggerAnimation();
+            TriggerAnimation(_animationToPlayOnActivate);
         }
     }
 }
