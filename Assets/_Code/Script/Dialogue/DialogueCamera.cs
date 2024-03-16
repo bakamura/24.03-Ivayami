@@ -6,9 +6,9 @@ using System.Collections;
 namespace Paranapiacaba.Dialogue {
     public class DialogueCamera : MonoSingleton<DialogueCamera> {
 
-        [SerializeField] private float _defaultDuration = 1f;
-        [SerializeField, FormerlySerializedAs("Default Position Blend")] private AnimationCurve _defaultPositionCurve;
-        [SerializeField, FormerlySerializedAs("Default Rotation Blend")] private AnimationCurve _defaultRotationCurve;
+        //[SerializeField] private float _defaultDuration = 1f;
+        //[SerializeField, FormerlySerializedAs("Default Position Blend")] private AnimationCurve _defaultPositionCurve;
+        //[SerializeField, FormerlySerializedAs("Default Rotation Blend")] private AnimationCurve _defaultRotationCurve;
         [SerializeField] private CinemachineVirtualCamera _dialogueCamera;
         [SerializeField] private Camera _gameplayCamera;
 
@@ -28,18 +28,18 @@ namespace Paranapiacaba.Dialogue {
             DialogueController.Instance.OnSkipSpeech += HandleOnSkipSpeech;
         }
 
-        public void MoveRotate(Transform target) {
-            if(_animationCoroutine == null && target)
-            {
-                _currentPositionCurve = _defaultPositionCurve;
-                _currentRotationCurve = _defaultRotationCurve;
-                _finalPlacement = target;
-                _currentDuration = _defaultDuration;
-                _animationCoroutine = StartCoroutine(BlendAnimationCoroutine());
-            }
-        }
+        //public void MoveRotate(Transform target) {
+        //    if(_animationCoroutine == null && target)
+        //    {
+        //        _currentPositionCurve = _defaultPositionCurve;
+        //        _currentRotationCurve = _defaultRotationCurve;
+        //        _finalPlacement = target;
+        //        _currentDuration = _defaultDuration;
+        //        _animationCoroutine = StartCoroutine(BlendAnimationCoroutine());
+        //    }
+        //}
 
-        public void MoveRotate(CameraAnimationInfo cameraTransitionInfo)
+        public void MoveRotate(CameraAnimationInfo cameraTransitionInfo, bool willBeInDialogue)
         {
             if (_animationCoroutine == null && cameraTransitionInfo)
             {
@@ -47,6 +47,7 @@ namespace Paranapiacaba.Dialogue {
                 _currentRotationCurve = cameraTransitionInfo.rotationCurve;
                 _finalPlacement = cameraTransitionInfo.transform;
                 _currentDuration = cameraTransitionInfo.duration;
+                if (!willBeInDialogue) HandleOnDialogeStart();
                 _animationCoroutine = StartCoroutine(BlendAnimationCoroutine());
             }
         }
@@ -84,6 +85,11 @@ namespace Paranapiacaba.Dialogue {
         private void HandleOnDialogueEnd()
         {
             _dialogueCamera.Priority = -999;
+        }
+
+        public void ExitDialogeCamera()
+        {
+            HandleOnDialogueEnd();
         }
 
         private void HandleOnSkipSpeech()
