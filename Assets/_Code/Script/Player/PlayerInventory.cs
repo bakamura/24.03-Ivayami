@@ -1,24 +1,27 @@
-using UnityEngine;
+using System.Collections.Generic;
 
 namespace Paranapiacaba.Player {
     public class PlayerInventory : MonoSingleton<PlayerInventory> {
 
+        private List<InventoryItem> _itemList = new List<InventoryItem>();
+
+        private int _checkInventoryIndexCache;
+
         public InventoryItem[] CheckInventory() {
-            Debug.LogWarning("Method Not Implemented Yet");
-            return null;
+            return _itemList.ToArray();
         }
 
         public InventoryItem CheckInventoryFor(string itemId) {
-            Debug.LogWarning("Method Not Implemented Yet");
-            return null;
+            _checkInventoryIndexCache = _itemList.FindIndex((inventoryItem) => inventoryItem.id == itemId);
+            return _checkInventoryIndexCache == -1 ? null : _itemList[_checkInventoryIndexCache];
         }
 
         public void AddToInventory(InventoryItem item) {
-            Debug.LogWarning("Method Not Implemented Yet");
+            _itemList.Add(item);
         }
 
         public void RemoveFromInventory(InventoryItem item) {
-            Debug.LogWarning("Method Not Implemented Yet");
+            _itemList.Remove(item);
         }
 
     }
