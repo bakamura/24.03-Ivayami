@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using Paranapiacaba.Player.Ability;
 using UnityEngine.InputSystem;
 using Paranapiacaba.Puzzle;
+using static UnityEditor.Progress;
 
 namespace Paranapiacaba.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -38,7 +39,6 @@ namespace Paranapiacaba.Player {
         [Header("Cache")]
 
         private IInteractable _interactableClosestCache;
-        private Collider _interactableClosestColliderCache;
         private float _interactableClosestDistanceCache;
         private IInteractable _interactableCache;
         private float _interactableDistanceCache;
@@ -65,7 +65,6 @@ namespace Paranapiacaba.Player {
                     _interactableDistanceCache = Vector3.Distance(transform.position, col.transform.position);
                     if (_interactableDistanceCache < _interactableClosestDistanceCache) {
                         _interactableClosestCache = _interactableCache;
-                        _interactableClosestColliderCache = col;
                         _interactableClosestDistanceCache = _interactableDistanceCache;
                     }
                 }
@@ -74,12 +73,14 @@ namespace Paranapiacaba.Player {
                 _interactableClosest = _interactableClosestCache;
                 onInteractTargetChange.Invoke(_interactableClosest);
 
-                Logger.Log(LogType.Player, $"Changed Current Interact Target to: {_interactableClosestColliderCache.name}");
+                Logger.Log(LogType.Player, $"Changed Current Interact Target to: {_interactableClosestCache.gameObject.name}");
             }
         }
 
         private void Interact(InputAction.CallbackContext input) {
             // Interacts with current Interaction target
+
+            Logger.Log(LogType.Player, $"Interact with: {_interactableClosestCache.gameObject.name}");
         }
 
         private void Ability(InputAction.CallbackContext input) {
@@ -103,16 +104,22 @@ namespace Paranapiacaba.Player {
                     break;
             }
             onAbilityChange.Invoke(_abilityCurrent);
+
+            Logger.Log(LogType.Player, $"Ability Changed to: {_abilities[_abilityCurrent].name}");
         }
 
         public void AddAbility(PlayerAbility ability) {
             _abilities.Add(ability);
+
+            Logger.Log(LogType.Player, $"Ability Add: {ability.name}");
         }
 
         public void RemoveAbility(PlayerAbility ability) {
             if (_abilityCurrent >= _abilities.FindIndex((abilityInList) => abilityInList == ability)) _abilityCurrent--;
             _abilities.Remove(ability);
             onAbilityChange.Invoke(_abilityCurrent); // Update UI etc
+
+            Logger.Log(LogType.Player, $"Ability Remove: {ability.name}");
         }
 
         public void ChangeInputMap(byte mapId) {

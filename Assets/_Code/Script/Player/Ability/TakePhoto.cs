@@ -3,13 +3,15 @@ using UnityEngine;
 namespace Paranapiacaba.Player.Ability {
     public class TakePhoto : PlayerAbility {
 
-        public override void AbilityEnd() {
-            Debug.LogWarning("Method Not Implemented Yet");
-        }
+        private bool _cameraOpen;
 
         public override void AbilityStart() {
-            Debug.LogWarning("Method Not Implemented Yet");
+
+
+            Logger.Log(LogType.Player, $"Camera {(_cameraOpen ? "Open" : "Close")}");
         }
+
+        public override void AbilityEnd() { }
 
     }
 }
