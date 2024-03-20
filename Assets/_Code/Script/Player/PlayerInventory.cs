@@ -18,10 +18,14 @@ namespace Paranapiacaba.Player {
 
         public void AddToInventory(InventoryItem item) {
             _itemList.Add(item);
+
+            Logger.Log(LogType.Player, $"Inventory Add: {item.name} ({item.id}) / {item.type}");
         }
 
         public void RemoveFromInventory(InventoryItem item) {
             _itemList.Remove(item);
+
+            Logger.Log(LogType.Player, $"Remove Add: {item.name} ({item.id}) / {item.type}");
         }
 
     }

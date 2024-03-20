@@ -13,21 +13,32 @@ namespace Paranapiacaba.Player {
 
         [SerializeField] private float _stressMax;
         private float _stressCurrent;
+        private bool _failState = false;
 
         protected override void Awake() {
             base.Awake();
 
             onStressChange.AddListener(FailState);
+
+            Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");
         }
 
         public void AddStress(float amount) {
-            _stressCurrent += amount;
-            onStressChange.Invoke(_stressCurrent);
+            if (!_failState) {
+                _stressCurrent += amount;
+                onStressChange.Invoke(_stressCurrent);
+
+                Logger.Log(LogType.Player, $"Stress Meter: {_stressCurrent}/{_stressMax}");
+            }
         }
 
         private void FailState(float stressCurrent) {
-            if (stressCurrent >= _stressMax) onFailState.Invoke();
-            // Prevent reinvoking
+            if (!_failState) {
+                if (stressCurrent >= _stressMax) onFailState.Invoke();
+                _failState = true;
+
+                Logger.Log(LogType.Player, $"Player Fail State");
+            }
         }
 
     }
