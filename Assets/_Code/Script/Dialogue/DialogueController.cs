@@ -29,6 +29,7 @@ namespace Paranapiacaba.Dialogue {
         private bool _readyForNextSpeech = true;
         private sbyte _currentSpeechIndex;
 
+        public bool IsDialogueActive { get; private set; }
         public Action OnDialogeStart;
         public Action OnDialogueEnd;
         public Action OnSkipSpeech;
@@ -86,6 +87,7 @@ namespace Paranapiacaba.Dialogue {
                     _canvasGroup.blocksRaycasts = false;
                     OnDialogueEnd?.Invoke();
                     _inputActionMap.actionMaps[0].Enable();
+                    IsDialogueActive = false;
                 }
                 //continue current dialogue
                 else
@@ -154,6 +156,7 @@ namespace Paranapiacaba.Dialogue {
         {
             if (_dialogueDictionary.TryGetValue(dialogueId, out Dialogue dialogue) && _writtingCoroutine == null)
             {
+                IsDialogueActive = true;
                 _inputActionMap.actionMaps[0].Disable();
                 _continueInput.action.Enable();
                 if (_debugLogs) Debug.Log($"Starting dialogue {dialogueId}");
