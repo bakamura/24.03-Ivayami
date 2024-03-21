@@ -5,8 +5,8 @@ namespace Paranapiacaba.Dialogue {
     public class Speech {
 
         public string announcerName;
-        [TextArea(1, 50)] public string content;
         public string eventId;
+        [TextArea(1, 50)] public string content;
 
     }
 }
