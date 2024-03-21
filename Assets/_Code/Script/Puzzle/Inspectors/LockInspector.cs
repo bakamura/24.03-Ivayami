@@ -9,7 +9,7 @@ namespace Paranapiacaba.Puzzle
     [CustomEditor(typeof(Lock))]
     public class LockInspector : Editor
     {
-        SerializedProperty cancelInteractionInput, inputActionMap, interactionType, itemsRequired, deliverItemsUI, passwordRequired, passwordTextField, passwordUI, onInteract, onCancelInteraction, onActivate;
+        SerializedProperty cancelInteractionInput, inputActionMap, interactionType, itemsRequired, deliverItemsUI, passwordUI, onInteract, onCancelInteraction, onActivate;
         public override void OnInspectorGUI()
         {
             GUILayout.Label("INPUTS", EditorStyles.boldLabel);
@@ -28,9 +28,7 @@ namespace Paranapiacaba.Puzzle
                     EditorGUILayout.PropertyField(deliverItemsUI, new GUIContent("Deliver Item UI"));
                     break;
                 case Lock.InteractionTypes.RequirePassword:
-                    EditorGUILayout.PropertyField(passwordRequired, new GUIContent("Password"));
                     EditorGUILayout.PropertyField(passwordUI, new GUIContent("PasswordUI"));
-                    EditorGUILayout.PropertyField(passwordTextField, new GUIContent("Password Display"));
                     break;
             }
             EditorGUILayout.Space(10);
@@ -51,8 +49,6 @@ namespace Paranapiacaba.Puzzle
             interactionType = serializedObject.FindProperty("_interactionType");
             itemsRequired = serializedObject.FindProperty("_itemsRequired");
             deliverItemsUI = serializedObject.FindProperty("_deliverItemsUI");
-            passwordRequired = serializedObject.FindProperty("_passwordRequired");
-            passwordTextField = serializedObject.FindProperty("_passwordTextField");
             passwordUI = serializedObject.FindProperty("_passwordUI");
             onInteract = serializedObject.FindProperty("_onInteract");
             onCancelInteraction = serializedObject.FindProperty("_onCancelInteraction");

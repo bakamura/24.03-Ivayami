@@ -3,8 +3,6 @@ using Paranapiacaba.Player;
 using UnityEngine.InputSystem;
 using TMPro;
 using UnityEngine.Events;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 namespace Paranapiacaba.Puzzle
 {
@@ -14,12 +12,12 @@ namespace Paranapiacaba.Puzzle
         [SerializeField] private InputActionAsset _inputActionMap;
 
         [SerializeField] private InteractionTypes _interactionType;
-        [SerializeField, Tooltip("if empty, will not require it")] private InventoryItem[] _itemsRequired;
-        [SerializeField] private CanvasGroup _deliverItemsUI;
 
-        [SerializeField, Tooltip("if null, will not require it")] private string _passwordRequired;
-        [SerializeField] private CanvasGroup _passwordUI;
-        [SerializeField] private TMP_InputField _passwordTextField;
+        [SerializeField] private InventoryItem[] _itemsRequired;
+        [SerializeField] private CanvasGroup _deliverItemsUI;
+        [SerializeField] private GameObject _deliverItemBtnPrefab;
+
+        [SerializeField] private PasswordUI _passwordUI;
 
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private UnityEvent _onCancelInteraction;
@@ -30,14 +28,19 @@ namespace Paranapiacaba.Puzzle
             RequireItems,
             RequirePassword
         }
-        private Button _initialPasswordButton;
+
+        [System.Serializable]
+        private struct ItemRequestData
+        {
+            public InventoryItem Item;
+            public UnityEvent OnItemDelivered;
+        }
+
         private TMP_Text _deliverItemFeedbackText;
-        private const string _incorrectPasswordText = "INCORRECT";
 
         private void Awake()
         {
-            _cancelInteractionInput.action.performed += HandleExitInteraction;
-            _initialPasswordButton = _passwordUI.GetComponentInChildren<Button>();
+            _cancelInteractionInput.action.performed += HandleExitInteraction;            
             _deliverItemFeedbackText = _deliverItemsUI.GetComponentInChildren<TMP_Text>();
         }
 
@@ -48,7 +51,7 @@ namespace Paranapiacaba.Puzzle
             UpdateInputs(true);
             if (_interactionType == InteractionTypes.RequirePassword)
             {
-                UpdatePasswordUI(true);
+                _passwordUI.UpdateActiveState(true);
             }
             else
             {
@@ -71,11 +74,10 @@ namespace Paranapiacaba.Puzzle
                     }
                 }
             }
-            bool isPasswordCorrect = string.IsNullOrEmpty(_passwordRequired) || _passwordRequired == _passwordTextField.text;
-            if (!isPasswordCorrect && !string.IsNullOrEmpty(_passwordRequired)) _passwordTextField.text = _incorrectPasswordText;
-            if (hasItems && isPasswordCorrect)
+
+            if (hasItems && _passwordUI.CheckPassword())
             {
-                UpdatePasswordUI(false);
+                _passwordUI.UpdateActiveState(false);
                 UpdateDeliverItemUI(false);
                 UpdateInputs(false);
                 onActivate?.Invoke();
@@ -100,24 +102,6 @@ namespace Paranapiacaba.Puzzle
             }
         }
 
-        private void UpdatePasswordUI(bool isActive)
-        {
-            _passwordUI.alpha = isActive ? 1 : 0;
-            _passwordUI.interactable = isActive;
-            _passwordUI.blocksRaycasts = isActive;
-            if (isActive)
-            {
-                _passwordTextField.text = "";
-                EventSystem.current.SetSelectedGameObject(_initialPasswordButton.gameObject);
-            }
-        }
-
-        public void InsertCharacter(TMP_Text text)
-        {
-            if (_passwordTextField.text == _incorrectPasswordText) _passwordTextField.text = "";
-            if (_passwordTextField.text.Length + 1 <= _passwordTextField.characterLimit) _passwordTextField.text += text.text;
-        }
-
         private void UpdateDeliverItemUI(bool isActive)
         {
             _deliverItemsUI.alpha = isActive ? 1 : 0;
@@ -135,19 +119,10 @@ namespace Paranapiacaba.Puzzle
 
         public void CancelInteraction()
         {
-            UpdatePasswordUI(false);
+            _passwordUI.UpdateActiveState(false);
             UpdateDeliverItemUI(false);
             UpdateInputs(false);
             _onCancelInteraction?.Invoke();
         }
-
-        private void OnValidate()
-        {
-            if (_passwordTextField)
-            {
-                _passwordTextField.characterLimit = _passwordRequired.Length;
-            }
-        }
-
     }
 }
