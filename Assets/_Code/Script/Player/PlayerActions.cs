@@ -21,7 +21,7 @@ namespace Paranapiacaba.Player {
         public UnityEvent<bool> onInteractLong = new UnityEvent<bool>();
         public UnityEvent<IInteractable> onInteractTargetChange = new UnityEvent<IInteractable>();
         public UnityEvent<string> onAbility = new UnityEvent<string>();
-        public UnityEvent<byte> onAbilityChange = new UnityEvent<byte>();
+        public UnityEvent<sbyte> onAbilityChange = new UnityEvent<sbyte>();
 
         [Header("Interact")]
 
@@ -33,8 +33,8 @@ namespace Paranapiacaba.Player {
 
         [Header("Abilities")]
 
-        private List<PlayerAbility> _abilities;
-        private byte _abilityCurrent;
+        private List<PlayerAbility> _abilities = new List<PlayerAbility>();
+        private sbyte _abilityCurrent;
 
         [Header("Cache")]
 
@@ -52,11 +52,25 @@ namespace Paranapiacaba.Player {
             _changeAbilityInput.action.started += ChangeAbility;
 
             _interactionQuickDuration = 0.1f; // Get animation duration
+            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1);
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
         }
 
         private void Update() {
+            InteractObjectDetect();
+        }
+
+        private void Interact(InputAction.CallbackContext input) {
+            if (_interactableClosestCache != null) {
+                // Interacts with current Interaction target
+
+                Logger.Log(LogType.Player, $"Interact with: {_interactableClosestCache.gameObject.name}");
+            }
+            else Logger.Log(LogType.Player, $"Interact: No Target");
+        }
+
+        private void InteractObjectDetect() {
             _interactableClosestCache = null;
             _interactableClosestDistanceCache = Mathf.Infinity;
             foreach (Collider col in Physics.OverlapSphere(transform.position + _interactOffset, _interactRadius)) {
@@ -77,15 +91,11 @@ namespace Paranapiacaba.Player {
             }
         }
 
-        private void Interact(InputAction.CallbackContext input) {
-            // Interacts with current Interaction target
-
-            Logger.Log(LogType.Player, $"Interact with: {_interactableClosestCache.gameObject.name}");
-        }
-
         private void Ability(InputAction.CallbackContext input) {
-            if (input.phase == InputActionPhase.Started) _abilities[_abilityCurrent].AbilityStart();
-            else if (input.phase == InputActionPhase.Canceled) _abilities[_abilityCurrent].AbilityEnd();
+            if (_abilityCurrent >= 0) {
+                if (input.phase == InputActionPhase.Started) _abilities[_abilityCurrent].AbilityStart();
+                else if (input.phase == InputActionPhase.Canceled) _abilities[_abilityCurrent].AbilityEnd();
+            }
         }
 
         private void ChangeAbility(InputAction.CallbackContext input) {
