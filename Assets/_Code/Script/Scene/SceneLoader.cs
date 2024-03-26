@@ -21,7 +21,7 @@ namespace Paranapiacaba.Scene {
 
         private void OnTriggerExit(Collider other)
         {
-            SceneController.Instance.StartLoad(_sceneId, null, _onSceneUnload);
+            SceneController.Instance.StartLoad(_sceneId, _onSceneUnload);
         }
 
         public void LoadScene()
