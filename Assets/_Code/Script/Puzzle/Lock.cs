@@ -4,6 +4,8 @@ using UnityEngine.InputSystem;
 using TMPro;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using System.Linq;
+using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
 namespace Paranapiacaba.Puzzle
@@ -14,15 +16,24 @@ namespace Paranapiacaba.Puzzle
         [SerializeField] private InputActionAsset _inputActionMap;
 
         [SerializeField] private InteractionTypes _interactionType;
-        [SerializeField, Tooltip("if empty, will not require it")] private InventoryItem[] _itemsRequired;
-        [SerializeField] private CanvasGroup _deliverItemsUI;
 
-        [SerializeField, Tooltip("if null, will not require it")] private string _passwordRequired;
-        [SerializeField] private CanvasGroup _passwordUI;
-        [SerializeField] private TMP_InputField _passwordTextField;
+        [SerializeField] private ItemRequestData[] _itemsRequired;
+        [SerializeField] private CanvasGroup _deliverItemsUI;
+        [SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
+        [SerializeField] private InputActionReference _navigateUIInput;
+        [SerializeField] private GameObject _deliverBtn;
+
+        [SerializeField] private PasswordUI _passwordUI;
 
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private UnityEvent _onCancelInteraction;
+
+
+        private int _selectedDeliverOptionIndex;
+        private Image[] _deliverOptions;
+        private int _currentPositionInInventory = 0;
+        private List<InventoryItem> _currentItemList = new List<InventoryItem>();
+        private sbyte _currentItemsDelivered;
 
         [System.Serializable]
         public enum InteractionTypes
@@ -30,15 +41,20 @@ namespace Paranapiacaba.Puzzle
             RequireItems,
             RequirePassword
         }
-        private Button _initialPasswordButton;
-        private TMP_Text _deliverItemFeedbackText;
-        private const string _incorrectPasswordText = "INCORRECT";
+
+        [System.Serializable]
+        private struct ItemRequestData
+        {
+            public InventoryItem Item;
+            public UnityEvent OnItemDelivered;
+            [HideInInspector] public bool ItemDelivered;
+        }
 
         private void Awake()
         {
             _cancelInteractionInput.action.performed += HandleExitInteraction;
-            _initialPasswordButton = _passwordUI.GetComponentInChildren<Button>();
-            _deliverItemFeedbackText = _deliverItemsUI.GetComponentInChildren<TMP_Text>();
+            _navigateUIInput.action.performed += HandleNavigateDeliverUI;
+            _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
         }
 
         [ContextMenu("Interact")]
@@ -48,7 +64,7 @@ namespace Paranapiacaba.Puzzle
             UpdateInputs(true);
             if (_interactionType == InteractionTypes.RequirePassword)
             {
-                UpdatePasswordUI(true);
+                _passwordUI.UpdateActiveState(true);
             }
             else
             {
@@ -58,24 +74,11 @@ namespace Paranapiacaba.Puzzle
 
         public void TryUnlock()
         {
-            bool hasItems = true;
-            if (_itemsRequired.Length > 0)
+            bool isPasswordCorrect = _interactionType == InteractionTypes.RequirePassword && _passwordUI.CheckPassword();
+            bool hasDeliveredAllItems = _interactionType == InteractionTypes.RequireItems && _itemsRequired.Length == _currentItemsDelivered;
+            if (hasDeliveredAllItems || isPasswordCorrect)
             {
-                for (int i = 0; i < _itemsRequired.Length; i++)
-                {
-                    if (!PlayerInventory.Instance.CheckInventoryFor(_itemsRequired[i].id))
-                    {
-                        hasItems = false;
-                        _deliverItemFeedbackText.text = "DONT HAVE REQUIRED ITEMS";
-                        break;
-                    }
-                }
-            }
-            bool isPasswordCorrect = string.IsNullOrEmpty(_passwordRequired) || _passwordRequired == _passwordTextField.text;
-            if (!isPasswordCorrect && !string.IsNullOrEmpty(_passwordRequired)) _passwordTextField.text = _incorrectPasswordText;
-            if (hasItems && isPasswordCorrect)
-            {
-                UpdatePasswordUI(false);
+                _passwordUI.UpdateActiveState(false);
                 UpdateDeliverItemUI(false);
                 UpdateInputs(false);
                 onActivate?.Invoke();
@@ -89,7 +92,7 @@ namespace Paranapiacaba.Puzzle
                 //gameplay actions
                 _inputActionMap.actionMaps[0].Disable();
                 //ui actions
-                _inputActionMap.actionMaps[1].Enable();
+                _inputActionMap.actionMaps[1].Enable();                
             }
             else
             {
@@ -100,31 +103,6 @@ namespace Paranapiacaba.Puzzle
             }
         }
 
-        private void UpdatePasswordUI(bool isActive)
-        {
-            _passwordUI.alpha = isActive ? 1 : 0;
-            _passwordUI.interactable = isActive;
-            _passwordUI.blocksRaycasts = isActive;
-            if (isActive)
-            {
-                _passwordTextField.text = "";
-                EventSystem.current.SetSelectedGameObject(_initialPasswordButton.gameObject);
-            }
-        }
-
-        public void InsertCharacter(TMP_Text text)
-        {
-            if (_passwordTextField.text == _incorrectPasswordText) _passwordTextField.text = "";
-            if (_passwordTextField.text.Length + 1 <= _passwordTextField.characterLimit) _passwordTextField.text += text.text;
-        }
-
-        private void UpdateDeliverItemUI(bool isActive)
-        {
-            _deliverItemsUI.alpha = isActive ? 1 : 0;
-            _deliverItemsUI.interactable = isActive;
-            _deliverItemsUI.blocksRaycasts = isActive;
-        }
-
         private void HandleExitInteraction(InputAction.CallbackContext context)
         {
             if (context.ReadValue<float>() == 1)
@@ -132,22 +110,97 @@ namespace Paranapiacaba.Puzzle
                 CancelInteraction();
             }
         }
-
         public void CancelInteraction()
         {
-            UpdatePasswordUI(false);
+            _passwordUI.UpdateActiveState(false);
             UpdateDeliverItemUI(false);
             UpdateInputs(false);
             _onCancelInteraction?.Invoke();
         }
 
-        private void OnValidate()
+
+        #region DeliverUI
+
+        private void UpdateDeliverItemUI(bool isActive)
         {
-            if (_passwordTextField)
+            _deliverItemsUI.alpha = isActive ? 1 : 0;
+            _deliverItemsUI.interactable = isActive;
+            _deliverItemsUI.blocksRaycasts = isActive;
+
+            if (isActive)
             {
-                _passwordTextField.characterLimit = _passwordRequired.Length;
+                _currentPositionInInventory = 0;
+                _selectedDeliverOptionIndex = Mathf.FloorToInt(_deliverOptions.Length / 2);
+                _currentItemList = PlayerInventory.Instance.CheckInventory().Where(x => CheckItemType(x.type)).ToList();
+                for (int i = 0; i < _deliverOptions.Length; i++)
+                {
+                    if (i == _currentItemList.Count) break;
+                    _deliverOptions[i].sprite = _currentItemList[i].sprite;
+                }
+                EventSystem.current.SetSelectedGameObject(_deliverBtn);
             }
         }
 
+        private bool CheckItemType(ItemType itemType)
+        {
+            for(int i = 0; i < _itemsRequired.Length; i++)
+            {
+                if (_itemsRequired[i].Item.type == itemType)
+                    return true;
+            }
+            return false;
+        }        
+
+        private void HandleNavigateDeliverUI(InputAction.CallbackContext context)
+        {
+            if (_interactionType == InteractionTypes.RequireItems && context.ReadValue<Vector2>().y != 0)
+            {
+                int temp = -context.ReadValue<Vector2>().y > 0 ? 1 : -1;
+                _currentPositionInInventory += temp;
+                _selectedDeliverOptionIndex += temp;
+                UpdateInventoryIcons();
+            }
+        }
+
+        //called by interface Btn
+        public void DeliverItem()
+        {
+            for(int i = 0; i < _itemsRequired.Length; i++)
+            {
+                if(_itemsRequired[i].Item.id == _currentItemList[_selectedDeliverOptionIndex].id && !_itemsRequired[i].ItemDelivered)
+                {
+                    _itemsRequired[i].ItemDelivered = true;
+                    _itemsRequired[i].OnItemDelivered?.Invoke();
+                    PlayerInventory.Instance.RemoveFromInventory(_currentItemList[_selectedDeliverOptionIndex]);
+                    _currentItemsDelivered++;
+                    TryUnlock();
+                    break;
+                }
+            }
+        }
+
+        private void UpdateInventoryIcons()
+        {
+            _currentPositionInInventory = ConstrainValueToArrayBounds(_currentPositionInInventory, _currentItemList.Count);
+            _selectedDeliverOptionIndex = ConstrainValueToArrayBounds(_selectedDeliverOptionIndex, _currentItemList.Count);
+
+            sbyte currentDeliverIndex = 0;
+            int currentInventoryListIndex = _currentPositionInInventory;
+            while (currentDeliverIndex < _deliverOptions.Length)
+            {
+                _deliverOptions[currentDeliverIndex].sprite = _currentItemList[currentInventoryListIndex].sprite;
+                currentDeliverIndex++;
+                currentInventoryListIndex++;
+                currentInventoryListIndex = ConstrainValueToArrayBounds(currentInventoryListIndex, _currentItemList.Count);
+            }
+        }
+
+        private int ConstrainValueToArrayBounds(int valueToConstrain, int listSize)
+        {
+            if (valueToConstrain < 0) valueToConstrain = listSize - 1;
+            else if (valueToConstrain == listSize) valueToConstrain = 0;
+            return valueToConstrain;
+        }
+        #endregion
     }
 }
