@@ -69,7 +69,7 @@ namespace Paranapiacaba.Scene
             {
                 data.IsBeingLoaded = true;
                 _sceneUpdateRequests.Enqueue(new SceneUpdateRequestData(data, onSceneUpdate));
-                UpdateScene(data);
+                if(_sceneUpdateRequests.Count == 1)UpdateScene(data);
             }
         }
 
@@ -116,6 +116,7 @@ namespace Paranapiacaba.Scene
                 else Debug.Log($"Scene Unloaded {requestData.SceneData.SceneName}");
             }
             requestData.OnSceneUpdate?.Invoke();
+            if (_sceneUpdateRequests.Count > 0) UpdateScene(_sceneUpdateRequests.Peek().SceneData);
         }
     }
 }
