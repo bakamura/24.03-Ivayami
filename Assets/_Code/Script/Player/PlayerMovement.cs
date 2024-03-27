@@ -24,13 +24,14 @@ namespace Paranapiacaba.Player {
         private float _acceleration;
         [SerializeField] private float _deccelerationDuration;
         private float _decceleration;
+        [SerializeField, Range(0f, 1f)] private float _movementSpeedBackwardsMultiplier;
+        [SerializeField, Range(0f, 180f)] private float _movementBacwardsAngleMaxFromForward;
         private bool _canMove;
 
         [Header("Rotation")]
 
         [SerializeField] private Transform _visualTransform;
-        [Range(0f, 1f)]
-        [SerializeField] private float _rotationSmoothFactor;
+        [SerializeField, Range(0f, 1f)] private float _rotationSmoothFactor;
 
         [Header("Crouch")]
 
@@ -48,8 +49,10 @@ namespace Paranapiacaba.Player {
 
         private Vector2 _inputCache = Vector3.zero;
         private Vector3 _movementDirectionCache = Vector3.zero;
+        private Vector3 _rotationCache = Vector3.zero;
         private float _movementSpeedMaxCurrent;
         private Quaternion _targetAngle;
+        private float _directionDifferenceToInputAngleCache;
 
         private Rigidbody _rigidbody;
         private CapsuleCollider _collider;
@@ -75,9 +78,12 @@ namespace Paranapiacaba.Player {
             _canMove = true;
         }
 
+        private void Update() {
+            if (_canMove) Rotate();
+        }
+
         private void FixedUpdate() {
-            Move();
-            RotateCameraTarget();
+            if(_canMove) Move();
         }
 
         private void MoveDirection(InputAction.CallbackContext input) {
@@ -87,16 +93,19 @@ namespace Paranapiacaba.Player {
         }
 
         private void Move() {
-            if (_canMove && _inputCache.sqrMagnitude > 0) {
+            if (_inputCache.sqrMagnitude > 0) {
                 _movementDirectionCache[0] = _inputCache[0];
                 _movementDirectionCache[2] = _inputCache[1];
-                _movementSpeedMaxCurrent = _inputCache.magnitude * (_crouching ? _crouchSpeedMax : _movementSpeedMax);
                 _targetAngle = Quaternion.Euler(0, Mathf.Atan2(_movementDirectionCache.x, _movementDirectionCache.z) * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y, 0);
+                _directionDifferenceToInputAngleCache = Mathf.Abs(_targetAngle.eulerAngles.y - _cameraAimTargetRotator.eulerAngles.y);
+                if (_directionDifferenceToInputAngleCache > 180) _directionDifferenceToInputAngleCache -= 180f;
+                _movementSpeedMaxCurrent = _inputCache.magnitude 
+                                         * (_crouching ? _crouchSpeedMax : _movementSpeedMax) 
+                                         * Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward);
             }
             _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMaxCurrent);
 
             _rigidbody.velocity = (_targetAngle * Vector3.forward).normalized * _speedCurrent;
-            _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _rotationSmoothFactor);
 
             onMovement.Invoke(_speedCurrent);
         }
@@ -114,8 +123,10 @@ namespace Paranapiacaba.Player {
             else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
         }
 
-        private void RotateCameraTarget() {
-            _cameraAimTargetRotator.eulerAngles = _cameraTransform.eulerAngles.y * Vector3.up;
+        private void Rotate() {
+            _rotationCache[1] = _cameraTransform.eulerAngles.y;
+            _cameraAimTargetRotator.eulerAngles = _rotationCache;
+            _visualTransform.eulerAngles = _rotationCache;
         }
 
         public void ToggleMovement(bool canMove) {
