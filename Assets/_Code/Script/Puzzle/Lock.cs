@@ -13,14 +13,14 @@ namespace Paranapiacaba.Puzzle
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
+        [SerializeField] private InputActionReference _navigateUIInput;
         [SerializeField] private InputActionAsset _inputActionMap;
 
         [SerializeField] private InteractionTypes _interactionType;
 
         [SerializeField] private ItemRequestData[] _itemsRequired;
         [SerializeField] private CanvasGroup _deliverItemsUI;
-        [SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
-        [SerializeField] private InputActionReference _navigateUIInput;
+        [SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;        
         [SerializeField] private GameObject _deliverBtn;
 
         [SerializeField] private PasswordUI _passwordUI;
@@ -102,14 +102,7 @@ namespace Paranapiacaba.Puzzle
                 _inputActionMap.actionMaps[1].Disable();
             }
         }
-
-        private void HandleExitInteraction(InputAction.CallbackContext context)
-        {
-            if (context.ReadValue<float>() == 1)
-            {
-                CancelInteraction();
-            }
-        }
+        
         public void CancelInteraction()
         {
             _passwordUI.UpdateActiveState(false);
@@ -118,6 +111,39 @@ namespace Paranapiacaba.Puzzle
             _onCancelInteraction?.Invoke();
         }
 
+        private void HandleExitInteraction(InputAction.CallbackContext context)
+        {
+            if (context.ReadValue<float>() == 1)
+            {
+                CancelInteraction();
+            }
+        }
+
+        private void HandleNavigateDeliverUI(InputAction.CallbackContext context)
+        {
+            Vector2 input = context.ReadValue<Vector2>();
+            if (input != Vector2.zero)
+            {
+                switch (_interactionType)
+                {
+                    case InteractionTypes.RequireItems:
+                        if(EventSystem.current.currentSelectedGameObject == null)                    
+                            EventSystem.current.SetSelectedGameObject(_passwordUI.FallbackButton.gameObject);                    
+                        break;
+                    case InteractionTypes.RequirePassword:
+                        if (EventSystem.current.currentSelectedGameObject == null)
+                            EventSystem.current.SetSelectedGameObject(_deliverBtn);
+                        else if (input.y != 0)
+                        {
+                            int temp = -input.y > 0 ? 1 : -1;
+                            _currentPositionInInventory += temp;
+                            _selectedDeliverOptionIndex += temp;
+                            UpdateInventoryIcons();
+                        }
+                        break;
+                }            
+            }
+        }
 
         #region DeliverUI
 
@@ -149,18 +175,7 @@ namespace Paranapiacaba.Puzzle
                     return true;
             }
             return false;
-        }        
-
-        private void HandleNavigateDeliverUI(InputAction.CallbackContext context)
-        {
-            if (_interactionType == InteractionTypes.RequireItems && context.ReadValue<Vector2>().y != 0)
-            {
-                int temp = -context.ReadValue<Vector2>().y > 0 ? 1 : -1;
-                _currentPositionInInventory += temp;
-                _selectedDeliverOptionIndex += temp;
-                UpdateInventoryIcons();
-            }
-        }
+        }                
 
         //called by interface Btn
         public void DeliverItem()
