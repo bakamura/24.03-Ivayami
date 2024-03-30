@@ -42,6 +42,8 @@ GameObject:
   - component: {fileID: 8863140945565280037}
   - component: {fileID: 1324387907856842962}
   - component: {fileID: 8234330087418358964}
+  - component: {fileID: 772645551697881507}
+  - component: {fileID: 2425474999269758113}
   m_Layer: 0
   m_Name: Visuals
   m_TagString: Untagged
@@ -115,6 +117,39 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!95 &772645551697881507
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2342591463273370596}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: af1b416aff34d0b4eb5bfebf9411abb9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2425474999269758113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2342591463273370596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9afca3879bb863e4abdb04d0a4c00609, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4627871391428053008
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,15 +290,30 @@ MonoBehaviour:
       m_Calls: []
   onCrouch:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _movementSpeedMax: 5
   _accelerationDuration: 0.125
   _deccelerationDuration: 0.0625
+  _movementSpeedBackwardsMultiplier: 0.5
+  _movementBacwardsAngleMaxFromForward: 90
   _visualTransform: {fileID: 8863140945565280037}
-  _rotationSmoothFactor: 0.333
   _crouchSpeedMax: 2.5
   _walkColliderHeight: 2
+  _walkCameraHeight: 1.25
   _crouchColliderHeight: 1
+  _crouchCameraHeight: 0.25
   _terrain:
     serializedVersion: 2
     m_Bits: 8

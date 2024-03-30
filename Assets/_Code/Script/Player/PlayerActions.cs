@@ -85,7 +85,7 @@ namespace Paranapiacaba.Player {
             }
             if (_interactableClosest != _interactableClosestCache) {
                 _interactableClosest = _interactableClosestCache;
-                onInteractTargetChange.Invoke(_interactableClosest);
+                onInteractTargetChange?.Invoke(_interactableClosest);
 
                 Logger.Log(LogType.Player, $"Changed Current Interact Target to: {_interactableClosestCache.gameObject.name}");
             }
@@ -113,7 +113,7 @@ namespace Paranapiacaba.Player {
                     _abilityCurrent = 3;
                     break;
             }
-            onAbilityChange.Invoke(_abilityCurrent);
+            onAbilityChange?.Invoke(_abilityCurrent);
 
             Logger.Log(LogType.Player, $"Ability Changed to: {_abilities[_abilityCurrent].name}");
         }
@@ -127,7 +127,7 @@ namespace Paranapiacaba.Player {
         public void RemoveAbility(PlayerAbility ability) {
             if (_abilityCurrent >= _abilities.FindIndex((abilityInList) => abilityInList == ability)) _abilityCurrent--;
             _abilities.Remove(ability);
-            onAbilityChange.Invoke(_abilityCurrent); // Update UI etc
+            onAbilityChange?.Invoke(_abilityCurrent); // Update UI etc
 
             Logger.Log(LogType.Player, $"Ability Remove: {ability.name}");
         }
