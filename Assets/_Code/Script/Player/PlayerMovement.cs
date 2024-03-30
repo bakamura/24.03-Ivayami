@@ -13,7 +13,7 @@ namespace Paranapiacaba.Player {
 
         [Header("Events")]
 
-        public UnityEvent<float> onMovement = new UnityEvent<float>();
+        public UnityEvent<Vector2> onMovement = new UnityEvent<Vector2>();
         public UnityEvent<bool> onCrouch = new UnityEvent<bool>();
 
         [Header("Movement")]
@@ -31,14 +31,15 @@ namespace Paranapiacaba.Player {
         [Header("Rotation")]
 
         [SerializeField] private Transform _visualTransform;
-        [SerializeField, Range(0f, 1f)] private float _rotationSmoothFactor;
 
         [Header("Crouch")]
 
         [SerializeField] private float _crouchSpeedMax;
         private bool _crouching = false;
         [SerializeField] private float _walkColliderHeight;
+        [SerializeField] private float _walkCameraHeight;
         [SerializeField] private float _crouchColliderHeight;
+        [SerializeField] private float _crouchCameraHeight;
         [SerializeField] private LayerMask _terrain;
 
         [Header("Camera")]
@@ -99,15 +100,16 @@ namespace Paranapiacaba.Player {
                 _targetAngle = Quaternion.Euler(0, Mathf.Atan2(_movementDirectionCache.x, _movementDirectionCache.z) * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y, 0);
                 _directionDifferenceToInputAngleCache = Mathf.Abs(_targetAngle.eulerAngles.y - _cameraAimTargetRotator.eulerAngles.y);
                 if (_directionDifferenceToInputAngleCache > 180) _directionDifferenceToInputAngleCache -= 180f;
-                _movementSpeedMaxCurrent = _inputCache.magnitude 
+                _movementSpeedMaxCurrent = _movementDirectionCache.magnitude 
                                          * (_crouching ? _crouchSpeedMax : _movementSpeedMax) 
                                          * Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward);
+                Debug.Log(Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward));
             }
-            _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMaxCurrent);
+            _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMaxCurrent); // Could use _decceleration when above max speed
 
             _rigidbody.velocity = (_targetAngle * Vector3.forward).normalized * _speedCurrent;
 
-            onMovement.Invoke(_speedCurrent);
+            onMovement?.Invoke(_speedCurrent * _inputCache);
         }
 
         private void Crouch(InputAction.CallbackContext input) {
@@ -116,7 +118,9 @@ namespace Paranapiacaba.Player {
                 _collider.height = _crouching ? _crouchColliderHeight : _walkColliderHeight;
                 _collider.center = 0.5f * (_crouching ? _crouchColliderHeight : _walkColliderHeight) * Vector3.up;
 
-                onCrouch.Invoke(_crouching);
+                _cameraAimTargetRotator.localPosition = (_crouching ? _crouchCameraHeight : _walkCameraHeight) * Vector3.up;
+
+                onCrouch?.Invoke(_crouching);
 
                 Logger.Log(LogType.Player, $"Crouch Toggle: {_crouching}");
             }
