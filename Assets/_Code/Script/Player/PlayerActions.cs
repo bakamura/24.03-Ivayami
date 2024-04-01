@@ -71,7 +71,6 @@ namespace Paranapiacaba.Player {
         }
 
         private void InteractObjectDetect() {
-            _interactableClosestCache = null;
             _interactableClosestDistanceCache = Mathf.Infinity;
             foreach (Collider col in Physics.OverlapSphere(transform.position + _interactOffset, _interactRadius)) {
                 _interactableCache = col.GetComponent<IInteractable>();

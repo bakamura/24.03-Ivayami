@@ -103,7 +103,7 @@ namespace Paranapiacaba.Player {
                 _movementSpeedMaxCurrent = _movementDirectionCache.magnitude 
                                          * (_crouching ? _crouchSpeedMax : _movementSpeedMax) 
                                          * Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward);
-                Debug.Log(Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward));
+                //Debug.Log(Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward)); // Still requires debugging
             }
             _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMaxCurrent); // Could use _decceleration when above max speed
 
