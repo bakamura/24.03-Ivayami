@@ -1,5 +1,6 @@
 
 namespace Paranapiacaba.Save {
+    [System.Serializable]
     public class SaveProgress {
 
         public byte currentChapter;
