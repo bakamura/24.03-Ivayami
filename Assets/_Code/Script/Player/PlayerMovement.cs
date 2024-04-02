@@ -112,7 +112,7 @@ namespace Paranapiacaba.Player {
         }
 
         private void Crouch(InputAction.CallbackContext input) {
-            if (!_crouching || !Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) {
+            if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) {
                 _crouching = !_crouching;
                 _collider.height = _crouching ? _crouchColliderHeight : _walkColliderHeight;
                 _collider.center = 0.5f * (_crouching ? _crouchColliderHeight : _walkColliderHeight) * Vector3.up;
