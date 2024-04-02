@@ -1,26 +1,29 @@
 using UnityEngine;
 
 namespace Paranapiacaba.Player {
-    public class PlayerAnimation : MonoBehaviour {
+    public class PlayerAnimation : MonoSingleton<PlayerAnimation> {
 
         [Header("Parameter Names")]
 
-        private const string MOVE_SPEED = "MoveSpeed";
-        private const string MOVE_X = "MoveX";
-        private const string MOVE_Y = "MoveY";
-        private const string CROUCH = "Crouch";
-        private const string INTERACT_LONG = "InteractLong";
+        private static int MOVE_SPEED = Animator.StringToHash("MoveSpeed");
+        private static int MOVE_X = Animator.StringToHash("MoveX");
+        private static int MOVE_Y = Animator.StringToHash("MoveY");
+        private static int CROUCH = Animator.StringToHash("Crouch");
+        private static int INTERACT = Animator.StringToHash("Interact");
+        private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
 
         private Animator _animator;
 
-        private void Awake() {
+        protected override void Awake() {
             _animator = GetComponent<Animator>();
         }
 
         private void Start() {
             PlayerMovement.Instance.onMovement.AddListener(MoveAnimation);
             PlayerMovement.Instance.onCrouch.AddListener(Crouch);
+            PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
+            PlayerActions.Instance.onAbility.AddListener(Ability);
         }
 
         private void MoveAnimation(Vector2 direction) {
@@ -33,12 +36,20 @@ namespace Paranapiacaba.Player {
             _animator.SetBool(CROUCH, isCrouching);
         }
 
+        private void Interact() {
+            _animator.SetTrigger(INTERACT);
+        }
+
         private void InteractLong(bool isInteracting) {
             _animator.SetBool(INTERACT_LONG, isInteracting);
         }
 
         private void Ability(string abilityName) {
             _animator.SetTrigger(abilityName);
+        }
+
+        public float InteractDuration() {
+            return _animator.GetCurrentAnimatorClipInfo(0).Length; //
         }
 
     }

@@ -17,7 +17,7 @@ namespace Paranapiacaba.Player {
 
         [Header("Events")]
 
-        public UnityEvent onInteractQuick = new UnityEvent();
+        public UnityEvent onInteract = new UnityEvent();
         public UnityEvent<bool> onInteractLong = new UnityEvent<bool>();
         public UnityEvent<IInteractable> onInteractTargetChange = new UnityEvent<IInteractable>();
         public UnityEvent<string> onAbility = new UnityEvent<string>();
@@ -25,11 +25,10 @@ namespace Paranapiacaba.Player {
 
         [Header("Interact")]
 
-        [SerializeField] private Vector3 _interactOffset;
-        [SerializeField] private float _interactRadius;
+        [SerializeField] private float _interactRange;
+        [SerializeField] private float _interactSphereCastRadius;
         [SerializeField] private LayerMask _interactLayer;
         private IInteractable _interactableClosest;
-        private float _interactionQuickDuration;
 
         [Header("Abilities")]
 
@@ -38,6 +37,9 @@ namespace Paranapiacaba.Player {
 
         [Header("Cache")]
 
+        private Camera _cam;
+        private Vector2 _screenCenter = new Vector2(Screen.width, Screen.height) / 2;
+        private RaycastHit[] _raycastHitsCache;
         private IInteractable _interactableClosestCache;
         private float _interactableClosestDistanceCache;
         private IInteractable _interactableCache;
@@ -51,8 +53,11 @@ namespace Paranapiacaba.Player {
             _abilityInput.action.started += Ability;
             _changeAbilityInput.action.started += ChangeAbility;
 
-            _interactionQuickDuration = 0.1f; // Get animation duration
+            onInteract.AddListener(() => PlayerMovement.Instance.DisableMovement(PlayerAnimation.Instance.InteractDuration())); //
+
             _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1);
+
+            _cam = Camera.main;
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
         }
@@ -71,14 +76,16 @@ namespace Paranapiacaba.Player {
         }
 
         private void InteractObjectDetect() {
-            _interactableClosestDistanceCache = Mathf.Infinity;
-            foreach (Collider col in Physics.OverlapSphere(transform.position + _interactOffset, _interactRadius)) {
-                _interactableCache = col.GetComponent<IInteractable>();
+            _interactableClosestDistanceCache = _interactRange;
+            _interactableClosestCache = null;
+            _raycastHitsCache = Physics.SphereCastAll(_cam.ScreenPointToRay(_screenCenter), _interactSphereCastRadius, Mathf.Infinity);
+            foreach (RaycastHit hit in _raycastHitsCache) {
+                _interactableCache = hit.collider.GetComponent<IInteractable>();
                 if (_interactableCache != null) {
-                    _interactableDistanceCache = Vector3.Distance(transform.position, col.transform.position);
-                    if (_interactableDistanceCache < _interactableClosestDistanceCache) {
-                        _interactableClosestCache = _interactableCache;
+                    _interactableDistanceCache = Vector3.Distance(transform.position, _interactableCache.gameObject.transform.position);
+                    if (_interactableClosestDistanceCache > _interactableDistanceCache) {
                         _interactableClosestDistanceCache = _interactableDistanceCache;
+                        _interactableClosestCache = _interactableCache;
                     }
                 }
             }
@@ -86,7 +93,7 @@ namespace Paranapiacaba.Player {
                 _interactableClosest = _interactableClosestCache;
                 onInteractTargetChange?.Invoke(_interactableClosest);
 
-                Logger.Log(LogType.Player, $"Changed Current Interact Target to: {_interactableClosestCache.gameObject.name}");
+                Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(_interactableClosestCache != null ? _interactableClosestCache.gameObject.name : "Null")}");
             }
         }
 

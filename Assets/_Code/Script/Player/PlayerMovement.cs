@@ -1,4 +1,5 @@
 using Paranapiacaba.Puzzle;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -103,7 +104,6 @@ namespace Paranapiacaba.Player {
                 _movementSpeedMaxCurrent = _movementDirectionCache.magnitude 
                                          * (_crouching ? _crouchSpeedMax : _movementSpeedMax) 
                                          * Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward);
-                //Debug.Log(Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward)); // Still requires debugging
             }
             _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMaxCurrent); // Could use _decceleration when above max speed
 
@@ -138,6 +138,18 @@ namespace Paranapiacaba.Player {
             if (!_canMove) _inputCache = Vector2.zero;
 
             Logger.Log(LogType.Player, $"Movement Toggle: {_canMove}");
+        }
+
+        public void DisableMovement(float duration) {
+            StartCoroutine(DisableMovementRoutine(duration));
+        }
+
+        private IEnumerator DisableMovementRoutine(float duration) {
+            _canMove = false; 
+            
+            yield return new WaitForSeconds(duration);
+
+            _canMove = true;
         }
 
     }

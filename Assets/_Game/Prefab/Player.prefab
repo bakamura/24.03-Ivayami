@@ -1,4 +1,3 @@
-  m_PreserveUVs: 0
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &449713159166896355
@@ -203,7 +202,7 @@ MonoBehaviour:
   _interactInput: {fileID: -960142445056486336, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _abilityInput: {fileID: -5270376362144915007, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _changeAbilityInput: {fileID: -4199026391873933470, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
-  onInteractQuick:
+  onInteract:
     m_PersistentCalls:
       m_Calls: []
   onInteractLong:
@@ -218,11 +217,11 @@ MonoBehaviour:
   onAbilityChange:
     m_PersistentCalls:
       m_Calls: []
-  _interactOffset: {x: 0, y: 1, z: 0.75}
-  _interactRadius: 1.5
+  _interactRange: 2
+  _interactSphereCastRadius: 1.25
   _interactLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
 --- !u!114 &3867884800636623034
 MonoBehaviour:
   m_ObjectHideFlags: 0
