@@ -53,7 +53,7 @@ namespace Paranapiacaba.Player {
             _abilityInput.action.started += Ability;
             _changeAbilityInput.action.started += ChangeAbility;
 
-            onInteract.AddListener(() => PlayerMovement.Instance.DisableMovement(PlayerAnimation.Instance.InteractDuration())); //
+            //onInteract.AddListener(() => PlayerMovement.Instance.DisableMovement(PlayerAnimation.Instance.InteractDuration())); //
 
             _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1);
 
@@ -68,7 +68,7 @@ namespace Paranapiacaba.Player {
 
         private void Interact(InputAction.CallbackContext input) {
             if (_interactableClosestCache != null) {
-                // Interacts with current Interaction target
+                _interactableClosest.Interact();
 
                 Logger.Log(LogType.Player, $"Interact with: {_interactableClosestCache.gameObject.name}");
             }

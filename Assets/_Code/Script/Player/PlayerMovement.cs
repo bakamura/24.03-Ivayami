@@ -51,7 +51,6 @@ namespace Paranapiacaba.Player {
 
         private Vector2 _inputCache = Vector3.zero;
         private Vector3 _movementDirectionCache = Vector3.zero;
-        private Vector3 _rotationCache = Vector3.zero;
         private float _movementSpeedMaxCurrent;
         private Quaternion _targetAngle;
         private float _directionDifferenceToInputAngleCache;
@@ -128,14 +127,13 @@ namespace Paranapiacaba.Player {
         }
 
         private void Rotate() {
-            _rotationCache[1] = _cameraTransform.eulerAngles.y;
-            _cameraAimTargetRotator.eulerAngles = _rotationCache;
-            _visualTransform.eulerAngles = _rotationCache;
+            _cameraAimTargetRotator.eulerAngles = _cameraTransform.eulerAngles;
+            _visualTransform.eulerAngles = _cameraTransform.eulerAngles;
         }
 
         public void ToggleMovement(bool canMove) {
             _canMove = canMove;
-            if (!_canMove) _inputCache = Vector2.zero;
+            if (!_canMove) _speedCurrent = 0f;
 
             Logger.Log(LogType.Player, $"Movement Toggle: {_canMove}");
         }

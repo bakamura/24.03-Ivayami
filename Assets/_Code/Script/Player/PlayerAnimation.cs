@@ -48,9 +48,9 @@ namespace Paranapiacaba.Player {
             _animator.SetTrigger(abilityName);
         }
 
-        public float InteractDuration() {
-            return _animator.GetCurrentAnimatorClipInfo(0).Length; //
-        }
+        //public float InteractDuration() {
+        //    return _animator.GetCurrentAnimatorClipInfo(0).Length; //
+        //}
 
     }
 }
