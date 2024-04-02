@@ -1,14 +1,16 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Puzzle {
-    public class Activable : MonoBehaviour {
+namespace Paranapiacaba.Puzzle
+{
+    public class Activable : MonoBehaviour
+    {
 
         [SerializeField] private Activator[] _activators;
-        [HideInInspector] public bool IsActive;
+        [HideInInspector] public bool IsActive { get; protected set; }
 
         protected virtual void Awake()
         {
-            for(int i = 0; i < _activators.Length; i++)
+            for (int i = 0; i < _activators.Length; i++)
             {
                 _activators[i].onActivate.AddListener(HandleOnActivate);
             }
@@ -16,6 +18,10 @@ namespace Paranapiacaba.Puzzle {
 
         protected virtual void HandleOnActivate()
         {
+            for (int i = 0; i < _activators.Length; i++)
+            {
+                if (!_activators[i].IsActive) return;
+            }
             IsActive = !IsActive;
         }
     }

@@ -81,6 +81,7 @@ namespace Paranapiacaba.Puzzle
                 _passwordUI.UpdateActiveState(false);
                 UpdateDeliverItemUI(false);
                 UpdateInputs(false);
+                IsActive = !IsActive;
                 onActivate?.Invoke();
             }
         }

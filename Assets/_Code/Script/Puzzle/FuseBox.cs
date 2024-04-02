@@ -182,6 +182,7 @@ namespace Paranapiacaba.Puzzle
             _isActive = false;
             _currentSelected.material.color = _activatedColor;
             UpdateInputsAndUI(_isActive);
+            IsActive = !IsActive;
             onActivate?.Invoke();
         }
 
