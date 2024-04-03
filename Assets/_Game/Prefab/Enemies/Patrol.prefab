@@ -203,7 +203,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5000001
-  m_Speed: 3.5
+  m_Speed: 10
   m_Acceleration: 8
   avoidancePriority: 0
   m_AngularSpeed: 120
@@ -231,13 +231,15 @@ MonoBehaviour:
   _detectionRange: 10
   _visionAngle: 60
   _tickFrequency: 0.5
+  _stressIncreaseOnTargetDetected: 1
+  _stressIncreaseWhileChasing: 0.1
+  _playerLayer:
+    serializedVersion: 2
+    m_Bits: 128
   _patrolPoints:
   - {x: 0, y: 0, z: 0}
   - {x: 1.73, y: 0, z: -7.34}
   - {x: -11.48, y: 0, z: 0}
-  _playerLayer:
-    serializedVersion: 2
-    m_Bits: 128
   _debugDraw: 0
   _minDistanceAreaColor: {r: 0.8722887, g: 1, b: 0, a: 0.39215687}
   _detectionRangeAreaColor: {r: 1, g: 0, b: 0, a: 0.39215687}

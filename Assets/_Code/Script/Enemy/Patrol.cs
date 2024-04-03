@@ -15,6 +15,8 @@ namespace Paranapiacaba.Enemy
         [SerializeField, Min(0)] private float _detectionRange;
         [SerializeField] private float _visionAngle;
         [SerializeField, Min(.02f)] private float _tickFrequency = .5f;
+        [SerializeField, Min(0)] private float _stressIncreaseOnTargetDetected;
+        [SerializeField, Min(0)] private float _stressIncreaseWhileChasing;
         [SerializeField] private LayerMask _playerLayer;
         [SerializeField] private Vector3[] _patrolPoints;
 
@@ -30,6 +32,7 @@ namespace Paranapiacaba.Enemy
         private WaitForSeconds _delay;
         private CapsuleCollider _collision;
         private Vector3 _initialPosition;
+        private bool _isChasing;
 
         private void Awake()
         {
@@ -38,7 +41,13 @@ namespace Paranapiacaba.Enemy
             _delay = new WaitForSeconds(_tickFrequency);
 
             _initialPosition = transform.position;
-            _navMeshAgent.stoppingDistance = _collision.radius + .2f;            
+            _navMeshAgent.stoppingDistance = _collision.radius + .2f;
+        }
+
+        private void Update()
+        {
+            if (_isChasing)
+                PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * Time.deltaTime);
         }
 
         private void Start()
@@ -58,10 +67,16 @@ namespace Paranapiacaba.Enemy
                     && Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) <= _detectionRange
                     && Vector3.Angle(PlayerMovement.Instance.transform.position, transform.position) <= halfVisionAngle)))
                 {
+                    if (!_isChasing)
+                    {
+                        PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
+                        _isChasing = true;
+                    }
                     _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position);
                 }
                 else
                 {
+                    _isChasing = false;
                     _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
                     if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
                     {
