@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Paranapiacaba.UI {
@@ -7,7 +8,16 @@ namespace Paranapiacaba.UI {
         [SerializeField] private float _delayToOpen;
 
         public void CloseCurrentThenOpen(Menu menuToOpen) {
-            Debug.LogWarning("Method Not Implemented Yet");
+            StartCoroutine(CloseCurrentThenOpenRoutine(menuToOpen));
+        }
+
+        private IEnumerator CloseCurrentThenOpenRoutine(Menu menuToOpen) {
+            _currentMenu?.Close();
+
+            yield return new WaitForSeconds(_delayToOpen >= 0 ? _delayToOpen : _currentMenu.TransitionDuration);
+
+            _currentMenu = menuToOpen;
+            _currentMenu.Open();
         }
 
     }
