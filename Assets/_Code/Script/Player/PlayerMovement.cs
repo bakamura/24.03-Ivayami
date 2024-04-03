@@ -127,8 +127,8 @@ namespace Paranapiacaba.Player {
         }
 
         private void Rotate() {
-            _cameraAimTargetRotator.eulerAngles = _cameraTransform.eulerAngles;
-            _visualTransform.eulerAngles = _cameraTransform.eulerAngles;
+            _cameraAimTargetRotator.eulerAngles = _cameraTransform.eulerAngles.y * Vector3.up;
+            _visualTransform.eulerAngles = _cameraAimTargetRotator.eulerAngles;
         }
 
         public void ToggleMovement(bool canMove) {

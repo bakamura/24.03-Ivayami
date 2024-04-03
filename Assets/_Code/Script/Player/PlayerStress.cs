@@ -26,7 +26,7 @@ namespace Paranapiacaba.Player {
         public void AddStress(float amount) {
             if (!_failState) {
                 _stressCurrent += amount;
-                onStressChange.Invoke(_stressCurrent);
+                onStressChange.Invoke(_stressCurrent / _stressMax);
 
                 Logger.Log(LogType.Player, $"Stress Meter: {_stressCurrent}/{_stressMax}");
             }
