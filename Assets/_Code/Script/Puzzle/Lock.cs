@@ -129,11 +129,11 @@ namespace Paranapiacaba.Puzzle
             {
                 switch (_interactionType)
                 {
-                    case InteractionTypes.RequireItems:
+                    case InteractionTypes.RequirePassword:
                         if(EventSystem.current.currentSelectedGameObject == null)                    
                             EventSystem.current.SetSelectedGameObject(_passwordUI.FallbackButton.gameObject);                    
                         break;
-                    case InteractionTypes.RequirePassword:
+                    case InteractionTypes.RequireItems:
                         if (EventSystem.current.currentSelectedGameObject == null)
                             EventSystem.current.SetSelectedGameObject(_deliverBtn);
                         else if (input.y != 0)
