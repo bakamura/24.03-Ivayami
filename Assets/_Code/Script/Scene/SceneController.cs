@@ -50,6 +50,8 @@ namespace Paranapiacaba.Scene
             base.Awake();
 
             _chapterPointers = Resources.LoadAll<ChapterPointers>("ChapterPointers");
+
+            LoadBaseScene();
         }
 
         public void LoadBaseScene()
