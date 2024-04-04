@@ -7,8 +7,8 @@ namespace Paranapiacaba.Scene {
         public Vector3 playerPositionOnChapterStart;
         [SerializeField] private Vector2[] _mapPointerAtSubChapter;
 
-        public void SubChapterPointer(byte subChapterId) {
-            Debug.LogWarning("Method Not Implemented Yet");
+        public Vector2 SubChapterPointer(byte subChapterId) {
+            return _mapPointerAtSubChapter[subChapterId];
         }
 
     }
