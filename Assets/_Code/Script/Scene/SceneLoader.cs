@@ -29,6 +29,11 @@ namespace Paranapiacaba.Scene {
             SceneController.Instance.StartLoad(_sceneId, _onSceneLoad);
         }
 
+        public void UnloadScene()
+        {
+            SceneController.Instance.StartLoad(_sceneId, _onSceneLoad);
+        }
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
