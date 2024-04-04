@@ -8,13 +8,15 @@ namespace Paranapiacaba.UI {
         private class Indicator {
             [SerializeField] private CanvasGroup _canvasGroup;
             [SerializeField] private AnimationCurve _animationCurve;
-            [SerializeField, Range(0f, 1f)] private Vector2 _stressRangeAnimation;
+            [SerializeField, Range(0f, 1f)] private float _stressAnimationMin;
+            [SerializeField, Range(0f, 1f)] private float _stressAnimationMax;
 
             public CanvasGroup CanvasGroup { get { return _canvasGroup; } }
             public AnimationCurve AnimationCurve { get { return _animationCurve; } }
-            public float StressMin { get { return _stressRangeAnimation.x; } }
-            public float StressMax { get { return _stressRangeAnimation.y; } }
-            }
+            public float StressMin { get { return _stressAnimationMin; } }
+            public float StressMax { get { return _stressAnimationMax; } }
+        }
+
         [SerializeField] private Indicator[] _stressIndicators;
 
         private void Awake() {
