@@ -51,9 +51,7 @@ namespace Paranapiacaba.Puzzle
         }
 
         private void Awake()
-        {
-            _cancelInteractionInput.action.performed += HandleExitInteraction;
-            _navigateUIInput.action.performed += HandleNavigateDeliverUI;
+        {            
             _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
         }
 
@@ -90,6 +88,8 @@ namespace Paranapiacaba.Puzzle
         {
             if (isActive)
             {
+                _cancelInteractionInput.action.performed += HandleExitInteraction;
+                _navigateUIInput.action.performed += HandleNavigateDeliverUI;
                 //gameplay actions
                 _inputActionMap.actionMaps[0].Disable();
                 //ui actions
@@ -97,6 +97,8 @@ namespace Paranapiacaba.Puzzle
             }
             else
             {
+                _cancelInteractionInput.action.performed -= HandleExitInteraction;
+                _navigateUIInput.action.performed -= HandleNavigateDeliverUI;
                 //gameplay actions
                 _inputActionMap.actionMaps[0].Enable();
                 //ui actions
