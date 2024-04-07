@@ -9,20 +9,11 @@ namespace Paranapiacaba.Prop
         public static bool IsPlayerHidden { get; private set; }
         private bool _isPlayerInside;
 
-        private void Start()
-        {
-            PlayerMovement.Instance.onCrouch.AddListener(HandleOnCrouch);
-        }        
-
-        private void OnDestroy()
-        {
-            PlayerMovement.Instance.onCrouch.RemoveListener(HandleOnCrouch);
-        }
-
         private void OnTriggerEnter(Collider other)
         {
             if (other.CompareTag("Player"))
             {
+                PlayerMovement.Instance.onCrouch.AddListener(HandleOnCrouch);
                 _isPlayerInside = true;
             }
         }
@@ -33,6 +24,7 @@ namespace Paranapiacaba.Prop
             {
                 _isPlayerInside = false;
                 IsPlayerHidden = false;
+                PlayerMovement.Instance.onCrouch.RemoveListener(HandleOnCrouch);
             }
         }
 
