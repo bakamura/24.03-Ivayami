@@ -16,7 +16,7 @@ namespace Paranapiacaba.Enemy
         private WaitForSeconds _delayOnSight;
         private WaitForSeconds _delayOnTargetClose;
         private Coroutine _hideCoroutine;
-        private bool _isVisible;
+        private bool _isVisible = true;
 
         private void Awake()
         {
