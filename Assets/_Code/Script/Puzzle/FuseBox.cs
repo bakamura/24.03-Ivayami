@@ -32,11 +32,7 @@ namespace Paranapiacaba.Puzzle
         private bool _isActive;
 
         private void Awake()
-        {
-            _changeFuseInput.action.performed += HandleUINavigation;
-            _activateFuseInput.action.performed += HandleActivateFuse;
-            _cancelInteractionInput.action.performed += HandleCancelInteraction;
-
+        {            
             MeshRenderer[] temp = _fuseObjectsParent.GetComponentsInChildren<MeshRenderer>(false);
             _meshRenderers = new MeshRenderer[temp.Length];
             for (int i = 0; i < temp.Length; i++)
@@ -47,12 +43,13 @@ namespace Paranapiacaba.Puzzle
         }
 
         [ContextMenu("Interact")]
-        public void Interact()
+        public bool Interact()
         {
             if (!_isActive)
             {
                 Setup();
             }
+            return false;
         }
 
         private void Setup()
@@ -71,6 +68,9 @@ namespace Paranapiacaba.Puzzle
         {
             if (isActive)
             {
+                _changeFuseInput.action.performed += HandleUINavigation;
+                _activateFuseInput.action.performed += HandleActivateFuse;
+                _cancelInteractionInput.action.performed += HandleCancelInteraction;
                 //gameplay inputs
                 _inputActionMap.actionMaps[0].Disable();
                 //UI inputs
@@ -78,6 +78,9 @@ namespace Paranapiacaba.Puzzle
             }
             else
             {
+                _changeFuseInput.action.performed -= HandleUINavigation;
+                _activateFuseInput.action.performed -= HandleActivateFuse;
+                _cancelInteractionInput.action.performed -= HandleCancelInteraction;
                 _inputActionMap.actionMaps[0].Enable();
                 _inputActionMap.actionMaps[1].Disable();
             }
@@ -182,6 +185,7 @@ namespace Paranapiacaba.Puzzle
             _isActive = false;
             _currentSelected.material.color = _activatedColor;
             UpdateInputsAndUI(_isActive);
+            IsActive = !IsActive;
             onActivate?.Invoke();
         }
 

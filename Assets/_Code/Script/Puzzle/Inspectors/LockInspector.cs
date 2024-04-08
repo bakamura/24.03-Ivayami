@@ -20,6 +20,7 @@ namespace Paranapiacaba.Puzzle
             EditorGUILayout.Space(5);
             EditorGUILayout.PropertyField(inputActionMap, new GUIContent("Player Actiohn Map"));
             EditorGUILayout.PropertyField(cancelInteractionInput, new GUIContent("Cancel Interaction Input"));
+            EditorGUILayout.PropertyField(navigateUIInput, new GUIContent("Navigate UI Input"));
             EditorGUILayout.Space(10);
 
             GUILayout.Label("BEHAVIOUR", EditorStyles.boldLabel);
@@ -28,8 +29,7 @@ namespace Paranapiacaba.Puzzle
             switch ((Lock.InteractionTypes)interactionType.enumValueFlag)
             {
                 case Lock.InteractionTypes.RequireItems:
-                    EditorGUI.indentLevel++;
-                    EditorGUILayout.PropertyField(navigateUIInput, new GUIContent("Navigate UI Input"));
+                    EditorGUI.indentLevel++;                    
                     EditorGUILayout.PropertyField(itemsRequired, new GUIContent("Items Required To Unlock"));
                     EditorGUILayout.PropertyField(deliverItemsUI, new GUIContent("Deliver Item UI"));
                     EditorGUILayout.PropertyField(deliverOptionsContainer, new GUIContent("Items Icons Container"));
