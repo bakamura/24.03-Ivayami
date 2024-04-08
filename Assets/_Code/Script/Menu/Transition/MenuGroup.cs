@@ -7,11 +7,6 @@ namespace Paranapiacaba.UI {
         [SerializeField] private Menu _currentMenu;
         [SerializeField] private float _delayToOpen;
 
-        public MenuGroup(Menu currentMenu,float delayToOpen) {
-            _currentMenu = currentMenu;
-            _delayToOpen = delayToOpen;
-        }
-
         public void CloseCurrentThenOpen(Menu menuToOpen) {
             StartCoroutine(CloseCurrentThenOpenRoutine(menuToOpen));
         }
@@ -19,7 +14,7 @@ namespace Paranapiacaba.UI {
         private IEnumerator CloseCurrentThenOpenRoutine(Menu menuToOpen) {
             _currentMenu?.Close();
 
-            yield return new WaitForSeconds(_delayToOpen >= 0 ? _delayToOpen : _currentMenu.TransitionDuration);
+            yield return new WaitForSeconds(_delayToOpen >= 0 ? _delayToOpen : (_currentMenu != null ? _currentMenu.TransitionDuration : 0f));
 
             _currentMenu = menuToOpen;
             _currentMenu.Open();
