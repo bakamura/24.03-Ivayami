@@ -23,7 +23,7 @@ namespace Paranapiacaba.Player {
             PlayerMovement.Instance.onCrouch.AddListener(Crouch);
             PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
-            PlayerActions.Instance.onAbility.AddListener(Ability);
+            PlayerActions.Instance.onAbility.AddListener(Trigger);
         }
 
         private void MoveAnimation(Vector2 direction) {
@@ -44,13 +44,9 @@ namespace Paranapiacaba.Player {
             _animator.SetBool(INTERACT_LONG, isInteracting);
         }
 
-        private void Ability(string abilityName) {
+        private void Trigger(string abilityName) {
             _animator.SetTrigger(abilityName);
         }
-
-        //public float InteractDuration() {
-        //    return _animator.GetCurrentAnimatorClipInfo(0).Length; //
-        //}
 
     }
 }
