@@ -7,6 +7,11 @@ namespace Paranapiacaba.UI {
         [SerializeField] private Menu _currentMenu;
         [SerializeField] private float _delayToOpen;
 
+        public MenuGroup(Menu currentMenu,float delayToOpen) {
+            _currentMenu = currentMenu;
+            _delayToOpen = delayToOpen;
+        }
+
         public void CloseCurrentThenOpen(Menu menuToOpen) {
             StartCoroutine(CloseCurrentThenOpenRoutine(menuToOpen));
         }

@@ -235,6 +235,7 @@ GameObject:
   - component: {fileID: 859032892681447040}
   - component: {fileID: 5721007087832008903}
   - component: {fileID: 5704322815110627171}
+  - component: {fileID: 9002551205007687052}
   - component: {fileID: 4691776724323097798}
   - component: {fileID: 1984449309988168215}
   m_Layer: 5
@@ -282,8 +283,8 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_VertexColorAlwaysGammaSpace: 1
+  m_AdditionalShaderChannelsFlag: 1
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -340,6 +341,43 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &9002551205007687052
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1327357574892558469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _transitionDuration: 0.25
 --- !u!114 &4691776724323097798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -401,8 +439,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    _stressAnimationMin: 0.2
-    _stressAnimationMax: 0.6
+    _stressAnimationMin: 20
+    _stressAnimationMax: 60
   - _canvasGroup: {fileID: 133164685144216299}
     _animationCurve:
       serializedVersion: 2
@@ -428,8 +466,8 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    _stressAnimationMin: 0.5
-    _stressAnimationMax: 0.9
+    _stressAnimationMin: 50
+    _stressAnimationMax: 90
 --- !u!1 &1712729633769649738
 GameObject:
   m_ObjectHideFlags: 0
