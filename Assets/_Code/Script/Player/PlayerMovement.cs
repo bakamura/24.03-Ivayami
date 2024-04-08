@@ -1,4 +1,3 @@
-using Paranapiacaba.Puzzle;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -75,9 +74,6 @@ namespace Paranapiacaba.Player {
             _cameraTransform = Camera.main.transform; //
 
             Logger.Log(LogType.Player, $"{typeof(PlayerMovement).Name} Initialized");
-
-            // Debug
-            _canMove = true;
         }
 
         private void Update() {
