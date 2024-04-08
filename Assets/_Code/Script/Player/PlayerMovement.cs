@@ -35,7 +35,7 @@ namespace Paranapiacaba.Player {
         [Header("Crouch")]
 
         [SerializeField] private float _crouchSpeedMax;
-        private bool _crouching = false;
+        public bool Crouching { get; private set; } = false;
         [SerializeField] private float _walkColliderHeight;
         [SerializeField] private float _walkCameraHeight;
         [SerializeField] private float _crouchColliderHeight;
@@ -98,7 +98,7 @@ namespace Paranapiacaba.Player {
                 _directionDifferenceToInputAngleCache = Mathf.Abs(_targetAngle.eulerAngles.y - _cameraAimTargetRotator.eulerAngles.y);
                 if (_directionDifferenceToInputAngleCache > 180) _directionDifferenceToInputAngleCache -= 180f;
                 _movementSpeedMaxCurrent = _movementDirectionCache.magnitude 
-                                         * (_crouching ? _crouchSpeedMax : _movementSpeedMax) 
+                                         * (Crouching ? _crouchSpeedMax : _movementSpeedMax) 
                                          * Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward);
             }
             _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMaxCurrent); // Could use _decceleration when above max speed
@@ -114,15 +114,15 @@ namespace Paranapiacaba.Player {
 
         private void Crouch(InputAction.CallbackContext input) {
             if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) {
-                _crouching = !_crouching;
-                _collider.height = _crouching ? _crouchColliderHeight : _walkColliderHeight;
-                _collider.center = 0.5f * (_crouching ? _crouchColliderHeight : _walkColliderHeight) * Vector3.up;
+                Crouching = !Crouching;
+                _collider.height = Crouching ? _crouchColliderHeight : _walkColliderHeight;
+                _collider.center = 0.5f * (Crouching ? _crouchColliderHeight : _walkColliderHeight) * Vector3.up;
 
-                _cameraAimTargetRotator.localPosition = (_crouching ? _crouchCameraHeight : _walkCameraHeight) * Vector3.up;
+                _cameraAimTargetRotator.localPosition = (Crouching ? _crouchCameraHeight : _walkCameraHeight) * Vector3.up;
 
-                onCrouch?.Invoke(_crouching);
+                onCrouch?.Invoke(Crouching);
 
-                Logger.Log(LogType.Player, $"Crouch Toggle: {_crouching}");
+                Logger.Log(LogType.Player, $"Crouch Toggle: {Crouching}");
             }
             else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
         }
