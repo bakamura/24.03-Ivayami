@@ -43,12 +43,13 @@ namespace Paranapiacaba.Puzzle
         }
 
         [ContextMenu("Interact")]
-        public void Interact()
+        public bool Interact()
         {
             if (!_isActive)
             {
                 Setup();
             }
+            return false;
         }
 
         private void Setup()

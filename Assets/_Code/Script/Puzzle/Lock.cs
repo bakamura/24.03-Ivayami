@@ -56,7 +56,7 @@ namespace Paranapiacaba.Puzzle
         }
 
         [ContextMenu("Interact")]
-        public void Interact()
+        public bool Interact()
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
@@ -68,6 +68,7 @@ namespace Paranapiacaba.Puzzle
             {
                 UpdateDeliverItemUI(true);
             }
+            return false;
         }
 
         public void TryUnlock()
