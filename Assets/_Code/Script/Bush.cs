@@ -15,6 +15,7 @@ namespace Paranapiacaba.Prop
             {
                 PlayerMovement.Instance.onCrouch.AddListener(HandleOnCrouch);
                 _isPlayerInside = true;
+                UpdateHiddenState();
             }
         }
 
@@ -25,12 +26,18 @@ namespace Paranapiacaba.Prop
                 _isPlayerInside = false;
                 IsPlayerHidden = false;
                 PlayerMovement.Instance.onCrouch.RemoveListener(HandleOnCrouch);
+                UpdateHiddenState();
             }
         }
 
         private void HandleOnCrouch(bool isCrouching)
         {
-            IsPlayerHidden = isCrouching && _isPlayerInside;
+            UpdateHiddenState();
+        }
+
+        private void UpdateHiddenState()
+        {
+            IsPlayerHidden = PlayerMovement.Instance.Crouching && _isPlayerInside;
         }
     }
 
