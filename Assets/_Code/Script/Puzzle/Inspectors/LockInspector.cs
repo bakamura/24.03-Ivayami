@@ -9,13 +9,18 @@ namespace Paranapiacaba.Puzzle
     [CustomEditor(typeof(Lock))]
     public class LockInspector : Editor
     {
-        SerializedProperty cancelInteractionInput, inputActionMap, interactionType, itemsRequired, deliverItemsUI, passwordRequired, passwordTextField, passwordUI, onInteract, onCancelInteraction, onActivate;
+        SerializedProperty cancelInteractionInput, inputActionMap, 
+            interactionType, 
+            itemsRequired, deliverItemsUI, deliverOptionsContainer, navigateUIInput, deliverBtn, 
+            passwordUI, 
+            onInteract, onCancelInteraction, onActivate;
         public override void OnInspectorGUI()
         {
             GUILayout.Label("INPUTS", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
             EditorGUILayout.PropertyField(inputActionMap, new GUIContent("Player Actiohn Map"));
             EditorGUILayout.PropertyField(cancelInteractionInput, new GUIContent("Cancel Interaction Input"));
+            EditorGUILayout.PropertyField(navigateUIInput, new GUIContent("Navigate UI Input"));
             EditorGUILayout.Space(10);
 
             GUILayout.Label("BEHAVIOUR", EditorStyles.boldLabel);
@@ -24,15 +29,17 @@ namespace Paranapiacaba.Puzzle
             switch ((Lock.InteractionTypes)interactionType.enumValueFlag)
             {
                 case Lock.InteractionTypes.RequireItems:
+                    EditorGUI.indentLevel++;                    
                     EditorGUILayout.PropertyField(itemsRequired, new GUIContent("Items Required To Unlock"));
                     EditorGUILayout.PropertyField(deliverItemsUI, new GUIContent("Deliver Item UI"));
+                    EditorGUILayout.PropertyField(deliverOptionsContainer, new GUIContent("Items Icons Container"));
+                    EditorGUILayout.PropertyField(deliverBtn, new GUIContent("Deliver Button"));
                     break;
                 case Lock.InteractionTypes.RequirePassword:
-                    EditorGUILayout.PropertyField(passwordRequired, new GUIContent("Password"));
                     EditorGUILayout.PropertyField(passwordUI, new GUIContent("PasswordUI"));
-                    EditorGUILayout.PropertyField(passwordTextField, new GUIContent("Password Display"));
                     break;
             }
+            EditorGUI.indentLevel--;
             EditorGUILayout.Space(10);
 
             GUILayout.Label("CALLBACKS", EditorStyles.boldLabel);
@@ -51,8 +58,9 @@ namespace Paranapiacaba.Puzzle
             interactionType = serializedObject.FindProperty("_interactionType");
             itemsRequired = serializedObject.FindProperty("_itemsRequired");
             deliverItemsUI = serializedObject.FindProperty("_deliverItemsUI");
-            passwordRequired = serializedObject.FindProperty("_passwordRequired");
-            passwordTextField = serializedObject.FindProperty("_passwordTextField");
+            deliverOptionsContainer = serializedObject.FindProperty("_deliverOptionsContainer");
+            navigateUIInput = serializedObject.FindProperty("_navigateUIInput");
+            deliverBtn = serializedObject.FindProperty("_deliverBtn");
             passwordUI = serializedObject.FindProperty("_passwordUI");
             onInteract = serializedObject.FindProperty("_onInteract");
             onCancelInteraction = serializedObject.FindProperty("_onCancelInteraction");
