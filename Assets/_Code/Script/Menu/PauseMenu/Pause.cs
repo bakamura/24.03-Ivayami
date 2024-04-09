@@ -31,11 +31,9 @@ namespace Paranapiacaba.UI {
         }
 
         public void PauseGame(bool isPausing) {
-            if (!_menuGroup.transitioning) {
-                onPause?.Invoke(isPausing);
+            onPause?.Invoke(isPausing);
 
-                Logger.Log(LogType.UI, $"Game Pause: {isPausing}");
-            }
+            Logger.Log(LogType.UI, $"Game Pause: {isPausing}");
         }
 
     }

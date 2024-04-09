@@ -5,6 +5,8 @@ namespace Paranapiacaba.UI {
     [RequireComponent(typeof(CanvasGroup))]
     public class Fade : Menu {
 
+        [SerializeField] private bool _interactable;
+
         [Header("Cache")]
 
         private CanvasGroup _canvasGroup;
@@ -31,8 +33,10 @@ namespace Paranapiacaba.UI {
 
                 yield return null;
             }
-            _canvasGroup.interactable = true;
-            _canvasGroup.blocksRaycasts = true;
+            if (_interactable) {
+                _canvasGroup.interactable = true;
+                _canvasGroup.blocksRaycasts = true;
+            }
         }
 
         private IEnumerator CloseRoutine() {

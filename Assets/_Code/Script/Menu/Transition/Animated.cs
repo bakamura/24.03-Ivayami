@@ -12,7 +12,7 @@ namespace Paranapiacaba.UI {
 
         private void Awake() {
             _animator = GetComponent<Animator>();
-            _transitionDuration = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(x => x.name == "Open").length;
+            _transitionDuration = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(x => x.name == "JournalOpen").length;
         }
 
         public override void Open() {
