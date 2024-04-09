@@ -1,3 +1,4 @@
+using Paranapiacaba.Player;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -22,13 +23,19 @@ namespace Paranapiacaba.UI {
 
         private void Start() {
             _pauseInput.action.started += (callBackContext) => PauseGame(true);
-            _unpauseInput.action.started += (callBackContext) => PauseGame(true);
-            onPause.AddListener((pausing) => _menuGroup.CloseCurrentThenOpen(pausing ? _pause : _hud));
+            _unpauseInput.action.started += (callBackContext) => PauseGame(false);
+            onPause.AddListener((pausing) => {
+                _menuGroup.CloseCurrentThenOpen(pausing ? _pause : _hud);
+                PlayerActions.Instance.ChangeInputMap(pausing ? "Menu" : "Player");
+            });
         }
 
         public void PauseGame(bool isPausing) {
-            onPause?.Invoke(isPausing);
-            Logger.Log(LogType.UI, $"Game Pause: {isPausing}");
+            if (!_menuGroup.transitioning) {
+                onPause?.Invoke(isPausing);
+
+                Logger.Log(LogType.UI, $"Game Pause: {isPausing}");
+            }
         }
 
     }
