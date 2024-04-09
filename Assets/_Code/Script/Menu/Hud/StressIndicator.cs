@@ -26,6 +26,7 @@ namespace Paranapiacaba.UI {
         private void UpdateStressIndicators(float stress) {
             foreach (Indicator indicator in _stressIndicators) {
                 indicator.CanvasGroup.alpha = indicator.AnimationCurve.Evaluate((stress - indicator.StressMin) / (indicator.StressMax - indicator.StressMin));
+                Logger.Log(LogType.UI, $"Stress Indicator '{indicator.CanvasGroup.name}' set to {indicator.CanvasGroup.alpha}");
             }
         }
 

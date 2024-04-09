@@ -1,4 +1,3 @@
-using UnityEngine;
 
 namespace Paranapiacaba.UI {
     public class SceneTransition : MonoSingleton<SceneTransition> {
@@ -13,6 +12,7 @@ namespace Paranapiacaba.UI {
         }
 
         public void Transition() {
+            Logger.Log(LogType.UI, $"Scene Transition Fade");
             _menuGroup.CloseCurrentThenOpen(_transition);
         }
 

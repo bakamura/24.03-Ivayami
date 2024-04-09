@@ -28,6 +28,7 @@ namespace Paranapiacaba.UI {
 
         public void PauseGame(bool isPausing) {
             onPause?.Invoke(isPausing);
+            Logger.Log(LogType.UI, $"Game Pause: {isPausing}");
         }
 
     }

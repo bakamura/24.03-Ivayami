@@ -15,10 +15,12 @@ namespace Paranapiacaba.UI {
 
         public override void Open() {
             StartCoroutine(OpenRoutine());
+            Logger.Log(LogType.UI, $"Open Menu '{name}'");
         }
 
         public override void Close() {
             StartCoroutine(CloseRoutine());
+            Logger.Log(LogType.UI, $"Close Menu '{name}'");
         }
 
         private IEnumerator OpenRoutine() {

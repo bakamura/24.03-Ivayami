@@ -19,10 +19,12 @@ namespace Paranapiacaba.UI {
 
         public override void Open() {
             StartCoroutine(Transition(true));
+            Logger.Log(LogType.UI, $"Open Menu '{name}'");
         }
 
         public override void Close() {
             StartCoroutine(Transition(false));
+            Logger.Log(LogType.UI, $"Close Menu '{name}'");
         }
 
         private IEnumerator Transition(bool isOpening) {

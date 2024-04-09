@@ -1,6 +1,7 @@
 using Paranapiacaba.Player;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Paranapiacaba.UI {
@@ -38,6 +39,7 @@ namespace Paranapiacaba.UI {
 
         public void DisplayCurrentAbility(sbyte currentAbility) {
             if( _currentDisplayRoutine != null) StopCoroutine(_currentDisplayRoutine);
+            Logger.Log(LogType.UI, $"Display Ability {currentAbility}");
             _currentDisplayRoutine = StartCoroutine(DisplayCurrentAbilityRoutine(currentAbility));
         }
 
@@ -53,7 +55,7 @@ namespace Paranapiacaba.UI {
             yield return _stayWait;
 
             while (_canvasGroup.alpha > 0f) {
-                _canvasGroup.alpha += Time.deltaTime / _hideDuration;
+                _canvasGroup.alpha -= Time.deltaTime / _hideDuration;
 
                 yield return null;
             }
@@ -64,6 +66,7 @@ namespace Paranapiacaba.UI {
         public void AddAbilityToDisplay(sbyte abilityId) {
             _abilityFrames[abilityId].sprite = Resources.Load<Sprite>($"{_abilityIconFolder}/AbilityIcon_{abilityId}");
             DisplayCurrentAbility(abilityId);
+            Logger.Log(LogType.UI, $"Display Added Ability {abilityId}");
         }
 
     }

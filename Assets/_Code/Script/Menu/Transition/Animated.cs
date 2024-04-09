@@ -17,10 +17,12 @@ namespace Paranapiacaba.UI {
 
         public override void Open() {
             _animator.SetTrigger(_openId);
+            Logger.Log(LogType.UI, $"Open Menu '{name}'");
         }
 
         public override void Close() {
             _animator.SetTrigger(_closeId);
+            Logger.Log(LogType.UI, $"Close Menu '{name}'");
         }
 
     }
