@@ -33,7 +33,8 @@ namespace Paranapiacaba.Player {
         public void AddStress(float amount) {
             if (!_failState) {
                 _stressCurrent += amount;
-                onStressChange.Invoke(_stressCurrent / _stressMax);
+                onStressChange.Invoke(_stressCurrent);
+
                 _stressRelieveDelayTimer = 0;
                 if (_stressRelieveRoutine == null) _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
 
