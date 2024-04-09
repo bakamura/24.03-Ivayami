@@ -4,31 +4,59 @@ using System.Collections.Generic;
 using Paranapiacaba.Save;
 using UnityEngine.Events;
 using Paranapiacaba.Player;
+using System.Collections;
 
 namespace Paranapiacaba.Scene
 {
     public class SceneController : MonoSingleton<SceneController>
     {
-        [SerializeField] private string _baseSceneName;
+        [SerializeField] private string _mainMenuSceneName;
         [SerializeField] private bool _debugLogs;
 
         private ChapterPointers[] _chapterPointers;
-        private List<string> _currentLoadedScenes = new List<string>();
-        private string _currentSceneBeingUnloaded;
-        private string _currentSceneBeingLoaded;
-        private UnityEvent _onSceneLoad;
-        private UnityEvent _onSceneUnload;
+        private List<SceneData> _sceneList = new List<SceneData>();
+        private Queue<SceneUpdateRequestData> _sceneUpdateRequests = new Queue<SceneUpdateRequestData>();
+
+        [System.Serializable]
+        private class SceneData
+        {
+            public string SceneName;
+            public bool IsLoaded;
+            public bool IsBeingLoaded;
+
+            public SceneData(string sceneName)
+            {
+                SceneName = sceneName;
+                IsBeingLoaded = false;
+                IsLoaded = false;
+            }
+        }
+
+        [System.Serializable]
+        private struct SceneUpdateRequestData
+        {
+            public SceneData SceneData;
+            public UnityEvent OnSceneUpdate;
+
+            public SceneUpdateRequestData(SceneData data, UnityEvent onSceneUpdate)
+            {
+                SceneData = data;
+                OnSceneUpdate = onSceneUpdate;
+            }
+        }
 
         protected override void Awake()
         {
             base.Awake();
 
             _chapterPointers = Resources.LoadAll<ChapterPointers>("ChapterPointers");
+
+            LoadMainMenuScene();
         }
 
-        public void LoadBaseScene()
+        public void LoadMainMenuScene()
         {
-            if (!string.IsNullOrEmpty(_baseSceneName)) SceneManager.LoadScene(_baseSceneName);
+            if (!string.IsNullOrEmpty(_mainMenuSceneName)) StartLoad(_mainMenuSceneName);//SceneManager.LoadScene(_baseSceneName);
         }
 
         public void PositionPlayer()
@@ -36,24 +64,42 @@ namespace Paranapiacaba.Scene
             PlayerMovement.Instance.transform.position = _chapterPointers[SaveSystem.Instance.Progress.currentChapter].playerPositionOnChapterStart;
         }
 
-        public void StartLoad(string sceneId, UnityEvent onSceneLoad = null, UnityEvent onSceneUnload = null)
+        public void StartLoad(string sceneId, UnityEvent onSceneUpdate = null)
         {
-            if (_currentLoadedScenes.Contains(sceneId) && _currentSceneBeingUnloaded == null)
+            SceneData data = UpdateSceneList(sceneId);
+            if (!data.IsBeingLoaded)
             {
-                _currentSceneBeingUnloaded = sceneId;
-                _onSceneUnload = onSceneUnload;
-                if (_debugLogs) Debug.Log($"Unloading Scene {sceneId}");
-                AsyncOperation operation = SceneManager.UnloadSceneAsync(sceneId);
-                operation.completed += HandleOnSceneUnload;
+                data.IsBeingLoaded = true;
+                _sceneUpdateRequests.Enqueue(new SceneUpdateRequestData(data, onSceneUpdate));
+                if(_sceneUpdateRequests.Count == 1)UpdateScene(data);
             }
-            else if (!_currentLoadedScenes.Contains(sceneId) && _currentSceneBeingLoaded == null)
+        }
+
+        private void UpdateScene(SceneData data)
+        {
+            if (_debugLogs)
             {
-                _currentSceneBeingLoaded = sceneId;
-                _onSceneLoad = onSceneLoad;
-                if (_debugLogs) Debug.Log($"Loading Scene {sceneId}");
-                AsyncOperation operation = SceneManager.LoadSceneAsync(sceneId, LoadSceneMode.Additive);
-                operation.completed += HandleOnSceneLoad;
+                if (data.IsLoaded) Debug.Log($"Unloading Scene {data.SceneName}");
+                else Debug.Log($"Loading Scene {data.SceneName}");
             }
+            AsyncOperation operation;
+            if (data.IsLoaded) operation = SceneManager.UnloadSceneAsync(data.SceneName);
+            else operation = SceneManager.LoadSceneAsync(data.SceneName, LoadSceneMode.Additive);
+            operation.completed += HandleOnSceneUpdate;
+        }
+
+        private SceneData UpdateSceneList(string sceneName)
+        {
+            for (int i = 0; i < _sceneList.Count; i++)
+            {
+                if (_sceneList[i].SceneName == sceneName)
+                {
+                    return _sceneList[i];
+                }
+            }
+            SceneData temp = new SceneData(sceneName);
+            _sceneList.Add(temp);
+            return temp;
         }
 
         public Vector2 PointerInChapter(byte chapter, byte subChapter)
@@ -61,21 +107,18 @@ namespace Paranapiacaba.Scene
             return _chapterPointers[chapter].SubChapterPointer(subChapter);
         }
 
-        private void HandleOnSceneLoad(AsyncOperation operation)
+        private void HandleOnSceneUpdate(AsyncOperation operation)
         {
-            if (_debugLogs) Debug.Log($"Scene Loaded {_currentSceneBeingLoaded}");
-            _currentLoadedScenes.Add(_currentSceneBeingLoaded);
-            _currentSceneBeingLoaded = null;
-            _onSceneLoad?.Invoke();
+            SceneUpdateRequestData requestData = _sceneUpdateRequests.Dequeue();
+            requestData.SceneData.IsLoaded = !requestData.SceneData.IsLoaded;
+            requestData.SceneData.IsBeingLoaded = false;
+            if (_debugLogs)
+            {
+                if (requestData.SceneData.IsLoaded) Debug.Log($"Scene Loaded {requestData.SceneData.SceneName}");
+                else Debug.Log($"Scene Unloaded {requestData.SceneData.SceneName}");
+            }
+            requestData.OnSceneUpdate?.Invoke();
+            if (_sceneUpdateRequests.Count > 0) UpdateScene(_sceneUpdateRequests.Peek().SceneData);
         }
-
-        private void HandleOnSceneUnload(AsyncOperation operation)
-        {
-            if (_debugLogs) Debug.Log($"Scene Unloaded {_currentSceneBeingUnloaded}");
-            _currentLoadedScenes.Remove(_currentSceneBeingUnloaded);
-            _currentSceneBeingUnloaded = null;
-            _onSceneUnload?.Invoke();
-        }
-
     }
 }
