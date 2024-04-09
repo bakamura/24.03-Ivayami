@@ -3,12 +3,15 @@ using UnityEngine;
 namespace Paranapiacaba.UI {
     public class SaveSelector : MonoBehaviour {
 
-        public void DisplaySaveInfo() {
-            Debug.LogWarning("Method Not Implemented Yet");
+        private byte _displayedSaveId;
+
+        public void DisplaySaveInfo(byte saveId) {
+            _displayedSaveId = saveId;
+            Logger.Log(LogType.UI, $"Display Save {saveId}");
         }
 
-        public void EnterSave(byte saveId) {
-            Debug.LogWarning("Method Not Implemented Yet");
+        public void EnterSave() {
+            Logger.Log(LogType.UI, $"Display Save {_displayedSaveId}");
         }
 
     }
