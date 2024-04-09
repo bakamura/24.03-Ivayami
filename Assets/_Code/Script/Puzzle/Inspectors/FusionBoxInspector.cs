@@ -8,13 +8,13 @@ namespace Paranapiacaba.Puzzle
     public class FusionBoxInspector : Editor
     {
         SerializedProperty matrixDimensions, distanceBetweenFuses, fuseObjectsParent, fuseUIParent, changeFuseInput, activateFuseInput, 
-            fuseLayer, onInteract, onInteractionCancelled, inputActionMap, onActivate, selectedColor, activatedColor, deactivatedColor, cancelInteractionInput;
+            fuseLayer, onInteract, onInteractionCancelled, /*inputActionMap,*/ onActivate, selectedColor, activatedColor, deactivatedColor, cancelInteractionInput;
 
         public override void OnInspectorGUI()
         {
             GUILayout.Label("INPUTS", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
-            EditorGUILayout.PropertyField(inputActionMap, new GUIContent("Input Action Map"));
+            //EditorGUILayout.PropertyField(inputActionMap, new GUIContent("Input Action Map"));
             EditorGUILayout.PropertyField(changeFuseInput, new GUIContent("Select Fuse Input Reference"));
             EditorGUILayout.PropertyField(activateFuseInput, new GUIContent("Activate Fuse Input Reference"));
             EditorGUILayout.PropertyField(cancelInteractionInput, new GUIContent("Exit Puzzle Input Reference"));
@@ -68,7 +68,7 @@ namespace Paranapiacaba.Puzzle
             fuseLayer = serializedObject.FindProperty("_fuseLayer");
             onInteract = serializedObject.FindProperty("_onInteract");
             onInteractionCancelled = serializedObject.FindProperty("_onInteractionCancelled");
-            inputActionMap = serializedObject.FindProperty("_inputActionMap");
+            //inputActionMap = serializedObject.FindProperty("_inputActionMap");
             onActivate = serializedObject.FindProperty("onActivate");
             selectedColor = serializedObject.FindProperty("_selectedColor");
             activatedColor = serializedObject.FindProperty("_activatedColor");

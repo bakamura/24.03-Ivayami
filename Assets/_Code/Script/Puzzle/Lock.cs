@@ -14,7 +14,7 @@ namespace Paranapiacaba.Puzzle
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
         [SerializeField] private InputActionReference _navigateUIInput;
-        [SerializeField] private InputActionAsset _inputActionMap;
+        //[SerializeField] private InputActionAsset _inputActionMap;
 
         [SerializeField] private InteractionTypes _interactionType;
 
@@ -91,19 +91,21 @@ namespace Paranapiacaba.Puzzle
             {
                 _cancelInteractionInput.action.performed += HandleExitInteraction;
                 _navigateUIInput.action.performed += HandleNavigateDeliverUI;
-                //gameplay actions
-                _inputActionMap.actionMaps[0].Disable();
-                //ui actions
-                _inputActionMap.actionMaps[1].Enable();                
+                PlayerActions.Instance.ChangeInputMap("Menu");
+                ////gameplay actions
+                //_inputActionMap.actionMaps[0].Disable();
+                ////ui actions
+                //_inputActionMap.actionMaps[1].Enable();                
             }
             else
             {
                 _cancelInteractionInput.action.performed -= HandleExitInteraction;
                 _navigateUIInput.action.performed -= HandleNavigateDeliverUI;
-                //gameplay actions
-                _inputActionMap.actionMaps[0].Enable();
-                //ui actions
-                _inputActionMap.actionMaps[1].Disable();
+                PlayerActions.Instance.ChangeInputMap("Player");
+                ////gameplay actions
+                //_inputActionMap.actionMaps[0].Enable();
+                ////ui actions
+                //_inputActionMap.actionMaps[1].Disable();
             }
         }
         
