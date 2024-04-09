@@ -6,9 +6,9 @@ namespace Paranapiacaba.Puzzle {
 
         public GameObject gameObject { get; }
 
-        public abstract void Interact();
+        public abstract bool Interact();
 
-        //public abstract void InteractStop();
+        public virtual void InteractStop() { }
 
     }
 }
