@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections;
 using TMPro;
 using System;
+using Paranapiacaba.Player;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
 
@@ -12,7 +13,7 @@ namespace Paranapiacaba.Dialogue {
     public class DialogueController : MonoSingleton<DialogueController> {
 
         [SerializeField] private float _characterShowDelay;
-        [SerializeField] private InputActionAsset _inputActionMap;
+        //[SerializeField] private InputActionAsset _inputActionMap;
         [SerializeField] private InputActionReference _continueInput;
         [SerializeField] private TMP_Text _speechTextComponent;
         [SerializeField] private TMP_Text _announcerNameTextComponent;
@@ -29,6 +30,7 @@ namespace Paranapiacaba.Dialogue {
         private bool _readyForNextSpeech = true;
         private sbyte _currentSpeechIndex;
 
+        public bool IsDialogueActive { get; private set; }
         public Action OnDialogeStart;
         public Action OnDialogueEnd;
         public Action OnSkipSpeech;
@@ -85,7 +87,9 @@ namespace Paranapiacaba.Dialogue {
                     _canvasGroup.alpha = 0;
                     _canvasGroup.blocksRaycasts = false;
                     OnDialogueEnd?.Invoke();
-                    _inputActionMap.actionMaps[0].Enable();
+                    PlayerActions.Instance.ChangeInputMap("Dialogue");
+                    //_inputActionMap.actionMaps[0].Enable();
+                    IsDialogueActive = false;
                 }
                 //continue current dialogue
                 else
@@ -154,7 +158,9 @@ namespace Paranapiacaba.Dialogue {
         {
             if (_dialogueDictionary.TryGetValue(dialogueId, out Dialogue dialogue) && _writtingCoroutine == null)
             {
-                _inputActionMap.actionMaps[0].Disable();
+                IsDialogueActive = true;
+                PlayerActions.Instance.ChangeInputMap("Player");
+                //_inputActionMap.actionMaps[0].Disable();
                 _continueInput.action.Enable();
                 if (_debugLogs) Debug.Log($"Starting dialogue {dialogueId}");
                 _canvasGroup.alpha = 1;
