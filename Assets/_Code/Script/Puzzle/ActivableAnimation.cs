@@ -16,9 +16,10 @@ namespace Paranapiacaba.Puzzle
             _animator = GetComponent<Animator>();
         }
 
-        public void Interact()
+        public bool Interact()
         {
             if (IsActive) TriggerAnimation(_animationToPlayOnInteract);
+            return false;
         }
 
         public void TriggerAnimation(string boolName)
