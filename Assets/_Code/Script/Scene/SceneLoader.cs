@@ -1,10 +1,10 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Paranapiacaba.Scene {
-    [RequireComponent(typeof(BoxCollider))]
-    public class SceneLoader : MonoBehaviour {
-
+namespace Paranapiacaba.Scene
+{
+    public class SceneLoader : MonoBehaviour
+    {
         [SerializeField] private string _sceneId;
         [SerializeField] private UnityEvent _onSceneLoad;
         [SerializeField] private UnityEvent _onSceneUnload;
@@ -14,17 +14,22 @@ namespace Paranapiacaba.Scene {
         private BoxCollider _boxCollider;
 #endif
 
-        private void OnTriggerEnter(Collider other) 
+        private void OnTriggerEnter(Collider other)
         {
             SceneController.Instance.StartLoad(_sceneId, _onSceneLoad);
         }
 
         private void OnTriggerExit(Collider other)
         {
-            SceneController.Instance.StartLoad(_sceneId, null, _onSceneUnload);
+            SceneController.Instance.StartLoad(_sceneId, _onSceneUnload);
         }
 
         public void LoadScene()
+        {
+            SceneController.Instance.StartLoad(_sceneId, _onSceneLoad);
+        }
+
+        public void UnloadScene()
         {
             SceneController.Instance.StartLoad(_sceneId, _onSceneLoad);
         }
@@ -34,12 +39,17 @@ namespace Paranapiacaba.Scene {
         {
             if (_drawGizmos)
             {
-                if (!_boxCollider) _boxCollider = GetComponent<BoxCollider>();                
-                Gizmos.color = _gizmoColor;
-                Gizmos.DrawCube(transform.position, new Vector3(
-                    _boxCollider.size.x * transform.localScale.x,
-                    _boxCollider.size.y * transform.localScale.y,
-                    _boxCollider.size.z * transform.localScale.z));
+                _boxCollider = GetComponent<BoxCollider>();
+                if (_boxCollider)
+                {
+                    Gizmos.color = _gizmoColor;
+                    Gizmos.DrawCube(transform.position, new Vector3(
+                        _boxCollider.size.x * transform.localScale.x,
+                        _boxCollider.size.y * transform.localScale.y,
+                        _boxCollider.size.z * transform.localScale.z));
+
+                }
+                else Debug.LogWarning("To use debug option add a Box Collider to this component");
             }
         }
 #endif

@@ -13,14 +13,14 @@ namespace Paranapiacaba.Puzzle
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
-        [SerializeField] private InputActionAsset _inputActionMap;
+        [SerializeField] private InputActionReference _navigateUIInput;
+        //[SerializeField] private InputActionAsset _inputActionMap;
 
         [SerializeField] private InteractionTypes _interactionType;
 
         [SerializeField] private ItemRequestData[] _itemsRequired;
         [SerializeField] private CanvasGroup _deliverItemsUI;
-        [SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
-        [SerializeField] private InputActionReference _navigateUIInput;
+        [SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;        
         [SerializeField] private GameObject _deliverBtn;
 
         [SerializeField] private PasswordUI _passwordUI;
@@ -51,14 +51,12 @@ namespace Paranapiacaba.Puzzle
         }
 
         private void Awake()
-        {
-            _cancelInteractionInput.action.performed += HandleExitInteraction;
-            _navigateUIInput.action.performed += HandleNavigateDeliverUI;
+        {            
             _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
         }
 
         [ContextMenu("Interact")]
-        public void Interact()
+        public bool Interact()
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
@@ -70,6 +68,7 @@ namespace Paranapiacaba.Puzzle
             {
                 UpdateDeliverItemUI(true);
             }
+            return false;
         }
 
         public void TryUnlock()
@@ -81,6 +80,7 @@ namespace Paranapiacaba.Puzzle
                 _passwordUI.UpdateActiveState(false);
                 UpdateDeliverItemUI(false);
                 UpdateInputs(false);
+                IsActive = !IsActive;
                 onActivate?.Invoke();
             }
         }
@@ -89,18 +89,32 @@ namespace Paranapiacaba.Puzzle
         {
             if (isActive)
             {
-                //gameplay actions
-                _inputActionMap.actionMaps[0].Disable();
-                //ui actions
-                _inputActionMap.actionMaps[1].Enable();                
+                _cancelInteractionInput.action.performed += HandleExitInteraction;
+                _navigateUIInput.action.performed += HandleNavigateDeliverUI;
+                PlayerActions.Instance.ChangeInputMap("Menu");
+                ////gameplay actions
+                //_inputActionMap.actionMaps[0].Disable();
+                ////ui actions
+                //_inputActionMap.actionMaps[1].Enable();                
             }
             else
             {
-                //gameplay actions
-                _inputActionMap.actionMaps[0].Enable();
-                //ui actions
-                _inputActionMap.actionMaps[1].Disable();
+                _cancelInteractionInput.action.performed -= HandleExitInteraction;
+                _navigateUIInput.action.performed -= HandleNavigateDeliverUI;
+                PlayerActions.Instance.ChangeInputMap("Player");
+                ////gameplay actions
+                //_inputActionMap.actionMaps[0].Enable();
+                ////ui actions
+                //_inputActionMap.actionMaps[1].Disable();
             }
+        }
+        
+        public void CancelInteraction()
+        {
+            _passwordUI.UpdateActiveState(false);
+            UpdateDeliverItemUI(false);
+            UpdateInputs(false);
+            _onCancelInteraction?.Invoke();
         }
 
         private void HandleExitInteraction(InputAction.CallbackContext context)
@@ -110,14 +124,32 @@ namespace Paranapiacaba.Puzzle
                 CancelInteraction();
             }
         }
-        public void CancelInteraction()
-        {
-            _passwordUI.UpdateActiveState(false);
-            UpdateDeliverItemUI(false);
-            UpdateInputs(false);
-            _onCancelInteraction?.Invoke();
-        }
 
+        private void HandleNavigateDeliverUI(InputAction.CallbackContext context)
+        {
+            Vector2 input = context.ReadValue<Vector2>();
+            if (input != Vector2.zero)
+            {
+                switch (_interactionType)
+                {
+                    case InteractionTypes.RequirePassword:
+                        if(EventSystem.current.currentSelectedGameObject == null)                    
+                            EventSystem.current.SetSelectedGameObject(_passwordUI.FallbackButton.gameObject);                    
+                        break;
+                    case InteractionTypes.RequireItems:
+                        if (EventSystem.current.currentSelectedGameObject == null)
+                            EventSystem.current.SetSelectedGameObject(_deliverBtn);
+                        else if (input.y != 0)
+                        {
+                            int temp = -input.y > 0 ? 1 : -1;
+                            _currentPositionInInventory += temp;
+                            _selectedDeliverOptionIndex += temp;
+                            UpdateInventoryIcons();
+                        }
+                        break;
+                }            
+            }
+        }
 
         #region DeliverUI
 
@@ -149,18 +181,7 @@ namespace Paranapiacaba.Puzzle
                     return true;
             }
             return false;
-        }        
-
-        private void HandleNavigateDeliverUI(InputAction.CallbackContext context)
-        {
-            if (_interactionType == InteractionTypes.RequireItems && context.ReadValue<Vector2>().y != 0)
-            {
-                int temp = -context.ReadValue<Vector2>().y > 0 ? 1 : -1;
-                _currentPositionInInventory += temp;
-                _selectedDeliverOptionIndex += temp;
-                UpdateInventoryIcons();
-            }
-        }
+        }                
 
         //called by interface Btn
         public void DeliverItem()

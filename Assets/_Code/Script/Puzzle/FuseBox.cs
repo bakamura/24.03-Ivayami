@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine.Events;
+using Paranapiacaba.Player;
 
 namespace Paranapiacaba.Puzzle
 {
@@ -18,7 +19,7 @@ namespace Paranapiacaba.Puzzle
         [SerializeField] private InputActionReference _changeFuseInput;
         [SerializeField] private InputActionReference _activateFuseInput;
         [SerializeField] private InputActionReference _cancelInteractionInput;
-        [SerializeField] private InputActionAsset _inputActionMap;
+        //[SerializeField] private InputActionAsset _inputActionMap;
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private UnityEvent _onInteractionCancelled;
         [SerializeField] private Color _selectedColor = Color.yellow;
@@ -32,11 +33,7 @@ namespace Paranapiacaba.Puzzle
         private bool _isActive;
 
         private void Awake()
-        {
-            _changeFuseInput.action.performed += HandleUINavigation;
-            _activateFuseInput.action.performed += HandleActivateFuse;
-            _cancelInteractionInput.action.performed += HandleCancelInteraction;
-
+        {            
             MeshRenderer[] temp = _fuseObjectsParent.GetComponentsInChildren<MeshRenderer>(false);
             _meshRenderers = new MeshRenderer[temp.Length];
             for (int i = 0; i < temp.Length; i++)
@@ -47,12 +44,13 @@ namespace Paranapiacaba.Puzzle
         }
 
         [ContextMenu("Interact")]
-        public void Interact()
+        public bool Interact()
         {
             if (!_isActive)
             {
                 Setup();
             }
+            return false;
         }
 
         private void Setup()
@@ -71,15 +69,23 @@ namespace Paranapiacaba.Puzzle
         {
             if (isActive)
             {
+                _changeFuseInput.action.performed += HandleUINavigation;
+                _activateFuseInput.action.performed += HandleActivateFuse;
+                _cancelInteractionInput.action.performed += HandleCancelInteraction;
+                PlayerActions.Instance.ChangeInputMap("Menu");
                 //gameplay inputs
-                _inputActionMap.actionMaps[0].Disable();
-                //UI inputs
-                _inputActionMap.actionMaps[1].Enable();
+                //_inputActionMap.actionMaps[0].Disable();
+                ////UI inputs
+                //_inputActionMap.actionMaps[1].Enable();
             }
             else
             {
-                _inputActionMap.actionMaps[0].Enable();
-                _inputActionMap.actionMaps[1].Disable();
+                _changeFuseInput.action.performed -= HandleUINavigation;
+                _activateFuseInput.action.performed -= HandleActivateFuse;
+                _cancelInteractionInput.action.performed -= HandleCancelInteraction;
+                PlayerActions.Instance.ChangeInputMap("Player");
+                //_inputActionMap.actionMaps[0].Enable();
+                //_inputActionMap.actionMaps[1].Disable();
             }
             _fuseUIParent.interactable = isActive;
             _fuseUIParent.blocksRaycasts = isActive;
@@ -182,6 +188,7 @@ namespace Paranapiacaba.Puzzle
             _isActive = false;
             _currentSelected.material.color = _activatedColor;
             UpdateInputsAndUI(_isActive);
+            IsActive = !IsActive;
             onActivate?.Invoke();
         }
 
