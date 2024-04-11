@@ -25,7 +25,7 @@ namespace Paranapiacaba.Player {
         public void RemoveFromInventory(InventoryItem item) {
             _itemList.Remove(item);
 
-            Logger.Log(LogType.Player, $"Remove Add: {item.name} ({item.id}) / {item.type}");
+            Logger.Log(LogType.Player, $"Inventory Remove: {item.name} ({item.id}) / {item.type}");
         }
 
     }

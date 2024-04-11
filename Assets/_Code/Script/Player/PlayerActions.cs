@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using Paranapiacaba.Player.Ability;
 using UnityEngine.InputSystem;
+using Paranapiacaba.Player.Ability;
 using Paranapiacaba.Puzzle;
-using static UnityEditor.Progress;
+using System.Linq;
 
 namespace Paranapiacaba.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -29,6 +29,7 @@ namespace Paranapiacaba.Player {
         [SerializeField] private float _interactSphereCastRadius;
         [SerializeField] private LayerMask _interactLayer;
         private IInteractable _interactableClosest;
+        private bool _interacting = false;
 
         [Header("Abilities")]
 
@@ -48,31 +49,47 @@ namespace Paranapiacaba.Player {
         protected override void Awake() {
             base.Awake();
 
-            ChangeInputMap(0);
             _interactInput.action.started += Interact;
+            _interactInput.action.canceled += Interact;
             _abilityInput.action.started += Ability;
             _changeAbilityInput.action.started += ChangeAbility;
 
-            //onInteract.AddListener(() => PlayerMovement.Instance.DisableMovement(PlayerAnimation.Instance.InteractDuration())); //
+            onInteractLong.AddListener((interacting) => _interacting = interacting);
 
-            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1);
+            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //
 
             _cam = Camera.main;
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
+            ChangeInputMap("Player");
         }
 
         private void Update() {
-            InteractObjectDetect();
+            if (_interacting) InteractObjectDetect();
         }
 
         private void Interact(InputAction.CallbackContext input) {
-            if (_interactableClosestCache != null) {
-                _interactableClosest.Interact();
+            if (input.phase == InputActionPhase.Started) {
+                if (_interactableClosestCache != null) {
+                    if (_interactableClosest.Interact()) {
+                        onInteractLong?.Invoke(true);
 
-                Logger.Log(LogType.Player, $"Interact with: {_interactableClosestCache.gameObject.name}");
+                        Logger.Log(LogType.Player, $"Interact Long with: {_interactableClosestCache.gameObject.name}");
+                    }
+                    else {
+                        onInteract?.Invoke();
+
+                        Logger.Log(LogType.Player, $"Interact with: {_interactableClosestCache.gameObject.name}");
+                    }
+                }
+                else Logger.Log(LogType.Player, $"Interact: No Target");
             }
-            else Logger.Log(LogType.Player, $"Interact: No Target");
+            else if (_interacting) {
+                _interactableClosest.InteractStop();
+                onInteractLong?.Invoke(false);
+
+                Logger.Log(LogType.Player, $"Stop Interact Long with: {_interactableClosestCache.gameObject.name}");
+            }
         }
 
         private void InteractObjectDetect() {
@@ -99,8 +116,18 @@ namespace Paranapiacaba.Player {
 
         private void Ability(InputAction.CallbackContext input) {
             if (_abilityCurrent >= 0) {
-                if (input.phase == InputActionPhase.Started) _abilities[_abilityCurrent].AbilityStart();
-                else if (input.phase == InputActionPhase.Canceled) _abilities[_abilityCurrent].AbilityEnd();
+                if (input.phase == InputActionPhase.Started) {
+                    _abilities[_abilityCurrent].AbilityStart();
+                    onAbility?.Invoke(_abilities[_abilityCurrent].name);
+
+                    Logger.Log(LogType.Player, $"Ability Start: {_abilities[_abilityCurrent].name}");
+                }
+                else if (input.phase == InputActionPhase.Canceled) {
+                    _abilities[_abilityCurrent].AbilityEnd();
+                    onAbility?.Invoke($"{_abilities[_abilityCurrent].name}End");
+
+                    Logger.Log(LogType.Player, $"Ability End: {_abilities[_abilityCurrent].name}");
+                }
             }
         }
 
@@ -138,9 +165,9 @@ namespace Paranapiacaba.Player {
             Logger.Log(LogType.Player, $"Ability Remove: {ability.name}");
         }
 
-        public void ChangeInputMap(byte mapId) {
+        public void ChangeInputMap(string mapId) {
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable(); // Change to memory current
-            _interactInput.asset.actionMaps[mapId].Enable();
+            _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId).Enable();
         }
 
     }
