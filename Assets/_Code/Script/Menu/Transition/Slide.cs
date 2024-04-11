@@ -1,17 +1,42 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Paranapiacaba.UI {
     public class Slide : Menu {
 
-        [SerializeField] private Vector2 _closedPos;
-        [SerializeField] private Vector2 _openPos;
+        [Header("Parameters")]
 
-        public override void Close() {
-            Debug.LogWarning("Method Not Implemented Yet");
+        [SerializeField] private Vector2 _openAnchoredPos;
+        [SerializeField] private Vector2 _closedAnchoredPos;
+
+        [Header("Cache")]
+
+        private RectTransform _rectTransform;
+
+        private void Awake() {
+            _rectTransform = GetComponent<RectTransform>();
         }
 
         public override void Open() {
-            Debug.LogWarning("Method Not Implemented Yet");
+            StartCoroutine(Transition(true));
+            Logger.Log(LogType.UI, $"Open Menu '{name}'");
+        }
+
+        public override void Close() {
+            StartCoroutine(Transition(false));
+            Logger.Log(LogType.UI, $"Close Menu '{name}'");
+        }
+
+        private IEnumerator Transition(bool isOpening) {
+            Vector2 initialPos = isOpening ? _closedAnchoredPos : _openAnchoredPos;
+            Vector2 finalPos = isOpening ? _openAnchoredPos : _closedAnchoredPos;
+            float currentDuration = 0f;
+            while (currentDuration < 1f) {
+                currentDuration += Time.deltaTime / _transitionDuration;
+                _rectTransform.anchoredPosition = Vector2.Lerp(initialPos, finalPos, currentDuration);
+
+                yield return null;
+            }
         }
 
     }
