@@ -15,6 +15,8 @@ namespace Paranapiacaba.Puzzle
 
         private CanvasGroup _canvasGroup;
 
+        public Button FallbackButton => _initialSelectedButton;
+
         protected virtual void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
