@@ -6,5 +6,7 @@ namespace Paranapiacaba.Puzzle {
 
         public UnityEvent onActivate;
 
+        public bool IsActive {  get; protected set; }
+
     }
 }

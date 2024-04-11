@@ -3,7 +3,9 @@ using UnityEngine;
 namespace Paranapiacaba.UI {
     public abstract class Menu : MonoBehaviour {
 
-        [SerializeField] private AnimationCurve _transitionCurve;
+        [SerializeField] protected AnimationCurve _transitionCurve;
+        [SerializeField] protected float _transitionDuration;
+        public float TransitionDuration { get { return _transitionDuration; } }
 
         public abstract void Open();
 
