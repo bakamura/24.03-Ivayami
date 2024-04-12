@@ -1,4 +1,3 @@
-using Paranapiacaba.Puzzle;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -36,7 +35,7 @@ namespace Paranapiacaba.Player {
         [Header("Crouch")]
 
         [SerializeField] private float _crouchSpeedMax;
-        private bool _crouching = false;
+        public bool Crouching { get; private set; } = false;
         [SerializeField] private float _walkColliderHeight;
         [SerializeField] private float _walkCameraHeight;
         [SerializeField] private float _crouchColliderHeight;
@@ -51,6 +50,7 @@ namespace Paranapiacaba.Player {
 
         private Vector2 _inputCache = Vector3.zero;
         private Vector3 _movementDirectionCache = Vector3.zero;
+        private Vector3 _velocityCache;
         private float _movementSpeedMaxCurrent;
         private Quaternion _targetAngle;
         private float _directionDifferenceToInputAngleCache;
@@ -74,9 +74,6 @@ namespace Paranapiacaba.Player {
             _cameraTransform = Camera.main.transform; //
 
             Logger.Log(LogType.Player, $"{typeof(PlayerMovement).Name} Initialized");
-
-            // Debug
-            _canMove = true;
         }
 
         private void Update() {
@@ -101,34 +98,38 @@ namespace Paranapiacaba.Player {
                 _directionDifferenceToInputAngleCache = Mathf.Abs(_targetAngle.eulerAngles.y - _cameraAimTargetRotator.eulerAngles.y);
                 if (_directionDifferenceToInputAngleCache > 180) _directionDifferenceToInputAngleCache -= 180f;
                 _movementSpeedMaxCurrent = _movementDirectionCache.magnitude 
-                                         * (_crouching ? _crouchSpeedMax : _movementSpeedMax) 
+                                         * (Crouching ? _crouchSpeedMax : _movementSpeedMax) 
                                          * Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward);
             }
             _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMaxCurrent); // Could use _decceleration when above max speed
 
+            _velocityCache = _rigidbody.velocity;
             _rigidbody.velocity = (_targetAngle * Vector3.forward).normalized * _speedCurrent;
+            _velocityCache[0] = _rigidbody.velocity.x;
+            _velocityCache[2] = _rigidbody.velocity.z;
+            _rigidbody.velocity = _velocityCache;
 
             onMovement?.Invoke(_speedCurrent * _inputCache);
         }
 
         private void Crouch(InputAction.CallbackContext input) {
             if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) {
-                _crouching = !_crouching;
-                _collider.height = _crouching ? _crouchColliderHeight : _walkColliderHeight;
-                _collider.center = 0.5f * (_crouching ? _crouchColliderHeight : _walkColliderHeight) * Vector3.up;
+                Crouching = !Crouching;
+                _collider.height = Crouching ? _crouchColliderHeight : _walkColliderHeight;
+                _collider.center = 0.5f * (Crouching ? _crouchColliderHeight : _walkColliderHeight) * Vector3.up;
 
-                _cameraAimTargetRotator.localPosition = (_crouching ? _crouchCameraHeight : _walkCameraHeight) * Vector3.up;
+                _cameraAimTargetRotator.localPosition = (Crouching ? _crouchCameraHeight : _walkCameraHeight) * Vector3.up;
 
-                onCrouch?.Invoke(_crouching);
+                onCrouch?.Invoke(Crouching);
 
-                Logger.Log(LogType.Player, $"Crouch Toggle: {_crouching}");
+                Logger.Log(LogType.Player, $"Crouch Toggle: {Crouching}");
             }
             else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
         }
 
         private void Rotate() {
-            _cameraAimTargetRotator.eulerAngles = _cameraTransform.eulerAngles;
-            _visualTransform.eulerAngles = _cameraTransform.eulerAngles;
+            _cameraAimTargetRotator.eulerAngles = _cameraTransform.eulerAngles.y * Vector3.up;
+            _visualTransform.eulerAngles = _cameraAimTargetRotator.eulerAngles;
         }
 
         public void ToggleMovement(bool canMove) {
