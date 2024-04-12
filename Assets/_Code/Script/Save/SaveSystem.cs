@@ -1,6 +1,6 @@
+using System;
 using System.Collections;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -10,45 +10,56 @@ namespace Paranapiacaba.Save {
         public SaveProgress Progress { get; private set; }
         public SaveOptions Options { get; private set; }
 
-        private string _optionsPath;
-        private const string SAVE_FOLDER = "Saves";
+        private string _progressPath = $"{Application.persistentDataPath}/Progress";
+        private string _optionsPath = $"{Application.persistentDataPath}/Configs";
 
-        public SaveSystem() {
-            _optionsPath = $"{SAVE_FOLDER}/Configs";
+        protected override void Awake() {
+            if (!Directory.Exists(_progressPath)) Directory.CreateDirectory(_progressPath);
+            LoadOptions();
         }
 
-        public void LoadSave(byte saveId) {
-            StartCoroutine(LoadSaveRoutine(saveId));
+        public void LoadProgress(byte saveId, Action loadSaveCallback) {
+            StartCoroutine(LoadSaveRoutine($"{_progressPath}/Save_{saveId}", typeof(SaveProgress), loadSaveCallback));
         }
 
-        private IEnumerator LoadSaveRoutine(byte saveId) {
-            string savePath = $"{SAVE_FOLDER}/Save_{saveId}";
+        private void LoadOptions() {
+            StartCoroutine(LoadSaveRoutine(_optionsPath, typeof(SaveOptions), () => { 
+                // Set Music / Sfx Sliders
+            }));
+        }
+
+        private IEnumerator LoadSaveRoutine(string savePath, Type type, Action loadSaveCallback = null) {
             if (File.Exists(savePath)) {
                 Task<string> readTask = File.ReadAllTextAsync(savePath);
 
                 yield return readTask;
 
-                Progress = JsonUtility.FromJson<SaveProgress>(readTask.Result);
+                if (type == typeof(SaveProgress)) Progress = JsonUtility.FromJson<SaveProgress>(readTask.Result);
+                else Options = JsonUtility.FromJson<SaveOptions>(readTask.Result);
+                loadSaveCallback.Invoke();
             }
-            else Debug.LogError($"No save with ID: '{saveId}'");
+            else Debug.Log($"No save of type '{type.Name}' in {savePath}");
         }
 
-        private void WriteSave(byte saveId) {
-            string savePath = $"{SAVE_FOLDER}/Save_{saveId}";
-            File.WriteAllText(savePath, JsonUtility.ToJson(Progress));
-        }
-
-        private void LoadOptions() {
-            if (File.Exists(_optionsPath)) Options = JsonUtility.FromJson<SaveOptions>(_optionsPath);
-            else Options = new();
-        }
-
-        public void CompleteChapter(byte chapterId) {
-            Debug.LogWarning("Method Not Implemented Yet");
+        private void SaveProgress(byte saveId) {
+            StartCoroutine(WriteSaveRoutine($"{_progressPath}/Save_{saveId}", typeof(SaveProgress)));
         }
 
         public void SaveOptions() {
-            Debug.LogWarning("Method Not Implemented Yet");
+            StartCoroutine(WriteSaveRoutine(_optionsPath, typeof(SaveOptions)));
+        }
+
+        private IEnumerator WriteSaveRoutine(string savePath, Type type) {
+             if(type == typeof(SaveProgress)) yield return File.WriteAllTextAsync(savePath, JsonUtility.ToJson(Progress));
+             else yield return File.WriteAllTextAsync(savePath, JsonUtility.ToJson(Options));
+        }
+
+        public void CompleteChapter() {
+            Progress.currentChapter++;
+        }
+
+        public void CompleteSubChapter() {
+            Progress.currentSubChapter++;
         }
 
     }
