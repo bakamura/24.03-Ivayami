@@ -61,7 +61,6 @@ namespace Paranapiacaba.Player {
             _cam = Camera.main;
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
-            ChangeInputMap("Player");
         }
 
         private void Update() {
