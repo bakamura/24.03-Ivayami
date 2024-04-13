@@ -9,7 +9,7 @@ namespace Paranapiacaba.Puzzle
     [CustomEditor(typeof(Lock))]
     public class LockInspector : Editor
     {
-        SerializedProperty cancelInteractionInput, inputActionMap, 
+        SerializedProperty cancelInteractionInput, /*inputActionMap, */
             interactionType, 
             itemsRequired, deliverItemsUI, deliverOptionsContainer, navigateUIInput, deliverBtn, 
             passwordUI, 
@@ -18,7 +18,7 @@ namespace Paranapiacaba.Puzzle
         {
             GUILayout.Label("INPUTS", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
-            EditorGUILayout.PropertyField(inputActionMap, new GUIContent("Player Actiohn Map"));
+            //EditorGUILayout.PropertyField(inputActionMap, new GUIContent("Player Actiohn Map"));
             EditorGUILayout.PropertyField(cancelInteractionInput, new GUIContent("Cancel Interaction Input"));
             EditorGUILayout.PropertyField(navigateUIInput, new GUIContent("Navigate UI Input"));
             EditorGUILayout.Space(10);
@@ -54,7 +54,7 @@ namespace Paranapiacaba.Puzzle
         private void OnEnable()
         {
             cancelInteractionInput = serializedObject.FindProperty("_cancelInteractionInput");
-            inputActionMap = serializedObject.FindProperty("_inputActionMap");
+            //inputActionMap = serializedObject.FindProperty("_inputActionMap");
             interactionType = serializedObject.FindProperty("_interactionType");
             itemsRequired = serializedObject.FindProperty("_itemsRequired");
             deliverItemsUI = serializedObject.FindProperty("_deliverItemsUI");
