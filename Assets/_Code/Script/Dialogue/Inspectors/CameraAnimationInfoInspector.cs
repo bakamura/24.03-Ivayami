@@ -8,14 +8,13 @@ namespace Paranapiacaba.Dialogue
     [CustomEditor(typeof(CameraAnimationInfo))]
     public class CameraAnimationInfoInspector : Editor
     {
-        SerializedProperty duration, positionCurve, rotationCurve, willBeInDialogue;
+        SerializedProperty duration, positionCurve, rotationCurve;
         private Transform _dialogueCameraTransform;
         public override void OnInspectorGUI()
         {
             EditorGUILayout.PropertyField(duration, new GUIContent("Duration"));
             EditorGUILayout.PropertyField(positionCurve, new GUIContent("Position Animation Blend"));
             EditorGUILayout.PropertyField(rotationCurve, new GUIContent("Rotation Animation Blend"));
-            EditorGUILayout.PropertyField(willBeInDialogue, new GUIContent("Will Happen inside Dialogue"));
 
             if (GUILayout.Button("CameraPreview"))
             {
@@ -32,7 +31,6 @@ namespace Paranapiacaba.Dialogue
             duration = serializedObject.FindProperty("duration");
             positionCurve = serializedObject.FindProperty("positionCurve");
             rotationCurve = serializedObject.FindProperty("rotationCurve");
-            willBeInDialogue = serializedObject.FindProperty("_willBeInDialogue");
         }
     }
 }
