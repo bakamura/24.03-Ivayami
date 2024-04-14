@@ -1,6 +1,4 @@
 #if UNITY_EDITOR
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -10,9 +8,9 @@ namespace Paranapiacaba.Puzzle
     public class LockInspector : Editor
     {
         SerializedProperty cancelInteractionInput, /*inputActionMap, */
-            interactionType, 
-            itemsRequired, deliverItemsUI, deliverOptionsContainer, navigateUIInput, deliverBtn, 
-            passwordUI, 
+            interactionType,
+            itemsRequired, deliverItemsUI, deliverOptionsContainer, navigateUIInput, deliverBtn, onItemDeliverFailed,
+            passwordUI,
             onInteract, onCancelInteraction, onActivate;
         public override void OnInspectorGUI()
         {
@@ -29,11 +27,12 @@ namespace Paranapiacaba.Puzzle
             switch ((Lock.InteractionTypes)interactionType.enumValueFlag)
             {
                 case Lock.InteractionTypes.RequireItems:
-                    EditorGUI.indentLevel++;                    
+                    EditorGUI.indentLevel++;
                     EditorGUILayout.PropertyField(itemsRequired, new GUIContent("Items Required To Unlock"));
                     EditorGUILayout.PropertyField(deliverItemsUI, new GUIContent("Deliver Item UI"));
                     EditorGUILayout.PropertyField(deliverOptionsContainer, new GUIContent("Items Icons Container"));
                     EditorGUILayout.PropertyField(deliverBtn, new GUIContent("Deliver Button"));
+                    EditorGUILayout.PropertyField(onItemDeliverFailed, new GUIContent("On Item Deliver Failed"));
                     break;
                 case Lock.InteractionTypes.RequirePassword:
                     EditorGUILayout.PropertyField(passwordUI, new GUIContent("PasswordUI"));
@@ -61,6 +60,7 @@ namespace Paranapiacaba.Puzzle
             deliverOptionsContainer = serializedObject.FindProperty("_deliverOptionsContainer");
             navigateUIInput = serializedObject.FindProperty("_navigateUIInput");
             deliverBtn = serializedObject.FindProperty("_deliverBtn");
+            onItemDeliverFailed = serializedObject.FindProperty("_onItemDeliverFailed");
             passwordUI = serializedObject.FindProperty("_passwordUI");
             onInteract = serializedObject.FindProperty("_onInteract");
             onCancelInteraction = serializedObject.FindProperty("_onCancelInteraction");
