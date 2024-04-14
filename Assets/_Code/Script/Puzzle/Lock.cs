@@ -161,7 +161,11 @@ namespace Paranapiacaba.Puzzle
             if (isActive)
             {
                 _currentPositionInInventory = 0;
-                _selectedDeliverOptionIndex = Mathf.FloorToInt(_deliverOptions.Length / 2);
+                if(_itemsRequired.Length < Mathf.Floor(_deliverOptions.Length / 2))
+                    _selectedDeliverOptionIndex = Mathf.FloorToInt(_itemsRequired.Length / Mathf.Ceil(_itemsRequired.Length / 2));                
+                else                
+                    _selectedDeliverOptionIndex = Mathf.FloorToInt(_deliverOptions.Length / 2);
+                
                 if (_currentItemList.Count == 0)
                 {
                     for (int i = 0; i < _itemsRequired.Length; i++)
