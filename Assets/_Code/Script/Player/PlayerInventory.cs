@@ -1,23 +1,14 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Paranapiacaba.Player {
     public class PlayerInventory : MonoSingleton<PlayerInventory> {
 
         private List<InventoryItem> _itemList = new List<InventoryItem>();
-        private InventoryItem[] _allItemsArray;
 
         private int _checkInventoryIndexCache;
 
         public InventoryItem[] CheckInventory() {
             return _itemList.ToArray();
-        }
-
-        public InventoryItem[] GetAllItems()
-        {
-            if (_allItemsArray == null)
-                _allItemsArray = Resources.LoadAll<InventoryItem>("Items");
-            return _allItemsArray;
         }
 
         public InventoryItem CheckInventoryFor(string itemId) {
@@ -28,13 +19,13 @@ namespace Paranapiacaba.Player {
         public void AddToInventory(InventoryItem item) {
             _itemList.Add(item);
 
-            Logger.Log(LogType.Player, $"Inventory Add: {item.name} ({item.name}) / {item.type}");
+            Logger.Log(LogType.Player, $"Inventory Add: {item.displayName} ({item.name}) / {item.type}");
         }
 
         public void RemoveFromInventory(InventoryItem item) {
             _itemList.Remove(item);
 
-            Logger.Log(LogType.Player, $"Inventory Remove: {item.name} ({item.name}) / {item.type}");
+            Logger.Log(LogType.Player, $"Inventory Remove: {item.displayName} ({item.name}) / {item.type}");
         }
 
     }
