@@ -10,12 +10,14 @@ namespace Paranapiacaba.Puzzle
 {
     public class FuseBox : Activator, IInteractable
     {
-
         [SerializeField] private Vector2 _matrixDimensions;
         [SerializeField] private Vector2 _distanceBetweenFuses;
         [SerializeField] private LayerMask _fuseLayer;
         [SerializeField] private Transform _fuseObjectsParent;
         [SerializeField] private CanvasGroup _fuseUIParent;
+#if UNITY_EDITOR
+        [SerializeField] private GameObject _fusePrefab;
+#endif
         [SerializeField] private InputActionReference _changeFuseInput;
         [SerializeField] private InputActionReference _activateFuseInput;
         [SerializeField] private InputActionReference _cancelInteractionInput;
@@ -31,9 +33,12 @@ namespace Paranapiacaba.Puzzle
         private bool _updateSelected;
         private bool _updateActivated;
         private bool _isActive;
+        private GameObject _defaultBtn;
 
         private void Awake()
-        {            
+        {
+            _defaultBtn = _fuseUIParent.GetComponentInChildren<Button>(false).gameObject;
+
             MeshRenderer[] temp = _fuseObjectsParent.GetComponentsInChildren<MeshRenderer>(false);
             _meshRenderers = new MeshRenderer[temp.Length];
             for (int i = 0; i < temp.Length; i++)
@@ -55,7 +60,8 @@ namespace Paranapiacaba.Puzzle
 
         private void Setup()
         {
-            EventSystem.current.SetSelectedGameObject(_fuseUIParent.GetComponentInChildren<Button>(false).gameObject);
+            SelectDefaultButton();
+            //EventSystem.current.SetSelectedGameObject(_fuseUIParent.GetComponentInChildren<Button>(false).gameObject);
             int index = Int32.Parse(EventSystem.current.currentSelectedGameObject.name);
             _previousColor = _meshRenderers[index].material.color;
             _currentSelected = _meshRenderers[index];
@@ -91,9 +97,15 @@ namespace Paranapiacaba.Puzzle
             _fuseUIParent.blocksRaycasts = isActive;
         }
 
+        private void SelectDefaultButton()
+        {
+            EventSystem.current.SetSelectedGameObject(_defaultBtn);
+        }
+
         private void HandleUINavigation(InputAction.CallbackContext context)
         {
-            if (context.ReadValue<Vector2>() != Vector2.zero && EventSystem.current.currentSelectedGameObject)
+            if (!EventSystem.current.currentSelectedGameObject) SelectDefaultButton();
+            if (context.ReadValue<Vector2>() != Vector2.zero)
             {
                 _updateSelected = true;
             }
@@ -101,6 +113,11 @@ namespace Paranapiacaba.Puzzle
 
         private void HandleActivateFuse(InputAction.CallbackContext context)
         {
+            if (!EventSystem.current.currentSelectedGameObject)
+            {
+                SelectDefaultButton();
+                _updateSelected = true;
+            }
             if (context.ReadValue<float>() == 1)
             {
                 _updateActivated = true;
@@ -204,7 +221,7 @@ namespace Paranapiacaba.Puzzle
                 _updateSelected = false;
             }
         }
-
+#if UNITY_EDITOR
         #region Utilities
         public void RenameObjects()
         {
@@ -230,7 +247,7 @@ namespace Paranapiacaba.Puzzle
         {
             sbyte currentX = 0;
             sbyte currentY = 0;
-            MeshRenderer[] temp = _fuseObjectsParent.GetComponentsInChildren<MeshRenderer>(false);
+            MeshRenderer[] temp = _fuseObjectsParent.GetComponentsInChildren<MeshRenderer>(true);
             for (int i = 0; i < temp.Length; i++)
             {
                 temp[i].transform.localPosition = new Vector3(currentX * _distanceBetweenFuses.x, currentY * _distanceBetweenFuses.y, 0);
@@ -253,12 +270,32 @@ namespace Paranapiacaba.Puzzle
                 {
                     for (int i = 0; i < uiElements.Length; i++)
                     {
-                        objectElements[i].gameObject.SetActive(uiElements[i].gameObject.activeInHierarchy);
+                        if (!uiElements[i].gameObject.activeInHierarchy) DestroyImmediate(objectElements[i].gameObject);
+                        else objectElements[i].gameObject.SetActive(uiElements[i].gameObject.activeInHierarchy);
                     }
                 }
             }
         }
+
+        public void CreateFuses()
+        {
+            if (_fuseObjectsParent && _fuseUIParent)
+            {
+                Button[] uiElements = _fuseUIParent.GetComponentsInChildren<Button>(true);
+                MeshRenderer[] objectElements = _fuseObjectsParent.GetComponentsInChildren<MeshRenderer>(true);
+                int i;
+                for (i = 0; i < objectElements.Length; i++)
+                {
+                    DestroyImmediate(objectElements[i].gameObject);
+                }
+                for (i = 0; i < uiElements.Length; i++)
+                {
+                    Instantiate(_fusePrefab, _fuseObjectsParent).SetActive(true);
+                }
+            }
+        }
         #endregion
+#endif
 
         private void OnGUI()
         {
