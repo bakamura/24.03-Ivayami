@@ -8,7 +8,7 @@ namespace Paranapiacaba.Puzzle
     public class FusionBoxInspector : Editor
     {
         SerializedProperty matrixDimensions, distanceBetweenFuses, fuseObjectsParent, fuseUIParent, changeFuseInput, activateFuseInput, 
-            fuseLayer, onInteract, onInteractionCancelled, /*inputActionMap,*/ onActivate, selectedColor, activatedColor, deactivatedColor, cancelInteractionInput;
+            fuseLayer, onInteract, onInteractionCancelled, /*inputActionMap,*/ onActivate, selectedColor, activatedColor, deactivatedColor, cancelInteractionInput, fusePrefab;
 
         public override void OnInspectorGUI()
         {
@@ -25,6 +25,7 @@ namespace Paranapiacaba.Puzzle
             EditorGUILayout.PropertyField(matrixDimensions, new GUIContent("Fuse Box Dimensions"));
             EditorGUILayout.PropertyField(distanceBetweenFuses, new GUIContent("Distance Between Fuses"));
             EditorGUILayout.PropertyField(fuseLayer, new GUIContent("Fuse Collision Layer"));
+            EditorGUILayout.PropertyField(fusePrefab, new GUIContent("Fuse Prefab"));
             EditorGUILayout.PropertyField(selectedColor, new GUIContent("Fuse Selected Color"));
             EditorGUILayout.PropertyField(activatedColor, new GUIContent("Fuse Activated Color"));
             EditorGUILayout.PropertyField(deactivatedColor, new GUIContent("Fuse Deactivated Color"));
@@ -43,13 +44,15 @@ namespace Paranapiacaba.Puzzle
             EditorGUILayout.PropertyField(onActivate, new GUIContent("On Activate"));
 
             FuseBox instance = (FuseBox)target;
-            if (GUILayout.Button("Reposition Fuses"))
-            {
-                instance.RepositionFuses();
-            }
+            //if (GUILayout.Button("Reposition Fuses"))
+            //{
+            //    instance.RepositionFuses();
+            //}
 
             if (GUILayout.Button("Update Fuses"))
             {
+                instance.CreateFuses();
+                instance.RepositionFuses();
                 instance.UpdateFusesActiveState();
                 instance.RenameObjects();
             }
@@ -74,6 +77,7 @@ namespace Paranapiacaba.Puzzle
             activatedColor = serializedObject.FindProperty("_activatedColor");
             deactivatedColor = serializedObject.FindProperty("_deactivatedColor");
             cancelInteractionInput = serializedObject.FindProperty("_cancelInteractionInput");
+            fusePrefab = serializedObject.FindProperty("_fusePrefab");
         }
     }
 }

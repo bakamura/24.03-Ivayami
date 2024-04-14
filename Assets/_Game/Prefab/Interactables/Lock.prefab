@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5763436196340458343}
   - component: {fileID: 4682269517166465992}
   m_Layer: 5
-  m_Name: DeliverItemUI
+  m_Name: DeliverItemCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2063,7 +2063,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3258,7 +3258,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _willBeInDialogue: 0
 --- !u!1 &3779365326266585052
 GameObject:
   m_ObjectHideFlags: 0
@@ -4882,7 +4881,7 @@ GameObject:
   - component: {fileID: 924487361875154551}
   - component: {fileID: 351702241464900948}
   m_Layer: 5
-  m_Name: EnterPasswordUI
+  m_Name: EnterPasswordCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6064,7 +6063,7 @@ GameObject:
   - component: {fileID: 1145156050602866731}
   - component: {fileID: 3382611348127375263}
   m_Layer: 5
-  m_Name: ReorderPasswordUI
+  m_Name: ReorderPasswordCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6396,12 +6395,14 @@ MonoBehaviour:
         m_CallState: 2
   _cancelInteractionInput: {fileID: 7034977383457959385, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _navigateUIInput: {fileID: 2501893477794616356, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
-  _inputActionMap: {fileID: -944628639613478452, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _interactionType: 1
   _itemsRequired: []
   _deliverItemsUI: {fileID: 4682269517166465992}
   _deliverOptionsContainer: {fileID: 8051011512502463676}
   _deliverBtn: {fileID: 5702926488098015254}
+  _onItemDeliverFailed:
+    m_PersistentCalls:
+      m_Calls: []
   _passwordUI: {fileID: 351702241464900948}
   _onInteract:
     m_PersistentCalls:
