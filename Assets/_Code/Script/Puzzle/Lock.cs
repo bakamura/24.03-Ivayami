@@ -187,8 +187,8 @@ namespace Paranapiacaba.Puzzle
         public void DeliverItem()
         {
             for(int i = 0; i < _itemsRequired.Length; i++)
-            {
-                if(_itemsRequired[i].Item.id == _currentItemList[_selectedDeliverOptionIndex].id && !_itemsRequired[i].ItemDelivered)
+            {                
+                if(_itemsRequired[i].Item.name == _currentItemList[_selectedDeliverOptionIndex].name && !_itemsRequired[i].ItemDelivered)
                 {
                     _itemsRequired[i].ItemDelivered = true;
                     _itemsRequired[i].OnItemDelivered?.Invoke();
