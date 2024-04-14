@@ -87,7 +87,7 @@ namespace Paranapiacaba.Dialogue {
                     _canvasGroup.alpha = 0;
                     _canvasGroup.blocksRaycasts = false;
                     OnDialogueEnd?.Invoke();
-                    PlayerActions.Instance.ChangeInputMap("Dialogue");
+                    PlayerActions.Instance.ChangeInputMap("Player");
                     //_inputActionMap.actionMaps[0].Enable();
                     IsDialogueActive = false;
                 }
@@ -159,7 +159,7 @@ namespace Paranapiacaba.Dialogue {
             if (_dialogueDictionary.TryGetValue(dialogueId, out Dialogue dialogue) && _writtingCoroutine == null)
             {
                 IsDialogueActive = true;
-                PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ChangeInputMap("Dialogue");
                 //_inputActionMap.actionMaps[0].Disable();
                 _continueInput.action.Enable();
                 if (_debugLogs) Debug.Log($"Starting dialogue {dialogueId}");
