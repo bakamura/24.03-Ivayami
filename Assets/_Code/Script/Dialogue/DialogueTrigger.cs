@@ -18,10 +18,7 @@ namespace Paranapiacaba.Dialogue
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Player"))
-            {
-                StartDialogue();
-            }
+            StartDialogue();
         }
     }
 }
