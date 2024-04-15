@@ -10,6 +10,18 @@ namespace Paranapiacaba.Puzzle
         [SerializeField] private UnityEvent _onCollect;
         [SerializeField] private bool _isLongInteraction;
 
+        private InteratctableHighlight _interatctableHighlight;
+
+        public InteratctableHighlight InteratctableHighlight
+        {
+            get
+            {
+                if (!_interatctableHighlight)
+                    _interatctableHighlight = GetComponent<InteratctableHighlight>();
+                return _interatctableHighlight;
+            }
+        }
+
         public bool Interact()
         {
             GiveItem();

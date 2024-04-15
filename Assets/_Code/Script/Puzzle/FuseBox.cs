@@ -35,9 +35,13 @@ namespace Paranapiacaba.Puzzle
         private bool _updateActivated;
         private bool _isActive;
         private GameObject _defaultBtn;
+        private InteratctableHighlight _interatctableHighlight;
+
+        public InteratctableHighlight InteratctableHighlight { get => _interatctableHighlight; }
 
         private void Awake()
         {
+            _interatctableHighlight = GetComponent<InteratctableHighlight>();
             _defaultBtn = _fuseUIParent.GetComponentInChildren<Button>(false).gameObject;
 
             MeshRenderer[] temp = _fuseObjectsParent.GetComponentsInChildren<MeshRenderer>(false);
