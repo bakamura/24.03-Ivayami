@@ -201,10 +201,8 @@ namespace Paranapiacaba.Puzzle
         {
             for (int i = 0; i < _meshRenderers.Length; i++)
             {
-                if (_meshRenderers[i].material.color != _activatedColor && _previousColor == _deactivatedColor)
-                {
-                    return;
-                }
+                if (_meshRenderers[i].material.color == _deactivatedColor) return;
+                else if (_meshRenderers[i].material.color == _selectedColor && _previousColor == _deactivatedColor) return;
             }
             _isActive = false;
             _currentSelected.material.color = _activatedColor;
