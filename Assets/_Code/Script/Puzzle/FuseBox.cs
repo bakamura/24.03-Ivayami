@@ -26,7 +26,8 @@ namespace Paranapiacaba.Puzzle
         [SerializeField] private UnityEvent _onInteractionCancelled;
         [SerializeField] private Color _selectedColor = Color.yellow;
         [SerializeField] private Color _activatedColor = Color.red;
-        [SerializeField] private Color _deactivatedColor = Color.white;
+        /*[SerializeField] */
+        private Color _deactivatedColor;
         private MeshRenderer[] _meshRenderers;
         private MeshRenderer _currentSelected;
         private Color _previousColor;
@@ -45,6 +46,7 @@ namespace Paranapiacaba.Puzzle
             {
                 _meshRenderers[i] = temp[i];
             }
+            _deactivatedColor = _meshRenderers[0].material.color;
             _previousColor = _deactivatedColor;
         }
 
@@ -199,8 +201,10 @@ namespace Paranapiacaba.Puzzle
         {
             for (int i = 0; i < _meshRenderers.Length; i++)
             {
-                if (_meshRenderers[i].material.color == _deactivatedColor)
+                if (_meshRenderers[i].material.color != _activatedColor && _previousColor == _deactivatedColor)
+                {
                     return;
+                }
             }
             _isActive = false;
             _currentSelected.material.color = _activatedColor;
