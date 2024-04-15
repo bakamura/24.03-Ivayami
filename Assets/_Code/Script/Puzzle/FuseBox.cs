@@ -46,7 +46,7 @@ namespace Paranapiacaba.Puzzle
             {
                 _meshRenderers[i] = temp[i];
             }
-            _deactivatedColor = _meshRenderers[0].material.color;
+            _deactivatedColor = _fusePrefab.GetComponent<MeshRenderer>().material.color;
             _previousColor = _deactivatedColor;
         }
 
