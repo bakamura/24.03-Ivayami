@@ -64,7 +64,7 @@ namespace Paranapiacaba.Player {
         }
 
         private void Update() {
-            if (_interacting) InteractObjectDetect();
+            if (!_interacting) InteractObjectDetect();
         }
 
         private void Interact(InputAction.CallbackContext input) {
