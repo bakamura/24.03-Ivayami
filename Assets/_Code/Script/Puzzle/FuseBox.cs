@@ -256,7 +256,7 @@ namespace Paranapiacaba.Puzzle
             {
                 temp[i].transform.localPosition = new Vector3(currentX * _distanceBetweenFuses.x, currentY * _distanceBetweenFuses.y, 0);
                 currentX++;
-                if (currentX == _matrixDimensions.x)
+                if (currentX > _matrixDimensions.x)
                 {
                     currentX = 0;
                     currentY++;
