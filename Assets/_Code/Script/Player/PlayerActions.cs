@@ -106,7 +106,9 @@ namespace Paranapiacaba.Player {
                 }
             }
             if (_interactableClosest != _interactableClosestCache) {
+                _interactableClosest?.InteratctableHighlight.UpdateHighlight(false);
                 _interactableClosest = _interactableClosestCache;
+                _interactableClosest?.InteratctableHighlight.UpdateHighlight(true);
                 onInteractTargetChange?.Invoke(_interactableClosest);
 
                 Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(_interactableClosestCache != null ? _interactableClosestCache.gameObject.name : "Null")}");
