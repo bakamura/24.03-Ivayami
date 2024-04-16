@@ -19,8 +19,8 @@ namespace Paranapiacaba.UI {
         }
 
         public void DisplaySaveInfo(int saveId) {
-            ChapterDescription chapterDescription = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{saveId}");
             SaveSystem.Instance.LoadSave((byte)saveId);
+            ChapterDescription chapterDescription = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.currentChapter}");
             _previewImage.sprite = chapterDescription.Image;
             _previewText.text = chapterDescription.Text;
 

@@ -12,6 +12,7 @@ namespace Paranapiacaba.UI {
         [SerializeField] private Slider _sfxSlider;
 
         private void Start() {
+            Debug.Log($"Save Instance {(SaveSystem.Instance ? "exists" : "doesnt exist")}");
             _musicSlider.value = SaveSystem.Instance.Options.musicVol;
             _sfxSlider.value = SaveSystem.Instance.Options.sfxVol;
         }
