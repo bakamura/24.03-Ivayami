@@ -33,6 +33,9 @@ namespace Paranapiacaba.Puzzle
         private int _currentPositionInInventory = 0;
         private List<InventoryItem> _currentItemList = new List<InventoryItem>();
         private sbyte _currentItemsDelivered;
+        private InteratctableHighlight _interatctableHighlight;
+
+        public InteratctableHighlight InteratctableHighlight { get => _interatctableHighlight; }
 
         [System.Serializable]
         public enum InteractionTypes
@@ -52,6 +55,7 @@ namespace Paranapiacaba.Puzzle
         private void Awake()
         {
             _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
+            _interatctableHighlight = GetComponent<InteratctableHighlight>();
         }
 
         [ContextMenu("Interact")]
