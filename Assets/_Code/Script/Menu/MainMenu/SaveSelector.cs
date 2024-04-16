@@ -11,7 +11,7 @@ namespace Paranapiacaba.UI {
 
         [SerializeField] private Image _previewImage;
         [SerializeField] private TextMeshProUGUI _previewText;
-        private byte _displayedSaveId;
+        private int _displayedSaveId;
 
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
 
@@ -19,7 +19,7 @@ namespace Paranapiacaba.UI {
             PlayerActions.Instance.ChangeInputMap("Menu");
         }
 
-        public void DisplaySaveInfo(byte saveId) {
+        public void DisplaySaveInfo(int saveId) {
             _displayedSaveId = saveId;
             ChapterDescription chapterDescription = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{_displayedSaveId}");
             _previewImage.sprite = chapterDescription.Image;
@@ -29,7 +29,7 @@ namespace Paranapiacaba.UI {
         }
 
         public void EnterSave() {
-            SaveSystem.Instance.LoadSave(_displayedSaveId);
+            SaveSystem.Instance.LoadSave((byte) _displayedSaveId);
 
             Logger.Log(LogType.UI, $"Display Save {_displayedSaveId}");
         }

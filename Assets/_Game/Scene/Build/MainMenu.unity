@@ -2181,8 +2181,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 843943609}
         m_TargetAssemblyTypeName: Paranapiacaba.UI.SaveSelector, Assembly-CSharp
-        m_MethodName: EnterSave
-        m_Mode: 1
+        m_MethodName: DisplaySaveInfo
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3236,12 +3236,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 843943609}
         m_TargetAssemblyTypeName: Paranapiacaba.UI.SaveSelector, Assembly-CSharp
-        m_MethodName: EnterSave
-        m_Mode: 1
+        m_MethodName: DisplaySaveInfo
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4298,8 +4298,6 @@ GameObject:
   - component: {fileID: 1273710287}
   - component: {fileID: 1273710286}
   - component: {fileID: 1273710285}
-  - component: {fileID: 1273710289}
-  - component: {fileID: 1273710288}
   m_Layer: 5
   m_Name: PlayBtn
   m_TagString: Untagged
@@ -4371,25 +4369,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1273710289}
-        m_TargetAssemblyTypeName: Paranapiacaba.Scene.SceneLoader, Assembly-CSharp
-        m_MethodName: UnloadScene
-        m_Mode: 1
+      - m_Target: {fileID: 1312846347}
+        m_TargetAssemblyTypeName: Paranapiacaba.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: CloseCurrentThenOpen
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1273710288}
-        m_TargetAssemblyTypeName: Paranapiacaba.Scene.SceneLoader, Assembly-CSharp
-        m_MethodName: LoadScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 843943610}
+          m_ObjectArgumentAssemblyTypeName: Paranapiacaba.UI.Menu, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4433,48 +4419,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1273710283}
   m_CullTransparentMesh: 1
---- !u!114 &1273710288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1273710283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _sceneId: Restaurant Area
-  _onSceneLoad:
-    m_PersistentCalls:
-      m_Calls: []
-  _onSceneUnload:
-    m_PersistentCalls:
-      m_Calls: []
-  _drawGizmos: 0
-  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
---- !u!114 &1273710289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1273710283}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _sceneId: MainMenu
-  _onSceneLoad:
-    m_PersistentCalls:
-      m_Calls: []
-  _onSceneUnload:
-    m_PersistentCalls:
-      m_Calls: []
-  _drawGizmos: 0
-  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &1299762082
 GameObject:
   m_ObjectHideFlags: 0
@@ -5342,12 +5286,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 843943609}
         m_TargetAssemblyTypeName: Paranapiacaba.UI.SaveSelector, Assembly-CSharp
-        m_MethodName: EnterSave
-        m_Mode: 1
+        m_MethodName: DisplaySaveInfo
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -5729,12 +5673,12 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 843943609}
         m_TargetAssemblyTypeName: Paranapiacaba.UI.SaveSelector, Assembly-CSharp
-        m_MethodName: EnterSave
-        m_Mode: 1
+        m_MethodName: DisplaySaveInfo
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
