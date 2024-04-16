@@ -15,9 +15,7 @@ namespace Paranapiacaba.Puzzle
         [SerializeField] private LayerMask _fuseLayer;
         [SerializeField] private Transform _fuseObjectsParent;
         [SerializeField] private CanvasGroup _fuseUIParent;
-#if UNITY_EDITOR
         [SerializeField] private GameObject _fusePrefab;
-#endif
         [SerializeField] private InputActionReference _changeFuseInput;
         [SerializeField] private InputActionReference _activateFuseInput;
         [SerializeField] private InputActionReference _cancelInteractionInput;
