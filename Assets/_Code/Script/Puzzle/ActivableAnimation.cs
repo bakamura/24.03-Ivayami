@@ -5,14 +5,18 @@ namespace Paranapiacaba.Puzzle
     [RequireComponent(typeof(Animator))]
     public class ActivableAnimation : Activable, IInteractable
     {
-        private const string _animationToPlayOnInteract = "interact";
-        private const string _animationToPlayOnActivate = "activate";
+        private static int _animationToPlayOnInteract = Animator.StringToHash("interact");
+        private static int _animationToPlayOnActivate = Animator.StringToHash("activate");
 
         private Animator _animator;
+        private InteratctableHighlight _interatctableHighlight;
+
+        public InteratctableHighlight InteratctableHighlight { get => _interatctableHighlight; }
 
         protected override void Awake()
         {
             base.Awake();
+            _interatctableHighlight = GetComponent<InteratctableHighlight>();
             _animator = GetComponent<Animator>();
         }
 
@@ -22,9 +26,9 @@ namespace Paranapiacaba.Puzzle
             return false;
         }
 
-        public void TriggerAnimation(string boolName)
+        public void TriggerAnimation(int hash)
         {
-            _animator.SetBool(boolName, !_animator.GetBool(boolName));
+            _animator.SetBool(hash, !_animator.GetBool(hash));
         }
         
         protected override void HandleOnActivate()

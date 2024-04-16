@@ -35,9 +35,13 @@ namespace Paranapiacaba.Puzzle
         private bool _updateActivated;
         private bool _isActive;
         private GameObject _defaultBtn;
+        private InteratctableHighlight _interatctableHighlight;
+
+        public InteratctableHighlight InteratctableHighlight { get => _interatctableHighlight; }
 
         private void Awake()
         {
+            _interatctableHighlight = GetComponent<InteratctableHighlight>();
             _defaultBtn = _fuseUIParent.GetComponentInChildren<Button>(false).gameObject;
 
             MeshRenderer[] temp = _fuseObjectsParent.GetComponentsInChildren<MeshRenderer>(false);
@@ -46,7 +50,7 @@ namespace Paranapiacaba.Puzzle
             {
                 _meshRenderers[i] = temp[i];
             }
-            _deactivatedColor = _meshRenderers[0].material.color;
+            _deactivatedColor = _fusePrefab.GetComponent<MeshRenderer>().material.color;
             _previousColor = _deactivatedColor;
         }
 
@@ -201,10 +205,8 @@ namespace Paranapiacaba.Puzzle
         {
             for (int i = 0; i < _meshRenderers.Length; i++)
             {
-                if (_meshRenderers[i].material.color != _activatedColor && _previousColor == _deactivatedColor)
-                {
-                    return;
-                }
+                if (_meshRenderers[i].material.color == _deactivatedColor) return;
+                else if (_meshRenderers[i].material.color == _selectedColor && _previousColor == _deactivatedColor) return;
             }
             _isActive = false;
             _currentSelected.material.color = _activatedColor;
