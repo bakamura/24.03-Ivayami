@@ -23,9 +23,7 @@ namespace Paranapiacaba.Save {
         }
 
         private void LoadOptions() {
-            StartCoroutine(LoadSaveRoutine(_optionsPath, typeof(SaveOptions), () => { 
-                // Set Music / Sfx Sliders
-            }));
+            StartCoroutine(LoadSaveRoutine(_optionsPath, typeof(SaveOptions)));
         }
 
         private IEnumerator LoadSaveRoutine(string savePath, Type type, Action loadSaveCallback = null) {
@@ -35,8 +33,8 @@ namespace Paranapiacaba.Save {
                 yield return readTask;
 
                 if (type == typeof(SaveProgress)) Progress = JsonUtility.FromJson<SaveProgress>(readTask.Result);
-                else Options = JsonUtility.FromJson<SaveOptions>(readTask.Result);
-                loadSaveCallback.Invoke();
+                else Options = JsonUtility.FromJson<SaveOptions>(Encryption.Decrypt(readTask.Result));
+                loadSaveCallback?.Invoke();
             }
             else Debug.Log($"No save of type '{type.Name}' in {savePath}");
         }
@@ -51,7 +49,7 @@ namespace Paranapiacaba.Save {
 
         private IEnumerator WriteSaveRoutine(string savePath, Type type) {
              if(type == typeof(SaveProgress)) yield return File.WriteAllTextAsync(savePath, JsonUtility.ToJson(Progress));
-             else yield return File.WriteAllTextAsync(savePath, JsonUtility.ToJson(Options));
+             else yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Options)));
         }
 
         public void CompleteChapter() {
