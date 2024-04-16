@@ -10,6 +10,7 @@ namespace Paranapiacaba.Dialogue {
 
         private bool _hasBeenInstantiated;
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (!_hasBeenInstantiated)
@@ -23,6 +24,6 @@ namespace Paranapiacaba.Dialogue {
         {
             DialogueEventsInspector.UpdateDialoguesList();
         }
-
+#endif
     }
 }

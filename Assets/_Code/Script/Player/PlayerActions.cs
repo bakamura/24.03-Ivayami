@@ -61,11 +61,10 @@ namespace Paranapiacaba.Player {
             _cam = Camera.main;
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
-            ChangeInputMap("Player");
         }
 
         private void Update() {
-            if (_interacting) InteractObjectDetect();
+            if (!_interacting) InteractObjectDetect();
         }
 
         private void Interact(InputAction.CallbackContext input) {
@@ -107,7 +106,9 @@ namespace Paranapiacaba.Player {
                 }
             }
             if (_interactableClosest != _interactableClosestCache) {
+                _interactableClosest?.InteratctableHighlight.UpdateHighlight(false);
                 _interactableClosest = _interactableClosestCache;
+                _interactableClosest?.InteratctableHighlight.UpdateHighlight(true);
                 onInteractTargetChange?.Invoke(_interactableClosest);
 
                 Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(_interactableClosestCache != null ? _interactableClosestCache.gameObject.name : "Null")}");
