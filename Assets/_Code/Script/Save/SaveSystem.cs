@@ -14,6 +14,8 @@ namespace Paranapiacaba.Save {
         private string _optionsPath;
 
         protected override void Awake() {
+            base.Awake();
+
             _progressPath = $"{Application.persistentDataPath}/Progress";
             _optionsPath = $"{Application.persistentDataPath}/Configs";
 
