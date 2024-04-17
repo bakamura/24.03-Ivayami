@@ -7,7 +7,7 @@ namespace Paranapiacaba.Audio {
     public class EntitySound : MonoBehaviour {
 
         protected void PlayOneShot(EventReference sound) {
-            if (!sound.IsNull) RuntimeManager.PlayOneShot(sound, transform.position);
+            if (!sound.IsNull) RuntimeManager.PlayOneShotAttached(sound, gameObject);
         }
 
     }
