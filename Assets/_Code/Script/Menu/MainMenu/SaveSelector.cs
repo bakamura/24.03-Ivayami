@@ -19,12 +19,17 @@ namespace Paranapiacaba.UI {
         }
 
         public void DisplaySaveInfo(int saveId) {
-            SaveSystem.Instance.LoadSave((byte)saveId);
+            SaveSystem.Instance.LoadProgress((byte)saveId, DisplaySaveInfoCallback);
+
+            Logger.Log(LogType.UI, $"Try Display Save {saveId}");
+        }
+
+        private void DisplaySaveInfoCallback() {
             ChapterDescription chapterDescription = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.currentChapter}");
             _previewImage.sprite = chapterDescription.Image;
             _previewText.text = chapterDescription.Text;
 
-            Logger.Log(LogType.UI, $"Display Save {saveId}");
+            Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.currentChapter}");
         }
 
         public void EnterSave() {

@@ -1,5 +1,6 @@
 using Paranapiacaba.Audio;
 using Paranapiacaba.Save;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +13,12 @@ namespace Paranapiacaba.UI {
         [SerializeField] private Slider _sfxSlider;
 
         private void Start() {
-            Debug.Log($"Save Instance {(SaveSystem.Instance ? "exists" : "doesnt exist")}");
+            StartCoroutine(StartRoutine());
+        }
+
+        private IEnumerator StartRoutine() {
+            while (SaveSystem.Instance.Progress == null) yield return null;
+
             _musicSlider.value = SaveSystem.Instance.Options.musicVol;
             _sfxSlider.value = SaveSystem.Instance.Options.sfxVol;
         }
