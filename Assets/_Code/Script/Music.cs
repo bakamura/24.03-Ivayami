@@ -1,8 +1,8 @@
+using System.Collections;
+using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
 using Paranapiacaba.Player;
-using UnityEngine;
-using System.Collections;
 
 namespace Paranapiacaba.Audio {
     public class Music : MonoSingleton<Music> {
@@ -15,20 +15,28 @@ namespace Paranapiacaba.Audio {
         [Header("Cache")]
 
         private EventInstance _musicInstanceCurrent;
-        private float _volume;
+        private float _volume = 0.5f; //
 
         private void Start() {
             PlayerStress.Instance.onStressChange.AddListener(UpdateMusicToStress);
         }
 
+        private void OnDestroy() {
+            _musicInstanceCurrent.release();
+        }
+
         public void SetMusic(EventReference musicEventRef) {
             if (!musicEventRef.IsNull) {
+                _musicInstanceCurrent.release();
                 _musicInstanceCurrent = RuntimeManager.CreateInstance(musicEventRef);
                 SetVolume(_volume);
 
                 StopAllCoroutines();
                 _musicInstanceCurrent.setCallback((eventCallback, a, b) => { StartCoroutine(ReplayMusicAfterDelay()); return FMOD.RESULT.OK; }, EVENT_CALLBACK_TYPE.STOPPED);
+                _musicInstanceCurrent.start();
+                Logger.Log(LogType.Scene, $"Music Started: {musicEventRef.Path}");
             }
+            else Logger.Log(LogType.Scene, $"Music Event Reference is null");
         }
 
         private void UpdateMusicToStress(float stress) {
