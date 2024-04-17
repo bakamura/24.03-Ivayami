@@ -93,10 +93,6 @@ namespace Paranapiacaba.Puzzle
                 _activateFuseInput.action.performed += HandleActivateFuse;
                 _cancelInteractionInput.action.performed += HandleCancelInteraction;
                 PlayerActions.Instance.ChangeInputMap("Menu");
-                //gameplay inputs
-                //_inputActionMap.actionMaps[0].Disable();
-                ////UI inputs
-                //_inputActionMap.actionMaps[1].Enable();
             }
             else
             {
@@ -104,8 +100,6 @@ namespace Paranapiacaba.Puzzle
                 _activateFuseInput.action.performed -= HandleActivateFuse;
                 _cancelInteractionInput.action.performed -= HandleCancelInteraction;
                 PlayerActions.Instance.ChangeInputMap("Player");
-                //_inputActionMap.actionMaps[0].Enable();
-                //_inputActionMap.actionMaps[1].Disable();
             }
             _fuseUIParent.interactable = isActive;
             _fuseUIParent.blocksRaycasts = isActive;
@@ -217,7 +211,6 @@ namespace Paranapiacaba.Puzzle
             for (int i = 0; i < _meshRenderersLights.Length; i++)
             {
                 if (_meshRenderersLights[i].material.GetColor(_colorEmissionVarName) == _deactivatedColor) return;
-                //else if (_meshRenderersLights[i].material.color == _selectedColor && _previousColor == _baseFuseColor) return;
             }
             _isActive = false;
             _currentSelected.material.SetColor(_colorEmissionVarName, _baseFuseColor);
@@ -230,10 +223,8 @@ namespace Paranapiacaba.Puzzle
         {
             if (_updateSelected)
             {
-                //Debug.Log($"parse {Int32.Parse(_eventSystem.currentSelectedGameObject.name)}. name {_eventSystem.currentSelectedGameObject.name}");
                 _currentSelected.material.SetColor(_colorEmissionVarName, _baseFuseColor);
                 _currentSelected = _meshRenderFuses[Int32.Parse(EventSystem.current.currentSelectedGameObject.name)];
-                //_previousColor = _currentSelected.material.color;
                 _currentSelected.material.SetColor(_colorEmissionVarName, _selectedColor);
                 _updateSelected = false;
             }

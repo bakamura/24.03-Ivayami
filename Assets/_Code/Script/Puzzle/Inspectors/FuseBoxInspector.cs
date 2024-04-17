@@ -5,10 +5,10 @@ using UnityEditor;
 namespace Paranapiacaba.Puzzle
 {
     [CustomEditor(typeof(FuseBox))]
-    public class FusionBoxInspector : Editor
+    public class FuseBoxInspector : Editor
     {
         SerializedProperty matrixDimensions, distanceBetweenLeds, fusesParent, fuseUIParent, changeFuseInput, activateFuseInput, 
-            fuseLayer, onInteract, onInteractionCancelled, /*inputActionMap,*/ onActivate, selectedColor, activatedColor, /*deactivatedColor,*/ cancelInteractionInput, fusePrefab,
+            fuseLayer, onInteract, onInteractionCancelled, onActivate, selectedColor, activatedColor, cancelInteractionInput, fusePrefab,
             ledsParent, fusesOffset, ledPrefab, elementsOffset, deactivatedColor;
 
         public override void OnInspectorGUI()
@@ -48,10 +48,6 @@ namespace Paranapiacaba.Puzzle
             EditorGUILayout.PropertyField(onActivate, new GUIContent("On Activate"));
 
             FuseBox instance = (FuseBox)target;
-            //if (GUILayout.Button("Reposition Fuses"))
-            //{
-            //    instance.RepositionFuses();
-            //}
 
             if (GUILayout.Button("Update Fuses"))
             {
@@ -75,11 +71,9 @@ namespace Paranapiacaba.Puzzle
             fuseLayer = serializedObject.FindProperty("_fuseLayer");
             onInteract = serializedObject.FindProperty("_onInteract");
             onInteractionCancelled = serializedObject.FindProperty("_onInteractionCancelled");
-            //inputActionMap = serializedObject.FindProperty("_inputActionMap");
             onActivate = serializedObject.FindProperty("onActivate");
             selectedColor = serializedObject.FindProperty("_selectedColor");
             activatedColor = serializedObject.FindProperty("_activatedColor");
-            //deactivatedColor = serializedObject.FindProperty("_deactivatedColor");
             cancelInteractionInput = serializedObject.FindProperty("_cancelInteractionInput");
             fusePrefab = serializedObject.FindProperty("_fusePrefab");
             ledsParent = serializedObject.FindProperty("_ledsParent");
