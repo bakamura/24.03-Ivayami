@@ -6,7 +6,7 @@ using System.Text;
 namespace Paranapiacaba.Save {
     public static class Encryption {
 
-        private const string key = "If_You_Decrypt_This_You_Gay";
+        private const string key = "If_You_Decrypt_This_You_Gay89012";
         private const string iv = "But_Fine_I_Guess";
 
         public static string Encrypt(string text) {
