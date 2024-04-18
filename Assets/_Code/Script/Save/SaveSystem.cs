@@ -50,6 +50,7 @@ namespace Paranapiacaba.Save {
             else {
                 if (type == typeof(SaveProgress)) Progress = new SaveProgress();
                 else Options = new SaveOptions();
+                loadSaveCallback?.Invoke();
 
                 Debug.Log($"No Save of type '{type.Name}' in {savePath}");
             }
