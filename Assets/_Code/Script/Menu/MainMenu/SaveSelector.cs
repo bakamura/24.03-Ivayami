@@ -19,9 +19,12 @@ namespace Paranapiacaba.UI {
         }
 
         public void DisplaySaveInfo(int saveId) {
-            SaveSystem.Instance.LoadProgress((byte)saveId, DisplaySaveInfoCallback);
+            if (SaveSystem.Instance.Progress?.id != saveId) {
+                SaveSystem.Instance.LoadProgress((byte)saveId, DisplaySaveInfoCallback);
 
-            Logger.Log(LogType.UI, $"Try Display Save {saveId}");
+                Logger.Log(LogType.UI, $"Try Display Save {saveId}");
+            }
+            else EnterSave();
         }
 
         private void DisplaySaveInfoCallback() {
