@@ -25,11 +25,11 @@ namespace Paranapiacaba.UI {
         }
 
         private void DisplaySaveInfoCallback() {
-            ChapterDescription chapterDescription = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.currentChapter}");
+            ChapterDescription chapterDescription = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.currentChapter}-{SaveSystem.Instance.Progress.currentSubChapter}");
             _previewImage.sprite = chapterDescription.Image;
             _previewText.text = chapterDescription.Text;
 
-            Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.currentChapter}");
+            Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.id} (Progress: {SaveSystem.Instance.Progress.currentChapter}-{SaveSystem.Instance.Progress.currentSubChapter})");
         }
 
         public void EnterSave() {
