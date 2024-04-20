@@ -1,7 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Paranapiacaba.Player;
-using System.Collections.Generic;
 
 namespace Paranapiacaba.UI {
     public class Bag : MonoBehaviour {
@@ -17,7 +17,7 @@ namespace Paranapiacaba.UI {
             InventoryItem[] items = PlayerInventory.Instance.CheckInventory();
 
             for (int i = 0; i < items.Length; i++) {
-                if (_itemBtns.Count <= i) _itemBtns.Add(Instantiate<BagItem>(_itemBtnPrefab, _itemGeneralSection));
+                if (_itemBtns.Count <= i) _itemBtns.Add(Instantiate(_itemBtnPrefab, _itemGeneralSection));
                 _itemBtns[i].transform.parent = items[i].type == ItemType.Special ? _itemSpecialSection : _itemGeneralSection;
                 _itemBtns[i].SetItemDisplay(items[i]);
                 byte btnN = (byte)i;
