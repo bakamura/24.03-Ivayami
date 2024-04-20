@@ -20,9 +20,13 @@ namespace Paranapiacaba.Puzzle
         {
             for (int i = 0; i < _activators.Length; i++)
             {
-                if (!_activators[i].IsActive) return;
+                if (!_activators[i].IsActive)
+                {
+                    IsActive = false;
+                    return;
+                }
             }
-            IsActive = !IsActive;
+            IsActive = true;
         }
     }
 }
