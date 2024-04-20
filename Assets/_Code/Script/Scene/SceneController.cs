@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Paranapiacaba.Save;
 using UnityEngine.Events;
 using Paranapiacaba.Player;
-using System.Collections;
 
 namespace Paranapiacaba.Scene
 {
@@ -102,9 +101,9 @@ namespace Paranapiacaba.Scene
             return temp;
         }
 
-        public Vector2 PointerInChapter(byte chapter, byte subChapter)
-        {
-            return _chapterPointers[chapter].SubChapterPointer(subChapter);
+        public Vector2 PointerInChapter()
+        {            
+            return _chapterPointers[SaveSystem.Instance.Progress.currentChapter].SubChapterPointer(SaveSystem.Instance.Progress.currentSubChapter);
         }
 
         private void HandleOnSceneUpdate(AsyncOperation operation)
