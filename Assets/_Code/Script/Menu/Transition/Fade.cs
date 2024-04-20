@@ -2,18 +2,9 @@ using System.Collections;
 using UnityEngine;
 
 namespace Paranapiacaba.UI {
-    [RequireComponent(typeof(CanvasGroup))]
     public class Fade : Menu {
 
         [SerializeField] private bool _interactable;
-
-        [Header("Cache")]
-
-        private CanvasGroup _canvasGroup;
-
-        private void Awake() {
-            _canvasGroup = GetComponent<CanvasGroup>();
-        }
 
         public override void Open() {
             StartCoroutine(OpenRoutine());
