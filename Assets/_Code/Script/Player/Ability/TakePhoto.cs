@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Player.Ability {
+namespace Ivayami.Player.Ability {
     public class TakePhoto : PlayerAbility {
 
         private bool _cameraOpen;

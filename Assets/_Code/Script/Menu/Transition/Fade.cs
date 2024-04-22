@@ -1,27 +1,20 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Paranapiacaba.UI {
-    [RequireComponent(typeof(CanvasGroup))]
+namespace Ivayami.UI {
     public class Fade : Menu {
 
         [SerializeField] private bool _interactable;
 
-        [Header("Cache")]
-
-        private CanvasGroup _canvasGroup;
-
-        private void Awake() {
-            _canvasGroup = GetComponent<CanvasGroup>();
-        }
-
         public override void Open() {
             StartCoroutine(OpenRoutine());
+
             Logger.Log(LogType.UI, $"Open Menu '{name}'");
         }
 
         public override void Close() {
             StartCoroutine(CloseRoutine());
+
             Logger.Log(LogType.UI, $"Close Menu '{name}'");
         }
 

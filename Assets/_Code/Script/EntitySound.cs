@@ -1,9 +1,9 @@
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 
-namespace Paranapiacaba.Audio {
+namespace Ivayami.Audio {
     public class EntitySound : MonoBehaviour {
 
         protected void PlayOneShot(EventReference sound) {

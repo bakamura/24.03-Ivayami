@@ -1,5 +1,5 @@
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class SceneTransition : MonoSingleton<SceneTransition> {
 
         private MenuGroup _menuGroup;

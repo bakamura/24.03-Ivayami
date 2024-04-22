@@ -4,7 +4,7 @@ using UnityEngine.Events;
 using UnityEngine;
 using TMPro;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     public class EnterPassword : PasswordUI
     {

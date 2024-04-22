@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Dialogue {
+namespace Ivayami.Dialogue {
     [CreateAssetMenu(menuName = "DialogueSystem/Dialogue")]
     public class Dialogue : ScriptableObject {
 

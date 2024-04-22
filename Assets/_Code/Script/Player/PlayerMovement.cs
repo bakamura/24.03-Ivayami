@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-namespace Paranapiacaba.Player {
+namespace Ivayami.Player {
     public class PlayerMovement : MonoSingleton<PlayerMovement> {
 
         [Header("Inputs")]
