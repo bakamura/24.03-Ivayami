@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
 
         [SerializeField] private Image _entryImage;

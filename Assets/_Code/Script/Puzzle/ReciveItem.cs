@@ -1,8 +1,8 @@
 using UnityEngine;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 using UnityEngine.Events;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     public class ReciveItem : MonoBehaviour, IInteractable
     {

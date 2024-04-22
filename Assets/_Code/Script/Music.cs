@@ -1,10 +1,10 @@
 using FMODUnity;
 using FMOD.Studio;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 using UnityEngine;
 using System.Collections;
 
-namespace Paranapiacaba.Audio {
+namespace Ivayami.Audio {
     public class Music : MonoSingleton<Music> {
 
         [Header("Parameters")]

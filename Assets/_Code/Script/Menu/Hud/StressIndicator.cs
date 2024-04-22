@@ -1,7 +1,7 @@
-using Paranapiacaba.Player;
+using Ivayami.Player;
 using UnityEngine;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class StressIndicator : MonoBehaviour {
 
         [System.Serializable]

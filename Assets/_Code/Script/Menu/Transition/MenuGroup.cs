@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class MenuGroup : MonoBehaviour {
 
         [SerializeField] private Menu _currentMenu;

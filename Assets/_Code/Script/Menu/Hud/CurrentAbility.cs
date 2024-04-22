@@ -1,9 +1,9 @@
-using Paranapiacaba.Player;
+using Ivayami.Player;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class CurrentAbility : MonoBehaviour {
 
         [Header("Parameters")]

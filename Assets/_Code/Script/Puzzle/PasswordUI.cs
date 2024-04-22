@@ -3,7 +3,7 @@ using UnityEngine.UI;
 //using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class PasswordUI : MonoBehaviour

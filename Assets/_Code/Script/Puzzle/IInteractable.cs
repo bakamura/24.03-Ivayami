@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-namespace Paranapiacaba.Puzzle {
+namespace Ivayami.Puzzle {
     public interface IInteractable {
 
         public GameObject gameObject { get; }

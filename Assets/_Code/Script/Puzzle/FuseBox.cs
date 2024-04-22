@@ -4,9 +4,9 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine.Events;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     public class FuseBox : Activator, IInteractable
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     public class Activable : MonoBehaviour
     {

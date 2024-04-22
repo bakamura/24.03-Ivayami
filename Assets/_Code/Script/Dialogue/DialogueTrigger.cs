@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Dialogue
+namespace Ivayami.Dialogue
 {
     public class DialogueTrigger : MonoBehaviour
     {

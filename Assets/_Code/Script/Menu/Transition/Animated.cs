@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Linq;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class Animated : Menu {
 
         [Header("Cache")]

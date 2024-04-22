@@ -1,7 +1,7 @@
 using UnityEngine;
-using Paranapiacaba.Scene;
+using Ivayami.Scene;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class Map : MonoBehaviour {
 
         [SerializeField] private RectTransform _playerPointer;

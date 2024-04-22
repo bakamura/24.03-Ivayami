@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class Bag : MonoBehaviour {
 
         [SerializeField] private BagItem _itemBtnPrefab;

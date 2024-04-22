@@ -1,5 +1,5 @@
 
-namespace Paranapiacaba.Player {
+namespace Ivayami.Player {
     public enum ItemType {
         Special,
         Consumable,

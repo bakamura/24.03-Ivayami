@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     [CreateAssetMenu(menuName = "ChapterInfo/Description")]
     public class ChapterDescription : ScriptableObject {
 

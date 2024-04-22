@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class Slide : Menu {
 
         [Header("Parameters")]

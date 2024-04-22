@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Collections;
 using TMPro;
 using System;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
 
-namespace Paranapiacaba.Dialogue {
+namespace Ivayami.Dialogue {
     [RequireComponent(typeof(CanvasGroup))]
     public class DialogueController : MonoSingleton<DialogueController> {
 

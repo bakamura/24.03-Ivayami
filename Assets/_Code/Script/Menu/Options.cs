@@ -1,10 +1,10 @@
-using Paranapiacaba.Audio;
-using Paranapiacaba.Save;
+using Ivayami.Audio;
+using Ivayami.Save;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class Options : MonoBehaviour {
 
         [Header("UI")]

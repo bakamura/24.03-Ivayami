@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-namespace Paranapiacaba.Dialogue
+namespace Ivayami.Dialogue
 {
     [CustomEditor(typeof(DialogueEvents))]
     public class DialogueEventsInspector : Editor

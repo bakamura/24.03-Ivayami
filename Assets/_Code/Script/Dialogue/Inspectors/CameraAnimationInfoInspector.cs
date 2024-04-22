@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using Cinemachine;
 
-namespace Paranapiacaba.Dialogue
+namespace Ivayami.Dialogue
 {
     [CustomEditor(typeof(CameraAnimationInfo))]
     public class CameraAnimationInfoInspector : Editor

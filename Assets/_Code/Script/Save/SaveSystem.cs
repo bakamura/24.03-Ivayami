@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Paranapiacaba.Save {
+namespace Ivayami.Save {
     public class SaveSystem : MonoSingleton<SaveSystem> {
 
         public SaveProgress Progress { get; private set; }
