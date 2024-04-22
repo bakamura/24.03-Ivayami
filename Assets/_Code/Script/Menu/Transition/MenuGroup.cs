@@ -33,7 +33,8 @@ namespace Paranapiacaba.UI {
             _currentMenu.Open();
             _transitionCoroutine = null;
 
-            EventSystem.current.SetSelectedGameObject(_currentMenu.GetComponentInChildren<Button>().gameObject);
+            GameObject newSelectedObject = _currentMenu.GetComponentInChildren<Button>().gameObject;
+            if(newSelectedObject != null) EventSystem.current.SetSelectedGameObject(newSelectedObject);
 
             Logger.Log(LogType.UI, $"Change Menu End");
         }
