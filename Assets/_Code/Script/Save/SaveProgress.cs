@@ -8,5 +8,9 @@ namespace Paranapiacaba.Save {
         public byte currentSubChapter;
         public string[] inventory;
 
+        public SaveProgress(byte id) {
+            this.id = id;
+        }
+
     }
 }
