@@ -1,9 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 
-namespace Paranapiacaba.Enemy
+namespace Ivayami.Enemy
 {
     public class Shade : MonoBehaviour
     {

@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using Paranapiacaba.Player;
-using Paranapiacaba.Prop;
+using Ivayami.Player;
+using Ivayami.Puzzle;
 
-namespace Paranapiacaba.Enemy
+namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider))]
     public class Patrol : MonoBehaviour

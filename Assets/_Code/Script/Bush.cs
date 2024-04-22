@@ -1,7 +1,7 @@
 using UnityEngine;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 
-namespace Paranapiacaba.Prop
+namespace Ivayami.Puzzle
 {
     [RequireComponent(typeof(Collider))]
     public class Bush : MonoBehaviour
