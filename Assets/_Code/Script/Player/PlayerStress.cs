@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Paranapiacaba.Player {
+namespace Ivayami.Player {
     public class PlayerStress : MonoSingleton<PlayerStress> {
 
         [Header("Events")]
@@ -33,22 +33,43 @@ namespace Paranapiacaba.Player {
         public void AddStress(float amount) {
             if (!_failState) {
                 _stressCurrent += amount;
-                onStressChange.Invoke(_stressCurrent / _stressMax);
+                onStressChange.Invoke(_stressCurrent);
+
+                float stressRelieveDelayTimerLast = _stressRelieveDelayTimer;
                 _stressRelieveDelayTimer = 0;
                 if (_stressRelieveRoutine == null) _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
+                else {
+                    if (stressRelieveDelayTimerLast >= _stressRelieveDelay) {
+                        StopCoroutine(_stressRelieveRoutine);
+                        _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
+
+                        Logger.Log(LogType.Player, $"Interrupted Relieving Stress");
+                    }
+                }
+
 
                 Logger.Log(LogType.Player, $"Stress Meter: {_stressCurrent}/{_stressMax}");
             }
         }
 
         private IEnumerator StressRelieveAuto() {
-            while (_stressRelieveDelayTimer < _stressRelieveDelay) _stressRelieveDelayTimer += Time.deltaTime;
-
-            while (_stressCurrent > _stressMin) {
-                _stressCurrent -= _stressRelieveRate / Time.deltaTime;
+            while (_stressRelieveDelayTimer < _stressRelieveDelay) {
+                _stressRelieveDelayTimer += Time.deltaTime;
 
                 yield return null;
             }
+
+            Logger.Log(LogType.Player, $"Started Relieving Stress");
+
+            while (_stressCurrent > _stressMin) {
+                _stressCurrent -= _stressRelieveRate * Time.deltaTime;
+                onStressChange.Invoke(_stressCurrent);
+
+                yield return null;
+            }
+
+            Logger.Log(LogType.Player, $"Ended Relieving Stress");
+
             _stressCurrent = _stressMin;
             _stressRelieveRoutine = null;
         }

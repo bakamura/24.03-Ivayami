@@ -3,7 +3,7 @@ using UnityEngine.UI;
 //using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class PasswordUI : MonoBehaviour
@@ -14,6 +14,8 @@ namespace Paranapiacaba.Puzzle
         [SerializeField] private Button _initialSelectedButton;
 
         private CanvasGroup _canvasGroup;
+
+        public Button FallbackButton => _initialSelectedButton;
 
         protected virtual void Awake()
         {

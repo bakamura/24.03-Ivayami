@@ -1,10 +1,11 @@
 using UnityEngine;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class Quit : MonoBehaviour {
 
         public void QuitGame() {
-            Debug.LogWarning("Method Not Implemented Yet");
+            Logger.Log(LogType.UI, $"Quitting Game");
+            Application.Quit();
         }
 
     }

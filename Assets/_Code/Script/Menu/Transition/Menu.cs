@@ -1,9 +1,18 @@
 using UnityEngine;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
+    [RequireComponent(typeof(CanvasGroup))]
     public abstract class Menu : MonoBehaviour {
 
-        [SerializeField] private AnimationCurve _transitionCurve;
+        [SerializeField] protected AnimationCurve _transitionCurve;
+        [SerializeField] protected float _transitionDuration;
+        public float TransitionDuration { get { return _transitionDuration; } }
+
+        protected CanvasGroup _canvasGroup;
+
+        protected virtual void Awake() {
+            _canvasGroup = GetComponent<CanvasGroup>();
+        }
 
         public abstract void Open();
 

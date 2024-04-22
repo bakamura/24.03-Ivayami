@@ -1,17 +1,16 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Dialogue
+namespace Ivayami.Dialogue
 {
     public class CameraAnimationInfo : MonoBehaviour
     {
         [Min(0)] public float duration;
         public AnimationCurve positionCurve;
         public AnimationCurve rotationCurve;
-        [SerializeField] private bool _willBeInDialogue = true;
 
         public void StartMovement()
         {
-            DialogueCamera.Instance.MoveRotate(this, _willBeInDialogue);
+            DialogueCamera.Instance.MoveRotate(this, DialogueController.Instance.IsDialogueActive);
         }
 
         public void ExitDialogueCamera()

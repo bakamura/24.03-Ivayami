@@ -3,14 +3,14 @@ using UnityEngine.Serialization;
 using Cinemachine;
 using System.Collections;
 
-namespace Paranapiacaba.Dialogue {
+namespace Ivayami.Dialogue {
     public class DialogueCamera : MonoSingleton<DialogueCamera> {
 
         //[SerializeField] private float _defaultDuration = 1f;
         //[SerializeField, FormerlySerializedAs("Default Position Blend")] private AnimationCurve _defaultPositionCurve;
         //[SerializeField, FormerlySerializedAs("Default Rotation Blend")] private AnimationCurve _defaultRotationCurve;
-        [SerializeField] private CinemachineVirtualCamera _dialogueCamera;
-        [SerializeField] private Camera _gameplayCamera;
+        private CinemachineVirtualCamera _dialogueCamera;
+        private Camera _gameplayCamera;
 
         private int _gameplayCameraPriority;
         private Coroutine _animationCoroutine;
@@ -21,6 +21,9 @@ namespace Paranapiacaba.Dialogue {
 
         private void Start()
         {
+            _dialogueCamera = GetComponentInChildren<CinemachineVirtualCamera>();
+            _gameplayCamera = Camera.main;
+
             _gameplayCameraPriority = FindObjectOfType<CinemachineFreeLook>().Priority;
 
             DialogueController.Instance.OnDialogeStart += HandleOnDialogeStart;

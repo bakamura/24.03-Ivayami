@@ -1,27 +1,26 @@
 using UnityEngine;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 using UnityEngine.InputSystem;
-using TMPro;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
-        [SerializeField] private InputActionAsset _inputActionMap;
+        [SerializeField] private InputActionReference _navigateUIInput;
+        //[SerializeField] private InputActionAsset _inputActionMap;
 
         [SerializeField] private InteractionTypes _interactionType;
 
         [SerializeField] private ItemRequestData[] _itemsRequired;
         [SerializeField] private CanvasGroup _deliverItemsUI;
         [SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
-        [SerializeField] private InputActionReference _navigateUIInput;
         [SerializeField] private GameObject _deliverBtn;
+        [SerializeField] private UnityEvent _onItemDeliverFailed;
 
         [SerializeField] private PasswordUI _passwordUI;
 
@@ -34,6 +33,9 @@ namespace Paranapiacaba.Puzzle
         private int _currentPositionInInventory = 0;
         private List<InventoryItem> _currentItemList = new List<InventoryItem>();
         private sbyte _currentItemsDelivered;
+        private InteratctableHighlight _interatctableHighlight;
+
+        public InteratctableHighlight InteratctableHighlight { get => _interatctableHighlight; }
 
         [System.Serializable]
         public enum InteractionTypes
@@ -52,13 +54,12 @@ namespace Paranapiacaba.Puzzle
 
         private void Awake()
         {
-            _cancelInteractionInput.action.performed += HandleExitInteraction;
-            _navigateUIInput.action.performed += HandleNavigateDeliverUI;
             _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
+            _interatctableHighlight = GetComponent<InteratctableHighlight>();
         }
 
         [ContextMenu("Interact")]
-        public void Interact()
+        public bool Interact()
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
@@ -70,6 +71,7 @@ namespace Paranapiacaba.Puzzle
             {
                 UpdateDeliverItemUI(true);
             }
+            return false;
         }
 
         public void TryUnlock()
@@ -81,6 +83,7 @@ namespace Paranapiacaba.Puzzle
                 _passwordUI.UpdateActiveState(false);
                 UpdateDeliverItemUI(false);
                 UpdateInputs(false);
+                IsActive = !IsActive;
                 onActivate?.Invoke();
             }
         }
@@ -89,18 +92,32 @@ namespace Paranapiacaba.Puzzle
         {
             if (isActive)
             {
-                //gameplay actions
-                _inputActionMap.actionMaps[0].Disable();
-                //ui actions
-                _inputActionMap.actionMaps[1].Enable();                
+                _cancelInteractionInput.action.performed += HandleExitInteraction;
+                _navigateUIInput.action.performed += HandleNavigateDeliverUI;
+                PlayerActions.Instance.ChangeInputMap("Menu");
+                ////gameplay actions
+                //_inputActionMap.actionMaps[0].Disable();
+                ////ui actions
+                //_inputActionMap.actionMaps[1].Enable();                
             }
             else
             {
-                //gameplay actions
-                _inputActionMap.actionMaps[0].Enable();
-                //ui actions
-                _inputActionMap.actionMaps[1].Disable();
+                _cancelInteractionInput.action.performed -= HandleExitInteraction;
+                _navigateUIInput.action.performed -= HandleNavigateDeliverUI;
+                PlayerActions.Instance.ChangeInputMap("Player");
+                ////gameplay actions
+                //_inputActionMap.actionMaps[0].Enable();
+                ////ui actions
+                //_inputActionMap.actionMaps[1].Disable();
             }
+        }
+
+        public void CancelInteraction()
+        {
+            _passwordUI.UpdateActiveState(false);
+            UpdateDeliverItemUI(false);
+            UpdateInputs(false);
+            _onCancelInteraction?.Invoke();
         }
 
         private void HandleExitInteraction(InputAction.CallbackContext context)
@@ -110,14 +127,32 @@ namespace Paranapiacaba.Puzzle
                 CancelInteraction();
             }
         }
-        public void CancelInteraction()
-        {
-            _passwordUI.UpdateActiveState(false);
-            UpdateDeliverItemUI(false);
-            UpdateInputs(false);
-            _onCancelInteraction?.Invoke();
-        }
 
+        private void HandleNavigateDeliverUI(InputAction.CallbackContext context)
+        {
+            Vector2 input = context.ReadValue<Vector2>();
+            if (input != Vector2.zero)
+            {
+                switch (_interactionType)
+                {
+                    case InteractionTypes.RequirePassword:
+                        if (EventSystem.current.currentSelectedGameObject == null)
+                            EventSystem.current.SetSelectedGameObject(_passwordUI.FallbackButton.gameObject);
+                        break;
+                    case InteractionTypes.RequireItems:
+                        if (EventSystem.current.currentSelectedGameObject == null)
+                            EventSystem.current.SetSelectedGameObject(_deliverBtn);
+                        else if (input.y != 0)
+                        {
+                            int temp = -input.y > 0 ? 1 : -1;
+                            _currentPositionInInventory += temp;
+                            _selectedDeliverOptionIndex += temp;
+                            UpdateInventoryIcons();
+                        }
+                        break;
+                }
+            }
+        }
 
         #region DeliverUI
 
@@ -130,53 +165,58 @@ namespace Paranapiacaba.Puzzle
             if (isActive)
             {
                 _currentPositionInInventory = 0;
-                _selectedDeliverOptionIndex = Mathf.FloorToInt(_deliverOptions.Length / 2);
-                _currentItemList = PlayerInventory.Instance.CheckInventory().Where(x => CheckItemType(x.type)).ToList();
+                if(_itemsRequired.Length < Mathf.Floor(_deliverOptions.Length / 2))
+                    _selectedDeliverOptionIndex = Mathf.FloorToInt(_itemsRequired.Length / Mathf.Ceil(_deliverOptions.Length / 2f));
+                else                
+                    _selectedDeliverOptionIndex = Mathf.FloorToInt(_deliverOptions.Length / 2);
+                
+                if (_currentItemList.Count == 0)
+                {
+                    for (int i = 0; i < _itemsRequired.Length; i++)
+                    {
+                        _currentItemList.Add(_itemsRequired[i].Item);
+                    }
+                }
                 for (int i = 0; i < _deliverOptions.Length; i++)
                 {
-                    if (i == _currentItemList.Count) break;
-                    _deliverOptions[i].sprite = _currentItemList[i].sprite;
+                    if (i >= _itemsRequired.Length)
+                    {
+                        _deliverOptions[i].sprite = _itemsRequired[^1].Item.sprite;
+                    }
+                    else _deliverOptions[i].sprite = _itemsRequired[i].Item.sprite;
                 }
                 EventSystem.current.SetSelectedGameObject(_deliverBtn);
             }
         }
 
-        private bool CheckItemType(ItemType itemType)
-        {
-            for(int i = 0; i < _itemsRequired.Length; i++)
-            {
-                if (_itemsRequired[i].Item.type == itemType)
-                    return true;
-            }
-            return false;
-        }        
-
-        private void HandleNavigateDeliverUI(InputAction.CallbackContext context)
-        {
-            if (_interactionType == InteractionTypes.RequireItems && context.ReadValue<Vector2>().y != 0)
-            {
-                int temp = -context.ReadValue<Vector2>().y > 0 ? 1 : -1;
-                _currentPositionInInventory += temp;
-                _selectedDeliverOptionIndex += temp;
-                UpdateInventoryIcons();
-            }
-        }
+        //private bool CheckItemType(ItemType itemType)
+        //{
+        //    for(int i = 0; i < _itemsRequired.Length; i++)
+        //    {
+        //        if (_itemsRequired[i].Item.type == itemType)
+        //            return true;
+        //    }
+        //    return false;
+        //}                
 
         //called by interface Btn
         public void DeliverItem()
         {
-            for(int i = 0; i < _itemsRequired.Length; i++)
+            for (int i = 0; i < _itemsRequired.Length; i++)
             {
-                if(_itemsRequired[i].Item.id == _currentItemList[_selectedDeliverOptionIndex].id && !_itemsRequired[i].ItemDelivered)
+                if (_itemsRequired[i].Item.name == _currentItemList[_selectedDeliverOptionIndex].name
+                    && PlayerInventory.Instance.CheckInventoryFor(_currentItemList[_selectedDeliverOptionIndex].name)
+                    && !_itemsRequired[i].ItemDelivered)
                 {
                     _itemsRequired[i].ItemDelivered = true;
                     _itemsRequired[i].OnItemDelivered?.Invoke();
                     PlayerInventory.Instance.RemoveFromInventory(_currentItemList[_selectedDeliverOptionIndex]);
                     _currentItemsDelivered++;
                     TryUnlock();
-                    break;
+                    return;
                 }
             }
+            _onItemDeliverFailed?.Invoke();
         }
 
         private void UpdateInventoryIcons()

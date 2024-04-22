@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Dialogue {
+namespace Ivayami.Dialogue {
     [CreateAssetMenu(menuName = "DialogueSystem/Dialogue")]
     public class Dialogue : ScriptableObject {
 
@@ -10,6 +10,7 @@ namespace Paranapiacaba.Dialogue {
 
         private bool _hasBeenInstantiated;
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (!_hasBeenInstantiated)
@@ -23,6 +24,6 @@ namespace Paranapiacaba.Dialogue {
         {
             DialogueEventsInspector.UpdateDialoguesList();
         }
-
+#endif
     }
 }
