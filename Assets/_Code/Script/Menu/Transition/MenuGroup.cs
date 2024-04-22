@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Paranapiacaba.UI {
     public class MenuGroup : MonoBehaviour {
@@ -7,8 +9,11 @@ namespace Paranapiacaba.UI {
         [SerializeField] private Menu _currentMenu;
         [SerializeField] private float _delayToOpen;
         private Coroutine _transitionCoroutine;
+        [SerializeField] private bool _setMenuBtnSelectedOnStart;
 
-
+        private void Start() {
+            if (_setMenuBtnSelectedOnStart) EventSystem.current.SetSelectedGameObject(_currentMenu.GetComponentInChildren<Button>().gameObject);
+        }
 
         public void CloseCurrentThenOpen(Menu menuToOpen) {
             if (menuToOpen != _currentMenu) {
@@ -19,6 +24,7 @@ namespace Paranapiacaba.UI {
 
         private IEnumerator CloseCurrentThenOpenRoutine(Menu menuToOpen) {
             Logger.Log(LogType.UI, $"Change Menu Start");
+
             _currentMenu?.Close();
             _currentMenu = menuToOpen;
 
@@ -26,6 +32,10 @@ namespace Paranapiacaba.UI {
 
             _currentMenu.Open();
             _transitionCoroutine = null;
+
+            GameObject newSelectedObject = _currentMenu.GetComponentInChildren<Button>().gameObject;
+            if(newSelectedObject != null) EventSystem.current.SetSelectedGameObject(newSelectedObject);
+
             Logger.Log(LogType.UI, $"Change Menu End");
         }
 

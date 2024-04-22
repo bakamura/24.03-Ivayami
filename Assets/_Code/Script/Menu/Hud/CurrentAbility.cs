@@ -1,11 +1,9 @@
 using Paranapiacaba.Player;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Paranapiacaba.UI {
-    [RequireComponent(typeof(CanvasGroup))]
     public class CurrentAbility : MonoBehaviour {
 
         [Header("Parameters")]
