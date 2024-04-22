@@ -2,6 +2,7 @@ using Paranapiacaba.Player;
 using Paranapiacaba.Save;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace Paranapiacaba.UI {
@@ -12,10 +13,15 @@ namespace Paranapiacaba.UI {
         [SerializeField] private Image _previewImage;
         [SerializeField] private TextMeshProUGUI _previewText;
 
+        [Header("Input Stopping")]
+
+        [SerializeField] private InputActionReference _pauseInput;
+
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
 
         private void Awake() {
             PlayerActions.Instance.ChangeInputMap("Menu");
+            _pauseInput.action.Disable();
         }
 
         public void DisplaySaveInfo(int saveId) {
@@ -24,7 +30,10 @@ namespace Paranapiacaba.UI {
 
                 Logger.Log(LogType.UI, $"Try Display Save {saveId}");
             }
-            else EnterSave();
+            else {
+                EnterSave();
+                _pauseInput.action.Enable();
+            }
         }
 
         private void DisplaySaveInfoCallback() {
