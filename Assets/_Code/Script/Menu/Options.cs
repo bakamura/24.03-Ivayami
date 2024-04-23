@@ -21,6 +21,7 @@ namespace Ivayami.UI {
 
             _musicSlider.value = SaveSystem.Instance.Options.musicVol;
             _sfxSlider.value = SaveSystem.Instance.Options.sfxVol;
+            Music.Instance.SetVolume(_musicSlider.value);
         }
 
         public void ChangeMusicVolume(float newVolume) {
@@ -30,7 +31,6 @@ namespace Ivayami.UI {
 
         public void ChangeSfxVolume(float newVolume) {
             SaveSystem.Instance.Options.sfxVol = newVolume;
-            //EntitySound.SetVolume(newVolume);
         }
 
         public void SaveOptions() {
