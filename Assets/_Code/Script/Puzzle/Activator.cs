@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Paranapiacaba.Puzzle {
+namespace Ivayami.Puzzle {
     public abstract class Activator : MonoBehaviour {
 
         public UnityEvent onActivate;

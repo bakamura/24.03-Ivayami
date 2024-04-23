@@ -2,11 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using Paranapiacaba.Player.Ability;
-using Paranapiacaba.Puzzle;
+using Ivayami.Player.Ability;
+using Ivayami.Puzzle;
 using System.Linq;
 
-namespace Paranapiacaba.Player {
+namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
 
         [Header("Inputs")]
@@ -64,7 +64,7 @@ namespace Paranapiacaba.Player {
         }
 
         private void Update() {
-            if (_interacting) InteractObjectDetect();
+            if (!_interacting) InteractObjectDetect();
         }
 
         private void Interact(InputAction.CallbackContext input) {
@@ -106,7 +106,9 @@ namespace Paranapiacaba.Player {
                 }
             }
             if (_interactableClosest != _interactableClosestCache) {
+                _interactableClosest?.InteratctableHighlight.UpdateHighlight(false);
                 _interactableClosest = _interactableClosestCache;
+                _interactableClosest?.InteratctableHighlight.UpdateHighlight(true);
                 onInteractTargetChange?.Invoke(_interactableClosest);
 
                 Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(_interactableClosestCache != null ? _interactableClosestCache.gameObject.name : "Null")}");

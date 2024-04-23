@@ -1,9 +1,10 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Player {
+namespace Ivayami.Player {
+    [CreateAssetMenu(menuName = "Inventory/Item")]
     public class InventoryItem : ScriptableObject {
 
-        public string id;
+        public string displayName;
         public ItemType type;
         public Sprite sprite;
 
