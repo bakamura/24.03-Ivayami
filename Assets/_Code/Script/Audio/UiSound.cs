@@ -2,6 +2,7 @@ using FMOD.Studio;
 using FMODUnity;
 using Ivayami.Save;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Ivayami.Audio {
     public class UiSound : MonoBehaviour {
@@ -32,15 +33,23 @@ namespace Ivayami.Audio {
         }
 
         public void ChangeSelected() {
-            PlayOneShot(_changeSelectedInstance);
+            if (!EventSystem.current.IsPointerOverGameObject()) {
+                PlayOneShot(_changeSelectedInstance);
+
+                Logger.Log(LogType.UI, $"Play Sound 'ChangeSelected'");
+            }
         }
 
         public void GoForth() {
             PlayOneShot(_goForthInstance);
+
+            Logger.Log(LogType.UI, $"Play Sound 'GoForth'");
         }
 
         public void GoBack() {
             PlayOneShot(_goBackInstance);
+
+            Logger.Log(LogType.UI, $"Play Sound 'GoBack'");
         }
 
     }

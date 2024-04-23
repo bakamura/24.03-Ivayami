@@ -10,9 +10,13 @@ namespace Ivayami.UI {
         [SerializeField] private float _delayToOpen;
         private Coroutine _transitionCoroutine;
         [SerializeField] private bool _setMenuBtnSelectedOnStart;
+        
+        private Navigation _noneNav = new Navigation();
+
 
         private void Start() {
-            if (_setMenuBtnSelectedOnStart) EventSystem.current.SetSelectedGameObject(_currentMenu.GetComponentInChildren<Button>().gameObject);
+            _noneNav.mode = Navigation.Mode.None;
+            if (_setMenuBtnSelectedOnStart) EventSystem.current.SetSelectedGameObject(_currentMenu.GetComponentInChildren<Selectable>().gameObject);
         }
 
         public void CloseCurrentThenOpen(Menu menuToOpen) {
@@ -28,13 +32,13 @@ namespace Ivayami.UI {
             _currentMenu?.Close();
             _currentMenu = menuToOpen;
 
+            Selectable newSelectedObject = _currentMenu.GetComponentInChildren<Selectable>();
+            if (newSelectedObject != null) EventSystem.current.SetSelectedGameObject(newSelectedObject.gameObject);
+
             yield return new WaitForSeconds(_delayToOpen >= 0 ? _delayToOpen : (_currentMenu != null ? _currentMenu.TransitionDuration : 0f));
 
             _currentMenu.Open();
             _transitionCoroutine = null;
-
-            GameObject newSelectedObject = _currentMenu.GetComponentInChildren<Selectable>()?.gameObject;
-            if(newSelectedObject != null) EventSystem.current.SetSelectedGameObject(newSelectedObject);
 
             Logger.Log(LogType.UI, $"Change Menu End");
         }
