@@ -1,9 +1,9 @@
-using Ivayami.Player;
-using Ivayami.Save;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Ivayami.Player;
+using Ivayami.Save;
 
 namespace Ivayami.UI {
     public class SaveSelector : MonoBehaviour {
@@ -31,8 +31,9 @@ namespace Ivayami.UI {
                 Logger.Log(LogType.UI, $"Try Display Save {saveId}");
             }
             else {
-                EnterSave();
                 _pauseInput.action.Enable();
+                PlayerActions.Instance.ChangeInputMap("Player"); //
+                EnterSave();
             }
         }
 

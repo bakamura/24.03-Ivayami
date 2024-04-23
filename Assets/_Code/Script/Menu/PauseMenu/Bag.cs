@@ -9,7 +9,7 @@ namespace Ivayami.UI {
         [SerializeField] private BagItem _itemBtnPrefab;
         [SerializeField] private Transform _itemSpecialSection;
         [SerializeField] private Transform _itemGeneralSection;
-        [SerializeField] private GameObject _itemFocusPreview;
+        [SerializeField] private Transform _itemFocusPreview;
 
         private List<BagItem> _itemBtns;
 
@@ -26,7 +26,8 @@ namespace Ivayami.UI {
         }
 
         public void FocusItem(byte itemIdInBag) {
-            _itemFocusPreview = Instantiate(_itemFocusPreview); //
+            while (_itemFocusPreview.childCount > 0) Destroy(_itemFocusPreview.GetChild(0).gameObject);
+            Instantiate(Resources.Load<GameObject>($"ItemMesh/{itemIdInBag}"), _itemFocusPreview); //
         }
 
     }
