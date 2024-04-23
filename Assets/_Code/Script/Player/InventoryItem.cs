@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Player {
+namespace Ivayami.Player {
     [CreateAssetMenu(menuName = "Inventory/Item")]
     public class InventoryItem : ScriptableObject {
 

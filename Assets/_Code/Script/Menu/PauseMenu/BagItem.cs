@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class BagItem : MonoBehaviour {
 
         [Header("Parameters")]

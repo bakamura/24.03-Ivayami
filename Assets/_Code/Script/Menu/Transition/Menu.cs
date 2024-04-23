@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class Menu : MonoBehaviour {
 

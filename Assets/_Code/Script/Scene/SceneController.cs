@@ -1,11 +1,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-using Paranapiacaba.Save;
+using Ivayami.Save;
 using UnityEngine.Events;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 
-namespace Paranapiacaba.Scene
+namespace Ivayami.Scene
 {
     public class SceneController : MonoSingleton<SceneController>
     {

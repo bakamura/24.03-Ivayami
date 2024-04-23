@@ -4,7 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Paranapiacaba.Save {
+namespace Ivayami.Save {
     public class SaveSystem : MonoSingleton<SaveSystem> {
 
         public SaveProgress Progress { get; private set; }
@@ -48,7 +48,7 @@ namespace Paranapiacaba.Save {
                 Logger.Log(LogType.Save, $"Loaded Save of type '{type.Name}' in {savePath}");
             }
             else {
-                if (type == typeof(SaveProgress)) Progress = new SaveProgress();
+                if (type == typeof(SaveProgress)) Progress = new SaveProgress(byte.Parse(savePath.Split('_')[1]));
                 else Options = new SaveOptions();
                 loadSaveCallback?.Invoke();
 

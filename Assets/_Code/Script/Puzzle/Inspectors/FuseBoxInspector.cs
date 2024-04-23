@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEditor;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     [CustomEditor(typeof(FuseBox))]
     public class FuseBoxInspector : Editor

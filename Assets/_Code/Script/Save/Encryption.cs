@@ -3,7 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Paranapiacaba.Save {
+namespace Ivayami.Save {
     public static class Encryption {
 
         private const string key = "If_You_Decrypt_This_You_Gay89012";

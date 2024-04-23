@@ -1,5 +1,5 @@
 
-namespace Paranapiacaba.Save {
+namespace Ivayami.Save {
     [System.Serializable]
     public class SaveProgress {
 
@@ -7,6 +7,10 @@ namespace Paranapiacaba.Save {
         public byte currentChapter;
         public byte currentSubChapter;
         public string[] inventory;
+
+        public SaveProgress(byte id) {
+            this.id = id;
+        }
 
     }
 }

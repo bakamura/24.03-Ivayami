@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Player.Ability {
+namespace Ivayami.Player.Ability {
     public abstract class PlayerAbility : MonoBehaviour {
 
         public abstract void AbilityStart();

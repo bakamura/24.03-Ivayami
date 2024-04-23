@@ -1,11 +1,11 @@
-using Paranapiacaba.Player;
-using Paranapiacaba.Save;
+using Ivayami.Player;
+using Ivayami.Save;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class SaveSelector : MonoBehaviour {
 
         [Header("UI")]
