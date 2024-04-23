@@ -23,6 +23,7 @@ namespace Ivayami.Audio {
 
         public void SetMusic(EventReference musicEventRef) {
             if (!musicEventRef.IsNull) {
+                _musicInstanceCurrent.release();
                 _musicInstanceCurrent = RuntimeManager.CreateInstance(musicEventRef);
                 _musicInstanceCurrent.setVolume(SaveSystem.Instance.Options.musicVol);
 
