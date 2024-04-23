@@ -1,7 +1,7 @@
 using UnityEngine;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 
-namespace Paranapiacaba.Prop
+namespace Ivayami.Puzzle
 {
     [RequireComponent(typeof(Collider))]
     public class Bush : MonoBehaviour
@@ -11,23 +11,17 @@ namespace Paranapiacaba.Prop
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.CompareTag("Player"))
-            {
-                PlayerMovement.Instance.onCrouch.AddListener(HandleOnCrouch);
-                _isPlayerInside = true;
-                UpdateHiddenState();
-            }
+            PlayerMovement.Instance.onCrouch.AddListener(HandleOnCrouch);
+            _isPlayerInside = true;
+            UpdateHiddenState();
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.CompareTag("Player"))
-            {
-                _isPlayerInside = false;
-                IsPlayerHidden = false;
-                PlayerMovement.Instance.onCrouch.RemoveListener(HandleOnCrouch);
-                UpdateHiddenState();
-            }
+            _isPlayerInside = false;
+            IsPlayerHidden = false;
+            PlayerMovement.Instance.onCrouch.RemoveListener(HandleOnCrouch);
+            UpdateHiddenState();
         }
 
         private void HandleOnCrouch(bool isCrouching)
