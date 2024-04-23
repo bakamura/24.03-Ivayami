@@ -33,12 +33,14 @@ namespace Ivayami.Enemy
         private CapsuleCollider _collision;
         private Vector3 _initialPosition;
         private bool _isChasing;
+        private EnemyAnimator _enemyAnimator;
 
         private void Awake()
         {
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _collision = GetComponent<CapsuleCollider>();
             _delay = new WaitForSeconds(_tickFrequency);
+            _enemyAnimator = GetComponentInChildren<EnemyAnimator>();
 
             _initialPosition = transform.position;
             _navMeshAgent.stoppingDistance = _collision.radius + .2f;
@@ -46,6 +48,7 @@ namespace Ivayami.Enemy
 
         private void Update()
         {
+            _enemyAnimator.Walking(_navMeshAgent.velocity.sqrMagnitude > 0);
             if (_isChasing)
                 PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * Time.deltaTime);
         }
