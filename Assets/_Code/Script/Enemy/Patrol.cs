@@ -89,6 +89,7 @@ namespace Ivayami.Enemy
             }
         }
 
+        #region Debug
         private void OnDrawGizmosSelected()
         {
             if (_debugDraw)
@@ -217,5 +218,6 @@ namespace Ivayami.Enemy
 
             return pyramid;
         }
+        #endregion
     }
 }
