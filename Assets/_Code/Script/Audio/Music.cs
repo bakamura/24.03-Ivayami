@@ -1,8 +1,9 @@
 using FMODUnity;
 using FMOD.Studio;
-using Ivayami.Player;
 using UnityEngine;
 using System.Collections;
+using Ivayami.Player;
+using Ivayami.Save;
 
 namespace Ivayami.Audio {
     public class Music : MonoSingleton<Music> {
@@ -15,7 +16,6 @@ namespace Ivayami.Audio {
         [Header("Cache")]
 
         private EventInstance _musicInstanceCurrent;
-        private float _volume;
 
         private void Start() {
             PlayerStress.Instance.onStressChange.AddListener(UpdateMusicToStress);
@@ -23,11 +23,13 @@ namespace Ivayami.Audio {
 
         public void SetMusic(EventReference musicEventRef) {
             if (!musicEventRef.IsNull) {
+                _musicInstanceCurrent.release();
                 _musicInstanceCurrent = RuntimeManager.CreateInstance(musicEventRef);
-                SetVolume(_volume);
+                _musicInstanceCurrent.setVolume(SaveSystem.Instance.Options.musicVol);
 
                 StopAllCoroutines();
                 _musicInstanceCurrent.setCallback((eventCallback, a, b) => { StartCoroutine(ReplayMusicAfterDelay()); return FMOD.RESULT.OK; }, EVENT_CALLBACK_TYPE.STOPPED);
+                _musicInstanceCurrent.start();
             }
         }
 
@@ -42,8 +44,7 @@ namespace Ivayami.Audio {
         }
 
         public void SetVolume(float volume) {
-            _volume = volume;
-            _musicInstanceCurrent.setVolume(_volume);
+            _musicInstanceCurrent.setVolume(volume);
         }
 
     }
