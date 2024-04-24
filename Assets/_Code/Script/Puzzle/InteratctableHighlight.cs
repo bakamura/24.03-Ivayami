@@ -25,10 +25,11 @@ namespace Ivayami.Puzzle
             _baseColors = new List<Color>();   
             foreach (Renderer render in GetComponentsInChildren<Renderer>())
             {
-                if (render.material.GetColor(_colorVarName) == Color.black)
+                Color emissiveColor = render.material.GetColor(_colorVarName);
+                if (emissiveColor == Color.black)
                 {
                     _materials.Add(render.material);
-                    _baseColors.Add(render.material.GetColor(_colorVarName));
+                    _baseColors.Add(emissiveColor);
                 }
             }
         }
