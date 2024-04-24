@@ -22,7 +22,7 @@ namespace Ivayami.Audio {
         private void PlayOneShot(EventInstance sound) {
             sound.getPlaybackState(out PLAYBACK_STATE state);
             if (state == PLAYBACK_STATE.PLAYING) sound.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-            sound.setVolume(SaveSystem.Instance.Options.sfxVol);
+            sound.setVolume(SaveSystem.Instance.Options != null ? SaveSystem.Instance.Options.sfxVol : 0f);
             sound.start();
         }
 
