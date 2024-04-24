@@ -1,8 +1,7 @@
+using UnityEngine;
 using FMOD.Studio;
 using FMODUnity;
 using Ivayami.Save;
-using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Ivayami.Audio {
     public class UiSound : MonoBehaviour {
