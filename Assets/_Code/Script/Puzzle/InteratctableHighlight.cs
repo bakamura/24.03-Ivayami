@@ -22,10 +22,11 @@ namespace Ivayami.Puzzle
         private void FindMaterial()
         {
             _materials = new List<Material>();
-            _baseColors = new List<Color>();   
+            _baseColors = new List<Color>();
+            Color emissiveColor;
             foreach (Renderer render in GetComponentsInChildren<Renderer>())
             {
-                Color emissiveColor = render.material.GetColor(_colorVarName);
+                emissiveColor = render.material.GetColor(_colorVarName);
                 if (emissiveColor == Color.black)
                 {
                     _materials.Add(render.material);
