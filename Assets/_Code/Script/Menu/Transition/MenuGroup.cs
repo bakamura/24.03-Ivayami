@@ -43,5 +43,9 @@ namespace Ivayami.UI {
             Logger.Log(LogType.UI, $"Change Menu End");
         }
 
+        public void SetSelected(GameObject selectedObject) {
+            EventSystem.current.SetSelectedGameObject(selectedObject);
+        }
+
     }
 }

@@ -33,11 +33,9 @@ namespace Ivayami.Audio {
         }
 
         public void ChangeSelected() {
-            if (!EventSystem.current.IsPointerOverGameObject()) {
-                PlayOneShot(_changeSelectedInstance);
+            PlayOneShot(_changeSelectedInstance);
 
-                Logger.Log(LogType.UI, $"Play Sound 'ChangeSelected'");
-            }
+            Logger.Log(LogType.UI, $"Play Sound 'ChangeSelected'");
         }
 
         public void GoForth() {
