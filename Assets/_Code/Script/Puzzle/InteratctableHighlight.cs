@@ -8,12 +8,12 @@ namespace Ivayami.Puzzle
         [SerializeField] private Color _highlightedColor;
         private List<Material> _materials;
         private List<Color> _baseColors;
-        private const string _colorVarName = "_EmissionColor";
+        private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
 
         public void UpdateHighlight(bool isActive)
         {
             if (_materials == null) FindMaterial();
-            for(int i = 0; i < _materials.Count; i++)
+            for (int i = 0; i < _materials.Count; i++)
             {
                 _materials[i].SetColor(_colorVarName, isActive ? _highlightedColor : _baseColors[i]);
             }
@@ -22,12 +22,14 @@ namespace Ivayami.Puzzle
         private void FindMaterial()
         {
             _materials = new List<Material>();
-            _baseColors = new List<Color>();
-            if (TryGetComponent<Renderer>(out Renderer temp))_materials.Add(temp.material);    
-            foreach(Renderer render in GetComponentsInChildren<Renderer>())
+            _baseColors = new List<Color>();   
+            foreach (Renderer render in GetComponentsInChildren<Renderer>())
             {
-                _materials.Add(render.material);
-                _baseColors.Add(render.material.GetColor(_colorVarName));
+                if (render.material.GetColor(_colorVarName) == Color.black)
+                {
+                    _materials.Add(render.material);
+                    _baseColors.Add(render.material.GetColor(_colorVarName));
+                }
             }
         }
     }
