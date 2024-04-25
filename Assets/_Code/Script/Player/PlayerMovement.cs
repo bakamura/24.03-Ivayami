@@ -31,6 +31,7 @@ namespace Ivayami.Player {
         [Header("Rotation")]
 
         [SerializeField] private Transform _visualTransform;
+        [SerializeField, Range(0f, 0.99f)] private float _turnSmoothFactor;
 
         [Header("Crouch")]
 
@@ -95,11 +96,11 @@ namespace Ivayami.Player {
                 _movementDirectionCache[0] = _inputCache[0];
                 _movementDirectionCache[2] = _inputCache[1];
                 _targetAngle = Quaternion.Euler(0, Mathf.Atan2(_movementDirectionCache.x, _movementDirectionCache.z) * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y, 0);
-                _directionDifferenceToInputAngleCache = Mathf.Abs(_targetAngle.eulerAngles.y - _cameraAimTargetRotator.eulerAngles.y);
-                if (_directionDifferenceToInputAngleCache > 180) _directionDifferenceToInputAngleCache -= 180f;
+                //_directionDifferenceToInputAngleCache = Mathf.Abs(_targetAngle.eulerAngles.y - _cameraAimTargetRotator.eulerAngles.y);
+                //if (_directionDifferenceToInputAngleCache > 180) _directionDifferenceToInputAngleCache -= 180f;
                 _movementSpeedMaxCurrent = _movementDirectionCache.magnitude 
                                          * (Crouching ? _crouchSpeedMax : _movementSpeedMax) 
-                                         * Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward);
+                                      /* * Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward)*/;
             }
             _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMaxCurrent); // Could use _decceleration when above max speed
 
@@ -129,7 +130,7 @@ namespace Ivayami.Player {
 
         private void Rotate() {
             _cameraAimTargetRotator.eulerAngles = _cameraTransform.eulerAngles.y * Vector3.up;
-            _visualTransform.eulerAngles = _cameraAimTargetRotator.eulerAngles;
+            _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, 0.25f);
         }
 
         public void ToggleMovement(bool canMove) {
