@@ -1,12 +1,12 @@
 using UnityEngine;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     public class Lock : Activator, IInteractable
     {

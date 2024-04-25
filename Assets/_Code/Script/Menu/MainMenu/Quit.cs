@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class Quit : MonoBehaviour {
 
         public void QuitGame() {

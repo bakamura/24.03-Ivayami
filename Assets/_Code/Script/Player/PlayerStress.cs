@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Paranapiacaba.Player {
+namespace Ivayami.Player {
     public class PlayerStress : MonoSingleton<PlayerStress> {
 
         [Header("Events")]
