@@ -29,7 +29,12 @@ namespace Ivayami.Player {
         [SerializeField] private float _interactSphereCastRadius;
         [SerializeField] private LayerMask _interactLayer;
         private IInteractable _interactableClosest;
-        private bool _interacting = false;
+        public bool Interacting { get; private set; } = false;
+        public IInteractable InteractableTarget { get; private set; }
+
+        [Header("Hand Item")]
+
+        private GameObject _handItemCurrent;
 
         [Header("Abilities")]
 
@@ -43,7 +48,6 @@ namespace Ivayami.Player {
         private RaycastHit[] _raycastHitsCache;
         private IInteractable _interactableClosestCache;
         private float _interactableClosestDistanceCache;
-        public IInteractable InteractableTarget { get; private set; }
         private float _interactableDistanceCache;
 
         protected override void Awake() {
@@ -54,7 +58,7 @@ namespace Ivayami.Player {
             _abilityInput.action.started += Ability;
             _changeAbilityInput.action.started += ChangeAbility;
 
-            onInteractLong.AddListener((interacting) => _interacting = interacting);
+            onInteractLong.AddListener((interacting) => Interacting = interacting);
 
             _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //
 
@@ -64,12 +68,12 @@ namespace Ivayami.Player {
         }
 
         private void Update() {
-            if (!_interacting) InteractObjectDetect();
+            if (!Interacting) InteractObjectDetect();
         }
 
         private void Interact(InputAction.CallbackContext input) {
             if (input.phase == InputActionPhase.Started) {
-                if (_interactableClosest != null) {
+                if (_interactableClosest != null && _interactableClosest != Friend.Instance.InteractableLongCurrent) {
                     _interactableClosest.Interact();
                     if (_interactableClosest is IInteractableLong) {
                         onInteractLong?.Invoke(true);
@@ -84,7 +88,7 @@ namespace Ivayami.Player {
                 }
                 else Logger.Log(LogType.Player, $"Interact: No Target");
             }
-            else if (input.phase == InputActionPhase.Canceled && _interacting) {
+            else if (input.phase == InputActionPhase.Canceled && Interacting) {
                 (_interactableClosest as IInteractableLong).InteractStop();
                 onInteractLong?.Invoke(false);
 

@@ -54,7 +54,7 @@ namespace Ivayami.Player {
         private Vector3 _velocityCache;
         private float _movementSpeedMaxCurrent;
         private Quaternion _targetAngle;
-        private float _directionDifferenceToInputAngleCache;
+        //private float _directionDifferenceToInputAngleCache;
 
         private Rigidbody _rigidbody;
         private CapsuleCollider _collider;

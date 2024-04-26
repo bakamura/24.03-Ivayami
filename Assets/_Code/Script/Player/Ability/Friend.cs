@@ -3,18 +3,16 @@ using Ivayami.Puzzle;
 namespace Ivayami.Player.Ability {
     public class Friend : MonoSingleton<Friend> {
 
-        private IInteractableLong _interactableLongCache;
-
-        public bool Interacting { get { return _interactableLongCache != null; } }
+        public IInteractableLong InteractableLongCurrent { get; private set; }
 
         public void InteractLongWith(IInteractableLong interactableLong) {
-            _interactableLongCache = interactableLong;
-            _interactableLongCache.Interact();
+            InteractableLongCurrent = interactableLong;
+            InteractableLongCurrent.Interact();
         }
 
         public void InteractLongStop() {
-            _interactableLongCache?.InteractStop();
-            _interactableLongCache = null;
+            InteractableLongCurrent?.InteractStop();
+            InteractableLongCurrent = null;
         }
 
     }
