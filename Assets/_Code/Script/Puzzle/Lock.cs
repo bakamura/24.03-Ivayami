@@ -59,7 +59,7 @@ namespace Ivayami.Puzzle
         }
 
         [ContextMenu("Interact")]
-        public bool Interact()
+        public void Interact()
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
@@ -71,7 +71,6 @@ namespace Ivayami.Puzzle
             {
                 UpdateDeliverItemUI(true);
             }
-            return false;
         }
 
         public void TryUnlock()

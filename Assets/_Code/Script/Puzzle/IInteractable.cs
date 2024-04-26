@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 namespace Ivayami.Puzzle {
@@ -8,9 +7,7 @@ namespace Ivayami.Puzzle {
 
         public InteratctableHighlight InteratctableHighlight { get; }
 
-        public abstract bool Interact();
-
-        public virtual void InteractStop() { }
+        public abstract void Interact();
 
     }
 }
