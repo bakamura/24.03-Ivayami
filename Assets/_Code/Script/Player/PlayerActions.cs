@@ -43,7 +43,7 @@ namespace Ivayami.Player {
         private RaycastHit[] _raycastHitsCache;
         private IInteractable _interactableClosestCache;
         private float _interactableClosestDistanceCache;
-        private IInteractable _interactableCache;
+        public IInteractable InteractableTarget { get; private set; }
         private float _interactableDistanceCache;
 
         protected override void Awake() {
@@ -69,8 +69,9 @@ namespace Ivayami.Player {
 
         private void Interact(InputAction.CallbackContext input) {
             if (input.phase == InputActionPhase.Started) {
-                if (_interactableClosestCache != null) {
-                    if (_interactableClosest.Interact()) {
+                if (_interactableClosest != null) {
+                    _interactableClosest.Interact();
+                    if (_interactableClosest is IInteractableLong) {
                         onInteractLong?.Invoke(true);
 
                         Logger.Log(LogType.Player, $"Interact Long with: {_interactableClosestCache.gameObject.name}");
@@ -83,8 +84,8 @@ namespace Ivayami.Player {
                 }
                 else Logger.Log(LogType.Player, $"Interact: No Target");
             }
-            else if (_interacting) {
-                _interactableClosest.InteractStop();
+            else if (input.phase == InputActionPhase.Canceled && _interacting) {
+                (_interactableClosest as IInteractableLong).InteractStop();
                 onInteractLong?.Invoke(false);
 
                 Logger.Log(LogType.Player, $"Stop Interact Long with: {_interactableClosestCache.gameObject.name}");
@@ -96,12 +97,12 @@ namespace Ivayami.Player {
             _interactableClosestCache = null;
             _raycastHitsCache = Physics.SphereCastAll(_cam.ScreenPointToRay(_screenCenter), _interactSphereCastRadius, Mathf.Infinity);
             foreach (RaycastHit hit in _raycastHitsCache) {
-                _interactableCache = hit.collider.GetComponent<IInteractable>();
-                if (_interactableCache != null) {
-                    _interactableDistanceCache = Vector3.Distance(transform.position, _interactableCache.gameObject.transform.position);
+                InteractableTarget = hit.collider.GetComponent<IInteractable>();
+                if (InteractableTarget != null) {
+                    _interactableDistanceCache = Vector3.Distance(transform.position, InteractableTarget.gameObject.transform.position);
                     if (_interactableClosestDistanceCache > _interactableDistanceCache) {
                         _interactableClosestDistanceCache = _interactableDistanceCache;
-                        _interactableClosestCache = _interactableCache;
+                        _interactableClosestCache = InteractableTarget;
                     }
                 }
             }
