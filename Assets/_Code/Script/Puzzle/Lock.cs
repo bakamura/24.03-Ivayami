@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace Ivayami.Puzzle
 {
+    [RequireComponent(typeof(InteratctableHighlight))]
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
