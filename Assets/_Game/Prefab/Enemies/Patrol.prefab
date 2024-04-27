@@ -54,7 +54,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5000001
+  m_Radius: 0.3
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
@@ -68,11 +68,11 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5000001
-  m_Speed: 10
+  m_Speed: 5.5
   m_Acceleration: 8
-  avoidancePriority: 0
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
+  avoidancePriority: 1
+  m_AngularSpeed: 300
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -92,7 +92,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf2f1540921315a429eb00d20b5a7f0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _minDistanceFromTarget: 2
+  _minDetectionRange: 2
   _detectionRange: 10
   _visionAngle: 60
   _tickFrequency: 0.5
@@ -101,10 +101,14 @@ MonoBehaviour:
   _playerLayer:
     serializedVersion: 2
     m_Bits: 128
+  _blockVisionLayer:
+    serializedVersion: 2
+    m_Bits: 512
   _patrolPoints:
   - {x: 0, y: 0, z: 0}
   - {x: 1.73, y: 0, z: -7.34}
   - {x: -11.48, y: 0, z: 0}
+  _debugLog: 0
   _debugDraw: 0
   _minDistanceAreaColor: {r: 0.8722887, g: 1, b: 0, a: 0.39215687}
   _detectionRangeAreaColor: {r: 1, g: 0, b: 0, a: 0.39215687}
