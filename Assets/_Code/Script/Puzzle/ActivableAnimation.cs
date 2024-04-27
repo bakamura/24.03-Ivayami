@@ -4,6 +4,7 @@ using UnityEngine.Events;
 
 namespace Ivayami.Puzzle
 {
+    [RequireComponent(typeof(InteratctableHighlight))]
     public class ActivableAnimation : Activable, IInteractable
     {
         [SerializeField] private bool _startActive;

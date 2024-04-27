@@ -5,7 +5,7 @@ namespace Ivayami.Puzzle
 {
     public class InteratctableHighlight : MonoBehaviour
     {
-        [SerializeField] private Color _highlightedColor;
+        [SerializeField] private Color _highlightedColor = new Color(0.03921569f, 0.03921569f, 0.03921569f, 1);
         private List<Material> _materials;
         private List<Color> _baseColors;
         private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
