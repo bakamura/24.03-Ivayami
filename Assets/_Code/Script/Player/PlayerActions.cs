@@ -103,7 +103,7 @@ namespace Ivayami.Player {
             foreach (RaycastHit hit in _raycastHitsCache) {
                 _interactableClosest = hit.collider.GetComponent<IInteractable>();
                 if (_interactableClosest != null) {
-                    _interactableDistanceCache = Vector3.Distance(transform.position, InteractableTarget.gameObject.transform.position);
+                    _interactableDistanceCache = InteractableTarget != null ? Vector3.Distance(transform.position, InteractableTarget.gameObject.transform.position) : 0;
                     if (_interactableClosestDistanceCache > _interactableDistanceCache) {
                         _interactableClosestDistanceCache = _interactableDistanceCache;
                         _interactableClosestCache = _interactableClosest;
