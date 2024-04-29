@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace Ivayami.Puzzle
 {
+    [RequireComponent(typeof(InteratctableHighlight))]
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
@@ -59,7 +60,7 @@ namespace Ivayami.Puzzle
         }
 
         [ContextMenu("Interact")]
-        public bool Interact()
+        public void Interact()
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
@@ -71,7 +72,6 @@ namespace Ivayami.Puzzle
             {
                 UpdateDeliverItemUI(true);
             }
-            return false;
         }
 
         public void TryUnlock()
