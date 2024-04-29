@@ -8,6 +8,7 @@ using Ivayami.Player;
 
 namespace Ivayami.Puzzle
 {
+    [RequireComponent(typeof(InteratctableHighlight))]
     public class FuseBox : Activator, IInteractable
     {
         [SerializeField] private Vector2 _matrixDimensions;
@@ -64,14 +65,13 @@ namespace Ivayami.Puzzle
         }
 
         [ContextMenu("Interact")]
-        public bool Interact()
+        public void Interact()
         {
             if (!_isActive)
             {
                 _interatctableHighlight.UpdateHighlight(false);
                 Setup();
             }
-            return false;
         }
 
         private void Setup()

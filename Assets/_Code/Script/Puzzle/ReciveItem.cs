@@ -22,10 +22,9 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public bool Interact()
+        public void Interact()
         {
             GiveItem();
-            return _isLongInteraction;
         }
 
         public void GiveItem()

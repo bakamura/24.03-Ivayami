@@ -4,6 +4,7 @@ using UnityEngine.Events;
 
 namespace Ivayami.Puzzle
 {
+    [RequireComponent(typeof(InteratctableHighlight))]
     public class ActivableAnimation : Activable, IInteractable
     {
         [SerializeField] private bool _startActive;
@@ -56,14 +57,13 @@ namespace Ivayami.Puzzle
             UpdateCallbackCoroutine();
         }
 
-        public bool Interact()
+        public void Interact()
         {
             if (IsActive)
             {
                 _interactionAnimator.SetBool(_interactBoolHash, !_interactionAnimator.GetBool(_interactBoolHash));
                 CheckCallbacks(_interactBoolHash);
             }
-            return false;
         }
 
         protected override void HandleOnActivate()

@@ -25,16 +25,9 @@ namespace Ivayami.UI {
         }
 
         public void DisplaySaveInfo(int saveId) {
-            if (SaveSystem.Instance.Progress?.id != saveId) {
                 SaveSystem.Instance.LoadProgress((byte)saveId, DisplaySaveInfoCallback);
 
                 Logger.Log(LogType.UI, $"Try Display Save {saveId}");
-            }
-            else {
-                _pauseInput.action.Enable();
-                PlayerActions.Instance.ChangeInputMap("Player"); //
-                EnterSave();
-            }
         }
 
         private void DisplaySaveInfoCallback() {
@@ -46,7 +39,8 @@ namespace Ivayami.UI {
         }
 
         public void EnterSave() {
-
+            _pauseInput.action.Enable();
+            PlayerActions.Instance.ChangeInputMap("Player"); //
 
             Logger.Log(LogType.UI, $"Entering Save");
         }

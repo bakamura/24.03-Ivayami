@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Ivayami.Player;
@@ -11,16 +10,18 @@ namespace Ivayami.Enemy
     public class Patrol : MonoBehaviour
     {
         [Header("Parameters")]
-        [SerializeField, Min(0)] private float _minDistanceFromTarget;
+        [SerializeField, Min(0)] private float _minDetectionRange;
         [SerializeField, Min(0)] private float _detectionRange;
         [SerializeField] private float _visionAngle;
         [SerializeField, Min(.02f)] private float _tickFrequency = .5f;
         [SerializeField, Min(0)] private float _stressIncreaseOnTargetDetected;
         [SerializeField, Min(0)] private float _stressIncreaseWhileChasing;
         [SerializeField] private LayerMask _playerLayer;
+        [SerializeField] private LayerMask _blockVisionLayer;
         [SerializeField] private Vector3[] _patrolPoints;
 
         [Header("Debug")]
+        [SerializeField] private bool _debugLog;
         [SerializeField] private bool _debugDraw;
         [SerializeField] private Color _minDistanceAreaColor = Color.red;
         [SerializeField] private Color _detectionRangeAreaColor = Color.green;
@@ -65,10 +66,7 @@ namespace Ivayami.Enemy
             sbyte indexFactor = 1;
             while (true)
             {
-                if (!Bush.IsPlayerHidden && (Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) <= _minDistanceFromTarget
-                    || (Physics.CheckSphere(transform.position, _detectionRange, _playerLayer)
-                    && Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) <= _detectionRange
-                    && Vector3.Angle(PlayerMovement.Instance.transform.position, transform.position) <= halfVisionAngle)))
+                if (CheckForTarget(halfVisionAngle))
                 {
                     if (!_isChasing)
                     {
@@ -76,22 +74,33 @@ namespace Ivayami.Enemy
                         _isChasing = true;
                     }
                     _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position);
+                    if(_debugLog) Debug.Log("Chase Player");
                 }
                 else
                 {
                     _isChasing = false;
                     _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
+                    if (_debugLog) Debug.Log("Patroling");
                     if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
                     {
                         currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
                         if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
                         else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
+                        if (_debugLog) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
                     }
                 }
                 yield return _delay;
             }
         }
 
+        private bool CheckForTarget(float halfVisionAngle)
+        {
+            return !Bush.IsPlayerHidden && Physics.CheckSphere(transform.position, _detectionRange, _playerLayer) &&
+                    !Physics.Raycast(transform.position, (PlayerMovement.Instance.transform.position - transform.position).normalized, _detectionRange, _blockVisionLayer) &&
+                    (Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) <= _minDetectionRange
+                    || (Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) <= _detectionRange
+                    && Vector3.Angle(PlayerMovement.Instance.transform.position, transform.position) <= halfVisionAngle));
+        }
         #region Debug
         private void OnDrawGizmosSelected()
         {
@@ -101,7 +110,7 @@ namespace Ivayami.Enemy
                 Gizmos.DrawMesh(_FOVMesh, transform.position, transform.rotation);
 
                 Gizmos.color = _minDistanceAreaColor;
-                Gizmos.DrawSphere(transform.position, _minDistanceFromTarget);
+                Gizmos.DrawSphere(transform.position, _minDetectionRange);
 
                 Gizmos.color = _patrolPointsColor;
                 for (int i = 0; i < _patrolPoints.Length; i++)
