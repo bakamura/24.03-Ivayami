@@ -28,7 +28,7 @@ namespace Ivayami.Player {
         [SerializeField] private float _interactRange;
         [SerializeField] private float _interactSphereCastRadius;
         [SerializeField] private LayerMask _interactLayer;
-        private IInteractable _interactableClosest;
+        private IInteractable _interactableIterator;
         public bool Interacting { get; private set; } = false;
         public IInteractable InteractableTarget { get; private set; }
 
@@ -48,7 +48,7 @@ namespace Ivayami.Player {
         private RaycastHit[] _raycastHitsCache;
         private IInteractable _interactableClosestCache;
         private float _interactableClosestDistanceCache;
-        private float _interactableDistanceCache;
+        private float _interactableDistanceIterator;
 
         protected override void Awake() {
             base.Awake();
@@ -78,12 +78,12 @@ namespace Ivayami.Player {
                     if (InteractableTarget is IInteractableLong) {
                         onInteractLong?.Invoke(true);
 
-                        Logger.Log(LogType.Player, $"Interact Long with: {_interactableClosestCache.gameObject.name}");
+                        Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
                     }
                     else {
                         onInteract?.Invoke();
 
-                        Logger.Log(LogType.Player, $"Interact with: {_interactableClosestCache.gameObject.name}");
+                        Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
                     }
                 }
                 else Logger.Log(LogType.Player, $"Interact: No Target");
@@ -92,7 +92,7 @@ namespace Ivayami.Player {
                 (InteractableTarget as IInteractableLong).InteractStop();
                 onInteractLong?.Invoke(false);
 
-                Logger.Log(LogType.Player, $"Stop Interact Long with: {_interactableClosestCache.gameObject.name}");
+                Logger.Log(LogType.Player, $"Stop Interact Long with: {InteractableTarget.gameObject.name}");
             }
         }
 
@@ -101,12 +101,12 @@ namespace Ivayami.Player {
             _interactableClosestCache = null;
             _raycastHitsCache = Physics.SphereCastAll(_cam.ScreenPointToRay(_screenCenter), _interactSphereCastRadius, Mathf.Infinity);
             foreach (RaycastHit hit in _raycastHitsCache) {
-                _interactableClosest = hit.collider.GetComponent<IInteractable>();
-                if (_interactableClosest != null) {
-                    _interactableDistanceCache = InteractableTarget != null ? Vector3.Distance(transform.position, InteractableTarget.gameObject.transform.position) : 0;
-                    if (_interactableClosestDistanceCache > _interactableDistanceCache) {
-                        _interactableClosestDistanceCache = _interactableDistanceCache;
-                        _interactableClosestCache = _interactableClosest;
+                _interactableIterator = hit.collider.GetComponent<IInteractable>();
+                if (_interactableIterator != null) {
+                    _interactableDistanceIterator = Vector3.Distance(transform.position, _interactableIterator.gameObject.transform.position);
+                    if (_interactableClosestDistanceCache > _interactableDistanceIterator) {
+                        _interactableClosestDistanceCache = _interactableDistanceIterator;
+                        _interactableClosestCache = _interactableIterator;
                     }
                 }
             }
