@@ -1,8 +1,8 @@
 using UnityEngine;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 using UnityEngine.Events;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     public class ReciveItem : MonoBehaviour, IInteractable
     {
@@ -10,10 +10,21 @@ namespace Paranapiacaba.Puzzle
         [SerializeField] private UnityEvent _onCollect;
         [SerializeField] private bool _isLongInteraction;
 
-        public bool Interact()
+        private InteratctableHighlight _interatctableHighlight;
+
+        public InteratctableHighlight InteratctableHighlight
+        {
+            get
+            {
+                if (!_interatctableHighlight)
+                    _interatctableHighlight = GetComponent<InteratctableHighlight>();
+                return _interatctableHighlight;
+            }
+        }
+
+        public void Interact()
         {
             GiveItem();
-            return _isLongInteraction;
         }
 
         public void GiveItem()

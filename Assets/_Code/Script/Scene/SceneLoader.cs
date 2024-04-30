@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Paranapiacaba.Scene
+namespace Ivayami.Scene
 {
     public class SceneLoader : MonoBehaviour
     {

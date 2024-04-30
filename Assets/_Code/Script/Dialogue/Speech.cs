@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Dialogue {
+namespace Ivayami.Dialogue {
     [System.Serializable]
     public class Speech {
 

@@ -1,9 +1,35 @@
 using UnityEngine;
+using Ivayami.Scene;
+using Ivayami.Player;
+using System.Linq;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class Map : MonoBehaviour {
 
+        [SerializeField] private RectTransform _mapRectTranform;
+        [SerializeField] private RectTransform _playerPointer;
+        [SerializeField] private RectTransform _goalPointer;
 
+        [SerializeField] private RectTransform[] _placesInMap;
+        [SerializeField] private Vector2 _mapWorldSize;
+
+        private Transform _cam;
+
+        private void Awake() {
+            _cam = Camera.main.transform;
+        }
+
+        public void PointersUpdate() {
+            Vector2 playerPosInMap = Vector2.zero;
+            playerPosInMap[0] = PlayerMovement.Instance.transform.position.x / _mapWorldSize.x;
+            playerPosInMap[1] = PlayerMovement.Instance.transform.position.z / _mapWorldSize.y;
+            playerPosInMap *= _mapRectTranform.anchoredPosition;
+
+            _playerPointer.anchoredPosition = _placesInMap.OrderBy(rect => Vector2.Distance(rect.anchoredPosition, playerPosInMap)).FirstOrDefault().anchoredPosition;
+            _playerPointer.rotation = Quaternion.Euler(0f, 0f, _cam.transform.eulerAngles.y); //
+
+            _goalPointer.anchoredPosition = SceneController.Instance.PointerInChapter();
+        }
 
     }
 }

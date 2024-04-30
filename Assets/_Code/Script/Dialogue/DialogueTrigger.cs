@@ -1,9 +1,24 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Dialogue
+namespace Ivayami.Dialogue
 {
     public class DialogueTrigger : MonoBehaviour
     {
-        public void StartDialogue(string dialogueID) => DialogueController.Instance.StartDialogue(dialogueID);
+        [SerializeField] private Dialogue _dialogue;
+        [SerializeField] private bool _activateOnce;
+        private bool _activated;
+        public void StartDialogue()
+        {
+            if (!_activateOnce || (_activateOnce && !_activated))
+            {
+                DialogueController.Instance.StartDialogue(_dialogue.id);
+                _activated = true;
+            }
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            StartDialogue();
+        }
     }
 }

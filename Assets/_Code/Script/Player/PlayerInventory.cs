@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Paranapiacaba.Player {
+namespace Ivayami.Player {
     public class PlayerInventory : MonoSingleton<PlayerInventory> {
 
         private List<InventoryItem> _itemList = new List<InventoryItem>();
@@ -12,20 +12,20 @@ namespace Paranapiacaba.Player {
         }
 
         public InventoryItem CheckInventoryFor(string itemId) {
-            _checkInventoryIndexCache = _itemList.FindIndex((inventoryItem) => inventoryItem.id == itemId);
+            _checkInventoryIndexCache = _itemList.FindIndex((inventoryItem) => inventoryItem.name == itemId);
             return _checkInventoryIndexCache == -1 ? null : _itemList[_checkInventoryIndexCache];
         }
 
         public void AddToInventory(InventoryItem item) {
             _itemList.Add(item);
 
-            Logger.Log(LogType.Player, $"Inventory Add: {item.name} ({item.id}) / {item.type}");
+            Logger.Log(LogType.Player, $"Inventory Add: {item.displayName} ({item.name}) / {item.type}");
         }
 
         public void RemoveFromInventory(InventoryItem item) {
             _itemList.Remove(item);
 
-            Logger.Log(LogType.Player, $"Inventory Remove: {item.name} ({item.id}) / {item.type}");
+            Logger.Log(LogType.Player, $"Inventory Remove: {item.displayName} ({item.name}) / {item.type}");
         }
 
     }
