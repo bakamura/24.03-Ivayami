@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Paranapiacaba.Dialogue {
+namespace Ivayami.Dialogue {
     [System.Serializable]
     public class SpeechEvent {
 

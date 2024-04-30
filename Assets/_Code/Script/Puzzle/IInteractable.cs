@@ -1,14 +1,13 @@
-
 using UnityEngine;
 
-namespace Paranapiacaba.Puzzle {
+namespace Ivayami.Puzzle {
     public interface IInteractable {
 
         public GameObject gameObject { get; }
 
-        public abstract bool Interact();
+        public InteratctableHighlight InteratctableHighlight { get; }
 
-        public virtual void InteractStop() { }
+        public abstract void Interact();
 
     }
 }

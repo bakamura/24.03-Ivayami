@@ -78,9 +78,9 @@ GameObject:
   - component: {fileID: 1636166985775744763}
   - component: {fileID: 3867884800636623034}
   - component: {fileID: 448502037161999707}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -178,6 +178,7 @@ MonoBehaviour:
   _movementSpeedBackwardsMultiplier: 0.5
   _movementBacwardsAngleMaxFromForward: 90
   _visualTransform: {fileID: 2181725685440365708}
+  _turnSmoothFactor: 0.175
   _crouchSpeedMax: 2.5
   _walkColliderHeight: 1.75
   _walkCameraHeight: 1.25
@@ -218,7 +219,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _interactRange: 2
-  _interactSphereCastRadius: 1.25
+  _interactSphereCastRadius: 1
   _interactLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -241,6 +242,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _stressMax: 100
+  _stressRelieveDelay: 7
+  _stressRelieveRate: 5
 --- !u!114 &448502037161999707
 MonoBehaviour:
   m_ObjectHideFlags: 0

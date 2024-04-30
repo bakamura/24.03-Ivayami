@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace Paranapiacaba.Dialogue {
+namespace Ivayami.Dialogue {
     public class DialogueEvents : MonoBehaviour {
         [SerializeField] private bool _debugLogs;
         [SerializeField] private SpeechEvent[] _events;
