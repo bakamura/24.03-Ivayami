@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -13,52 +11,59 @@ namespace Ivayami.Puzzle
         [SerializeField] private ButtonDetails _buttonDetails;
         public InteratctableHighlight InteratctableHighlight { get; private set; }
 
-        private sbyte _currentIndex;
+        private sbyte _currentDetailIndex;
+        //will always be 3
         private TMP_Text[] _texts;
-        private TMP_Text _currentHidden;
+        private sbyte _currentTextIndex;
+        private float _modelRadius;
 
         [Serializable]
         private struct ButtonDetails
         {
             public Color[] Colors;
             public string[] Content;
-        }        
-
-        private void Awake()
-        {
-            //will always be 2
-            _texts = GetComponentsInChildren<TMP_Text>();
-            InteratctableHighlight = GetComponent<InteratctableHighlight>();
-            _currentHidden = _texts[1];
-            for(int i = 0; i < _texts.Length; i++)
-            {
-                _texts[i].text = _buttonDetails.Content[i];
-                _texts[i].color = _buttonDetails.Colors[i];
-            }
         }
 
-        public void UpdateButtonDisplay(sbyte direction, float rotationAngle)
+        private void Awake()
+        {            
+            _texts = GetComponentsInChildren<TMP_Text>();
+            InteratctableHighlight = GetComponent<InteratctableHighlight>();
+            _modelRadius = GetComponent<MeshFilter>().mesh.bounds.size.z / 2;
+
+            _texts[1].text = _buttonDetails.Content[0];
+            _texts[1].color = _buttonDetails.Colors[0];
+        }
+
+        public void UpdateButtonDisplay(sbyte direction)
         {
-            _currentHidden.transform.localPosition *= direction * Mathf.Sin(rotationAngle);
-            _currentIndex += direction;
-            if (_currentIndex >= _optionsAmount) _currentIndex = 0;
-            else if (_currentIndex < 0) _currentIndex = (sbyte)(_optionsAmount - 1);
-            _currentHidden.text = _buttonDetails.Content[_currentIndex];
-            _currentHidden.color = _buttonDetails.Colors[_currentIndex];
-            _currentHidden = _currentHidden.GetInstanceID() == _texts[0].GetInstanceID() ? _texts[1] : _texts[0];
+            if (direction != 0)
+            {
+                _currentDetailIndex += direction;
+                if (_currentDetailIndex >= _optionsAmount) _currentDetailIndex = 0;
+                else if (_currentDetailIndex < 0) _currentDetailIndex = (sbyte)(_optionsAmount - 1);
+                _currentTextIndex = (sbyte)(direction > 0 ? 0 : 2);
+                _texts[_currentTextIndex].text = _buttonDetails.Content[_currentDetailIndex];
+                _texts[_currentTextIndex].color = _buttonDetails.Colors[_currentDetailIndex];
+            }
+            else
+            {
+                _texts[1].text = _texts[_currentTextIndex].text;
+                _texts[1].color = _texts[_currentTextIndex].color;
+            }
         }
 
         public string GetCurrentDisplayValue()
         {
-            return _buttonDetails.Content[_currentIndex];
+            return _buttonDetails.Content[_currentDetailIndex];
         }
+
         private void OnValidate()
-        {            
-            if(_buttonDetails.Content != null && _buttonDetails.Content.Length != _optionsAmount)
+        {
+            if (_buttonDetails.Content != null && _buttonDetails.Content.Length != _optionsAmount)
             {
                 Array.Resize(ref _buttonDetails.Content, _optionsAmount);
             }
-            if(_buttonDetails.Colors != null && _buttonDetails.Colors.Length != _optionsAmount)
+            if (_buttonDetails.Colors != null && _buttonDetails.Colors.Length != _optionsAmount)
             {
                 Array.Resize(ref _buttonDetails.Colors, _optionsAmount);
             }

@@ -1,9 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Ivayami.Puzzle
 {
@@ -21,7 +21,7 @@ namespace Ivayami.Puzzle
         protected override void Awake()
         {
             base.Awake();
-            _buttons = GetComponentsInChildren<RotateLockButton>();
+            _buttons = GetComponentsInChildren<RotateLockButton>(true);
         }
 
         public override void UpdateActiveState(bool isActive)
@@ -36,13 +36,14 @@ namespace Ivayami.Puzzle
             {
                 Cursor.lockState = CursorLockMode.None;
                 _navegationUIInput.action.performed -= HandleNavigateUI;
+                _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateHighlight(false);
             }
         }
 
         public override bool CheckPassword()
         {
             string currentPassword = null;
-            for(int i = 0; i < _buttons.Length; i++)
+            for (int i = 0; i < _buttons.Length; i++)
             {
                 currentPassword += _buttons[i].GetCurrentDisplayValue();
             }
@@ -57,7 +58,7 @@ namespace Ivayami.Puzzle
             {
                 _currentBtnSelectedIndex += (sbyte)input.x;
                 if (_currentBtnSelectedIndex >= _buttons.Length) _currentBtnSelectedIndex = 0;
-                else if (_currentBtnSelectedIndex < 0) _currentBtnSelectedIndex = (sbyte)(_buttons.Length - 1);                
+                else if (_currentBtnSelectedIndex < 0) _currentBtnSelectedIndex = (sbyte)(_buttons.Length - 1);
             }
             else
             {
@@ -65,30 +66,42 @@ namespace Ivayami.Puzzle
                 _currentBtnSelectedIndex = 0;
             }
             //update selected visual
-            if(_previousBtn) _previousBtn.InteratctableHighlight.UpdateHighlight(false);
+            if (_previousBtn) _previousBtn.InteratctableHighlight.UpdateHighlight(false);
             _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateHighlight(true);
             _previousBtn = _buttons[_currentBtnSelectedIndex];
 
             if (input.y != 0 && _animateCoroutine == null)
             {
-                _buttons[_currentBtnSelectedIndex].UpdateButtonDisplay((sbyte)Mathf.Sign(input.y), _rotationAngle);
-                _animateCoroutine = StartCoroutine(AnimateButtonCoroutine((sbyte)Mathf.Sign(input.y)));
+                _buttons[_currentBtnSelectedIndex].UpdateButtonDisplay((sbyte)Mathf.Sign(input.y));
+                _animateCoroutine = StartCoroutine(AnimateButtonCoroutine((sbyte)Mathf.Sign(input.y), _buttons[_currentBtnSelectedIndex].transform));
             }
         }
 
-        private IEnumerator AnimateButtonCoroutine(sbyte direction)
+        private IEnumerator AnimateButtonCoroutine(sbyte direction, Transform rotateObject)
         {
+            _navegationUIInput.action.Disable();
             float count = 0;
-            Quaternion initialRotation = transform.rotation;
+            Quaternion initialRotation = rotateObject.rotation;
             Quaternion finalRotation = Quaternion.Euler(initialRotation.eulerAngles.x + _rotationAngle * direction, 0, 0);
             while (count < 1)
             {
                 count += Time.deltaTime / _animationDuration;
-                transform.rotation = Quaternion.Lerp(initialRotation, finalRotation, count);
+                rotateObject.rotation = Quaternion.Lerp(initialRotation, finalRotation, count);
                 yield return null;
             }
+            _buttons[_currentBtnSelectedIndex].UpdateButtonDisplay(0);
+            rotateObject.rotation = initialRotation;
             _animateCoroutine = null;
+            _navegationUIInput.action.Enable();
             _onCheckPassword?.Invoke();
-        }        
+        }
+
+        private void OnValidate()
+        {
+            foreach (RectTransform rect in GetComponentsInChildren<RectTransform>())
+            {
+                if(rect.rotation.x != 0) rect.rotation = Quaternion.Euler(Mathf.Sign(rect.rotation.x) * _rotationAngle, 0, 0);
+            }
+        }
     }
 }

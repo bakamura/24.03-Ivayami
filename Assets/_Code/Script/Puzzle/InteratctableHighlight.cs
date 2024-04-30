@@ -26,11 +26,14 @@ namespace Ivayami.Puzzle
             Color emissiveColor;
             foreach (Renderer render in GetComponentsInChildren<Renderer>())
             {
-                emissiveColor = render.material.GetColor(_colorVarName);
-                if (emissiveColor == Color.black)
+                if (render.material.HasColor(_colorVarName))
                 {
-                    _materials.Add(render.material);
-                    _baseColors.Add(emissiveColor);
+                    emissiveColor = render.material.GetColor(_colorVarName);
+                    if (emissiveColor == Color.black)
+                    {
+                        _materials.Add(render.material);
+                        _baseColors.Add(emissiveColor);
+                    }
                 }
             }
         }
