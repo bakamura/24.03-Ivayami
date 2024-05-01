@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -56,7 +57,30 @@ namespace Ivayami.Save {
             }
         }
 
+        public void LoadSavesProgress(Action<SaveProgress[]> loadSaveCallback) {
+            StartCoroutine(LoadSavesProgressRoutine(loadSaveCallback));
+        }
+
+        private IEnumerator LoadSavesProgressRoutine(Action<SaveProgress[]> loadSaveCallback) {
+            List<SaveProgress> progressSaves = new List<SaveProgress>();
+            int saveId = 0;
+            while (true) {
+                if (File.Exists($"{_progressPath}/Save_{saveId}")) {
+                    Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/Save_{saveId}");
+
+                    yield return readTask;
+
+                    progressSaves.Add(JsonUtility.FromJson<SaveProgress>(Encryption.Decrypt(readTask.Result)));
+                    saveId++;
+                }
+                else break;
+            }
+            loadSaveCallback.Invoke(progressSaves.ToArray());
+
+        }
+
         private void SaveProgress(byte saveId) {
+            Progress.lastPlayedDate = DateTime.Now.ToString("dd/MM/yy [HH:mm]");
             StartCoroutine(WriteSaveRoutine($"{_progressPath}/Save_{saveId}", typeof(SaveProgress)));
 
             Logger.Log(LogType.Save, $"Writing Progress for save {saveId}");
