@@ -137,7 +137,7 @@ namespace Ivayami.Puzzle
                 {
                     case InteractionTypes.RequirePassword:
                         if (EventSystem.current.currentSelectedGameObject == null)
-                            EventSystem.current.SetSelectedGameObject(_passwordUI.FallbackButton.gameObject);
+                            EventSystem.current.SetSelectedGameObject(_passwordUI.FallbackButton);
                         break;
                     case InteractionTypes.RequireItems:
                         if (EventSystem.current.currentSelectedGameObject == null)

@@ -12,7 +12,6 @@ namespace Ivayami.Puzzle
     {
         [SerializeField] private RectTransform _buttonsContainer;
         [SerializeField] private Color _selectedButtonColor = Color.red;
-        [SerializeField] private UnityEvent _onCheckPassword;
 
         private Button _currentChosenBtn;
 
