@@ -12,6 +12,7 @@ namespace Ivayami.UI {
 
         [SerializeField] private Image _previewImage;
         [SerializeField] private TextMeshProUGUI _previewText;
+        [SerializeField] private SaveSelectBtn[] _saveSelectBtns;
 
         [Header("Input Stopping")]
 
@@ -20,14 +21,20 @@ namespace Ivayami.UI {
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
 
         private void Awake() {
+            SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate);
+
             PlayerActions.Instance.ChangeInputMap("Menu");
             _pauseInput.action.Disable();
         }
 
-        public void DisplaySaveInfo(int saveId) {
-                SaveSystem.Instance.LoadProgress((byte)saveId, DisplaySaveInfoCallback);
+        private void SaveSelectBtnUpdate(SaveProgress[] progressSaves) {
+            for (int i = 0; i < _saveSelectBtns.Length; i++) _saveSelectBtns[i].Setup(i < progressSaves.Length ? progressSaves[i] : null);
+        }
 
-                Logger.Log(LogType.UI, $"Try Display Save {saveId}");
+        public void DisplaySaveInfo(int saveId) {
+            SaveSystem.Instance.LoadProgress((byte)saveId, DisplaySaveInfoCallback);
+
+            Logger.Log(LogType.UI, $"Try Display Save {saveId}");
         }
 
         private void DisplaySaveInfoCallback() {
