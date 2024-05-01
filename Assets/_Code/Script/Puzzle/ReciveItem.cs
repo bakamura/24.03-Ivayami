@@ -1,8 +1,8 @@
 using UnityEngine;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 using UnityEngine.Events;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     public class ReciveItem : MonoBehaviour, IInteractable
     {
@@ -22,10 +22,9 @@ namespace Paranapiacaba.Puzzle
             }
         }
 
-        public bool Interact()
+        public void Interact()
         {
             GiveItem();
-            return _isLongInteraction;
         }
 
         public void GiveItem()

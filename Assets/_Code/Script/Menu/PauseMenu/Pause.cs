@@ -1,9 +1,9 @@
-using Paranapiacaba.Player;
+using Ivayami.Player;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-namespace Paranapiacaba.UI {
+namespace Ivayami.UI {
     public class Pause : MonoSingleton<Pause> {
 
         [Header("Events")]

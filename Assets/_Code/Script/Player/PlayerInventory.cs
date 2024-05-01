@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Paranapiacaba.Player {
+namespace Ivayami.Player {
     public class PlayerInventory : MonoSingleton<PlayerInventory> {
 
         private List<InventoryItem> _itemList = new List<InventoryItem>();

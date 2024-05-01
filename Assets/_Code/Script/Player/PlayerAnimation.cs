@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Player {
+namespace Ivayami.Player {
     public class PlayerAnimation : MonoSingleton<PlayerAnimation> {
 
         [Header("Parameter Names")]

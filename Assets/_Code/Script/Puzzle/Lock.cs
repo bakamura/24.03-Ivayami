@@ -1,13 +1,14 @@
 using UnityEngine;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
+    [RequireComponent(typeof(InteratctableHighlight))]
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
@@ -59,7 +60,7 @@ namespace Paranapiacaba.Puzzle
         }
 
         [ContextMenu("Interact")]
-        public bool Interact()
+        public void Interact()
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
@@ -71,7 +72,6 @@ namespace Paranapiacaba.Puzzle
             {
                 UpdateDeliverItemUI(true);
             }
-            return false;
         }
 
         public void TryUnlock()
@@ -137,7 +137,7 @@ namespace Paranapiacaba.Puzzle
                 {
                     case InteractionTypes.RequirePassword:
                         if (EventSystem.current.currentSelectedGameObject == null)
-                            EventSystem.current.SetSelectedGameObject(_passwordUI.FallbackButton.gameObject);
+                            EventSystem.current.SetSelectedGameObject(_passwordUI.FallbackButton);
                         break;
                     case InteractionTypes.RequireItems:
                         if (EventSystem.current.currentSelectedGameObject == null)

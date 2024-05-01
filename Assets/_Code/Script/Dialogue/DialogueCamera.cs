@@ -3,7 +3,7 @@ using UnityEngine.Serialization;
 using Cinemachine;
 using System.Collections;
 
-namespace Paranapiacaba.Dialogue {
+namespace Ivayami.Dialogue {
     public class DialogueCamera : MonoSingleton<DialogueCamera> {
 
         //[SerializeField] private float _defaultDuration = 1f;

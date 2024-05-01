@@ -4,12 +4,11 @@ using UnityEngine.Events;
 using UnityEngine;
 using TMPro;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     public class EnterPassword : PasswordUI
     {
-        [SerializeField] private TMP_InputField _passwordTextField;
-        [SerializeField] private UnityEvent _onCheckPassword;
+        [SerializeField] private TMP_InputField _passwordTextField;        
         private const string _incorrectPasswordText = "INCORRECT";
         public override bool CheckPassword()
         {

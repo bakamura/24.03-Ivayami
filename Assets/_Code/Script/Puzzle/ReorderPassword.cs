@@ -6,13 +6,12 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     public class ReorderPassword : PasswordUI
     {
         [SerializeField] private RectTransform _buttonsContainer;
         [SerializeField] private Color _selectedButtonColor = Color.red;
-        [SerializeField] private UnityEvent _onCheckPassword;
 
         private Button _currentChosenBtn;
 

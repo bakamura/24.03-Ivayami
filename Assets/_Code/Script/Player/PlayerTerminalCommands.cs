@@ -1,6 +1,6 @@
 using UnityEngine;
 using IngameDebugConsole;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 
 public static class PlayerTerminalCommands {
 
