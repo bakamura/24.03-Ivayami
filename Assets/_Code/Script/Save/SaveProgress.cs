@@ -7,6 +7,7 @@ namespace Ivayami.Save {
         public byte currentChapter;
         public byte currentSubChapter;
         public string[] inventory;
+        public string lastPlayedDate;
 
         public SaveProgress(byte id) {
             this.id = id;
