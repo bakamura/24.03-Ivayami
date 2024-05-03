@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using Ivayami.Save;
 using Ivayami.Player;
+using System;
 
 namespace Ivayami.Scene
 {
@@ -15,6 +16,8 @@ namespace Ivayami.Scene
         private ChapterPointers[] _chapterPointers;
         private List<SceneData> _sceneList = new List<SceneData>();
         private Queue<SceneUpdateRequestData> _sceneUpdateRequests = new Queue<SceneUpdateRequestData>();
+
+        public Action OnAllSceneRequestEnd;
 
         [System.Serializable]
         private class SceneData
@@ -118,6 +121,7 @@ namespace Ivayami.Scene
             }
             requestData.OnSceneUpdate?.Invoke();
             if (_sceneUpdateRequests.Count > 0) UpdateScene(_sceneUpdateRequests.Peek().SceneData);
+            else OnAllSceneRequestEnd?.Invoke();
         }
     }
 }
