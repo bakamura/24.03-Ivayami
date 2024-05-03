@@ -34,11 +34,6 @@ namespace Ivayami.Scene
             SceneController.Instance.StartLoad(_sceneId, _onSceneLoad);
         }
 
-        public void UnloadAllScenes()
-        {
-            SceneController.Instance.UnloadAllScenes();
-        }
-
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
