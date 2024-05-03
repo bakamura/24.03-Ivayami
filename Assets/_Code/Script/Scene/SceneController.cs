@@ -77,6 +77,14 @@ namespace Ivayami.Scene
             }
         }
 
+        public void UnloadAllScenes()
+        {
+            for(int i = 0; i < _sceneList.Count; i++)
+            {
+                StartLoad(_sceneList[i].SceneName);
+            }
+        }
+
         private void UpdateScene(SceneData data)
         {
             if (_debugLogs)
