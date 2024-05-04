@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Ivayami.Player;
 using Ivayami.Save;
+using Ivayami.Scene;
 
 namespace Ivayami.UI {
     public class SaveSelector : MonoBehaviour {
@@ -25,6 +26,8 @@ namespace Ivayami.UI {
 
             PlayerActions.Instance.ChangeInputMap("Menu");
             _pauseInput.action.Disable();
+
+            SceneController.Instance.OnAllSceneRequestEnd = () => SceneController.Instance.OnAllSceneRequestEnd = EnablePlayerInput;
         }
 
         private void SaveSelectBtnUpdate(SaveProgress[] progressSaves) {
@@ -45,11 +48,13 @@ namespace Ivayami.UI {
             Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.id} (Progress: {SaveSystem.Instance.Progress.currentChapter}-{SaveSystem.Instance.Progress.currentSubChapter})");
         }
 
-        public void EnterSave() {
+        public void EnablePlayerInput() {
             _pauseInput.action.Enable();
-            PlayerActions.Instance.ChangeInputMap("Player"); //
+            PlayerActions.Instance.ChangeInputMap("Player");
+            PlayerMovement.Instance.ToggleMovement(true);
+            SceneController.Instance.OnAllSceneRequestEnd = null;
 
-            Logger.Log(LogType.UI, $"Entering Save");
+            Logger.Log(LogType.UI, $"EnablePlayerInput callback");
         }
 
     }
