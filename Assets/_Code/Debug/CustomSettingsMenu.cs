@@ -37,7 +37,7 @@ namespace Ivayami.debug
         {
             return new NewCustomSettings
             {
-                StartOnCurrentScene = EditorPrefs.GetBool(_startOnCurrentScene, true),
+                StartOnCurrentScene = EditorPrefs.GetBool(_startOnCurrentScene, false),
             };
         }
 
