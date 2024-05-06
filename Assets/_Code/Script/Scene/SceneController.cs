@@ -53,6 +53,13 @@ namespace Ivayami.Scene
 
             _chapterPointers = Resources.LoadAll<ChapterPointers>("ChapterPointers");
 
+#if UNITY_EDITOR
+            if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))
+            {
+                _mainMenuSceneName = Ivayami.debug.CustomSettingsHandler.CurrentSceneName;
+            }
+#endif
+
             LoadMainMenuScene();
         }
 
@@ -73,13 +80,13 @@ namespace Ivayami.Scene
             {
                 data.IsBeingLoaded = true;
                 _sceneUpdateRequests.Enqueue(new SceneUpdateRequestData(data, onSceneUpdate));
-                if(_sceneUpdateRequests.Count == 1)UpdateScene(data);
+                if (_sceneUpdateRequests.Count == 1) UpdateScene(data);
             }
         }
 
         public void UnloadAllScenes()
         {
-            for(int i = 0; i < _sceneList.Count; i++)
+            for (int i = 0; i < _sceneList.Count; i++)
             {
                 StartLoad(_sceneList[i].SceneName);
             }
@@ -113,7 +120,7 @@ namespace Ivayami.Scene
         }
 
         public Vector2 PointerInChapter()
-        {            
+        {
             return _chapterPointers[SaveSystem.Instance.Progress.currentChapter].SubChapterPointer(SaveSystem.Instance.Progress.currentSubChapter);
         }
 
