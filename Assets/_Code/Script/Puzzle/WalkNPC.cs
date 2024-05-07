@@ -30,9 +30,9 @@ namespace Ivayami.Puzzle
         private Vector3 _currentVelocity;
         private Vector3 _initialPosition;
         private EnemyAnimator _animator;
-        private const float _tick = .02f;
+        private const float _tick = .05f;
 
-        [System.Serializable]
+        [Serializable]
         private struct Path
         {
             public Vector3[] Points;
@@ -44,6 +44,7 @@ namespace Ivayami.Puzzle
             _rigidbody = GetComponent<Rigidbody>();
             _animator = GetComponentInChildren<EnemyAnimator>();
             _initialPosition = transform.position;
+            TryLookAtPlayer();
         }
 
         private void FixedUpdate()
@@ -64,12 +65,20 @@ namespace Ivayami.Puzzle
         private IEnumerator WalkCoroutine()
         {
             byte count = 0;
+            Vector3 initialPosition = transform.position;
+            Quaternion finalRotation;
+            Vector3 direction;
             while (count < _paths[_currentPathIndex].Points.Length)
             {
-                Vector3 direction = _initialPosition + _paths[_currentPathIndex].Points[count] - transform.position;
-                _currentVelocity = Vector3.MoveTowards(_currentVelocity, new Vector3(direction.x, 0, direction.z).normalized * _maxSpeed, _aceleration * _tick);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.FromToRotation(transform.forward, direction.normalized), _rotationSpeed * _tick);
+                direction = _initialPosition + _paths[_currentPathIndex].Points[count] - transform.position;
+                direction = new Vector3(direction.x, 0, direction.z);
+                finalRotation = Quaternion.LookRotation((_paths[_currentPathIndex].Points[count] + _initialPosition - initialPosition).normalized);
+                finalRotation = new Quaternion(0, finalRotation.y, 0, finalRotation.w);
+
+                _currentVelocity = Vector3.MoveTowards(_currentVelocity, direction.normalized * _maxSpeed, _aceleration * _tick);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, finalRotation, _rotationSpeed * _tick);
                 if (Vector3.Distance(transform.position, _paths[_currentPathIndex].Points[count] + _initialPosition) <= _minDistanceFromPathPoint) count++;
+
                 yield return _delay;
             }
             if (_currentPathIndex + 1 < _paths.Length)
@@ -77,7 +86,7 @@ namespace Ivayami.Puzzle
                 _paths[_currentPathIndex].OnPathEnd?.Invoke();
                 _currentPathIndex++;
                 transform.position = _paths[_currentPathIndex].Points[0] + _initialPosition;
-                if (_lookAtPlayer) transform.rotation = Quaternion.LookRotation(PlayerMovement.Instance.transform.forward, Vector3.up);
+                TryLookAtPlayer();
             }
             else
             {
@@ -88,15 +97,25 @@ namespace Ivayami.Puzzle
             _animator.Walking(_isWalking);
         }
 
+        private void TryLookAtPlayer()
+        {
+            if (_lookAtPlayer)
+            {
+                Quaternion rot = Quaternion.LookRotation((PlayerMovement.Instance.transform.position - transform.position).normalized, Vector3.up);
+                rot = new Quaternion(0, rot.y, 0, rot.w);
+                if (_lookAtPlayer) transform.rotation = rot;
+            }
+        }
+
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
         {
             if (_debugDraw && _paths != null)
             {
-                for(int i = 0; i < _paths.Length; i++)
+                for (int i = 0; i < _paths.Length; i++)
                 {
                     Gizmos.color = _gizmoColors[i];
-                    for(int a = 0; a < _paths[i].Points.Length; a++)
+                    for (int a = 0; a < _paths[i].Points.Length; a++)
                     {
                         Vector3 initialPos = _initialPosition != Vector3.zero ? _initialPosition : transform.position;
                         Gizmos.DrawSphere(initialPos + _paths[i].Points[a], _gizmoSize);
@@ -107,7 +126,7 @@ namespace Ivayami.Puzzle
 
         private void OnValidate()
         {
-            if(_paths != null && _gizmoColors.Length != _paths.Length) Array.Resize(ref _gizmoColors, _paths.Length);
+            if (_paths != null && _gizmoColors.Length != _paths.Length) Array.Resize(ref _gizmoColors, _paths.Length);
         }
 #endif
     }
