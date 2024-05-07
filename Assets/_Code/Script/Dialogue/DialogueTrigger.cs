@@ -6,12 +6,13 @@ namespace Ivayami.Dialogue
     {
         [SerializeField] private Dialogue _dialogue;
         [SerializeField] private bool _activateOnce;
+        [SerializeField] private bool _lockPlayerInput;
         private bool _activated;
         public void StartDialogue()
         {
             if (!_activateOnce || (_activateOnce && !_activated))
             {
-                DialogueController.Instance.StartDialogue(_dialogue.id);
+                DialogueController.Instance.StartDialogue(_dialogue.id, _lockPlayerInput);
                 _activated = true;
             }
         }

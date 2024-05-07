@@ -10,7 +10,7 @@ namespace Ivayami.Dialogue
 
         public void StartMovement()
         {
-            DialogueCamera.Instance.MoveRotate(this, DialogueController.Instance.IsDialogueActive);
+            DialogueCamera.Instance.MoveRotate(this);
         }
 
         public void ExitDialogueCamera()
