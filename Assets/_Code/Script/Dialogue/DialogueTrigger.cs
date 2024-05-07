@@ -17,6 +17,11 @@ namespace Ivayami.Dialogue
             }
         }
 
+        public void ChangeDialogue(Dialogue dialogue)
+        {
+            _dialogue = dialogue;
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             StartDialogue();
