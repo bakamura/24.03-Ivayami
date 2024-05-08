@@ -14,8 +14,7 @@ namespace Ivayami.Puzzle
         [SerializeField, Min(0f)] private float _maxSpeed;
         [SerializeField, Min(0f)] private float _aceleration;
         [SerializeField, Min(0f)] private float _rotationSpeed;
-        [SerializeField, Min(0f)] private float _minDistanceFromPathPoint;
-        [SerializeField] private bool _lookAtPlayer;
+        [SerializeField, Min(0f)] private float _minDistanceFromPathPoint;        
         [SerializeField] private Path[] _paths;
 
 #if UNITY_EDITOR
@@ -38,6 +37,7 @@ namespace Ivayami.Puzzle
         private struct Path
         {
             public Vector3[] Points;
+            public bool LookAtPlayer;
             public UnityEvent OnPathEnd;
         }
 
@@ -83,6 +83,9 @@ namespace Ivayami.Puzzle
 
                 yield return _delay;
             }
+            _isWalking = false;
+            _currentVelocity = Vector3.zero;
+            _animator.Walking(_isWalking);
             if (_currentPathIndex + 1 < _paths.Length)
             {
                 _paths[_currentPathIndex].OnPathEnd?.Invoke();
@@ -94,18 +97,15 @@ namespace Ivayami.Puzzle
             {
                 gameObject.SetActive(false);
             }
-            _isWalking = false;
-            _currentVelocity = Vector3.zero;
-            _animator.Walking(_isWalking);
         }
 
         private void TryLookAtPlayer()
         {
-            if (_lookAtPlayer)
+            if (_paths[_currentPathIndex].LookAtPlayer)
             {
                 Quaternion rot = Quaternion.LookRotation((PlayerMovement.Instance.transform.position - transform.position).normalized, Vector3.up);
                 rot = new Quaternion(0, rot.y, 0, rot.w);
-                if (_lookAtPlayer) transform.rotation = rot;
+                transform.rotation = rot;
             }
         }
 
