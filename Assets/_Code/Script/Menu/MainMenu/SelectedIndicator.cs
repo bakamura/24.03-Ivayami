@@ -9,7 +9,7 @@ public class SelectedIndicator : MonoBehaviour{
     }
 
     public void Reposition(RectTransform rectTransform) {
-        transform.parent = rectTransform.transform;
+        _rectTransform.SetParent(rectTransform.transform);
         _rectTransform.anchoredPosition = Vector2.zero;
         transform.SetAsFirstSibling();
     }
