@@ -8,11 +8,14 @@ using Ivayami.Player;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
 
-namespace Ivayami.Dialogue {
+namespace Ivayami.Dialogue
+{
     [RequireComponent(typeof(CanvasGroup))]
-    public class DialogueController : MonoSingleton<DialogueController> {
+    public class DialogueController : MonoSingleton<DialogueController>
+    {
 
-        [SerializeField] private float _characterShowDelay;
+        [SerializeField, Min(0f)] private float _characterShowDelay;
+        [SerializeField, Min(0f)] private float _delayToAutoStartNextSpeech;
         //[SerializeField] private InputActionAsset _inputActionMap;
         [SerializeField] private InputActionReference _continueInput;
         [SerializeField] private TMP_Text _speechTextComponent;
@@ -25,12 +28,14 @@ namespace Ivayami.Dialogue {
         private Dictionary<string, Dialogue> _dialogueDictionary = new Dictionary<string, Dialogue>();
         private Coroutine _writtingCoroutine;
         private WaitForSeconds _typeWrittingDelay;
+        private WaitForSeconds _autoStartNextDelay;
         private Dialogue _currentDialogue;
         private DialogueEvents _currentDialogueEvents;
         private bool _readyForNextSpeech = true;
         private sbyte _currentSpeechIndex;
 
         public bool IsDialogueActive { get; private set; }
+        public bool LockInput { get; private set; }
         public Action OnDialogeStart;
         public Action OnDialogueEnd;
         public Action OnSkipSpeech;
@@ -39,9 +44,10 @@ namespace Ivayami.Dialogue {
         {
             base.Awake();
 
-            _dialogues = Resources.LoadAll<Dialogue>("Dialogues");            
+            _dialogues = Resources.LoadAll<Dialogue>("Dialogues");
             _continueInput.action.performed += HandleContinueDialogue;
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
+            _autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
             _canvasGroup = GetComponent<CanvasGroup>();
 
             for (int i = 0; i < _dialogues.Length; i++)
@@ -80,15 +86,18 @@ namespace Ivayami.Dialogue {
                 //end of current dialogue
                 if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
                 {
-                    _continueInput.action.Disable();
                     ActivateDialogueEvents(_currentDialogue.onEndEventId);
                     _currentSpeechIndex = 0;
                     _currentDialogue = null;
                     _canvasGroup.alpha = 0;
                     _canvasGroup.blocksRaycasts = false;
                     OnDialogueEnd?.Invoke();
-                    PlayerActions.Instance.ChangeInputMap("Player");
-                    //_inputActionMap.actionMaps[0].Enable();
+                    if (LockInput)
+                    {
+                        PlayerActions.Instance.ChangeInputMap("Player");
+                        //_continueInput.action.Disable();
+                    }
+                    LockInput = false;
                     IsDialogueActive = false;
                 }
                 //continue current dialogue
@@ -99,7 +108,7 @@ namespace Ivayami.Dialogue {
                     _writtingCoroutine = StartCoroutine(WrittingCoroutine());
                 }
             }
-        }        
+        }
 
         private IEnumerator WrittingCoroutine()
         {
@@ -131,6 +140,11 @@ namespace Ivayami.Dialogue {
             _continueDialogueIcon.SetActive(true);
             _readyForNextSpeech = true;
             _writtingCoroutine = null;
+            if (!LockInput)
+            {
+                yield return _autoStartNextDelay;
+                UpdateDialogue();
+            }
         }
 
         private void SkipSpeech()
@@ -154,19 +168,28 @@ namespace Ivayami.Dialogue {
             if (_currentDialogueEvents && !string.IsNullOrEmpty(eventID)) _currentDialogueEvents.TriggerEvent(eventID);
         }
 
-        public void StartDialogue(string dialogueId)
+        public void StartDialogue(string dialogueId, bool lockInput)
         {
-            if (_dialogueDictionary.TryGetValue(dialogueId, out Dialogue dialogue) && _writtingCoroutine == null)
+            if (_dialogueDictionary.TryGetValue(dialogueId, out Dialogue dialogue) /*&& _writtingCoroutine == null*/)
             {
                 IsDialogueActive = true;
-                PlayerActions.Instance.ChangeInputMap("Dialogue");
-                //_inputActionMap.actionMaps[0].Disable();
-                _continueInput.action.Enable();
+                LockInput = lockInput;
+                if (LockInput)
+                {
+                    PlayerActions.Instance.ChangeInputMap("Dialogue");
+                    //_continueInput.action.Enable();
+                }
                 if (_debugLogs) Debug.Log($"Starting dialogue {dialogueId}");
                 _canvasGroup.alpha = 1;
                 _canvasGroup.blocksRaycasts = true;
+                _currentSpeechIndex = 0;
                 _currentDialogue = dialogue;
                 OnDialogeStart?.Invoke();
+                if(_writtingCoroutine != null)
+                {
+                    StopCoroutine(_writtingCoroutine);
+                    _writtingCoroutine = null;
+                }
                 _writtingCoroutine = StartCoroutine(WrittingCoroutine());
             }
             else
@@ -174,7 +197,7 @@ namespace Ivayami.Dialogue {
                 if (_debugLogs)
                 {
                     if (dialogue == null) Debug.LogError($"The dialogue {dialogueId} couldn't be found");
-                    if (_writtingCoroutine != null) Debug.LogWarning($"There is the current dialogue {_currentDialogue.id} playing, the dialogue {dialogueId} will not play");
+                    //if (_writtingCoroutine != null) Debug.LogWarning($"There is the current dialogue {_currentDialogue.id} playing, the dialogue {dialogueId} will not play");
                 }
             }
         }

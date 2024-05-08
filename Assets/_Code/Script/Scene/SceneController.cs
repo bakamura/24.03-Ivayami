@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using Ivayami.Save;
 using Ivayami.Player;
+using System;
 
 namespace Ivayami.Scene
 {
@@ -15,6 +16,8 @@ namespace Ivayami.Scene
         private ChapterPointers[] _chapterPointers;
         private List<SceneData> _sceneList = new List<SceneData>();
         private Queue<SceneUpdateRequestData> _sceneUpdateRequests = new Queue<SceneUpdateRequestData>();
+
+        public Action OnAllSceneRequestEnd;
 
         [System.Serializable]
         private class SceneData
@@ -50,6 +53,13 @@ namespace Ivayami.Scene
 
             _chapterPointers = Resources.LoadAll<ChapterPointers>("ChapterPointers");
 
+#if UNITY_EDITOR
+            if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))
+            {
+                _mainMenuSceneName = Ivayami.debug.CustomSettingsHandler.CurrentSceneName;
+            }
+#endif
+
             LoadMainMenuScene();
         }
 
@@ -70,7 +80,15 @@ namespace Ivayami.Scene
             {
                 data.IsBeingLoaded = true;
                 _sceneUpdateRequests.Enqueue(new SceneUpdateRequestData(data, onSceneUpdate));
-                if(_sceneUpdateRequests.Count == 1)UpdateScene(data);
+                if (_sceneUpdateRequests.Count == 1) UpdateScene(data);
+            }
+        }
+
+        public void UnloadAllScenes()
+        {
+            for (int i = 0; i < _sceneList.Count; i++)
+            {
+                StartLoad(_sceneList[i].SceneName);
             }
         }
 
@@ -102,7 +120,7 @@ namespace Ivayami.Scene
         }
 
         public Vector2 PointerInChapter()
-        {            
+        {
             return _chapterPointers[SaveSystem.Instance.Progress.currentChapter].SubChapterPointer(SaveSystem.Instance.Progress.currentSubChapter);
         }
 
@@ -118,6 +136,7 @@ namespace Ivayami.Scene
             }
             requestData.OnSceneUpdate?.Invoke();
             if (_sceneUpdateRequests.Count > 0) UpdateScene(_sceneUpdateRequests.Peek().SceneData);
+            else OnAllSceneRequestEnd?.Invoke();
         }
     }
 }
