@@ -10,6 +10,7 @@ namespace Ivayami.Puzzle
     [RequireComponent(typeof(Rigidbody))]
     public class WalkNPC : MonoBehaviour
     {
+        [Header("Paramaters")]
         [SerializeField, Min(0f)] private float _maxSpeed;
         [SerializeField, Min(0f)] private float _aceleration;
         [SerializeField, Min(0f)] private float _rotationSpeed;
@@ -18,6 +19,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private Path[] _paths;
 
 #if UNITY_EDITOR
+        [Header("Debug")]
         [SerializeField] private bool _debugDraw;
         [SerializeField] private Color[] _gizmoColors;
         [SerializeField, Min(0f)] private float _gizmoSize;
