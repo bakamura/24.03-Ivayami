@@ -28,7 +28,7 @@ namespace Ivayami.Player {
         [SerializeField] private float _interactRange;
         [SerializeField] private float _interactSphereCastRadius;
         [SerializeField] private LayerMask _interactLayer;
-        private IInteractable _interactableClosest;
+        private IInteractable _interactableIterator;
         public bool Interacting { get; private set; } = false;
         public IInteractable InteractableTarget { get; private set; }
 
@@ -48,7 +48,7 @@ namespace Ivayami.Player {
         private RaycastHit[] _raycastHitsCache;
         private IInteractable _interactableClosestCache;
         private float _interactableClosestDistanceCache;
-        private float _interactableDistanceCache;
+        private float _interactableDistanceIterator;
 
         protected override void Awake() {
             base.Awake();
@@ -73,26 +73,26 @@ namespace Ivayami.Player {
 
         private void Interact(InputAction.CallbackContext input) {
             if (input.phase == InputActionPhase.Started) {
-                if (_interactableClosest != null && _interactableClosest != Friend.Instance.InteractableLongCurrent) {
-                    _interactableClosest.Interact();
-                    if (_interactableClosest is IInteractableLong) {
+                if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
+                    InteractableTarget.Interact();
+                    if (InteractableTarget is IInteractableLong) {
                         onInteractLong?.Invoke(true);
 
-                        Logger.Log(LogType.Player, $"Interact Long with: {_interactableClosestCache.gameObject.name}");
+                        Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
                     }
                     else {
                         onInteract?.Invoke();
 
-                        Logger.Log(LogType.Player, $"Interact with: {_interactableClosestCache.gameObject.name}");
+                        Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
                     }
                 }
                 else Logger.Log(LogType.Player, $"Interact: No Target");
             }
             else if (input.phase == InputActionPhase.Canceled && Interacting) {
-                (_interactableClosest as IInteractableLong).InteractStop();
+                (InteractableTarget as IInteractableLong).InteractStop();
                 onInteractLong?.Invoke(false);
 
-                Logger.Log(LogType.Player, $"Stop Interact Long with: {_interactableClosestCache.gameObject.name}");
+                Logger.Log(LogType.Player, $"Stop Interact Long with: {InteractableTarget.gameObject.name}");
             }
         }
 
@@ -101,22 +101,22 @@ namespace Ivayami.Player {
             _interactableClosestCache = null;
             _raycastHitsCache = Physics.SphereCastAll(_cam.ScreenPointToRay(_screenCenter), _interactSphereCastRadius, Mathf.Infinity);
             foreach (RaycastHit hit in _raycastHitsCache) {
-                InteractableTarget = hit.collider.GetComponent<IInteractable>();
-                if (InteractableTarget != null) {
-                    _interactableDistanceCache = Vector3.Distance(transform.position, InteractableTarget.gameObject.transform.position);
-                    if (_interactableClosestDistanceCache > _interactableDistanceCache) {
-                        _interactableClosestDistanceCache = _interactableDistanceCache;
-                        _interactableClosestCache = InteractableTarget;
+                _interactableIterator = hit.collider.GetComponent<IInteractable>();
+                if (_interactableIterator != null) {
+                    _interactableDistanceIterator = Vector3.Distance(transform.position, _interactableIterator.gameObject.transform.position);
+                    if (_interactableClosestDistanceCache > _interactableDistanceIterator) {
+                        _interactableClosestDistanceCache = _interactableDistanceIterator;
+                        _interactableClosestCache = _interactableIterator;
                     }
                 }
             }
-            if (_interactableClosest != _interactableClosestCache) {
-                _interactableClosest?.InteratctableHighlight.UpdateHighlight(false);
-                _interactableClosest = _interactableClosestCache;
-                _interactableClosest?.InteratctableHighlight.UpdateHighlight(true);
-                onInteractTargetChange?.Invoke(_interactableClosest);
+            if (InteractableTarget != _interactableClosestCache) {
+                InteractableTarget?.InteratctableHighlight.UpdateHighlight(false);
+                InteractableTarget = _interactableClosestCache;
+                InteractableTarget?.InteratctableHighlight.UpdateHighlight(true);
+                onInteractTargetChange?.Invoke(InteractableTarget);
 
-                Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(_interactableClosestCache != null ? _interactableClosestCache.gameObject.name : "Null")}");
+                Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(InteractableTarget != null ? InteractableTarget.gameObject.name : "Null")}");
             }
         }
 

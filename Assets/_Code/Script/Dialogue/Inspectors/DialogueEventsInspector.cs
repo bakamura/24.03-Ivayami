@@ -61,7 +61,7 @@ namespace Ivayami.Dialogue
                     }
                     for (int i = 0; i < arrayLenght; i++)
                     {
-                        if (_previousIDs[i] != dialogArray[i].id)
+                        if (!_previousIDs.Contains(dialogArray[i].id))
                         {
                             //Debug.Log($"previous {_previousIDs[i]}, current {dialogArray[i].id}");
                             UpdateEventIDFromDialogeOrSpeech(_previousIDs[i], dialogArray[i].id);

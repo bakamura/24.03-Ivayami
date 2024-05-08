@@ -18,15 +18,11 @@ namespace Ivayami.Puzzle
 
         protected virtual void HandleOnActivate()
         {
+            IsActive = true;
             for (int i = 0; i < _activators.Length; i++)
             {
-                if (!_activators[i].IsActive)
-                {
-                    IsActive = false;
-                    return;
-                }
+                if (!_activators[i].IsActive) IsActive = false;
             }
-            IsActive = true;
         }
     }
 }
