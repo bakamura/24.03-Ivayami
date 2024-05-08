@@ -3,33 +3,34 @@ using UnityEngine;
 
 namespace Ivayami.Puzzle
 {
-    public class LerpFogShader : MonoBehaviour
+    public sealed class InterpolateFogShader : MonoBehaviour
     {
         [SerializeField] private AnimationCurve _interpolationCurve;
         [SerializeField, Min(0f)] private float _duration;
-        [SerializeField, Min(0f)] private float _finalValue;
+        [SerializeField, Range(0.001f, _maxValue)] private float _finalValue;
 
         private Material _fogMaterial;
         private Coroutine _interpolationCoroutine;
-        private float _initialValue;
-        private static readonly int PARAMETER = Shader.PropertyToID("_SoftParticlesFarFadeDistance");
+        private Vector4 _initialValue;
+        private static readonly int PARAMETER = Shader.PropertyToID("_SoftParticleFadeParams");
+        private const float _maxValue = 62500f;
 
         [ContextMenu("Start")]
         public void StartLerp()
         {
             GetMaterialInstance();
             if (_interpolationCoroutine == null) StopLerp();
-            _initialValue = _fogMaterial.GetFloat(PARAMETER);
+            _initialValue = _fogMaterial.GetVector(PARAMETER);
             _interpolationCoroutine = StartCoroutine(InterpolateCoroutine());
         }
         [ContextMenu("Stop")]
         public void StopLerp()
         {
-            if(_interpolationCoroutine != null)
+            if (_interpolationCoroutine != null)
             {
                 StopCoroutine(_interpolationCoroutine);
                 _interpolationCoroutine = null;
-                _fogMaterial.SetFloat(PARAMETER, _initialValue);
+                _fogMaterial.SetVector(PARAMETER, _initialValue);
             }
         }
 
@@ -41,11 +42,11 @@ namespace Ivayami.Puzzle
         private IEnumerator InterpolateCoroutine()
         {
             float count = 0;
-            while(count < _duration)
+            while (count < _duration)
             {
                 count += Time.deltaTime;
-                _fogMaterial.SetFloat(PARAMETER, Mathf.Lerp(_initialValue, _finalValue, _interpolationCurve.Evaluate(count / _duration)));
-                Debug.Log(_fogMaterial.GetFloat(PARAMETER));
+                _fogMaterial.SetVector(PARAMETER, Vector4.Lerp(_initialValue,
+                    new Vector4(_initialValue.x, _finalValue / _maxValue, _initialValue.z, _initialValue.w), _interpolationCurve.Evaluate(count / _duration)));
                 yield return null;
             }
             _interpolationCoroutine = null;
