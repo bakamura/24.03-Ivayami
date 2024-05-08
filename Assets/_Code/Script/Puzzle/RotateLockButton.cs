@@ -4,12 +4,12 @@ using TMPro;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteratctableHighlight))]
+    [RequireComponent(typeof(InteractableHighlight))]
     public class RotateLockButton : MonoBehaviour
     {
         [SerializeField, Min(0)] private int _optionsAmount;
         [SerializeField] private ButtonDetails _buttonDetails;
-        public InteratctableHighlight InteratctableHighlight { get; private set; }
+        public InteractableHighlight InteratctableHighlight { get; private set; }
 
         private sbyte _currentDetailIndex;
         //will always be 3
@@ -27,7 +27,7 @@ namespace Ivayami.Puzzle
         private void Awake()
         {            
             _texts = GetComponentsInChildren<TMP_Text>();
-            InteratctableHighlight = GetComponent<InteratctableHighlight>();
+            InteratctableHighlight = GetComponent<InteractableHighlight>();
             _modelRadius = GetComponent<MeshFilter>().mesh.bounds.size.z / 2;
 
             _texts[1].text = _buttonDetails.Content[0];
