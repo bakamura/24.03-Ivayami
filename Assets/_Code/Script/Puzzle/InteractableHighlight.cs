@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Ivayami.Puzzle
 {
-    public class InteratctableHighlight : MonoBehaviour
+    public class InteractableHighlight : MonoBehaviour
     {
         [SerializeField] private Color _highlightedColor = new Color(0.03921569f, 0.03921569f, 0.03921569f, 1);
         private List<Material> _materials;
