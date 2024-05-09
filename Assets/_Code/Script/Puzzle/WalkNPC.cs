@@ -67,17 +67,17 @@ namespace Ivayami.Puzzle
         private IEnumerator WalkCoroutine()
         {
             byte count = 0;
-            Vector3 initialPosition = transform.position;
             Quaternion finalRotation;
             Vector3 direction;
             while (count < _paths[_currentPathIndex].Points.Length)
             {
                 direction = _initialPosition + _paths[_currentPathIndex].Points[count] - transform.position;
                 direction = new Vector3(direction.x, 0, direction.z);
-                finalRotation = Quaternion.LookRotation((_paths[_currentPathIndex].Points[count] + _initialPosition - initialPosition).normalized);
+                finalRotation = Quaternion.LookRotation(_paths[_currentPathIndex].Points[count] + _initialPosition - transform.position);
                 finalRotation = new Quaternion(0, finalRotation.y, 0, finalRotation.w);
 
                 _currentVelocity = Vector3.MoveTowards(_currentVelocity, direction.normalized * _maxSpeed, _aceleration * _tick);
+                _currentVelocity = new Vector3(_currentVelocity.x, _rigidbody.velocity.y, _currentVelocity.z);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, finalRotation, _rotationSpeed * _tick);
                 if (Vector3.Distance(transform.position, _paths[_currentPathIndex].Points[count] + _initialPosition) <= _minDistanceFromPathPoint) count++;
 
