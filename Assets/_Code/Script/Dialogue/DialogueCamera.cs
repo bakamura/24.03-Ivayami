@@ -30,15 +30,19 @@ namespace Ivayami.Dialogue
 
         public void MoveRotate(CameraAnimationInfo cameraTransitionInfo)
         {
-            if (_animationCoroutine == null && cameraTransitionInfo)
+            if (_animationCoroutine != null)
             {
-                _currentPositionCurve = cameraTransitionInfo.positionCurve;
-                _currentRotationCurve = cameraTransitionInfo.rotationCurve;
-                _finalPlacement = cameraTransitionInfo.transform;
-                _currentDuration = cameraTransitionInfo.duration;
-                HandleOnDialogeStart();
-                _animationCoroutine = StartCoroutine(BlendAnimationCoroutine());
+                StopCoroutine(_animationCoroutine);
+                _animationCoroutine = null;
+                _dialogueCamera.transform.SetPositionAndRotation(_finalPlacement.position, _finalPlacement.rotation);
             }
+            else _dialogueCamera.transform.SetPositionAndRotation(_gameplayCamera.transform.position, _gameplayCamera.transform.rotation);
+            _currentPositionCurve = cameraTransitionInfo.positionCurve;
+            _currentRotationCurve = cameraTransitionInfo.rotationCurve;
+            _finalPlacement = cameraTransitionInfo.transform;
+            _currentDuration = cameraTransitionInfo.duration;
+            CameraPriotitySetup();
+            _animationCoroutine = StartCoroutine(BlendAnimationCoroutine());
         }
 
         private IEnumerator BlendAnimationCoroutine()
@@ -65,9 +69,8 @@ namespace Ivayami.Dialogue
             _animationCoroutine = null;
         }
 
-        private void HandleOnDialogeStart()
+        private void CameraPriotitySetup()
         {
-            _dialogueCamera.transform.SetPositionAndRotation(_gameplayCamera.transform.position, _gameplayCamera.transform.rotation);
             _dialogueCamera.Priority = _gameplayCameraPriority + 1;
             if (DialogueController.Instance.LockInput && !_dialogueSetupEventTriggered)
             {
