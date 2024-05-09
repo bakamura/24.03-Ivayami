@@ -7,7 +7,7 @@ namespace Ivayami.Puzzle
     {
         [SerializeField] private AnimationCurve _interpolationCurve;
         [SerializeField, Min(0f)] private float _duration;
-        [SerializeField, Range(0, 1)] private float _finalValue;
+        [SerializeField, Range(1e-04f, 1)] private float _finalValue;
 
         private Material _fogMaterial;
         private Coroutine _interpolationCoroutine;
