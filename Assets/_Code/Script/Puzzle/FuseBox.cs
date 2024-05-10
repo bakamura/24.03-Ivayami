@@ -62,6 +62,7 @@ namespace Ivayami.Puzzle
             }
 
             _baseFuseColor = _meshRenderFuses[0].material.GetColor(_colorEmissionVarName);
+            _distanceBetweenLeds *= 1.05f;
         }
 
         [ContextMenu("Interact")]
