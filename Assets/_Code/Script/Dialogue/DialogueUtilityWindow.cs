@@ -10,9 +10,14 @@ namespace Ivayami.Dialogue
     {
         private Dialogue[] _allDialogues;
         private string _filter;
-        private Vector2 _scrollPosition;
         private Rect _buttonRect;
         private List<Dialogue> _dialoguesCache = new List<Dialogue>();
+        private SearchType _currentSearchType;
+        private enum SearchType
+        {
+            Event,
+            Filter
+        }
 
         [MenuItem("Ivayami/DialogueUtilities")]
         private static void ShowWindow()
@@ -24,39 +29,43 @@ namespace Ivayami.Dialogue
 
         private void OnGUI()
         {
-            _filter = EditorGUILayout.TextField("Filter", _filter);
+            _currentSearchType = (SearchType)EditorGUILayout.EnumPopup("Search Type", _currentSearchType);
+            _filter = EditorGUILayout.TextField("Search", _filter);
 
             _buttonRect = GUILayoutUtility.GetLastRect();
             _buttonRect.y += _buttonRect.height * 1.2f;
             if (!string.IsNullOrEmpty(_filter) && GUI.Button(_buttonRect, "Search"))
-            {
-                DrawSearchResult();
+            {                
+                DrawSearchResult();                
             }
         }
 
         private void DrawSearchResult()
         {
-            _allDialogues = Resources.LoadAll<Dialogue>("Dialogues");
-            //Rect temp = GUILayoutUtility.GetLastRect();
-            //show transform using the events
-            //show dialogue assets
-
-            for (int i = 0; i < _allDialogues.Length; i++)
+            switch (_currentSearchType)
             {
-                for (int a = 0; a < _allDialogues[i].dialogue.Length; a++)
-                {
-                    if (!string.IsNullOrEmpty(_allDialogues[i].dialogue[a].FilterTags) && _allDialogues[i].dialogue[a].FilterTags.Contains(_filter))
+                case SearchType.Event:
+                    break;
+                case SearchType.Filter:
+                    _allDialogues = Resources.LoadAll<Dialogue>("Dialogues");
+                    for (int i = 0; i < _allDialogues.Length; i++)
                     {
-                        _dialoguesCache.Add(_allDialogues[i]);
+                        for (int a = 0; a < _allDialogues[i].dialogue.Length; a++)
+                        {
+                            if (!string.IsNullOrEmpty(_allDialogues[i].dialogue[a].FilterTags) && _allDialogues[i].dialogue[a].FilterTags.Contains(_filter))
+                            {
+                                _dialoguesCache.Add(_allDialogues[i]);
+                            }
+                        }
                     }
-                }
-            }
-            //temp.y += temp.height * 1.2f;            
-            EditorGUILayout.Foldout(true, GUIContent.none);
-            for(int i = 0; i < _dialoguesCache.Count; i++)
-            {
-                EditorGUILayout.ObjectField(_dialoguesCache[i], typeof(Dialogue), false);
-            }
+                    Rect temp = GUILayoutUtility.GetLastRect();
+                    for (int i = 0; i < _dialoguesCache.Count; i++)
+                    {
+                        temp.y = temp.height * 1.2f;
+                        EditorGUI.ObjectField(temp, _dialoguesCache[i], typeof(Dialogue), false);
+                    }
+                    break;
+            }            
         }
     }
 }
