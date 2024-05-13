@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System.IO;
+using System.Diagnostics;
 
 namespace Ivayami.Dialogue
 {
@@ -51,19 +53,26 @@ namespace Ivayami.Dialogue
             _buttonRect.y += _buttonRect.height * 1.2f;
             if (!string.IsNullOrEmpty(_filter) && GUI.Button(_buttonRect, "Search"))
             {
-                DrawSearchResult();
+                UpdateSearchResult();
             }
+            DrawSearchResult();
         }
 
-        private void DrawSearchResult()
+        private void UpdateSearchResult()
         {
             _allDialogues = Resources.LoadAll<Dialogue>("Dialogues");
-            _dialoguesCache.Clear();
-            Rect temp = _buttonRect;
+            _dialoguesCache.Clear();            
             switch (_currentSearchType)
             {
                 case SearchType.Event:
-                    //draw object name and scene with the event
+                    ////draw object name and scene with the event
+                    //string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + @"\Archive\";
+                    //string filter = "*.unity";
+                    //string[] files = Directory.GetFiles(folder, filter);
+                    //for(int i = 0; i < files.Length; i++)
+                    //{
+                        
+                    //}
                     //draw dialogue assets with the events
                     for (int i = 0; i < _allDialogues.Length; i++)
                     {
@@ -79,16 +88,16 @@ namespace Ivayami.Dialogue
                             }
                         }
                     }
-                    for (int i = 0; i < _dialoguesCache.Count; i++)
-                    {
-                        temp.y += temp.height * 1.1f;
-                        Debug.Log(temp);
-                        EditorGUI.ObjectField(temp, _dialoguesCache[i].Dialogue, typeof(Dialogue), false);
-                        EditorGUILayout.BeginHorizontal();
-                        if (_dialoguesCache[i].SpeechIndex == -1) EditorGUILayout.LabelField("On End Event");
-                        else EditorGUILayout.LabelField($"Speech Index: {i}");
-                        EditorGUILayout.EndHorizontal();
-                    }
+                    //for (int i = 0; i < _dialoguesCache.Count; i++)
+                    //{
+                    //    temp.y += temp.height * 1.1f;
+                    //    UnityEngine.Debug.Log(temp);
+                    //    EditorGUI.ObjectField(temp, _dialoguesCache[i].Dialogue, typeof(Dialogue), false);
+                    //    EditorGUILayout.BeginHorizontal();
+                    //    if (_dialoguesCache[i].SpeechIndex == -1) EditorGUILayout.LabelField("On End Event");
+                    //    else EditorGUILayout.LabelField($"Speech Index: {i}");
+                    //    EditorGUILayout.EndHorizontal();
+                    //}
                     break;
                 case SearchType.Filter:
                     for (int i = 0; i < _allDialogues.Length; i++)
@@ -101,10 +110,32 @@ namespace Ivayami.Dialogue
                             }
                         }
                     }
+                    break;
+            }
+        }
+
+        private void DrawSearchResult()
+        {
+            Rect temp = _buttonRect;
+            switch (_currentSearchType)
+            {
+                case SearchType.Event:
+                    //draw scene data
+                    //draw dialogue data
                     for (int i = 0; i < _dialoguesCache.Count; i++)
                     {
                         temp.y += temp.height * 1.1f;
-                        Debug.Log(temp);
+                        EditorGUI.ObjectField(temp, _dialoguesCache[i].Dialogue, typeof(Dialogue), false);
+                        EditorGUILayout.BeginHorizontal();
+                        if (_dialoguesCache[i].SpeechIndex == -1) EditorGUILayout.LabelField("On End Event");
+                        else EditorGUILayout.LabelField($"Speech Index: {i}");
+                        EditorGUILayout.EndHorizontal();
+                    }
+                    break;
+                case SearchType.Filter:                    
+                    for (int i = 0; i < _dialoguesCache.Count; i++)
+                    {
+                        temp.y += temp.height * 1.1f;
                         EditorGUI.ObjectField(temp, _dialoguesCache[i].Dialogue, typeof(Dialogue), false);
                     }
                     break;
