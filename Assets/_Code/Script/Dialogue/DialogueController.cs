@@ -30,7 +30,7 @@ namespace Ivayami.Dialogue
         private WaitForSeconds _typeWrittingDelay;
         private WaitForSeconds _autoStartNextDelay;
         private Dialogue _currentDialogue;
-        private DialogueEvents _currentDialogueEvents;
+        private List<DialogueEvents> _dialogueEventsList = new List<DialogueEvents>();
         private bool _readyForNextSpeech = true;
         private sbyte _currentSpeechIndex;
 
@@ -158,14 +158,21 @@ namespace Ivayami.Dialogue
             _writtingCoroutine = null;
         }
 
-        public void SetCurrentDialogueEvents(DialogueEvents dialogueEvents)
+        public void UpdateDialogueEventsList(DialogueEvents dialogueEvents)
         {
-            _currentDialogueEvents = dialogueEvents;
+            if (_dialogueEventsList.Contains(dialogueEvents)) _dialogueEventsList.Remove(dialogueEvents);
+            else _dialogueEventsList.Add(dialogueEvents);
         }
 
         private void ActivateDialogueEvents(string eventID)
         {
-            if (_currentDialogueEvents && !string.IsNullOrEmpty(eventID)) _currentDialogueEvents.TriggerEvent(eventID);
+            if (!string.IsNullOrEmpty(eventID))
+            {
+                for (int i = 0; i < _dialogueEventsList.Count; i++)
+                {
+                    if (_dialogueEventsList[i].TriggerEvent(eventID)) break;
+                }
+            }
         }
 
         public void StartDialogue(string dialogueId, bool lockInput)
@@ -185,7 +192,7 @@ namespace Ivayami.Dialogue
                 _currentSpeechIndex = 0;
                 _currentDialogue = dialogue;
                 OnDialogeStart?.Invoke();
-                if(_writtingCoroutine != null)
+                if (_writtingCoroutine != null)
                 {
                     StopCoroutine(_writtingCoroutine);
                     _writtingCoroutine = null;
