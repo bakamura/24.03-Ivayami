@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteratctableHighlight))]
+    [RequireComponent(typeof(InteractableHighlight))]
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
@@ -34,9 +34,9 @@ namespace Ivayami.Puzzle
         private int _currentPositionInInventory = 0;
         private List<InventoryItem> _currentItemList = new List<InventoryItem>();
         private sbyte _currentItemsDelivered;
-        private InteratctableHighlight _interatctableHighlight;
+        private InteractableHighlight _interatctableHighlight;
 
-        public InteratctableHighlight InteratctableHighlight { get => _interatctableHighlight; }
+        public InteractableHighlight InteratctableHighlight { get => _interatctableHighlight; }
 
         [System.Serializable]
         public enum InteractionTypes
@@ -56,7 +56,7 @@ namespace Ivayami.Puzzle
         private void Awake()
         {
             _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
-            _interatctableHighlight = GetComponent<InteratctableHighlight>();
+            _interatctableHighlight = GetComponent<InteractableHighlight>();
         }
 
         [ContextMenu("Interact")]
