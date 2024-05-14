@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
-using System.Diagnostics;
-using UnityEngine.SceneManagement;
+using UnityEditor.SceneManagement;
+using System;
 
 namespace Ivayami.Dialogue
 {
@@ -16,13 +16,15 @@ namespace Ivayami.Dialogue
         private List<DialogueSearchInfo> _dialoguesSearchCache = new List<DialogueSearchInfo>();
         private List<SceneSearchInfo> _sceneSearchCache = new List<SceneSearchInfo>();
         private SearchType _currentSearchType;
+        private string _objectNameToSelect;
+        private string[] _filesCache;
         private enum SearchType
         {
             Event,
             Filter
         }
 
-        [System.Serializable]
+        [Serializable]
         private struct DialogueSearchInfo
         {
             public Dialogue Dialogue;
@@ -38,7 +40,7 @@ namespace Ivayami.Dialogue
             }
         }
 
-        [System.Serializable]
+        [Serializable]
         private struct SceneSearchInfo
         {
             public string SceneName;
@@ -82,28 +84,26 @@ namespace Ivayami.Dialogue
             {
                 case SearchType.Event:
                     //collect object name and scene with the event
-                    string folder = Path.Combine(Application.dataPath, "_Game", "Scene");
-                    string[] files = Directory.GetFiles(folder, "*.unity", SearchOption.AllDirectories);
+                    _filesCache = Directory.GetFiles(Path.Combine(Application.dataPath, "_Game", "Scene"),
+                        "*.unity", SearchOption.AllDirectories);
                     string currentGobjName = null;
-                    for (int i = 0; i < files.Length; i++)
+                    string splitResult;
+                    for (int i = 0; i < _filesCache.Length; i++)
                     {
-                        foreach (var line in File.ReadAllLines(files[i]))
+                        foreach (var line in File.ReadAllLines(_filesCache[i]))
                         {
-                            if (line.Contains("m_Name: ")) currentGobjName = line.Split(' ').ToString();
-                            if (line.Contains(_filter))
+                            if (line.Contains("m_Name:"))
                             {
-                                _sceneSearchCache.Add(new SceneSearchInfo(Path.GetFileName(files[i]), currentGobjName));
+                                splitResult = line.Split(':')[1].Trim();
+                                if (!string.IsNullOrEmpty(splitResult))
+                                    currentGobjName = splitResult;
+                            }
+                            if (line.Contains($"- id: {_filter}"))
+                            {
+                                string[] temp = _filesCache[i].Split('\\');
+                                _sceneSearchCache.Add(new SceneSearchInfo(temp[temp.Length - 1].Split('.')[0], currentGobjName));
                                 break;
                             }
-                            //if (line.Contains(_filter) && current == null)
-                            //    current = new List<string>();
-                            //else if (line.Contains(_filter) && current != null)
-                            //{
-                            //    groups.Add(current);
-                            //    current = null;
-                            //}
-                            //if (current != null)
-                            //    current.Add(line);
                         }
                     }
                     //collect dialogue assets with the events
@@ -144,8 +144,7 @@ namespace Ivayami.Dialogue
             {
                 case SearchType.Event:
                     //draw scene data
-                    DrawSceneResult(_buttonRect);
-                    temp = GUILayoutUtility.GetLastRect();
+                    temp = DrawSceneResult(_buttonRect);
                     //draw dialogue data
                     DrawDialogueResult(temp);
                     break;
@@ -155,9 +154,36 @@ namespace Ivayami.Dialogue
             }
         }
 
-        private void DrawSceneResult(Rect rect)
+        private Rect DrawSceneResult(Rect rect)
         {
-
+            float baseXPos = rect.x;
+            for (int i = 0; i < _sceneSearchCache.Count; i++)
+            {
+                rect.width /= 2;
+                rect.y += rect.height * 1.1f;
+                EditorGUILayout.BeginHorizontal();
+                EditorGUI.LabelField(rect, $"Scene Name: {_sceneSearchCache[i].SceneName}");
+                rect.x += rect.width * 1.1f;
+                EditorGUI.LabelField(rect, $"Object Name: {_sceneSearchCache[i].ObjectName}");
+                EditorGUILayout.EndHorizontal();
+                rect.x = baseXPos;
+                rect.y += rect.height * 1.1f;
+                rect.width *= 2;
+                if (GUI.Button(rect, "Go To Scene"))
+                {
+                    _objectNameToSelect = _sceneSearchCache[i].ObjectName;
+                    EditorSceneManager.sceneOpened += HandleOnLoadScene;
+                    for(int a = 0; a < _filesCache.Length; a++)
+                    {
+                        if (_filesCache[a].Contains(_sceneSearchCache[i].SceneName))
+                        {
+                            EditorSceneManager.OpenScene(_filesCache[a]);
+                            break;
+                        }
+                    }
+                }
+            }
+            return rect;
         }
 
         private void DrawDialogueResult(Rect rect)
@@ -175,6 +201,14 @@ namespace Ivayami.Dialogue
                 EditorGUILayout.EndHorizontal();
                 rect.x = baseXPos;
             }
+        }
+
+        private void HandleOnLoadScene(UnityEngine.SceneManagement.Scene scene, OpenSceneMode mode)
+        {
+            UnityEngine.Object[] temp = new UnityEngine.Object[1];
+            temp[0] = GameObject.Find(_objectNameToSelect);
+            Selection.objects = temp;
+            EditorSceneManager.sceneOpened -= HandleOnLoadScene;
         }
     }
 }
