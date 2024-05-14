@@ -16,10 +16,13 @@ namespace Ivayami.Scene
         private ChapterPointers[] _chapterPointers;
         private List<SceneData> _sceneList = new List<SceneData>();
         private Queue<SceneUpdateRequestData> _sceneUpdateRequests = new Queue<SceneUpdateRequestData>();
+#if UNITY_EDITOR
+        private bool _debugLoad;
+#endif
 
         public Action OnAllSceneRequestEnd;
 
-        [System.Serializable]
+        [Serializable]
         private class SceneData
         {
             public string SceneName;
@@ -34,7 +37,7 @@ namespace Ivayami.Scene
             }
         }
 
-        [System.Serializable]
+        [Serializable]
         private struct SceneUpdateRequestData
         {
             public SceneData SceneData;
@@ -56,6 +59,7 @@ namespace Ivayami.Scene
 #if UNITY_EDITOR
             if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))
             {
+                _debugLoad = true;
                 _mainMenuSceneName = Ivayami.debug.CustomSettingsHandler.CurrentSceneName;
             }
 #endif
@@ -136,7 +140,18 @@ namespace Ivayami.Scene
             }
             requestData.OnSceneUpdate?.Invoke();
             if (_sceneUpdateRequests.Count > 0) UpdateScene(_sceneUpdateRequests.Peek().SceneData);
-            else OnAllSceneRequestEnd?.Invoke();
+            else
+            {
+                OnAllSceneRequestEnd?.Invoke();
+#if UNITY_EDITOR
+                if (_debugLoad)
+                {
+                    PlayerMovement.Instance.ToggleMovement(true);
+                    PlayerActions.Instance.ChangeInputMap("Player");
+                    _debugLoad = false;
+                }
+#endif
+            }
         }
     }
 }
