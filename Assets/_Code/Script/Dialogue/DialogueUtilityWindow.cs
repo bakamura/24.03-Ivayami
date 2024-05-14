@@ -13,7 +13,8 @@ namespace Ivayami.Dialogue
         private Dialogue[] _allDialogues;
         private string _filter;
         private Rect _buttonRect;
-        private List<DialogueSearchInfo> _dialoguesCache = new List<DialogueSearchInfo>();
+        private List<DialogueSearchInfo> _dialoguesSearchCache = new List<DialogueSearchInfo>();
+        private List<SceneSearchInfo> _sceneSearchCache = new List<SceneSearchInfo>();
         private SearchType _currentSearchType;
         private enum SearchType
         {
@@ -34,6 +35,19 @@ namespace Ivayami.Dialogue
             {
                 Dialogue = dialogue;
                 SpeechIndex = speechIndex;
+            }
+        }
+
+        [System.Serializable]
+        private struct SceneSearchInfo
+        {
+            public string SceneName;
+            public string ObjectName;
+
+            public SceneSearchInfo(string sceneName, string objectName)
+            {
+                SceneName = sceneName;
+                ObjectName = objectName;
             }
         }
 
@@ -62,45 +76,48 @@ namespace Ivayami.Dialogue
         private void UpdateSearchResult()
         {
             _allDialogues = Resources.LoadAll<Dialogue>("Dialogues");
-            _dialoguesCache.Clear();
+            _dialoguesSearchCache.Clear();
+            _sceneSearchCache.Clear();
             switch (_currentSearchType)
             {
                 case SearchType.Event:
                     //collect object name and scene with the event
-                    //string folder = Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName) + @"\Archive\";
-                    //string filter = "*.unity";
-                    //string[] files = Directory.GetFiles(folder, filter);
-                    //List<string> fileNames = new List<string>();
-                    //for(int i = 0; i < files.Length; i++)
-                    //{
-                    //    fileNames.Add(Path.GetFileNameWithoutExtension(folder));
-                    //}                    
-                    //List<List<string>> groups = new List<List<string>>();
-                    //List<string> current = null;
-                    //foreach (var line in File.ReadAllLines(pathToFile))
-                    //{
-                    //    if (line.Contains("CustomerEN") && current == null)
-                    //        current = new List<string>();
-                    //    else if (line.Contains("CustomerCh") && current != null)
-                    //    {
-                    //        groups.Add(current);
-                    //        current = null;
-                    //    }
-                    //    if (current != null)
-                    //        current.Add(line);
-                    //}
+                    string folder = Path.Combine(Application.dataPath, "_Game", "Scene");
+                    string[] files = Directory.GetFiles(folder, "*.unity", SearchOption.AllDirectories);
+                    string currentGobjName = null;
+                    for (int i = 0; i < files.Length; i++)
+                    {
+                        foreach (var line in File.ReadAllLines(files[i]))
+                        {
+                            if (line.Contains("m_Name: ")) currentGobjName = line.Split(' ').ToString();
+                            if (line.Contains(_filter))
+                            {
+                                _sceneSearchCache.Add(new SceneSearchInfo(Path.GetFileName(files[i]), currentGobjName));
+                                break;
+                            }
+                            //if (line.Contains(_filter) && current == null)
+                            //    current = new List<string>();
+                            //else if (line.Contains(_filter) && current != null)
+                            //{
+                            //    groups.Add(current);
+                            //    current = null;
+                            //}
+                            //if (current != null)
+                            //    current.Add(line);
+                        }
+                    }
                     //collect dialogue assets with the events
                     for (int i = 0; i < _allDialogues.Length; i++)
                     {
                         if (!string.IsNullOrEmpty(_allDialogues[i].onEndEventId) && _allDialogues[i].onEndEventId.ToUpper().Contains(_filter.ToUpper()))
                         {
-                            _dialoguesCache.Add(new DialogueSearchInfo(_allDialogues[i], -1));
+                            _dialoguesSearchCache.Add(new DialogueSearchInfo(_allDialogues[i], -1));
                         }
                         for (int a = 0; a < _allDialogues[i].dialogue.Length; a++)
                         {
                             if (!string.IsNullOrEmpty(_allDialogues[i].dialogue[a].eventId) && _allDialogues[i].dialogue[a].eventId.ToUpper().Contains(_filter.ToUpper()))
                             {
-                                _dialoguesCache.Add(new DialogueSearchInfo(_allDialogues[i], (sbyte)a));
+                                _dialoguesSearchCache.Add(new DialogueSearchInfo(_allDialogues[i], (sbyte)a));
                             }
                         }
                     }
@@ -112,7 +129,7 @@ namespace Ivayami.Dialogue
                         {
                             if (!string.IsNullOrEmpty(_allDialogues[i].dialogue[a].FilterTags) && _allDialogues[i].dialogue[a].FilterTags.ToUpper().Contains(_filter.ToUpper()))
                             {
-                                _dialoguesCache.Add(new DialogueSearchInfo(_allDialogues[i], (sbyte)a));
+                                _dialoguesSearchCache.Add(new DialogueSearchInfo(_allDialogues[i], (sbyte)a));
                             }
                         }
                     }
@@ -122,11 +139,13 @@ namespace Ivayami.Dialogue
 
         private void DrawSearchResult()
         {
-            Rect temp = _buttonRect;            
+            Rect temp = _buttonRect;
             switch (_currentSearchType)
             {
                 case SearchType.Event:
                     //draw scene data
+                    DrawSceneResult(_buttonRect);
+                    temp = GUILayoutUtility.GetLastRect();
                     //draw dialogue data
                     DrawDialogueResult(temp);
                     break;
@@ -135,17 +154,23 @@ namespace Ivayami.Dialogue
                     break;
             }
         }
+
+        private void DrawSceneResult(Rect rect)
+        {
+
+        }
+
         private void DrawDialogueResult(Rect rect)
         {
             float baseXPos = rect.x;
             rect.width /= 2;
-            for (int i = 0; i < _dialoguesCache.Count; i++)
+            for (int i = 0; i < _dialoguesSearchCache.Count; i++)
             {
                 rect.y += rect.height * 1.1f;
                 EditorGUILayout.BeginHorizontal();
-                EditorGUI.ObjectField(rect, _dialoguesCache[i].Dialogue, typeof(Dialogue), false);
+                EditorGUI.ObjectField(rect, _dialoguesSearchCache[i].Dialogue, typeof(Dialogue), false);
                 rect.x += rect.width * 1.1f;
-                if (_dialoguesCache[i].SpeechIndex == -1) EditorGUI.LabelField(rect, "On End Event");
+                if (_dialoguesSearchCache[i].SpeechIndex == -1) EditorGUI.LabelField(rect, "On End Event");
                 else EditorGUI.LabelField(rect, $"Speech Index: {i}");
                 EditorGUILayout.EndHorizontal();
                 rect.x = baseXPos;
