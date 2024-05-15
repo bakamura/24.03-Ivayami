@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using Ivayami.Save;
-using Ivayami.Player;
 using System;
 
 namespace Ivayami.Scene
@@ -13,7 +12,7 @@ namespace Ivayami.Scene
         [SerializeField] private string _mainMenuSceneName;
         [SerializeField] private bool _debugLogs;
 
-        //private Dictionary<string, ChapterPointers> _chapterPointers;
+        private Dictionary<string, ChapterPointers> _chapterPointers;
         private List<SceneData> _sceneList = new List<SceneData>();
         private Queue<SceneUpdateRequestData> _sceneUpdateRequests = new Queue<SceneUpdateRequestData>();
 
@@ -51,11 +50,11 @@ namespace Ivayami.Scene
         {
             base.Awake();
 
-            //_chapterPointers = new Dictionary<string, ChapterPointers>();
-            //foreach (ChapterPointers chapterPointer in Resources.LoadAll<ChapterPointers>("ChapterPointers"))
-            //{
-            //    _chapterPointers.Add(chapterPointer.name, chapterPointer);
-            //}
+            _chapterPointers = new Dictionary<string, ChapterPointers>();
+            foreach (ChapterPointers chapterPointer in Resources.LoadAll<ChapterPointers>("ChapterPointers"))
+            {
+                _chapterPointers.Add(chapterPointer.name, chapterPointer);
+            }
 
 #if UNITY_EDITOR
             if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))
@@ -123,10 +122,10 @@ namespace Ivayami.Scene
             return temp;
         }
 
-        //public Vector2 PointerInChapter(string chapterId)
-        //{
-        //    return _chapterPointers[chapterId].SubChapterPointer(SaveSystem.Instance.Progress.progress[chapterId]);
-        //}
+        public Vector2 PointerInChapter(string chapterId)
+        {
+            return _chapterPointers[chapterId].SubChapterPointer((byte)SaveSystem.Instance.Progress.progress[chapterId]);
+        }
 
         private void HandleOnSceneUpdate(AsyncOperation operation)
         {
