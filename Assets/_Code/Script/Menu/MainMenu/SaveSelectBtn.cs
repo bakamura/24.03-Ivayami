@@ -13,7 +13,7 @@ namespace Ivayami.UI {
         [SerializeField] private TextMeshProUGUI _saveDateText;
 
         public void Setup(SaveProgress progress) {
-            _chapterNumberText.text = progress != null ? $"Chapter {progress.currentChapter}" : "New Game";
+            _chapterNumberText.text = $"Save {progress.id}";
             _saveDateText.text = progress != null ? progress.lastPlayedDate : "";
             if (progress != null)_chapterPreviewImage.sprite = Resources.Load<Sprite>($"ChapterPreviewImage/Chapter_{progress.currentChapter}");
             else _chapterPreviewImage.enabled = false;

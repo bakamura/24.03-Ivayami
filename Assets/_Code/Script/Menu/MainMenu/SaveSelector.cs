@@ -45,13 +45,14 @@ namespace Ivayami.UI {
             _previewImage.sprite = chapterDescription.Image;
             _previewText.text = chapterDescription.Text;
 
-            Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.id} (Progress: {SaveSystem.Instance.Progress.currentChapter}-{SaveSystem.Instance.Progress.currentSubChapter})");
+            Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.id}");
         }
 
         public void EnablePlayerInput() {
             _pauseInput.action.Enable();
             PlayerActions.Instance.ChangeInputMap("Player");
             PlayerMovement.Instance.ToggleMovement(true);
+            PlayerMovement.Instance.transform.position = SavePoint.Points[SaveSystem.Instance.Progress.pointId].spawnPoint.position;
             SceneController.Instance.OnAllSceneRequestEnd = null;
 
             Logger.Log(LogType.UI, $"EnablePlayerInput callback");
