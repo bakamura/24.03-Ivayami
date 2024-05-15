@@ -41,17 +41,18 @@ namespace Ivayami.UI {
         }
 
         private void DisplaySaveInfoCallback() {
-            ChapterDescription chapterDescription = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.currentChapter}-{SaveSystem.Instance.Progress.currentSubChapter}");
+            ChapterDescription chapterDescription = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]}");
             _previewImage.sprite = chapterDescription.Image;
             _previewText.text = chapterDescription.Text;
 
-            Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.id} (Progress: {SaveSystem.Instance.Progress.currentChapter}-{SaveSystem.Instance.Progress.currentSubChapter})");
+            Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.id} (Progress: {SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]})");
         }
 
         public void EnablePlayerInput() {
             _pauseInput.action.Enable();
             PlayerActions.Instance.ChangeInputMap("Player");
             PlayerMovement.Instance.ToggleMovement(true);
+            PlayerMovement.Instance.transform.position = SavePoint.Points[SaveSystem.Instance.Progress.pointId].spawnPoint.position;
             SceneController.Instance.OnAllSceneRequestEnd = null;
 
             Logger.Log(LogType.UI, $"EnablePlayerInput callback");

@@ -12,10 +12,12 @@ namespace Ivayami.UI {
         [SerializeField] private TextMeshProUGUI _chapterNumberText;
         [SerializeField] private TextMeshProUGUI _saveDateText;
 
+        private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
+
         public void Setup(SaveProgress progress) {
-            _chapterNumberText.text = progress != null ? $"Chapter {progress.currentChapter}" : "New Game";
+            _chapterNumberText.text = progress != null ? $"Save {progress.id}" : "New Game";
             _saveDateText.text = progress != null ? progress.lastPlayedDate : "";
-            if (progress != null)_chapterPreviewImage.sprite = Resources.Load<Sprite>($"ChapterPreviewImage/Chapter_{progress.currentChapter}");
+            if (progress != null)_chapterPreviewImage.sprite = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]}").Image;
             else _chapterPreviewImage.enabled = false;
         }
 
