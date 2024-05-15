@@ -41,11 +41,11 @@ namespace Ivayami.UI {
         }
 
         private void DisplaySaveInfoCallback() {
-            ChapterDescription chapterDescription = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.currentChapter}-{SaveSystem.Instance.Progress.currentSubChapter}");
+            ChapterDescription chapterDescription = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]}");
             _previewImage.sprite = chapterDescription.Image;
             _previewText.text = chapterDescription.Text;
 
-            Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.id}");
+            Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.id} (Progress: {SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]})");
         }
 
         public void EnablePlayerInput() {
