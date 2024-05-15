@@ -81,16 +81,16 @@ namespace Ivayami.Puzzle
         {
             _navegationUIInput.action.Disable();
             float count = 0;
-            Quaternion initialRotation = rotateObject.rotation;
+            Quaternion initialRotation = rotateObject.localRotation;
             Quaternion finalRotation = Quaternion.Euler(initialRotation.eulerAngles.x + _rotationAngle * direction, 0, 0);
             while (count < 1)
             {
                 count += Time.deltaTime / _animationDuration;
-                rotateObject.rotation = Quaternion.Lerp(initialRotation, finalRotation, count);
+                rotateObject.localRotation = Quaternion.Lerp(initialRotation, finalRotation, count);
                 yield return null;
             }
             _buttons[_currentBtnSelectedIndex].UpdateButtonDisplay(0);
-            rotateObject.rotation = initialRotation;
+            rotateObject.localRotation = initialRotation;
             _animateCoroutine = null;
             _navegationUIInput.action.Enable();
             _onCheckPassword?.Invoke();
