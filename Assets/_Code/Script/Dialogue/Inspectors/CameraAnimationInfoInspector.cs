@@ -28,9 +28,9 @@ namespace Ivayami.Dialogue
 
         private void OnEnable()
         {
-            duration = serializedObject.FindProperty("duration");
-            positionCurve = serializedObject.FindProperty("positionCurve");
-            rotationCurve = serializedObject.FindProperty("rotationCurve");
+            duration = serializedObject.FindProperty("Duration");
+            positionCurve = serializedObject.FindProperty("PositionCurve");
+            rotationCurve = serializedObject.FindProperty("RotationCurve");
         }
     }
 }

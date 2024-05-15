@@ -15,7 +15,7 @@ namespace Ivayami.Dialogue
     {
 
         [SerializeField, Min(0f)] private float _characterShowDelay;
-        [SerializeField, Min(0f)] private float _delayToAutoStartNextSpeech;
+        [SerializeField, Min(0f), Tooltip("default value for when dialogue canot be skipped by player input")] private float _delayToAutoStartNextSpeech;
         //[SerializeField] private InputActionAsset _inputActionMap;
         [SerializeField] private InputActionReference _continueInput;
         [SerializeField] private TMP_Text _speechTextComponent;
@@ -28,10 +28,10 @@ namespace Ivayami.Dialogue
         private Dictionary<string, Dialogue> _dialogueDictionary = new Dictionary<string, Dialogue>();
         private Coroutine _writtingCoroutine;
         private WaitForSeconds _typeWrittingDelay;
-        private WaitForSeconds _autoStartNextDelay;
+        //private WaitForSeconds _autoStartNextDelay;
         private Dialogue _currentDialogue;
         private List<DialogueEvents> _dialogueEventsList = new List<DialogueEvents>();
-        private bool _readyForNextSpeech = true;
+        //private bool _readyForNextSpeech = true;
         private sbyte _currentSpeechIndex;
 
         public bool IsDialogueActive { get; private set; }
@@ -47,7 +47,7 @@ namespace Ivayami.Dialogue
             _dialogues = Resources.LoadAll<Dialogue>("Dialogues");
             _continueInput.action.performed += HandleContinueDialogue;
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
-            _autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
+            //_autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
             _canvasGroup = GetComponent<CanvasGroup>();
 
             for (int i = 0; i < _dialogues.Length; i++)
@@ -68,9 +68,13 @@ namespace Ivayami.Dialogue
 
         private void HandleContinueDialogue(InputAction.CallbackContext context)
         {
-            if (context.ReadValue<float>() == 1 && _currentDialogue)
+            if (context.ReadValue<float>() == 1 && _currentDialogue && _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech == 0)
             {
                 UpdateDialogue();
+            }
+            else
+            {
+                if (_debugLogs) Debug.Log("Continue Dialogue Input Locked");
             }
         }
 
@@ -80,12 +84,13 @@ namespace Ivayami.Dialogue
             {
                 SkipSpeech();
             }
-            else if (_writtingCoroutine == null && _readyForNextSpeech)
+            else /*(_writtingCoroutine == null && _readyForNextSpeech)*/
             {
                 _currentSpeechIndex++;
                 //end of current dialogue
                 if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
                 {
+                    if (_debugLogs) Debug.Log($"End of Dialogue {_currentDialogue.id}");
                     ActivateDialogueEvents(_currentDialogue.onEndEventId);
                     _currentSpeechIndex = 0;
                     _currentDialogue = null;
@@ -104,7 +109,7 @@ namespace Ivayami.Dialogue
                 else
                 {
                     _continueDialogueIcon.SetActive(false);
-                    _readyForNextSpeech = false;
+                    //_readyForNextSpeech = false;
                     _writtingCoroutine = StartCoroutine(WrittingCoroutine());
                 }
             }
@@ -118,6 +123,7 @@ namespace Ivayami.Dialogue
             ActivateDialogueEvents(_currentDialogue.dialogue[_currentSpeechIndex].eventId);
 
             char[] chars = _currentDialogue.dialogue[_currentSpeechIndex].content.ToCharArray();
+            _canvasGroup.alpha = chars.Length > 0 ? 1 : 0;
             for (int i = 0; i < chars.Length; i++)
             {
                 if (chars[i] == '<')
@@ -137,23 +143,27 @@ namespace Ivayami.Dialogue
                     yield return _typeWrittingDelay;
                 }
             }
+
             _continueDialogueIcon.SetActive(true);
-            _readyForNextSpeech = true;
+            WaitForSeconds wait = null;
+            if (!LockInput) 
+                wait = new WaitForSeconds(_delayToAutoStartNextSpeech);
+            else if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0) 
+                wait = new WaitForSeconds(_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech);
+            yield return wait;
+            //_readyForNextSpeech = true;
             _writtingCoroutine = null;
-            if (!LockInput)
-            {
-                yield return _autoStartNextDelay;
-                UpdateDialogue();
-            }
+            if (wait != null) UpdateDialogue();            
         }
 
         private void SkipSpeech()
         {
+            if (_debugLogs) Debug.Log($"Skipping typewrite anim");
             StopCoroutine(_writtingCoroutine);
             _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].content;
             _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].announcerName;
             _continueDialogueIcon.SetActive(true);
-            _readyForNextSpeech = true;
+            //_readyForNextSpeech = true;
             OnSkipSpeech?.Invoke();
             _writtingCoroutine = null;
         }
@@ -170,7 +180,11 @@ namespace Ivayami.Dialogue
             {
                 for (int i = 0; i < _dialogueEventsList.Count; i++)
                 {
-                    if (_dialogueEventsList[i].TriggerEvent(eventID)) break;
+                    if (_dialogueEventsList[i].TriggerEvent(eventID))
+                    {
+                        if (_debugLogs) Debug.Log($"Dialogue Event {eventID} Triggered");
+                        break;
+                    }
                 }
             }
         }
