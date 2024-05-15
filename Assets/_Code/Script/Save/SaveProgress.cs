@@ -7,7 +7,8 @@ namespace Ivayami.Save {
         public string lastPlayedDate;
         
         public string[] inventory;
-        public int pointId; 
+        public int pointId;
+        public string lastProgressType;
         public SerializableDictionary<string, int> progress;
 
         public SaveProgress(byte id) {
