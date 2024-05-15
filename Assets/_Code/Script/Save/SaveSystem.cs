@@ -24,6 +24,10 @@ namespace Ivayami.Save {
             LoadOptions();
         }
 
+        private void Start() {
+            SavePoint.onSaveGame.AddListener(SaveProgress);
+        }
+
         public void LoadProgress(byte saveId, Action loadSaveCallback) {
             StartCoroutine(LoadSaveRoutine($"{_progressPath}/Save_{saveId}", typeof(SaveProgress), loadSaveCallback));
 
@@ -79,11 +83,11 @@ namespace Ivayami.Save {
 
         }
 
-        private void SaveProgress(byte saveId) {
+        private void SaveProgress() {
             Progress.lastPlayedDate = DateTime.Now.ToString("dd/MM/yy [HH:mm]");
-            StartCoroutine(WriteSaveRoutine($"{_progressPath}/Save_{saveId}", typeof(SaveProgress)));
+            StartCoroutine(WriteSaveRoutine($"{_progressPath}/Save_{Progress.id}", typeof(SaveProgress)));
 
-            Logger.Log(LogType.Save, $"Writing Progress for save {saveId}");
+            Logger.Log(LogType.Save, $"Writing Progress for save {Progress.id}");
         }
 
         public void SaveOptions() {
@@ -97,16 +101,6 @@ namespace Ivayami.Save {
             else yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Options)));
 
             Logger.Log(LogType.Save, $"Wrote Save of type '{type.Name}' in {savePath}");
-        }
-
-        public void CompleteChapter() {
-            Progress.currentChapter++;
-            SaveProgress(Progress.id);
-        }
-
-        public void CompleteSubChapter() {
-            Progress.currentSubChapter++;
-            SaveProgress(Progress.id);
         }
 
     }
