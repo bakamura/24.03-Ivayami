@@ -8,7 +8,7 @@ namespace Ivayami.UI {
 
         [SerializeField] private RectTransform _mapRectTranform;
         [SerializeField] private RectTransform _playerPointer;
-        [SerializeField] private RectTransform _goalPointer;
+        [SerializeField, Tooltip("Every pointer should be named Pointer_{ProgressNameCaseSensitive}")] private RectTransform[] _goalPointers;
 
         [SerializeField] private RectTransform[] _placesInMap;
         [SerializeField] private Vector2 _mapWorldSize;
@@ -28,7 +28,7 @@ namespace Ivayami.UI {
             _playerPointer.anchoredPosition = _placesInMap.OrderBy(rect => Vector2.Distance(rect.anchoredPosition, playerPosInMap)).FirstOrDefault().anchoredPosition;
             _playerPointer.rotation = Quaternion.Euler(0f, 0f, _cam.transform.eulerAngles.y); //
 
-            _goalPointer.anchoredPosition = SceneController.Instance.PointerInChapter();
+            foreach(RectTransform goalPointer in _goalPointers) goalPointer.anchoredPosition = SceneController.Instance.PointerInChapter(goalPointer.name.Split('_')[1]);
         }
 
     }

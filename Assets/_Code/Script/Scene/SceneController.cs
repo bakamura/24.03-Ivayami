@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using UnityEngine.Events;
 using Ivayami.Save;
-using Ivayami.Player;
 using System;
 
 namespace Ivayami.Scene
@@ -13,16 +12,13 @@ namespace Ivayami.Scene
         [SerializeField] private string _mainMenuSceneName;
         [SerializeField] private bool _debugLogs;
 
-        private ChapterPointers[] _chapterPointers;
+        private Dictionary<string, ChapterPointers> _chapterPointers;
         private List<SceneData> _sceneList = new List<SceneData>();
         private Queue<SceneUpdateRequestData> _sceneUpdateRequests = new Queue<SceneUpdateRequestData>();
-#if UNITY_EDITOR
-        private bool _debugLoad;
-#endif
 
         public Action OnAllSceneRequestEnd;
 
-        [Serializable]
+        [System.Serializable]
         private class SceneData
         {
             public string SceneName;
@@ -37,7 +33,7 @@ namespace Ivayami.Scene
             }
         }
 
-        [Serializable]
+        [System.Serializable]
         private struct SceneUpdateRequestData
         {
             public SceneData SceneData;
@@ -54,12 +50,15 @@ namespace Ivayami.Scene
         {
             base.Awake();
 
-            _chapterPointers = Resources.LoadAll<ChapterPointers>("ChapterPointers");
+            _chapterPointers = new Dictionary<string, ChapterPointers>();
+            foreach (ChapterPointers chapterPointer in Resources.LoadAll<ChapterPointers>("ChapterPointers"))
+            {
+                _chapterPointers.Add(chapterPointer.name, chapterPointer);
+            }
 
 #if UNITY_EDITOR
             if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))
             {
-                _debugLoad = true;
                 _mainMenuSceneName = Ivayami.debug.CustomSettingsHandler.CurrentSceneName;
             }
 #endif
@@ -70,11 +69,6 @@ namespace Ivayami.Scene
         public void LoadMainMenuScene()
         {
             if (!string.IsNullOrEmpty(_mainMenuSceneName)) StartLoad(_mainMenuSceneName);//SceneManager.LoadScene(_baseSceneName);
-        }
-
-        public void PositionPlayer()
-        {
-            PlayerMovement.Instance.transform.position = _chapterPointers[SaveSystem.Instance.Progress.currentChapter].playerPositionOnChapterStart;
         }
 
         public void StartLoad(string sceneId, UnityEvent onSceneUpdate = null)
@@ -123,9 +117,9 @@ namespace Ivayami.Scene
             return temp;
         }
 
-        public Vector2 PointerInChapter()
+        public Vector2 PointerInChapter(string chapterId)
         {
-            return _chapterPointers[SaveSystem.Instance.Progress.currentChapter].SubChapterPointer(SaveSystem.Instance.Progress.currentSubChapter);
+            return _chapterPointers[chapterId].SubChapterPointer((byte)SaveSystem.Instance.Progress.progress[chapterId]);
         }
 
         private void HandleOnSceneUpdate(AsyncOperation operation)
@@ -140,18 +134,7 @@ namespace Ivayami.Scene
             }
             requestData.OnSceneUpdate?.Invoke();
             if (_sceneUpdateRequests.Count > 0) UpdateScene(_sceneUpdateRequests.Peek().SceneData);
-            else
-            {
-                OnAllSceneRequestEnd?.Invoke();
-#if UNITY_EDITOR
-                if (_debugLoad)
-                {
-                    PlayerMovement.Instance.ToggleMovement(true);
-                    PlayerActions.Instance.ChangeInputMap("Player");
-                    _debugLoad = false;
-                }
-#endif
-            }
+            else OnAllSceneRequestEnd?.Invoke();
         }
     }
 }

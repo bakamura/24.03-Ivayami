@@ -1,3 +1,4 @@
+using Ivayami.Save;
 using Ivayami.Scene;
 using Ivayami.UI;
 using System.Collections;
@@ -108,7 +109,7 @@ namespace Ivayami.Player {
 
             yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
 
-            SceneController.Instance.PositionPlayer();
+            transform.position = SavePoint.Points[SaveSystem.Instance.Progress.pointId].transform.position;
             PlayerMovement.Instance.ToggleMovement(true);
             SceneTransition.Instance.Menu.Open();
         }
