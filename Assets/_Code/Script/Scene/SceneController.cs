@@ -71,11 +71,6 @@ namespace Ivayami.Scene
             if (!string.IsNullOrEmpty(_mainMenuSceneName)) StartLoad(_mainMenuSceneName);//SceneManager.LoadScene(_baseSceneName);
         }
 
-        //public void PositionPlayer()
-        //{
-        //    PlayerMovement.Instance.transform.position = _chapterPointers[SaveSystem.Instance.Progress.currentChapter].playerPositionOnChapterStart;
-        //}
-
         public void StartLoad(string sceneId, UnityEvent onSceneUpdate = null)
         {
             SceneData data = UpdateSceneList(sceneId);
