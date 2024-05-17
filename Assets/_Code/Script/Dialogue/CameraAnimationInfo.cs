@@ -1,12 +1,13 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Ivayami.Dialogue
 {
     public class CameraAnimationInfo : MonoBehaviour
     {
-        [Min(0)] public float duration;
-        public AnimationCurve positionCurve;
-        public AnimationCurve rotationCurve;
+        [FormerlySerializedAs("duration"), Min(0)] public float Duration;
+        [FormerlySerializedAs("positionCurve")] public AnimationCurve PositionCurve;
+        [FormerlySerializedAs("rotationCurve")] public AnimationCurve RotationCurve;
 
         public void StartMovement()
         {
