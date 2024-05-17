@@ -5,12 +5,13 @@ using System.Collections;
 using TMPro;
 using System;
 using Ivayami.Player;
+using Ivayami.Audio;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
 
 namespace Ivayami.Dialogue
 {
-    [RequireComponent(typeof(CanvasGroup))]
+    [RequireComponent(typeof(CanvasGroup), typeof(DialogueSounds))]
     public class DialogueController : MonoSingleton<DialogueController>
     {
 
@@ -33,6 +34,7 @@ namespace Ivayami.Dialogue
         private List<DialogueEvents> _dialogueEventsList = new List<DialogueEvents>();
         //private bool _readyForNextSpeech = true;
         private sbyte _currentSpeechIndex;
+        private DialogueSounds _dialogueSounds;
 
         public bool IsDialogueActive { get; private set; }
         public bool LockInput { get; private set; }
@@ -49,6 +51,7 @@ namespace Ivayami.Dialogue
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
             //_autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
             _canvasGroup = GetComponent<CanvasGroup>();
+            _dialogueSounds = GetComponent<DialogueSounds>();
 
             for (int i = 0; i < _dialogues.Length; i++)
             {
@@ -87,6 +90,7 @@ namespace Ivayami.Dialogue
             else /*(_writtingCoroutine == null && _readyForNextSpeech)*/
             {
                 _currentSpeechIndex++;
+                _dialogueSounds.PlaySound(DialogueSounds.SoundTypes.ContinueDialogue);
                 //end of current dialogue
                 if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
                 {
@@ -108,7 +112,7 @@ namespace Ivayami.Dialogue
                 //continue current dialogue
                 else
                 {
-                    _continueDialogueIcon.SetActive(false);
+                    _continueDialogueIcon.SetActive(false);                    
                     //_readyForNextSpeech = false;
                     _writtingCoroutine = StartCoroutine(WrittingCoroutine());
                 }
