@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine.Events;
 using Ivayami.Save;
 using System;
+using Ivayami.Player;
 
 namespace Ivayami.Scene
 {
@@ -59,6 +60,8 @@ namespace Ivayami.Scene
 #if UNITY_EDITOR
             if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))
             {
+                PlayerMovement.Instance.ToggleMovement(true);
+                PlayerActions.Instance.ChangeInputMap("Player");
                 _mainMenuSceneName = Ivayami.debug.CustomSettingsHandler.CurrentSceneName;
             }
 #endif
