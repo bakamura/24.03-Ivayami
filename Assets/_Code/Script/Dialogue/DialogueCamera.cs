@@ -37,10 +37,10 @@ namespace Ivayami.Dialogue
                 _dialogueCamera.transform.SetPositionAndRotation(_finalPlacement.position, _finalPlacement.rotation);
             }
             else _dialogueCamera.transform.SetPositionAndRotation(_gameplayCamera.transform.position, _gameplayCamera.transform.rotation);
-            _currentPositionCurve = cameraTransitionInfo.positionCurve;
-            _currentRotationCurve = cameraTransitionInfo.rotationCurve;
+            _currentPositionCurve = cameraTransitionInfo.PositionCurve;
+            _currentRotationCurve = cameraTransitionInfo.RotationCurve;
             _finalPlacement = cameraTransitionInfo.transform;
-            _currentDuration = cameraTransitionInfo.duration;
+            _currentDuration = cameraTransitionInfo.Duration;
             CameraPriotitySetup();
             _animationCoroutine = StartCoroutine(BlendAnimationCoroutine());
         }
