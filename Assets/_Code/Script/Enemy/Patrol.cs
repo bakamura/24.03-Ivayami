@@ -3,10 +3,11 @@ using UnityEngine;
 using UnityEngine.AI;
 using Ivayami.Player;
 using Ivayami.Puzzle;
+using Ivayami.Audio;
 
 namespace Ivayami.Enemy
 {
-    [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider))]
+    [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
     public class Patrol : MonoBehaviour
     {
         [Header("Parameters")]
@@ -38,6 +39,7 @@ namespace Ivayami.Enemy
         private Vector3 _initialPosition;
         private bool _isChasing;
         private EnemyAnimator _enemyAnimator;
+        private EnemySounds _enemySounds;
         private Quaternion _initialRotation;
 
         public bool IsActive { get; private set; }
@@ -49,6 +51,7 @@ namespace Ivayami.Enemy
             _behaviourTickDelay = new WaitForSeconds(_tickFrequency);
             _betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints);
             _enemyAnimator = GetComponentInChildren<EnemyAnimator>();
+            _enemySounds = GetComponent<EnemySounds>();
 
             _initialPosition = transform.position;
             _initialRotation = transform.rotation;
@@ -102,6 +105,7 @@ namespace Ivayami.Enemy
                 {
                     if (!_isChasing)
                     {
+                        _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
                         PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                         _isChasing = true;
                     }
