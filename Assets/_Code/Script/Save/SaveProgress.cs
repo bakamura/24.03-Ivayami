@@ -4,9 +4,12 @@ namespace Ivayami.Save {
     public class SaveProgress {
 
         public byte id;
-        public byte currentChapter;
-        public byte currentSubChapter;
+        public string lastPlayedDate;
+        
         public string[] inventory;
+        public int pointId;
+        public string lastProgressType;
+        public SerializableDictionary<string, int> progress;
 
         public SaveProgress(byte id) {
             this.id = id;

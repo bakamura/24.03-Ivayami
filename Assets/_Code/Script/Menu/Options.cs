@@ -33,6 +33,11 @@ namespace Ivayami.UI {
             SaveSystem.Instance.Options.sfxVol = newVolume;
         }
 
+        public void SliderUpdate() {
+            _musicSlider.value = SaveSystem.Instance.Options.musicVol;
+            _sfxSlider.value = SaveSystem.Instance.Options.sfxVol;
+        }
+
         public void SaveOptions() {
             SaveSystem.Instance.SaveOptions();
         }
