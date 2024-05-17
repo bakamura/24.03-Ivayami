@@ -3,21 +3,24 @@ using UnityEngine;
 using UnityEngine.AI;
 using Ivayami.Player;
 using Ivayami.Puzzle;
+using Ivayami.Audio;
 
 namespace Ivayami.Enemy
 {
-    [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider))]
+    [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
     public class Patrol : MonoBehaviour
     {
         [Header("Parameters")]
-        [SerializeField, Min(0)] private float _minDetectionRange;
-        [SerializeField, Min(0)] private float _detectionRange;
+        [SerializeField, Min(0f)] private float _minDetectionRange;
+        [SerializeField, Min(0f)] private float _detectionRange;
         [SerializeField] private float _visionAngle;
+        [SerializeField, Min(0f), Tooltip("the complete delay is _tickFrequency + this value")] private float _delayBetweenPatrolPoints;
         [SerializeField, Min(.02f)] private float _tickFrequency = .5f;
-        [SerializeField, Min(0)] private float _stressIncreaseOnTargetDetected;
-        [SerializeField, Min(0)] private float _stressIncreaseWhileChasing;
+        [SerializeField, Min(0f)] private float _stressIncreaseOnTargetDetected;
+        [SerializeField, Min(0f)] private float _stressIncreaseWhileChasing;
         [SerializeField] private LayerMask _playerLayer;
         [SerializeField] private LayerMask _blockVisionLayer;
+        [SerializeField] private bool _startActive;
         [SerializeField] private Vector3[] _patrolPoints;
 
         [Header("Debug")]
@@ -30,20 +33,28 @@ namespace Ivayami.Enemy
 
         private Mesh _FOVMesh;
         private NavMeshAgent _navMeshAgent;
-        private WaitForSeconds _delay;
+        private WaitForSeconds _behaviourTickDelay;
+        private WaitForSeconds _betweenPatrolPointsDelay;
         private CapsuleCollider _collision;
         private Vector3 _initialPosition;
         private bool _isChasing;
         private EnemyAnimator _enemyAnimator;
+        private EnemySounds _enemySounds;
+        private Quaternion _initialRotation;
+
+        public bool IsActive { get; private set; }
 
         private void Awake()
         {
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _collision = GetComponent<CapsuleCollider>();
-            _delay = new WaitForSeconds(_tickFrequency);
+            _behaviourTickDelay = new WaitForSeconds(_tickFrequency);
+            _betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints);
             _enemyAnimator = GetComponentInChildren<EnemyAnimator>();
+            _enemySounds = GetComponent<EnemySounds>();
 
             _initialPosition = transform.position;
+            _initialRotation = transform.rotation;
             _navMeshAgent.stoppingDistance = _collision.radius + .2f;
         }
 
@@ -56,7 +67,31 @@ namespace Ivayami.Enemy
 
         private void Start()
         {
-            StartCoroutine(BehaviourCoroutine());
+            if (_startActive)
+            {
+                StartBehaviour();
+            }
+        }
+        [ContextMenu("Start")]
+        public void StartBehaviour()
+        {
+            if (!IsActive)
+            {
+                IsActive = true;
+                _navMeshAgent.isStopped = false;
+                StartCoroutine(BehaviourCoroutine());
+            }
+        }
+        [ContextMenu("Stop")]
+        public void StopBehaviour()
+        {
+            if (IsActive)
+            {
+                IsActive = false;
+                StopCoroutine(BehaviourCoroutine());
+                _isChasing = false;
+                _navMeshAgent.isStopped = true;
+            }
         }
 
         private IEnumerator BehaviourCoroutine()
@@ -70,11 +105,12 @@ namespace Ivayami.Enemy
                 {
                     if (!_isChasing)
                     {
+                        _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
                         PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                         _isChasing = true;
                     }
                     _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position);
-                    if(_debugLog) Debug.Log("Chase Player");
+                    if (_debugLog) Debug.Log("Chase Player");
                 }
                 else
                 {
@@ -83,13 +119,21 @@ namespace Ivayami.Enemy
                     if (_debugLog) Debug.Log("Patroling");
                     if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
                     {
-                        currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
-                        if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
-                        else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
-                        if (_debugLog) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
+                        if(_patrolPoints.Length > 1)
+                        {
+                            yield return _betweenPatrolPointsDelay;
+                            currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
+                            if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
+                            else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
+                            if (_debugLog) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
+                        }
+                        else
+                        {
+                            transform.rotation = Quaternion.RotateTowards(transform.rotation, _initialRotation, _navMeshAgent.angularSpeed * _tickFrequency);
+                        }
                     }
                 }
-                yield return _delay;
+                yield return _behaviourTickDelay;
             }
         }
 

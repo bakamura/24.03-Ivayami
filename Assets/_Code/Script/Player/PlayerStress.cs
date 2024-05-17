@@ -1,3 +1,6 @@
+using Ivayami.Save;
+using Ivayami.Scene;
+using Ivayami.UI;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,7 +13,7 @@ namespace Ivayami.Player {
         public UnityEvent<float> onStressChange = new UnityEvent<float>();
         public UnityEvent onFailState = new UnityEvent();
 
-        [Header("Parameters")]
+        [Header("Stress")]
 
         [SerializeField] private float _stressMax;
         private float _stressMin;
@@ -18,6 +21,11 @@ namespace Ivayami.Player {
         [SerializeField] private float _stressRelieveDelay;
         private float _stressRelieveDelayTimer;
         [SerializeField, Tooltip("In seconds")] private float _stressRelieveRate;
+
+        [Header("Fail")]
+
+        [SerializeField] private float _restartDelay;
+        private WaitForSeconds _restartWait;
         private bool _failState = false;
 
         [Header("Cache")]
@@ -25,7 +33,9 @@ namespace Ivayami.Player {
         private Coroutine _stressRelieveRoutine;
 
         private void Start() {
-            onStressChange.AddListener(FailState);
+            onStressChange.AddListener(FailStateCheck);
+            onFailState.AddListener(() => StartCoroutine(DelayToRespawn()));
+            _restartWait = new WaitForSeconds(_restartDelay);
 
             Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");
         }
@@ -74,7 +84,7 @@ namespace Ivayami.Player {
             _stressRelieveRoutine = null;
         }
 
-        private void FailState(float stressCurrent) {
+        private void FailStateCheck(float stressCurrent) {
             if (!_failState && stressCurrent >= _stressMax) {
                 _failState = true;
                 onFailState.Invoke();
@@ -89,6 +99,19 @@ namespace Ivayami.Player {
                 _stressRelieveDelayTimer = 0;
                 _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
             }
+        }
+
+        private IEnumerator DelayToRespawn() {
+            PlayerMovement.Instance.ToggleMovement(false);
+            yield return _restartWait;
+
+            SceneTransition.Instance.Menu.Close();
+
+            yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
+
+            transform.position = SavePoint.Points[SaveSystem.Instance.Progress.pointId].transform.position;
+            PlayerMovement.Instance.ToggleMovement(true);
+            SceneTransition.Instance.Menu.Open();
         }
 
     }

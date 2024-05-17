@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -21,6 +22,10 @@ namespace Ivayami.Save {
 
             if (!Directory.Exists(_progressPath)) Directory.CreateDirectory(_progressPath);
             LoadOptions();
+        }
+
+        private void Start() {
+            SavePoint.onSaveGame.AddListener(SaveProgress);
         }
 
         public void LoadProgress(byte saveId, Action loadSaveCallback) {
@@ -56,10 +61,33 @@ namespace Ivayami.Save {
             }
         }
 
-        private void SaveProgress(byte saveId) {
-            StartCoroutine(WriteSaveRoutine($"{_progressPath}/Save_{saveId}", typeof(SaveProgress)));
+        public void LoadSavesProgress(Action<SaveProgress[]> loadSaveCallback) {
+            StartCoroutine(LoadSavesProgressRoutine(loadSaveCallback));
+        }
 
-            Logger.Log(LogType.Save, $"Writing Progress for save {saveId}");
+        private IEnumerator LoadSavesProgressRoutine(Action<SaveProgress[]> loadSaveCallback) {
+            List<SaveProgress> progressSaves = new List<SaveProgress>();
+            int saveId = 0;
+            while (true) {
+                if (File.Exists($"{_progressPath}/Save_{saveId}")) {
+                    Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/Save_{saveId}");
+
+                    yield return readTask;
+
+                    progressSaves.Add(JsonUtility.FromJson<SaveProgress>(Encryption.Decrypt(readTask.Result)));
+                    saveId++;
+                }
+                else break;
+            }
+            loadSaveCallback.Invoke(progressSaves.ToArray());
+
+        }
+
+        private void SaveProgress() {
+            Progress.lastPlayedDate = DateTime.Now.ToString("dd/MM/yy [HH:mm]");
+            StartCoroutine(WriteSaveRoutine($"{_progressPath}/Save_{Progress.id}", typeof(SaveProgress)));
+
+            Logger.Log(LogType.Save, $"Writing Progress for save {Progress.id}");
         }
 
         public void SaveOptions() {
@@ -73,16 +101,6 @@ namespace Ivayami.Save {
             else yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Options)));
 
             Logger.Log(LogType.Save, $"Wrote Save of type '{type.Name}' in {savePath}");
-        }
-
-        public void CompleteChapter() {
-            Progress.currentChapter++;
-            SaveProgress(Progress.id);
-        }
-
-        public void CompleteSubChapter() {
-            Progress.currentSubChapter++;
-            SaveProgress(Progress.id);
         }
 
     }

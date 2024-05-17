@@ -8,7 +8,7 @@ using Ivayami.Player;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteratctableHighlight))]
+    [RequireComponent(typeof(InteractableHighlight))]
     public class FuseBox : Activator, IInteractable
     {
         [SerializeField] private Vector2 _matrixDimensions;
@@ -37,14 +37,14 @@ namespace Ivayami.Puzzle
         private bool _updateActivated;
         private bool _isActive;
         private GameObject _defaultBtn;
-        private InteratctableHighlight _interatctableHighlight;
+        private InteractableHighlight _interatctableHighlight;
         private const string _colorEmissionVarName = "_EmissionColor";
 
-        public InteratctableHighlight InteratctableHighlight { get => _interatctableHighlight; }
+        public InteractableHighlight InteratctableHighlight { get => _interatctableHighlight; }
 
         private void Awake()
         {
-            _interatctableHighlight = GetComponent<InteratctableHighlight>();
+            _interatctableHighlight = GetComponent<InteractableHighlight>();
             _defaultBtn = _fuseUIParent.GetComponentInChildren<Button>(false).gameObject;
 
             MeshRenderer[] temp = _ledsParent.GetComponentsInChildren<MeshRenderer>(false);
@@ -62,6 +62,7 @@ namespace Ivayami.Puzzle
             }
 
             _baseFuseColor = _meshRenderFuses[0].material.GetColor(_colorEmissionVarName);
+            _distanceBetweenLeds *= 1.05f;
         }
 
         [ContextMenu("Interact")]
