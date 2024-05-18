@@ -14,7 +14,7 @@ namespace Ivayami.Puzzle
         [SerializeField, Min(0f)] private float _maxSpeed;
         [SerializeField, Min(0f)] private float _aceleration;
         [SerializeField, Min(0f)] private float _rotationSpeed;
-        [SerializeField, Min(0f)] private float _minDistanceFromPathPoint;        
+        [SerializeField, Min(0f)] private float _minDistanceFromPathPoint;
         [SerializeField] private Path[] _paths;
 
 #if UNITY_EDITOR
@@ -69,6 +69,7 @@ namespace Ivayami.Puzzle
             byte count = 0;
             Quaternion finalRotation;
             Vector3 direction;
+            Vector3 finalPosition;
             while (count < _paths[_currentPathIndex].Points.Length)
             {
                 direction = _initialPosition + _paths[_currentPathIndex].Points[count] - transform.position;
@@ -79,7 +80,9 @@ namespace Ivayami.Puzzle
                 _currentVelocity = Vector3.MoveTowards(_currentVelocity, direction.normalized * _maxSpeed, _aceleration * _tick);
                 _currentVelocity = new Vector3(_currentVelocity.x, _rigidbody.velocity.y, _currentVelocity.z);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, finalRotation, _rotationSpeed * _tick);
-                if (Vector3.Distance(transform.position, _paths[_currentPathIndex].Points[count] + _initialPosition) <= _minDistanceFromPathPoint) count++;
+                finalPosition = _paths[_currentPathIndex].Points[count] + _initialPosition;
+                finalPosition = new Vector3(finalPosition.x, transform.position.y, finalPosition.z);
+                if (Vector3.Distance(transform.position, finalPosition) <= _minDistanceFromPathPoint) count++;
 
                 yield return _delay;
             }
