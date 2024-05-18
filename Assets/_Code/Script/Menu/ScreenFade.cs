@@ -7,6 +7,7 @@ namespace Ivayami.UI
     public class ScreenFade : MonoBehaviour
     {
         private static bool _isFading;
+        [SerializeField, Min(0f)] private float _duration = 1f;
         [SerializeField] private UnityEvent _onFadeEnd;
 
         public void FadeIn()
@@ -14,6 +15,7 @@ namespace Ivayami.UI
             if (!_isFading)
             {
                 _isFading = true;
+                if(_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
                 SceneTransition.Instance.Menu.Open();
                 StartCoroutine(WaitFadeCoroutine());
             }
@@ -23,6 +25,7 @@ namespace Ivayami.UI
             if (!_isFading)
             {
                 _isFading = true;
+                if (_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
                 SceneTransition.Instance.Menu.Close();
                 StartCoroutine(WaitFadeCoroutine());
             }
