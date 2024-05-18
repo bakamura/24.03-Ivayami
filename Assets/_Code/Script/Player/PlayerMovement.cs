@@ -9,6 +9,7 @@ namespace Ivayami.Player {
         [Header("Inputs")]
 
         [SerializeField] private InputActionReference _movementInput;
+        [SerializeField] private InputActionReference _walkToggleInput;
         [SerializeField] private InputActionReference _crouchInput;
 
         [Header("Events")]
@@ -18,14 +19,14 @@ namespace Ivayami.Player {
 
         [Header("Movement")]
 
-        [SerializeField] private float _movementSpeedMax;
+        [SerializeField] private float _movementSpeedRun;
+        [SerializeField] private float _movementSpeedWalk;
+        private float _movementSpeedMax;
         private float _speedCurrent = 0;
         [SerializeField] private float _accelerationDuration;
         private float _acceleration;
         [SerializeField] private float _deccelerationDuration;
         private float _decceleration;
-        [SerializeField, Range(0f, 1f)] private float _movementSpeedBackwardsMultiplier;
-        [SerializeField, Range(0f, 180f)] private float _movementBacwardsAngleMaxFromForward;
         private bool _canMove;
 
         [Header("Rotation")]
@@ -65,10 +66,12 @@ namespace Ivayami.Player {
 
             _movementInput.action.performed += MoveDirection;
             _movementInput.action.canceled += MoveDirection;
+            _walkToggleInput.action.started += ToggleWalk;
             _crouchInput.action.started += Crouch;
 
             _acceleration = Time.fixedDeltaTime / _accelerationDuration;
             _decceleration = Time.fixedDeltaTime / _deccelerationDuration;
+            _movementSpeedMax = _movementSpeedRun;
 
             _rigidbody = GetComponent<Rigidbody>();
             _collider = GetComponent<CapsuleCollider>();
@@ -96,11 +99,7 @@ namespace Ivayami.Player {
                 _movementDirectionCache[0] = _inputCache[0];
                 _movementDirectionCache[2] = _inputCache[1];
                 _targetAngle = Quaternion.Euler(0, Mathf.Atan2(_movementDirectionCache.x, _movementDirectionCache.z) * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y, 0);
-                //_directionDifferenceToInputAngleCache = Mathf.Abs(_targetAngle.eulerAngles.y - _cameraAimTargetRotator.eulerAngles.y);
-                //if (_directionDifferenceToInputAngleCache > 180) _directionDifferenceToInputAngleCache -= 180f;
-                _movementSpeedMaxCurrent = _movementDirectionCache.magnitude 
-                                         * (Crouching ? _crouchSpeedMax : _movementSpeedMax) 
-                                      /* * Mathf.Lerp(1f, _movementSpeedBackwardsMultiplier, _directionDifferenceToInputAngleCache / _movementBacwardsAngleMaxFromForward)*/;
+                _movementSpeedMaxCurrent = _movementDirectionCache.magnitude * (Crouching ? _crouchSpeedMax : _movementSpeedMax);
             }
             _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMaxCurrent); // Could use _decceleration when above max speed
 
@@ -133,6 +132,10 @@ namespace Ivayami.Player {
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
+        private void ToggleWalk(InputAction.CallbackContext input) {
+            _movementSpeedMax = _movementSpeedMax != _movementSpeedRun ? _movementSpeedRun : _movementSpeedWalk;
+        }
+
         public void ToggleMovement(bool canMove) {
             _canMove = canMove;
             if (!_canMove) _speedCurrent = 0f;
@@ -150,6 +153,11 @@ namespace Ivayami.Player {
             yield return new WaitForSeconds(duration);
 
             _canMove = true;
+        }
+
+        public void SetTargetAngle(float angle) {
+            _targetAngle = Quaternion.Euler(0f, angle, 0f);
+            // cinemachine freelook
         }
 
     }

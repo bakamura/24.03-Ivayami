@@ -16,14 +16,14 @@ namespace Ivayami.Puzzle
         [SerializeField] private GameObject _initialSelected;
 
         private CanvasGroup _canvasGroup;
-        private Transform _container;
+        //private Transform _container;
 
         public GameObject FallbackButton => _initialSelected;
 
         protected virtual void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
-            if (!_canvasGroup) _container = transform.Find("Container");
+            //if (!_canvasGroup) _container = transform.Find("Container");
         }
         public abstract bool CheckPassword();
 
@@ -35,10 +35,10 @@ namespace Ivayami.Puzzle
                 _canvasGroup.interactable = isActive;
                 _canvasGroup.blocksRaycasts = isActive;
             }
-            else
-            {
-                _container.gameObject.SetActive(isActive);
-            }
+            //else
+            //{
+            //    _container.gameObject.SetActive(isActive);
+            //}
             if (isActive) EventSystem.current.SetSelectedGameObject(_initialSelected);
         }
     }
