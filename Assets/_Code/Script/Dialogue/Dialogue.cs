@@ -18,7 +18,7 @@ namespace Ivayami.Dialogue {
                 _hasBeenInstantiated = true;
                 DialogueEventsInspector.UpdateDialoguesList();
             }
-            if(_previousSize < dialogue.Length)
+            if(_previousSize > 0 && _previousSize < dialogue.Length)
             {
                 dialogue[dialogue.Length - 1].eventId = null;
                 dialogue[dialogue.Length - 1].FilterTags = null;
