@@ -88,7 +88,6 @@ GameObject:
   - component: {fileID: 846030319244611177}
   - component: {fileID: 341318324010638751}
   - component: {fileID: 8576910582432836724}
-  - component: {fileID: 1745133263150924616}
   - component: {fileID: 2768511041675977642}
   - component: {fileID: 7848705361407898407}
   m_Layer: 5
@@ -193,44 +192,6 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
---- !u!114 &1745133263150924616
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7652372643715993426}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _transitionCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: -0.01501913
-      outSlope: -0.01501913
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.38585725
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: -3.1893685
-      outSlope: -3.1893685
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.058333337
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _transitionDuration: 2.5
-  _interactable: 0
 --- !u!114 &2768511041675977642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,6 +206,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _currentMenu: {fileID: 0}
   _delayToOpen: -1
+  _setMenuBtnSelectedOnStart: 0
 --- !u!114 &7848705361407898407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,3 +219,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c958c08ade0c1004aad3fe529e47a90a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.034946322
+      outSlope: -0.034946322
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.86206895
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -3.0742779
+      outSlope: -3.0742779
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.09495956
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _transitionDuration: 2.5
+  _interactable: 0
