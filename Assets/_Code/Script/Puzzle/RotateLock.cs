@@ -3,7 +3,6 @@ using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace Ivayami.Puzzle
 {
@@ -17,27 +16,36 @@ namespace Ivayami.Puzzle
         private sbyte _currentBtnSelectedIndex;
         private Coroutine _animateCoroutine;
         private RotateLockButton _previousBtn;
+        private Lock _lock;
 
         protected override void Awake()
         {
             base.Awake();
             _buttons = GetComponentsInChildren<RotateLockButton>(true);
+            _lock = GetComponentInParent<Lock>();
         }
 
         public override void UpdateActiveState(bool isActive)
         {
             base.UpdateActiveState(isActive);
+            for (int i = 0; i < _buttons.Length; i++)
+            {
+                _buttons[i].Button.interactable = isActive;
+            }
             if (isActive)
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 _navegationUIInput.action.performed += HandleNavigateUI;
+                _lock.InteratctableHighlight.UpdateHighlight(false);
+                _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateHighlight(true);
+                _previousBtn = _buttons[_currentBtnSelectedIndex];
             }
             else
             {
                 Cursor.lockState = CursorLockMode.None;
                 _navegationUIInput.action.performed -= HandleNavigateUI;
                 _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateHighlight(false);
-            }
+            }            
         }
 
         public override bool CheckPassword()
@@ -96,12 +104,12 @@ namespace Ivayami.Puzzle
             _onCheckPassword?.Invoke();
         }
 
-        private void OnValidate()
-        {
-            foreach (RectTransform rect in GetComponentsInChildren<RectTransform>())
-            {
-                if(rect.rotation.x != 0) rect.rotation = Quaternion.Euler(Mathf.Sign(rect.rotation.x) * _rotationAngle, 0, 0);
-            }
-        }
+        //private void OnValidate()
+        //{
+        //    foreach (RectTransform rect in GetComponentsInChildren<RectTransform>())
+        //    {
+        //        if(rect.rotation.x != 0) rect.rotation = Quaternion.Euler(Mathf.Sign(rect.rotation.x) * _rotationAngle, 0, 0);
+        //    }
+        //}
     }
 }
