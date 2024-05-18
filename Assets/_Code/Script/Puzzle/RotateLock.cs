@@ -108,7 +108,7 @@ namespace Ivayami.Puzzle
         //{
         //    foreach (RectTransform rect in GetComponentsInChildren<RectTransform>())
         //    {
-        //        if(rect.rotation.x != 0) rect.rotation = Quaternion.Euler(Mathf.Sign(rect.rotation.x) * _rotationAngle, 0, 0);
+        //        if (rect.rotation.x != 0) rect.rotation = Quaternion.Euler(Mathf.Sign(rect.rotation.x) * _rotationAngle, 0, 0);
         //    }
         //}
     }
