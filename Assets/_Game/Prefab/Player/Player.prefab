@@ -165,6 +165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementInput: {fileID: 1691104767917529521, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
+  _walkToggleInput: {fileID: 2793988824291100020, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _crouchInput: {fileID: -5451876004435429979, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   onMovement:
     m_PersistentCalls:
@@ -172,11 +173,10 @@ MonoBehaviour:
   onCrouch:
     m_PersistentCalls:
       m_Calls: []
-  _movementSpeedMax: 5
+  _movementSpeedRun: 5
+  _movementSpeedWalk: 3
   _accelerationDuration: 0.125
   _deccelerationDuration: 0.0625
-  _movementSpeedBackwardsMultiplier: 0.5
-  _movementBacwardsAngleMaxFromForward: 90
   _visualTransform: {fileID: 2181725685440365708}
   _turnSmoothFactor: 0.175
   _crouchSpeedMax: 2.5
@@ -244,6 +244,7 @@ MonoBehaviour:
   _stressMax: 100
   _stressRelieveDelay: 7
   _stressRelieveRate: 5
+  _restartDelay: 0
 --- !u!114 &448502037161999707
 MonoBehaviour:
   m_ObjectHideFlags: 0
