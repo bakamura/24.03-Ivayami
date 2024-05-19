@@ -4,10 +4,10 @@ using UnityEngine.Events;
 
 namespace Ivayami.Puzzle
 {
-    public class ReciveItem : MonoBehaviour, IInteractable
+    public class InteractableObject : MonoBehaviour, IInteractable
     {
         [SerializeField] private InventoryItem[] _itens;
-        [SerializeField] private UnityEvent _onCollect;
+        [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private bool _isLongInteraction;
 
         private InteractableHighlight _interatctableHighlight;
@@ -33,7 +33,7 @@ namespace Ivayami.Puzzle
             {
                 PlayerInventory.Instance.AddToInventory(_itens[i]);
             }
-            _onCollect?.Invoke();
+            _onInteract?.Invoke();
         }
     }
 }
