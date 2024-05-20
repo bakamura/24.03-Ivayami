@@ -8,8 +8,9 @@ namespace Ivayami.Scene
     {
 #if UNITY_EDITOR
         [SerializeField] private Color _gizmoColor = Color.red;
-        [SerializeField, Min(0f)] private float _gizmoSize = .2f;
+        //[SerializeField, Min(0f)] private float _gizmoSize = .2f;
 #endif
+        [ContextMenu("TP")]
         public void TeleportPlayer()
         {
             PlayerMovement.Instance.transform.position = transform.position;
@@ -22,7 +23,7 @@ namespace Ivayami.Scene
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = _gizmoColor;
-            Gizmos.DrawSphere(transform.position, _gizmoSize);
+            Gizmos.DrawWireCube(transform.position + new Vector3(0, 0.875f, 0), new Vector3(.5f, 1.75f, .5f));
         }
 #endif
     }

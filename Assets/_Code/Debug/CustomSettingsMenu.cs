@@ -16,7 +16,7 @@ namespace Ivayami.debug
         public static Vector3 CameraPosition { get; private set; }
 
         static CustomSettingsHandler()
-        {
+        {            
             EditorApplication.playModeStateChanged += HandlePlayModeCallback;
             SceneView.duringSceneGui += HandleSceneViewGUIUpdate;
         }
@@ -32,7 +32,10 @@ namespace Ivayami.debug
 
         private static void HandleSceneViewGUIUpdate(SceneView sceneView)
         {
-           if(sceneView.camera.transform.position != Vector3.zero) CameraPosition = sceneView.camera.transform.position;
+            if (sceneView.camera.transform.position != Vector3.zero)
+            {
+                CameraPosition = sceneView.camera.transform.position;
+            }
         }
 
         public class NewCustomSettings

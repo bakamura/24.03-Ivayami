@@ -62,6 +62,7 @@ namespace Ivayami.Scene
             {
                 PlayerMovement.Instance.ToggleMovement(true);
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerMovement.Instance.transform.position = Ivayami.debug.CustomSettingsHandler.CameraPosition;
                 _mainMenuSceneName = Ivayami.debug.CustomSettingsHandler.CurrentSceneName;
             }
 #endif
