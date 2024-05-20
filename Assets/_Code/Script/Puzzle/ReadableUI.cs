@@ -1,26 +1,32 @@
 using UnityEngine;
 using TMPro;
 using Ivayami.UI;
+using UnityEngine.UI;
 
-public class ReadableUI : MonoSingleton<ReadableUI> {
+namespace Ivayami.Puzzle {
+    public class ReadableUI : MonoSingleton<ReadableUI> {
 
-    public Menu Menu { get; private set; }
+        public Menu Menu { get; private set; }
 
-    [SerializeField] private TextMeshProUGUI _title;
-    [SerializeField] private TextMeshProUGUI _content;
+        [SerializeField] private TextMeshProUGUI _title;
+        [SerializeField] private TextMeshProUGUI _content;
 
-    protected override void Awake() {
-        base.Awake();
+        [field: SerializeField] public Button CloseBtn { get; private set; }
 
-        Menu = GetComponent<Menu>();
+        protected override void Awake() {
+            base.Awake();
+
+            Menu = GetComponent<Menu>();
+        }
+
+        public void ShowReadable(string title, string content) {
+            _title.text = title;
+            _content.text = content;
+            float preferredHeight = LayoutUtility.GetPreferredHeight(_content.rectTransform);
+            _content.rectTransform.sizeDelta = new Vector2(_content.rectTransform.sizeDelta.x, LayoutUtility.GetPreferredHeight(_content.rectTransform));
+            _content.rectTransform.anchoredPosition = Vector2.zero;
+            Menu.Open();
+        }
+
     }
-
-    public void ShowReadable(string title, string content) {
-        _title.text = title;
-        _content.text = content;
-        // Resize rect to fit text properly
-        _content.rectTransform.anchoredPosition = Vector2.zero;
-        Menu.Open();
-    }
-
 }
