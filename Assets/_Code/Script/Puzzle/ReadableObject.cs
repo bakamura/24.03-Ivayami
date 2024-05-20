@@ -15,10 +15,11 @@ namespace Ivayami.Puzzle {
 
         [Header("Animation")]
 
-        [SerializeField] private CameraAnimationInfo _focusCamera;
+        private CameraAnimationInfo _focusCamera;
 
         private void Awake() {
             InteratctableHighlight = GetComponent<InteractableHighlight>();
+            _focusCamera = GetComponentInChildren<CameraAnimationInfo>();
         }
 
         public void Interact() {
