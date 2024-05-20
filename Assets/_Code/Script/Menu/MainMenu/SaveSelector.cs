@@ -15,19 +15,12 @@ namespace Ivayami.UI {
         [SerializeField] private TextMeshProUGUI _previewText;
         [SerializeField] private SaveSelectBtn[] _saveSelectBtns;
 
-        [Header("Input Stopping")]
-
-        [SerializeField] private InputActionReference _pauseInput;
-
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
 
         private void Awake() {
             SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate);
 
             PlayerActions.Instance.ChangeInputMap("Menu");
-            _pauseInput.action.Disable();
-
-            SceneController.Instance.OnAllSceneRequestEnd = () => SceneController.Instance.OnAllSceneRequestEnd = EnablePlayerInput;
         }
 
         private void SaveSelectBtnUpdate(SaveProgress[] progressSaves) {
@@ -48,17 +41,6 @@ namespace Ivayami.UI {
             _previewText.text = chapterDescription.Text;
 
             Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.id} {(string.IsNullOrEmpty(SaveSystem.Instance.Progress.lastProgressType) ? "(New)": $"(Progress: {SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]}")})");
-        }
-
-        public void EnablePlayerInput() {
-            _pauseInput.action.Enable();
-            PlayerActions.Instance.ChangeInputMap("Player");
-            PlayerMovement.Instance.ToggleMovement(true);
-            PlayerMovement.Instance.transform.position = SavePoint.Points[SaveSystem.Instance.Progress.pointId].spawnPoint.position;
-            SceneController.Instance.OnAllSceneRequestEnd = null;
-            SceneTransition.Instance.Transition();
-
-            Logger.Log(LogType.UI, $"EnablePlayerInput callback");
         }
 
     }
