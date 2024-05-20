@@ -29,14 +29,15 @@ namespace Ivayami.Puzzle {
             _focusCamera.Priority = _focusedCameraPriority;
             PlayerActions.Instance.ChangeInputMap("Menu");
             ReadableUI.Instance.ShowReadable(_readable.name, _readable.Content);
-            // Set Menu 'Back' to StopReading()
+            ReadableUI.Instance.CloseBtn.onClick.AddListener(StopReading);
             if (_goesToInventory) { }
         }
 
         public void StopReading() {
-            _focusCamera.Priority = _focusedCameraPriority;
+            _focusCamera.Priority = _focusedCameraPriority - 2;
             PlayerActions.Instance.ChangeInputMap("Player");
             ReadableUI.Instance.Menu.Close();
+            ReadableUI.Instance.CloseBtn.onClick.RemoveAllListeners();
         }
 
     }
