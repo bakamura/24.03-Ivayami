@@ -7,12 +7,15 @@ namespace Ivayami.Puzzle {
 
         public InteractableHighlight InteratctableHighlight { get; private set; }
 
+        [Header("Reading")]
+
         [SerializeField] private Readable _readable;
         [SerializeField] private bool _goesToInventory;
 
-        [SerializeField] private ReadableUI _canvasReadable;
+        [Header("Animation")]
+
         [SerializeField] private CinemachineVirtualCamera _focusCamera;
-        [SerializeField] private int _focusedCameraPriority;
+        private int _focusedCameraPriority;
 
         private void Awake() {
             InteratctableHighlight = GetComponent<InteractableHighlight>();
@@ -25,14 +28,16 @@ namespace Ivayami.Puzzle {
         public void Interact() {
             _focusCamera.Priority = _focusedCameraPriority;
             PlayerActions.Instance.ChangeInputMap("Menu");
-            _canvasReadable.ShowReadable(_readable.name, _readable.Content);
+            ReadableUI.Instance.ShowReadable(_readable.name, _readable.Content);
+            ReadableUI.Instance.CloseBtn.onClick.AddListener(StopReading);
             if (_goesToInventory) { }
         }
 
         public void StopReading() {
-            _focusCamera.Priority = _focusedCameraPriority;
+            _focusCamera.Priority = _focusedCameraPriority - 2;
             PlayerActions.Instance.ChangeInputMap("Player");
-            _canvasReadable.Menu.Close();
+            ReadableUI.Instance.Menu.Close();
+            ReadableUI.Instance.CloseBtn.onClick.RemoveAllListeners();
         }
 
     }

@@ -6,6 +6,7 @@ namespace Ivayami.Puzzle
     public class InteractableHighlight : MonoBehaviour
     {
         [SerializeField] private Color _highlightedColor = new Color(0.03921569f, 0.03921569f, 0.03921569f, 1);
+        [SerializeField] private bool _applyToChildrens = true;
         private List<Material> _materials;
         private List<Color> _baseColors;
         private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
@@ -23,18 +24,27 @@ namespace Ivayami.Puzzle
         {
             _materials = new List<Material>();
             _baseColors = new List<Color>();
-            Color emissiveColor;
-            foreach (Renderer render in GetComponentsInChildren<Renderer>())
+            if (_applyToChildrens)
             {
-                if (render.material.HasColor(_colorVarName))
+                Color emissiveColor;
+                foreach (Renderer render in GetComponentsInChildren<Renderer>())
                 {
-                    emissiveColor = render.material.GetColor(_colorVarName);
-                    if (emissiveColor == Color.black)
+                    if (render.material.HasColor(_colorVarName))
                     {
-                        _materials.Add(render.material);
-                        _baseColors.Add(emissiveColor);
+                        emissiveColor = render.material.GetColor(_colorVarName);
+                        if (emissiveColor == Color.black)
+                        {
+                            _materials.Add(render.material);
+                            _baseColors.Add(emissiveColor);
+                        }
                     }
                 }
+            }
+            else
+            {
+                Renderer renderer = GetComponentInChildren<Renderer>();
+                _materials.Add(renderer.material);
+                _baseColors.Add(renderer.material.GetColor(_colorVarName));
             }
         }
     }

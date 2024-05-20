@@ -13,10 +13,12 @@ namespace Ivayami.debug
     {
         private const string _startOnCurrentScene = "startOnCurrentScene";
         public static string CurrentSceneName { get; private set; }
+        public static Vector3 CameraPosition { get; private set; }
 
         static CustomSettingsHandler()
-        {
+        {            
             EditorApplication.playModeStateChanged += HandlePlayModeCallback;
+            SceneView.duringSceneGui += HandleSceneViewGUIUpdate;
         }
 
         private static void HandlePlayModeCallback(PlayModeStateChange playMode)
@@ -24,7 +26,18 @@ namespace Ivayami.debug
             if (playMode == PlayModeStateChange.EnteredPlayMode && EditorSceneManager.GetActiveScene().buildIndex != 0 && CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene)
             {
                 CurrentSceneName = EditorSceneManager.GetActiveScene().name;
+                CameraPosition = new Vector3(PlayerPrefs.GetFloat("camX"), PlayerPrefs.GetFloat("camY"), PlayerPrefs.GetFloat("camZ"));
                 SceneManager.LoadScene(0);
+            }
+        }
+
+        private static void HandleSceneViewGUIUpdate(SceneView sceneView)
+        {
+            if (sceneView.camera.transform.position != Vector3.zero)
+            {
+                PlayerPrefs.SetFloat("camX", sceneView.camera.transform.position.x);
+                PlayerPrefs.SetFloat("camY", sceneView.camera.transform.position.y);
+                PlayerPrefs.SetFloat("camZ", sceneView.camera.transform.position.z);
             }
         }
 
