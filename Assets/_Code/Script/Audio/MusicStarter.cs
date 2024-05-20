@@ -18,5 +18,10 @@ namespace Ivayami.Audio {
             Music.Instance.SetMusic(_music);
         }
 
+
+        public void Stop() {
+            Music.Instance.Stop();
+        }
+
     }
 }
