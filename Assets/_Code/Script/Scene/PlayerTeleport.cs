@@ -16,7 +16,10 @@ namespace Ivayami.Scene
             PlayerMovement.Instance.transform.position = transform.position;
             PlayerMovement.Instance.SetTargetAngle(transform.rotation.eulerAngles.y);
             CinemachineFreeLook temp = FindObjectOfType<CinemachineFreeLook>();
+
+            temp.PreviousStateIsValid = false;
             temp.ForceCameraPosition(temp.LookAt.transform.position + -temp.LookAt.transform.forward * temp.m_Orbits[1].m_Radius, Quaternion.identity);
+            temp.m_XAxis.Value = Vector3.SignedAngle(Camera.main.transform.forward, transform.forward, Vector3.up);        
         }
 
 #if UNITY_EDITOR
