@@ -82,7 +82,12 @@ namespace Ivayami.Puzzle
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, finalRotation, _rotationSpeed * _tick);
                 finalPosition = _paths[_currentPathIndex].Points[count] + _initialPosition;
                 finalPosition = new Vector3(finalPosition.x, transform.position.y, finalPosition.z);
-                if (Vector3.Distance(transform.position, finalPosition) <= _minDistanceFromPathPoint) count++;
+                if (Vector3.Distance(transform.position, finalPosition) <= _minDistanceFromPathPoint)
+                {
+                    count++;
+                    _currentVelocity = Vector3.zero;
+                    _rigidbody.velocity = _currentVelocity;
+                }
 
                 yield return _delay;
             }
