@@ -13,6 +13,7 @@ namespace Ivayami.Scene
         public void TeleportPlayer()
         {
             PlayerMovement.Instance.transform.position = transform.position;
+            PlayerMovement.Instance.SetTargetAngle(transform.rotation.eulerAngles.y);
             CinemachineFreeLook temp = FindObjectOfType<CinemachineFreeLook>();
             temp.ForceCameraPosition(temp.LookAt.transform.position + -temp.LookAt.transform.forward * temp.m_Orbits[1].m_Radius, Quaternion.identity);
         }
