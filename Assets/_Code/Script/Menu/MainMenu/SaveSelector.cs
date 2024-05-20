@@ -56,6 +56,7 @@ namespace Ivayami.UI {
             PlayerMovement.Instance.ToggleMovement(true);
             PlayerMovement.Instance.transform.position = SavePoint.Points[SaveSystem.Instance.Progress.pointId].spawnPoint.position;
             SceneController.Instance.OnAllSceneRequestEnd = null;
+            SceneTransition.Instance.Transition();
 
             Logger.Log(LogType.UI, $"EnablePlayerInput callback");
         }
