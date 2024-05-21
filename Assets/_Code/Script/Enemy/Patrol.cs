@@ -55,7 +55,7 @@ namespace Ivayami.Enemy
 
             _initialPosition = transform.position;
             _initialRotation = transform.rotation;
-            _navMeshAgent.stoppingDistance = _collision.radius + .2f;
+            if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
         }
 
         private void Update()
@@ -119,7 +119,7 @@ namespace Ivayami.Enemy
                     if (_debugLog) Debug.Log("Patroling");
                     if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
                     {
-                        if(_patrolPoints.Length > 1)
+                        if (_patrolPoints.Length > 1)
                         {
                             yield return _betweenPatrolPointsDelay;
                             currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
