@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using Ivayami.Player;
 using System;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Ivayami.Puzzle
 {
@@ -24,7 +27,6 @@ namespace Ivayami.Puzzle
         [SerializeField, Min(0f)] private float _gizmoSize;
 #endif
 
-        private bool _isWalking;
         private byte _currentPathIndex;
         private WaitForSeconds _delay = new WaitForSeconds(_tick);
         private Rigidbody _rigidbody;
@@ -32,6 +34,8 @@ namespace Ivayami.Puzzle
         private Vector3 _initialPosition;
         private EnemyAnimator _animator;
         private const float _tick = .05f;
+        private Coroutine _walkCoroutine;
+        private byte _currentPointIndex;
 
         [Serializable]
         private struct Path
@@ -56,55 +60,62 @@ namespace Ivayami.Puzzle
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!_isWalking)
+            if (_walkCoroutine == null)
             {
-                _isWalking = true;
-                _animator.Walking(_isWalking);
-                StartCoroutine(WalkCoroutine());
+                _walkCoroutine = StartCoroutine(WalkCoroutine());
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (_walkCoroutine != null)
+            {
+                StopCoroutine(_walkCoroutine);
+                _walkCoroutine = null;
+                _animator.Walking(false);
+                _currentVelocity = Vector3.zero;
             }
         }
 
         private IEnumerator WalkCoroutine()
         {
-            byte count = 0;
-            Quaternion finalRotation;
             Vector3 direction;
             Vector3 finalPosition;
-            while (count < _paths[_currentPathIndex].Points.Length)
+            _animator.Walking(true);
+            while (_currentPointIndex < _paths[_currentPathIndex].Points.Length)
             {
-                direction = _initialPosition + _paths[_currentPathIndex].Points[count] - transform.position;
+                finalPosition = _paths[_currentPathIndex].Points[_currentPointIndex] + _initialPosition;
+                finalPosition = new Vector3(finalPosition.x, transform.position.y, finalPosition.z);
+                direction = finalPosition - transform.position;
                 direction = new Vector3(direction.x, 0, direction.z);
-                finalRotation = Quaternion.LookRotation(_paths[_currentPathIndex].Points[count] + _initialPosition - transform.position);
-                finalRotation = new Quaternion(0, finalRotation.y, 0, finalRotation.w);
-
                 _currentVelocity = Vector3.MoveTowards(_currentVelocity, direction.normalized * _maxSpeed, _aceleration * _tick);
                 _currentVelocity = new Vector3(_currentVelocity.x, _rigidbody.velocity.y, _currentVelocity.z);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, finalRotation, _rotationSpeed * _tick);
-                finalPosition = _paths[_currentPathIndex].Points[count] + _initialPosition;
-                finalPosition = new Vector3(finalPosition.x, transform.position.y, finalPosition.z);
+
+                transform.rotation = Quaternion.Euler(0, Mathf.MoveTowardsAngle(transform.rotation.eulerAngles.y, Quaternion.LookRotation(direction.normalized).eulerAngles.y, _rotationSpeed * _tick), 0);
                 if (Vector3.Distance(transform.position, finalPosition) <= _minDistanceFromPathPoint)
                 {
-                    count++;
+                    _currentPointIndex++;
                     _currentVelocity = Vector3.zero;
                     _rigidbody.velocity = _currentVelocity;
                 }
 
                 yield return _delay;
             }
-            _isWalking = false;
             _currentVelocity = Vector3.zero;
-            _animator.Walking(_isWalking);
+            _animator.Walking(false);
             if (_currentPathIndex + 1 < _paths.Length)
             {
                 _paths[_currentPathIndex].OnPathEnd?.Invoke();
                 _currentPathIndex++;
                 transform.position = _paths[_currentPathIndex].Points[0] + _initialPosition;
+                _currentPointIndex = 0;
                 TryLookAtPlayer();
             }
             else
             {
                 gameObject.SetActive(false);
             }
+            _walkCoroutine = null;
         }
 
         private void TryLookAtPlayer()
@@ -122,13 +133,19 @@ namespace Ivayami.Puzzle
         {
             if (_debugDraw && _paths != null)
             {
+                int a;
+                Vector3 initialPos = _initialPosition != Vector3.zero ? _initialPosition : transform.position;
                 for (int i = 0; i < _paths.Length; i++)
                 {
                     Gizmos.color = _gizmoColors[i];
-                    for (int a = 0; a < _paths[i].Points.Length; a++)
+                    for (a = 0; a < _paths[i].Points.Length; a++)
                     {
-                        Vector3 initialPos = _initialPosition != Vector3.zero ? _initialPosition : transform.position;
                         Gizmos.DrawSphere(initialPos + _paths[i].Points[a], _gizmoSize);
+                        Handles.Label(initialPos + _paths[i].Points[a] + new Vector3(0, _gizmoSize * 2, 0), a.ToString());
+                    }
+                    for (a = 0; a < _paths[i].Points.Length - 1; a++)
+                    {
+                        Gizmos.DrawLine(initialPos + _paths[i].Points[a], initialPos + _paths[i].Points[Mathf.Clamp(a + 1, 0, _paths[i].Points.Length - 1)]);
                     }
                 }
             }
