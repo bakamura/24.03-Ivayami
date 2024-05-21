@@ -153,6 +153,7 @@ namespace Ivayami.Puzzle
             {
                 _isActive = false;
                 _currentSelected.material.SetColor(_colorEmissionVarName, _baseFuseColor);
+                _interatctableHighlight.UpdateHighlight(true);
                 UpdateInputsAndUI(_isActive);
                 _onInteractionCancelled?.Invoke();
             }
