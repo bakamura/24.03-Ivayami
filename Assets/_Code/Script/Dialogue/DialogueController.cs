@@ -45,12 +45,13 @@ namespace Ivayami.Dialogue
         protected override void Awake()
         {
             base.Awake();
-            
+
+            ChangeLanguage(LanguageTypes.ENUS);
             _continueInput.action.performed += HandleContinueDialogue;
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
             //_autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
             _canvasGroup = GetComponent<CanvasGroup>();
-            _dialogueSounds = GetComponent<DialogueSounds>();            
+            _dialogueSounds = GetComponent<DialogueSounds>();
         }
 
         private void HandleContinueDialogue(InputAction.CallbackContext context)
@@ -96,7 +97,7 @@ namespace Ivayami.Dialogue
                 //continue current dialogue
                 else
                 {
-                    _continueDialogueIcon.SetActive(false);                    
+                    _continueDialogueIcon.SetActive(false);
                     //_readyForNextSpeech = false;
                     _writtingCoroutine = StartCoroutine(WrittingCoroutine());
                 }
@@ -134,14 +135,14 @@ namespace Ivayami.Dialogue
 
             _continueDialogueIcon.SetActive(true);
             WaitForSeconds wait = null;
-            if (!LockInput) 
+            if (!LockInput)
                 wait = new WaitForSeconds(_delayToAutoStartNextSpeech);
-            else if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0) 
+            else if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0)
                 wait = new WaitForSeconds(_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech);
             yield return wait;
             //_readyForNextSpeech = true;
             _writtingCoroutine = null;
-            if (wait != null) UpdateDialogue();            
+            if (wait != null) UpdateDialogue();
         }
 
         private void SkipSpeech()
