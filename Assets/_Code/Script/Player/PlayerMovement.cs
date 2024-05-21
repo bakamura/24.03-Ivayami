@@ -86,7 +86,7 @@ namespace Ivayami.Player {
 
         private void Update() {
             if (_canMove) Rotate();
-            OverTheShoulderSpring();
+            //OverTheShoulderSpring();
         }
 
         private void FixedUpdate() {
