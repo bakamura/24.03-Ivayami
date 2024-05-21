@@ -45,28 +45,12 @@ namespace Ivayami.Dialogue
         protected override void Awake()
         {
             base.Awake();
-
-            _dialogues = Resources.LoadAll<Dialogue>("Dialogues");
+            
             _continueInput.action.performed += HandleContinueDialogue;
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
             //_autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
             _canvasGroup = GetComponent<CanvasGroup>();
-            _dialogueSounds = GetComponent<DialogueSounds>();
-
-            for (int i = 0; i < _dialogues.Length; i++)
-            {
-                if (!_dialogueDictionary.ContainsKey(_dialogues[i].id))
-                {
-                    _dialogueDictionary.Add(_dialogues[i].id, _dialogues[i]);
-                }
-                else
-                {
-                    if (_debugLogs)
-                    {
-                        Debug.LogWarning($"the dialogue ID {_dialogues[i].id} is already in use");
-                    }
-                }
-            }
+            _dialogueSounds = GetComponent<DialogueSounds>();            
         }
 
         private void HandleContinueDialogue(InputAction.CallbackContext context)
@@ -223,6 +207,26 @@ namespace Ivayami.Dialogue
                 {
                     if (dialogue == null) Debug.LogError($"The dialogue {dialogueId} couldn't be found");
                     //if (_writtingCoroutine != null) Debug.LogWarning($"There is the current dialogue {_currentDialogue.id} playing, the dialogue {dialogueId} will not play");
+                }
+            }
+        }
+
+        public void ChangeLanguage(LanguageTypes languageType)
+        {
+            _dialogues = Resources.LoadAll<Dialogue>($"{languageType}/Dialogues");
+            _dialogueDictionary.Clear();
+            for (int i = 0; i < _dialogues.Length; i++)
+            {
+                if (!_dialogueDictionary.ContainsKey(_dialogues[i].id))
+                {
+                    _dialogueDictionary.Add(_dialogues[i].id, _dialogues[i]);
+                }
+                else
+                {
+                    if (_debugLogs)
+                    {
+                        Debug.LogWarning($"the dialogue ID {_dialogues[i].id} is already in use");
+                    }
                 }
             }
         }
