@@ -47,6 +47,9 @@ namespace Ivayami.Player {
         [Header("Camera")]
 
         [SerializeField] private Transform _cameraAimTargetRotator;
+        [SerializeField] private Transform _overTheShoulderTarget;
+        private float _overTheShoulderMaxDistance;
+        [SerializeField] private LayerMask _overTheShoulderSpringCollisions;
 
         [Header("Cache")]
 
@@ -76,16 +79,18 @@ namespace Ivayami.Player {
             _rigidbody = GetComponent<Rigidbody>();
             _collider = GetComponent<CapsuleCollider>();
             _cameraTransform = Camera.main.transform; //
+            _overTheShoulderMaxDistance = _overTheShoulderTarget.localPosition.x;
 
             Logger.Log(LogType.Player, $"{typeof(PlayerMovement).Name} Initialized");
         }
 
         private void Update() {
             if (_canMove) Rotate();
+            OverTheShoulderSpring();
         }
 
         private void FixedUpdate() {
-            if(_canMove) Move();
+            if (_canMove) Move();
         }
 
         private void MoveDirection(InputAction.CallbackContext input) {
@@ -132,6 +137,12 @@ namespace Ivayami.Player {
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
+        private void OverTheShoulderSpring() {
+            _overTheShoulderTarget.localPosition = Vector3.right *
+               (Physics.Raycast(_overTheShoulderTarget.position, _overTheShoulderTarget.right, out RaycastHit hit, _overTheShoulderMaxDistance, _overTheShoulderSpringCollisions) ?
+                hit.distance : _overTheShoulderMaxDistance);
+        }
+
         private void ToggleWalk(InputAction.CallbackContext input) {
             _movementSpeedMax = _movementSpeedMax != _movementSpeedRun ? _movementSpeedRun : _movementSpeedWalk;
         }
@@ -149,8 +160,8 @@ namespace Ivayami.Player {
         }
 
         private IEnumerator DisableMovementRoutine(float duration) {
-            _canMove = false; 
-            
+            _canMove = false;
+
             yield return new WaitForSeconds(duration);
 
             _canMove = true;
