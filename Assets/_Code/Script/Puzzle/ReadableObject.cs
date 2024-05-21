@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cinemachine;
 using Ivayami.Player;
+using Ivayami.Dialogue;
 
 namespace Ivayami.Puzzle {
     public class ReadableObject : MonoBehaviour, IInteractable {
@@ -14,28 +15,24 @@ namespace Ivayami.Puzzle {
 
         [Header("Animation")]
 
-        [SerializeField] private CinemachineVirtualCamera _focusCamera;
-        private int _focusedCameraPriority;
+        private CameraAnimationInfo _focusCamera;
 
         private void Awake() {
             InteratctableHighlight = GetComponent<InteractableHighlight>();
-        }
-
-        private void Start() {
-            _focusedCameraPriority = FindObjectOfType<CinemachineFreeLook>().Priority + 1;
+            _focusCamera = GetComponentInChildren<CameraAnimationInfo>();
         }
 
         public void Interact() {
-            _focusCamera.Priority = _focusedCameraPriority;
             PlayerActions.Instance.ChangeInputMap("Menu");
+            DialogueCamera.Instance.MoveRotate(_focusCamera);
             ReadableUI.Instance.ShowReadable(_readable.name, _readable.Content);
             ReadableUI.Instance.CloseBtn.onClick.AddListener(StopReading);
             if (_goesToInventory) { }
         }
 
         public void StopReading() {
-            _focusCamera.Priority = _focusedCameraPriority - 2;
             PlayerActions.Instance.ChangeInputMap("Player");
+            DialogueCamera.Instance.ExitDialogeCamera();
             ReadableUI.Instance.Menu.Close();
             ReadableUI.Instance.CloseBtn.onClick.RemoveAllListeners();
         }
