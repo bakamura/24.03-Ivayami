@@ -2,7 +2,7 @@ using UnityEngine;
 using Cinemachine;
 
 namespace Ivayami.Player {
-    public class PlayerCamera : MonoSingleton<PlayerStress> {
+    public class PlayerCamera : MonoSingleton<PlayerCamera> {
 
         [SerializeField] private float _sensitivityMultiplierX;
         [SerializeField] private float _sensitivityMultiplierY;
