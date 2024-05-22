@@ -1,5 +1,4 @@
 using UnityEngine;
-using Cinemachine;
 using Ivayami.Player;
 using Ivayami.Dialogue;
 
@@ -7,6 +6,17 @@ namespace Ivayami.Puzzle {
     public class ReadableObject : MonoBehaviour, IInteractable {
 
         public InteractableHighlight InteratctableHighlight { get; private set; }
+
+        public InteractionPopup InteractionPopup
+        {
+            get
+            {
+                if (!_interactionPopup)
+                    _interactionPopup = GetComponent<InteractionPopup>();
+                return _interactionPopup;
+            }
+        }
+        private InteractionPopup _interactionPopup;
 
         [Header("Reading")]
 

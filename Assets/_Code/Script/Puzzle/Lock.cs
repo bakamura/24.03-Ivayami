@@ -35,7 +35,17 @@ namespace Ivayami.Puzzle
         private List<InventoryItem> _currentItemList = new List<InventoryItem>();
         private sbyte _currentItemsDelivered;
         private InteractableHighlight _interatctableHighlight;
+        private InteractionPopup _interactionPopup;
 
+        public InteractionPopup InteractionPopup
+        {
+            get
+            {
+                if (!_interactionPopup)
+                    _interactionPopup = GetComponent<InteractionPopup>();
+                return _interactionPopup;
+            }
+        }
         public InteractableHighlight InteratctableHighlight { get => _interatctableHighlight; }
 
         [System.Serializable]

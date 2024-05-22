@@ -21,6 +21,17 @@ namespace Ivayami.Puzzle
                 return _interatctableHighlight;
             }
         }
+        private InteractionPopup _interactionPopup;
+
+        public InteractionPopup InteractionPopup
+        {
+            get
+            {
+                if (!_interactionPopup)
+                    _interactionPopup = GetComponent<InteractionPopup>();
+                return _interactionPopup;
+            }
+        }
 
         public void Interact()
         {

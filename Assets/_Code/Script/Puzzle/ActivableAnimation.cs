@@ -20,6 +20,7 @@ namespace Ivayami.Puzzle
         private static int _activationStateHash = Animator.StringToHash("activation");
 
         private InteractableHighlight _interatctableHighlight;
+        private InteractionPopup _interactionPopup;
         private Coroutine _callbackCoroutine;
 
         [System.Serializable]
@@ -42,6 +43,16 @@ namespace Ivayami.Puzzle
         }
 
         public InteractableHighlight InteratctableHighlight { get => _interatctableHighlight; }
+
+        public InteractionPopup InteractionPopup
+        {
+            get
+            {
+                if (!_interactionPopup)
+                    _interactionPopup = GetComponent<InteractionPopup>();
+                return _interactionPopup;
+            }
+        }
 
         protected override void Awake()
         {

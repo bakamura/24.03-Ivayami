@@ -41,6 +41,17 @@ namespace Ivayami.Puzzle
         private const string _colorEmissionVarName = "_EmissionColor";
 
         public InteractableHighlight InteratctableHighlight { get => _interatctableHighlight; }
+        private InteractionPopup _interactionPopup;
+
+        public InteractionPopup InteractionPopup
+        {
+            get
+            {
+                if (!_interactionPopup)
+                    _interactionPopup = GetComponent<InteractionPopup>();
+                return _interactionPopup;
+            }
+        }
 
         private void Awake()
         {
