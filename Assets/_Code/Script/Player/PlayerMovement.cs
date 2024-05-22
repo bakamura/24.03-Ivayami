@@ -44,6 +44,11 @@ namespace Ivayami.Player {
         [SerializeField] private float _crouchCameraHeight;
         [SerializeField] private LayerMask _terrain;
 
+        [Space(24)]
+
+        [SerializeField] private float _crouchHeightChangeDuration;
+        private Coroutine _crouchRoutine;
+
         [Header("Camera")]
 
         [SerializeField] private Transform _cameraAimTargetRotator;
@@ -123,13 +128,27 @@ namespace Ivayami.Player {
                 _collider.height = Crouching ? _crouchColliderHeight : _walkColliderHeight;
                 _collider.center = 0.5f * (Crouching ? _crouchColliderHeight : _walkColliderHeight) * Vector3.up;
 
-                _cameraAimTargetRotator.localPosition = (Crouching ? _crouchCameraHeight : _walkCameraHeight) * Vector3.up;
+                if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
+                _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
 
                 onCrouch?.Invoke(Crouching);
 
                 Logger.Log(LogType.Player, $"Crouch Toggle: {Crouching}");
             }
             else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
+        }
+
+        private IEnumerator CrouchSmoothHeightRoutine() {
+            float duration = 0;
+            float startHeight = _cameraAimTargetRotator.localPosition.y;
+            float finalHeight = Crouching ? _crouchCameraHeight : _walkCameraHeight;
+            while (duration < 1) {
+                duration += Time.deltaTime / _crouchHeightChangeDuration;
+
+                _cameraAimTargetRotator.localPosition = Mathf.Lerp(startHeight, finalHeight, duration) * Vector3.up;
+
+                yield return null;
+            }
         }
 
         private void Rotate() {
