@@ -214,7 +214,7 @@ namespace Ivayami.Dialogue
 
         public void ChangeLanguage(LanguageTypes languageType)
         {
-            _dialogues = Resources.LoadAll<Dialogue>($"{languageType}/Dialogues");
+            _dialogues = Resources.LoadAll<Dialogue>($"Dialogues/{languageType}");
             _dialogueDictionary.Clear();
             for (int i = 0; i < _dialogues.Length; i++)
             {
