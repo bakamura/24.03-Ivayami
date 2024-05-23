@@ -5,6 +5,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
+using Ivayami.Player;
+using Ivayami.Scene;
 
 namespace Ivayami.debug
 {
@@ -13,12 +15,12 @@ namespace Ivayami.debug
     {
         private const string _startOnCurrentScene = "startOnCurrentScene";
         public static string CurrentSceneName { get; private set; }
-        public static Vector3 CurrentCameraPosition { get; private set; }
+        public static Vector3 CameraPosition { get; private set; }
 
         static CustomSettingsHandler()
-        {
+        {            
             EditorApplication.playModeStateChanged += HandlePlayModeCallback;
-            SceneView.duringSceneGui += HandleSceneGUI;
+            SceneView.duringSceneGui += HandleSceneViewGUIUpdate;
         }
 
         private static void HandlePlayModeCallback(PlayModeStateChange playMode)
@@ -26,13 +28,27 @@ namespace Ivayami.debug
             if (playMode == PlayModeStateChange.EnteredPlayMode && EditorSceneManager.GetActiveScene().buildIndex != 0 && CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene)
             {
                 CurrentSceneName = EditorSceneManager.GetActiveScene().name;
+                CameraPosition = new Vector3(PlayerPrefs.GetFloat("camX"), PlayerPrefs.GetFloat("camY"), PlayerPrefs.GetFloat("camZ"));
                 SceneManager.LoadScene(0);
             }
         }
 
-        private static void HandleSceneGUI(SceneView view)
+        public static void OnSceneLoad()
+        {                        
+            PlayerMovement.Instance.ToggleMovement(true);
+            PlayerActions.Instance.ChangeInputMap("Player");
+            PlayerMovement.Instance.transform.position = Ivayami.debug.CustomSettingsHandler.CameraPosition;
+            SceneController.Instance.OnAllSceneRequestEndDebug -= OnSceneLoad;
+        }
+
+        private static void HandleSceneViewGUIUpdate(SceneView sceneView)
         {
-            CurrentCameraPosition = view.camera.transform.position;
+            if (sceneView.camera.transform.position != Vector3.zero)
+            {
+                PlayerPrefs.SetFloat("camX", sceneView.camera.transform.position.x);
+                PlayerPrefs.SetFloat("camY", sceneView.camera.transform.position.y);
+                PlayerPrefs.SetFloat("camZ", sceneView.camera.transform.position.z);
+            }
         }
 
         public class NewCustomSettings

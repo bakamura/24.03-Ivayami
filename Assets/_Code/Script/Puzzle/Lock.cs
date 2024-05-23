@@ -64,6 +64,7 @@ namespace Ivayami.Puzzle
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
+            _interatctableHighlight.UpdateHighlight(false);
             if (_interactionType == InteractionTypes.RequirePassword)
             {
                 _passwordUI.UpdateActiveState(true);
@@ -117,6 +118,7 @@ namespace Ivayami.Puzzle
             _passwordUI.UpdateActiveState(false);
             UpdateDeliverItemUI(false);
             UpdateInputs(false);
+            _interatctableHighlight.UpdateHighlight(true);
             _onCancelInteraction?.Invoke();
         }
 

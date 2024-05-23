@@ -44,9 +44,17 @@ namespace Ivayami.Player {
         [SerializeField] private float _crouchCameraHeight;
         [SerializeField] private LayerMask _terrain;
 
+        [Space(24)]
+
+        [SerializeField] private float _crouchHeightChangeDuration;
+        private Coroutine _crouchRoutine;
+
         [Header("Camera")]
 
         [SerializeField] private Transform _cameraAimTargetRotator;
+        [SerializeField] private Transform _overTheShoulderTarget;
+        private float _overTheShoulderMaxDistance;
+        [SerializeField] private LayerMask _overTheShoulderSpringCollisions;
 
         [Header("Cache")]
 
@@ -76,16 +84,18 @@ namespace Ivayami.Player {
             _rigidbody = GetComponent<Rigidbody>();
             _collider = GetComponent<CapsuleCollider>();
             _cameraTransform = Camera.main.transform; //
+            _overTheShoulderMaxDistance = _overTheShoulderTarget.localPosition.x;
 
             Logger.Log(LogType.Player, $"{typeof(PlayerMovement).Name} Initialized");
         }
 
         private void Update() {
             if (_canMove) Rotate();
+            //OverTheShoulderSpring();
         }
 
         private void FixedUpdate() {
-            if(_canMove) Move();
+            if (_canMove) Move();
         }
 
         private void MoveDirection(InputAction.CallbackContext input) {
@@ -118,7 +128,8 @@ namespace Ivayami.Player {
                 _collider.height = Crouching ? _crouchColliderHeight : _walkColliderHeight;
                 _collider.center = 0.5f * (Crouching ? _crouchColliderHeight : _walkColliderHeight) * Vector3.up;
 
-                _cameraAimTargetRotator.localPosition = (Crouching ? _crouchCameraHeight : _walkCameraHeight) * Vector3.up;
+                if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
+                _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
 
                 onCrouch?.Invoke(Crouching);
 
@@ -127,9 +138,28 @@ namespace Ivayami.Player {
             else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
         }
 
+        private IEnumerator CrouchSmoothHeightRoutine() {
+            float duration = 0;
+            float startHeight = _cameraAimTargetRotator.localPosition.y;
+            float finalHeight = Crouching ? _crouchCameraHeight : _walkCameraHeight;
+            while (duration < 1) {
+                duration += Time.deltaTime / _crouchHeightChangeDuration;
+
+                _cameraAimTargetRotator.localPosition = Mathf.Lerp(startHeight, finalHeight, duration) * Vector3.up;
+
+                yield return null;
+            }
+        }
+
         private void Rotate() {
             _cameraAimTargetRotator.eulerAngles = _cameraTransform.eulerAngles.y * Vector3.up;
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
+        }
+
+        private void OverTheShoulderSpring() {
+            _overTheShoulderTarget.localPosition = Vector3.right *
+               (Physics.Raycast(_overTheShoulderTarget.position, _overTheShoulderTarget.right, out RaycastHit hit, _overTheShoulderMaxDistance, _overTheShoulderSpringCollisions) ?
+                hit.distance : _overTheShoulderMaxDistance);
         }
 
         private void ToggleWalk(InputAction.CallbackContext input) {
@@ -139,6 +169,7 @@ namespace Ivayami.Player {
         public void ToggleMovement(bool canMove) {
             _canMove = canMove;
             if (!_canMove) _speedCurrent = 0f;
+            _rigidbody.isKinematic = !canMove;
 
             Logger.Log(LogType.Player, $"Movement Toggle: {_canMove}");
         }
@@ -148,8 +179,8 @@ namespace Ivayami.Player {
         }
 
         private IEnumerator DisableMovementRoutine(float duration) {
-            _canMove = false; 
-            
+            _canMove = false;
+
             yield return new WaitForSeconds(duration);
 
             _canMove = true;
