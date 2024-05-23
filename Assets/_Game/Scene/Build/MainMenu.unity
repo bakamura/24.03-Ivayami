@@ -293,6 +293,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _musicSlider: {fileID: 1263859838}
   _sfxSlider: {fileID: 615451789}
+  _cameraSensitivitySlider: {fileID: 0}
 --- !u!1 &11337709
 GameObject:
   m_ObjectHideFlags: 0
@@ -4928,6 +4929,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1977346663}
+        m_TargetAssemblyTypeName: Ivayami.UI.ReturnActionBtn, Assembly-CSharp
+        m_MethodName: SubscribeButton
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1221753077}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Button, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1143135382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6012,6 +6025,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1977346663}
+        m_TargetAssemblyTypeName: Ivayami.UI.ReturnActionBtn, Assembly-CSharp
+        m_MethodName: SubscribeButton
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 635650168}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Button, UnityEngine.UI
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1273710286
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6500,9 +6525,6 @@ GameObject:
   - component: {fileID: 1328924563}
   - component: {fileID: 1328924562}
   - component: {fileID: 1328924561}
-  - component: {fileID: 1328924560}
-  - component: {fileID: 1328924559}
-  - component: {fileID: 1328924558}
   m_Layer: 5
   m_Name: BackgroundDarker
   m_TagString: Untagged
@@ -6510,68 +6532,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1328924558
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1328924557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2b5974240a78904f98648348e7c8c1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1328924559
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1328924557}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _transitionCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 2.3300989
-      outSlope: 2.3300989
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.093333304
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _transitionDuration: 0.25
-  _interactable: 1
---- !u!225 &1328924560
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1328924557}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!114 &1328924561
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8479,6 +8439,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1977346662
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1977346664}
+  - component: {fileID: 1977346663}
+  m_Layer: 0
+  m_Name: ReturnAction
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1977346663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1977346662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd4cbd5e7b0349a4f82a52c72f301853, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1977346664
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1977346662}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1982814371
 GameObject:
   m_ObjectHideFlags: 0
@@ -9366,6 +9370,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DirectionalLight
       objectReference: {fileID: 0}
+    - target: {fileID: 3611810495540687994, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: 6138412974554593158, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -9423,6 +9431,7 @@ SceneRoots:
   - {fileID: 518498504}
   - {fileID: 920223976}
   - {fileID: 1966414319}
+  - {fileID: 1977346664}
   - {fileID: 979241548}
   - {fileID: 811019042}
   - {fileID: 2100512402}
