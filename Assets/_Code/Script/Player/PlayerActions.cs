@@ -111,11 +111,10 @@ namespace Ivayami.Player {
                 }
             }
             if (InteractableTarget != _interactableClosestCache) {
-                InteractableTarget?.InteratctableHighlight.UpdateHighlight(false);
+                InteractableTarget?.InteratctableHighlight.UpdateFeedbacks(false);
                 InteractableTarget = _interactableClosestCache;
-                InteractableTarget?.InteratctableHighlight.UpdateHighlight(true);
+                InteractableTarget?.InteratctableHighlight.UpdateFeedbacks(true);
                 onInteractTargetChange?.Invoke(InteractableTarget);
-
                 Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(InteractableTarget != null ? InteractableTarget.gameObject.name : "Null")}");
             }
         }
