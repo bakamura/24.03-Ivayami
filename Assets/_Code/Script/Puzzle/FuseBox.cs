@@ -8,7 +8,7 @@ using Ivayami.Player;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableHighlight))]
+    [RequireComponent(typeof(InteractableFeedbacks))]
     public class FuseBox : Activator, IInteractable
     {
         [SerializeField] private Vector2 _matrixDimensions;
@@ -37,14 +37,14 @@ namespace Ivayami.Puzzle
         private bool _updateActivated;
         private bool _isActive;
         private GameObject _defaultBtn;
-        private InteractableHighlight _interatctableHighlight;
+        private InteractableFeedbacks _interatctableHighlight;
         private const string _colorEmissionVarName = "_EmissionColor";
 
-        public InteractableHighlight InteratctableHighlight { get => _interatctableHighlight; }
+        public InteractableFeedbacks InteratctableHighlight { get => _interatctableHighlight; }
 
         private void Awake()
         {
-            _interatctableHighlight = GetComponent<InteractableHighlight>();
+            _interatctableHighlight = GetComponent<InteractableFeedbacks>();
             _defaultBtn = _fuseUIParent.GetComponentInChildren<Button>(false).gameObject;
 
             MeshRenderer[] temp = _ledsParent.GetComponentsInChildren<MeshRenderer>(false);
@@ -70,7 +70,7 @@ namespace Ivayami.Puzzle
         {
             if (!_isActive)
             {
-                _interatctableHighlight.UpdateHighlight(false);
+                _interatctableHighlight.UpdateFeedbacks(false);
                 Setup();
             }
         }
@@ -153,7 +153,7 @@ namespace Ivayami.Puzzle
             {
                 _isActive = false;
                 _currentSelected.material.SetColor(_colorEmissionVarName, _baseFuseColor);
-                _interatctableHighlight.UpdateHighlight(true);
+                _interatctableHighlight.UpdateFeedbacks(true);
                 UpdateInputsAndUI(_isActive);
                 _onInteractionCancelled?.Invoke();
             }

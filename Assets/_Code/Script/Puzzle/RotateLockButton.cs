@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableHighlight), typeof(Button))]
+    [RequireComponent(typeof(InteractableFeedbacks), typeof(Button))]
     public class RotateLockButton : MonoBehaviour
     {
         [SerializeField, Min(0)] private int _optionsAmount;
         [SerializeField] private ButtonDetails _buttonDetails;
-        public InteractableHighlight InteratctableHighlight { get; private set; }
+        public InteractableFeedbacks InteratctableHighlight { get; private set; }
         public Button Button { get; private set; }
 
         private sbyte _currentDetailIndex;
@@ -29,7 +29,7 @@ namespace Ivayami.Puzzle
         private void Awake()
         {            
             _texts = GetComponentsInChildren<TMP_Text>();
-            InteratctableHighlight = GetComponent<InteractableHighlight>();
+            InteratctableHighlight = GetComponent<InteractableFeedbacks>();
             Button = GetComponent<Button>();
             //_modelRadius = GetComponent<MeshFilter>().mesh.bounds.size.z / 2;
 
