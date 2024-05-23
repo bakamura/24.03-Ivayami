@@ -36,15 +36,15 @@ namespace Ivayami.Puzzle
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 _navegationUIInput.action.performed += HandleNavigateUI;
-                _lock.InteratctableHighlight.UpdateHighlight(false);
-                _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateHighlight(true);
+                _lock.InteratctableHighlight.UpdateFeedbacks(false);
+                _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateFeedbacks(true);
                 _previousBtn = _buttons[_currentBtnSelectedIndex];
             }
             else
             {
                 Cursor.lockState = CursorLockMode.None;
                 _navegationUIInput.action.performed -= HandleNavigateUI;
-                _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateHighlight(false);
+                _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateFeedbacks(false);
             }            
         }
 
@@ -74,8 +74,8 @@ namespace Ivayami.Puzzle
                 _currentBtnSelectedIndex = 0;
             }
             //update selected visual
-            if (_previousBtn) _previousBtn.InteratctableHighlight.UpdateHighlight(false);
-            _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateHighlight(true);
+            if (_previousBtn) _previousBtn.InteratctableHighlight.UpdateFeedbacks(false);
+            _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateFeedbacks(true);
             _previousBtn = _buttons[_currentBtnSelectedIndex];
 
             if (input.y != 0 && _animateCoroutine == null)

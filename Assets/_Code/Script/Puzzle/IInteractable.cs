@@ -5,9 +5,7 @@ namespace Ivayami.Puzzle {
 
         public GameObject gameObject { get; }
 
-        public InteractableHighlight InteratctableHighlight { get; }
-
-        public InteractionPopup InteractionPopup { get; }
+        public InteractableFeedbacks InteratctableHighlight { get; }
 
         public abstract void Interact();
 

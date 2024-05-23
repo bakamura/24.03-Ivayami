@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableHighlight))]
+    [RequireComponent(typeof(InteractableFeedbacks))]
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
@@ -34,19 +34,8 @@ namespace Ivayami.Puzzle
         private int _currentPositionInInventory = 0;
         private List<InventoryItem> _currentItemList = new List<InventoryItem>();
         private sbyte _currentItemsDelivered;
-        private InteractableHighlight _interatctableHighlight;
-        private InteractionPopup _interactionPopup;
-
-        public InteractionPopup InteractionPopup
-        {
-            get
-            {
-                if (!_interactionPopup)
-                    _interactionPopup = GetComponent<InteractionPopup>();
-                return _interactionPopup;
-            }
-        }
-        public InteractableHighlight InteratctableHighlight { get => _interatctableHighlight; }
+        private InteractableFeedbacks _interatctableHighlight;
+        public InteractableFeedbacks InteratctableHighlight { get => _interatctableHighlight; }
 
         [System.Serializable]
         public enum InteractionTypes
@@ -66,7 +55,7 @@ namespace Ivayami.Puzzle
         private void Awake()
         {
             _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
-            _interatctableHighlight = GetComponent<InteractableHighlight>();
+            _interatctableHighlight = GetComponent<InteractableFeedbacks>();
         }
 
         [ContextMenu("Interact")]
@@ -74,7 +63,7 @@ namespace Ivayami.Puzzle
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
-            _interatctableHighlight.UpdateHighlight(false);
+            _interatctableHighlight.UpdateFeedbacks(false);
             if (_interactionType == InteractionTypes.RequirePassword)
             {
                 _passwordUI.UpdateActiveState(true);
@@ -128,7 +117,7 @@ namespace Ivayami.Puzzle
             _passwordUI.UpdateActiveState(false);
             UpdateDeliverItemUI(false);
             UpdateInputs(false);
-            _interatctableHighlight.UpdateHighlight(true);
+            _interatctableHighlight.UpdateFeedbacks(true);
             _onCancelInteraction?.Invoke();
         }
 
