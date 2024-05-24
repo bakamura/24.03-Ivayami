@@ -1,12 +1,11 @@
 using UnityEngine;
-using Cinemachine;
 using Ivayami.Player;
 using Ivayami.Dialogue;
 
 namespace Ivayami.Puzzle {
     public class ReadableObject : MonoBehaviour, IInteractable {
 
-        public InteractableHighlight InteratctableHighlight { get; private set; }
+        public InteractableFeedbacks InteratctableHighlight { get; private set; }
 
         [Header("Reading")]
 
@@ -18,7 +17,7 @@ namespace Ivayami.Puzzle {
         private CameraAnimationInfo _focusCamera;
 
         private void Awake() {
-            InteratctableHighlight = GetComponent<InteractableHighlight>();
+            InteratctableHighlight = GetComponent<InteractableFeedbacks>();
             _focusCamera = GetComponentInChildren<CameraAnimationInfo>();
         }
 

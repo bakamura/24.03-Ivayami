@@ -5,6 +5,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
+using Ivayami.Player;
+using Ivayami.Scene;
 
 namespace Ivayami.debug
 {
@@ -29,6 +31,14 @@ namespace Ivayami.debug
                 CameraPosition = new Vector3(PlayerPrefs.GetFloat("camX"), PlayerPrefs.GetFloat("camY"), PlayerPrefs.GetFloat("camZ"));
                 SceneManager.LoadScene(0);
             }
+        }
+
+        public static void OnSceneLoad()
+        {                        
+            PlayerMovement.Instance.ToggleMovement(true);
+            PlayerActions.Instance.ChangeInputMap("Player");
+            PlayerMovement.Instance.transform.position = Ivayami.debug.CustomSettingsHandler.CameraPosition;
+            SceneController.Instance.OnAllSceneRequestEndDebug -= OnSceneLoad;
         }
 
         private static void HandleSceneViewGUIUpdate(SceneView sceneView)
