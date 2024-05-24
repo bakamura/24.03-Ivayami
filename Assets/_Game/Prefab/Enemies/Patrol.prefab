@@ -96,26 +96,32 @@ MonoBehaviour:
   _minDetectionRange: 2
   _detectionRange: 10
   _visionAngle: 60
+  _visionOffset: {x: 0, y: 2, z: 0}
   _delayBetweenPatrolPoints: 0
-  _tickFrequency: 0.5
+  _tickFrequency: 0.1
   _stressIncreaseOnTargetDetected: 20
   _stressIncreaseWhileChasing: 5
-  _playerLayer:
+  _stressIncreaseOnAttackTarget: 0
+  _startActive: 1
+  _goToLastTargetPosition: 0
+  _attackTarget: 0
+  _loseTargetWhenInBush: 1
+  _targetLayer:
     serializedVersion: 2
     m_Bits: 128
   _blockVisionLayer:
     serializedVersion: 2
     m_Bits: 512
-  _startActive: 1
   _patrolPoints:
   - {x: 0, y: 0, z: 0}
   - {x: 1.73, y: 0, z: -7.34}
   - {x: -11.48, y: 0, z: 0}
   _debugLog: 0
-  _debugDraw: 0
+  _debugDraw: 1
   _minDistanceAreaColor: {r: 0.8722887, g: 1, b: 0, a: 0.39215687}
   _detectionRangeAreaColor: {r: 1, g: 0, b: 0, a: 0.39215687}
   _patrolPointsColor: {r: 0, g: 0, b: 0, a: 1}
+  _stoppingDistanceColor: {r: 0, g: 1, b: 0, a: 1}
   _patrolPointRadius: 0.2
 --- !u!114 &5744162768866075769
 MonoBehaviour:
