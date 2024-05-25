@@ -2,7 +2,9 @@
 namespace Ivayami.Puzzle {
     public interface ILightable {
 
-        public void Iluminated();
+        public void Iluminate();
+        
+        public void IluminateStop();
 
     }
 }
