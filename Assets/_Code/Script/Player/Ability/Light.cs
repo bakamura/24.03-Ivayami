@@ -15,7 +15,7 @@ namespace Ivayami.Player.Ability {
         private bool _enabled = false;
 
         private List<ILightable> _iluminatedObjects = new List<ILightable>();
-        public Vector3 IluminatedPoint { get; private set; }
+        public static Vector3 IluminatedPoint { get; private set; }
 
         private void Update() {
             if (_enabled) Illuminate();
