@@ -8,7 +8,7 @@ using Ivayami.Audio;
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
-    public class Patrol : MonoBehaviour
+    public class EnemyPatrol : MonoBehaviour
     {
         [Header("Parameters")]
         [SerializeField, Min(0f)] private float _minDetectionRange;
@@ -43,7 +43,15 @@ namespace Ivayami.Enemy
         private Mesh _FOVMesh;
 #endif
 
-        private NavMeshAgent _navMeshAgent;
+        private NavMeshAgent _navMeshAgent
+        {
+            get
+            {
+                if (!m_navMeshAgent) m_navMeshAgent = GetComponent<NavMeshAgent>();
+                return m_navMeshAgent;
+            }
+        }
+        private NavMeshAgent m_navMeshAgent;
         private WaitForSeconds _behaviourTickDelay;
         private WaitForSeconds _betweenPatrolPointsDelay;
         private CapsuleCollider _collision;
@@ -55,12 +63,14 @@ namespace Ivayami.Enemy
         private Vector3 _lastTargetPosition;
         private float _currentTargetColliderSizeFactor;
         private Collider[] _hitsCache = new Collider[1];
+        private bool _canChaseTarget = true;
+        private bool _canWalkPath = true;
 
         public bool IsActive { get; private set; }
+        public float CurrentSpeed => _navMeshAgent.speed;
 
         private void Awake()
         {
-            _navMeshAgent = GetComponent<NavMeshAgent>();
             _collision = GetComponent<CapsuleCollider>();
             _behaviourTickDelay = new WaitForSeconds(_tickFrequency);
             _betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints);
@@ -101,10 +111,11 @@ namespace Ivayami.Enemy
         {
             if (IsActive)
             {
-                IsActive = false;
                 StopCoroutine(BehaviourCoroutine());
+                IsActive = false;
                 _isChasing = false;
                 _navMeshAgent.isStopped = true;
+                _navMeshAgent.velocity = Vector3.zero;
             }
         }
 
@@ -113,11 +124,11 @@ namespace Ivayami.Enemy
             float halfVisionAngle = _visionAngle / 2f;
             byte currentPatrolPointIndex = 0;
             sbyte indexFactor = 1;
-            while (true)
+            while (IsActive)
             {
                 if (!_navMeshAgent.isStopped)
                 {
-                    if (CheckForTarget(halfVisionAngle))
+                    if (_canChaseTarget && CheckForTarget(halfVisionAngle))
                     {
                         if (!_isChasing)
                         {
@@ -156,21 +167,24 @@ namespace Ivayami.Enemy
                         }
                         else
                         {
-                            _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
-                            if (_debugLog) Debug.Log("Patroling");
-                            if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
+                            if (_canWalkPath)
                             {
-                                if (_patrolPoints.Length > 1)
+                                _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
+                                if (_debugLog) Debug.Log("Patroling");
+                                if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
                                 {
-                                    yield return _betweenPatrolPointsDelay;
-                                    currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
-                                    if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
-                                    else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
-                                    if (_debugLog) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
-                                }
-                                else
-                                {
-                                    transform.rotation = Quaternion.RotateTowards(transform.rotation, _initialRotation, _navMeshAgent.angularSpeed * _tickFrequency);
+                                    if (_patrolPoints.Length > 1)
+                                    {
+                                        yield return _betweenPatrolPointsDelay;
+                                        currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
+                                        if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
+                                        else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
+                                        if (_debugLog) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
+                                    }
+                                    else
+                                    {
+                                        transform.rotation = Quaternion.RotateTowards(transform.rotation, _initialRotation, _navMeshAgent.angularSpeed * _tickFrequency);
+                                    }
                                 }
                             }
                         }
@@ -197,7 +211,17 @@ namespace Ivayami.Enemy
         private void OnAttackAnimationEnd()
         {
             _navMeshAgent.isStopped = false;
-            Debug.Log("Callback");
+        }
+
+        public void ChangeSpeed(float speed)
+        {
+            _navMeshAgent.speed = speed;
+        }
+
+        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget)
+        {
+            _canChaseTarget = canChaseTarget;
+            _canWalkPath = canWalkPath;
         }
         #region Debug
 #if UNITY_EDITOR
@@ -231,11 +255,10 @@ namespace Ivayami.Enemy
             }
             if (_drawStoppingDistance)
             {
-                if (!_navMeshAgent) _navMeshAgent = GetComponent<NavMeshAgent>();
                 Gizmos.color = _stoppingDistanceColor;
                 Gizmos.DrawLine(pos, pos + transform.right * _navMeshAgent.stoppingDistance);
             }
-        }
+        }        
 #endif
         #endregion
     }

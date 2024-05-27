@@ -1,5 +1,6 @@
 using UnityEngine;
 using Ivayami.Player;
+using Ivayami.UI;
 using Ivayami.Dialogue;
 
 namespace Ivayami.Puzzle {
@@ -23,14 +24,17 @@ namespace Ivayami.Puzzle {
 
         public void Interact() {
             PlayerActions.Instance.ChangeInputMap("Menu");
+            PlayerActions.Instance.AllowPausing(false);
             DialogueCamera.Instance.MoveRotate(_focusCamera);
             ReadableUI.Instance.ShowReadable(_readable.name, _readable.Content);
             ReadableUI.Instance.CloseBtn.onClick.AddListener(StopReading);
+            ReturnAction.Instance.Set(StopReading);
             if (_goesToInventory) { }
         }
 
         public void StopReading() {
             PlayerActions.Instance.ChangeInputMap("Player");
+            PlayerActions.Instance.AllowPausing(true);
             DialogueCamera.Instance.ExitDialogeCamera();
             ReadableUI.Instance.Menu.Close();
             ReadableUI.Instance.CloseBtn.onClick.RemoveAllListeners();
