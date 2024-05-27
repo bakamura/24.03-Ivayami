@@ -30,7 +30,7 @@ namespace Ivayami.Enemy
             _baseSpeed = _enemyPatrol.CurrentSpeed;
         }
         [ContextMenu("Iluminate")]
-        public void Iluminated()
+        public void Iluminate()
         {
             if(_lightBehaviour == LightBehaviours.Paralise)
             {
@@ -40,7 +40,7 @@ namespace Ivayami.Enemy
         }
 
         [ContextMenu("StopIluminate")]
-        public void EndLight()
+        public void IluminateStop()
         {
             if (_lightBehaviour == LightBehaviours.Paralise)
             {
