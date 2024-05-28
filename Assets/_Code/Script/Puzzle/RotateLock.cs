@@ -101,7 +101,7 @@ namespace Ivayami.Puzzle
             rotateObject.localRotation = initialRotation;
             _animateCoroutine = null;
             _navegationUIInput.action.Enable();
-            _onCheckPassword?.Invoke();
+            //_onCheckPassword?.Invoke();
         }
 
         //private void OnValidate()
