@@ -9,10 +9,11 @@ namespace Ivayami.Puzzle
         [SerializeField] private bool _applyToChildrens = true;
 
         private List<Material> _materials;
-        private List<Color> _baseColors;       
+        private List<Color> _baseColors;
         private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
         private SpriteRenderer _icon;
         private Transform _cameraTransform;
+        private bool _willShowInteractionIcon = true;
 
         public void UpdateFeedbacks(bool isActive)
         {
@@ -21,13 +22,13 @@ namespace Ivayami.Puzzle
             {
                 _materials[i].SetColor(_colorVarName, isActive ? _highlightedColor : _baseColors[i]);
             }
-            _icon.enabled = isActive;
+            if (_icon) _icon.enabled = isActive;
         }
 
         private void Setup()
         {
             //setup materials
-            if(_materials == null)
+            if (_materials == null)
             {
                 _materials = new List<Material>();
                 _baseColors = new List<Color>();
@@ -55,12 +56,13 @@ namespace Ivayami.Puzzle
                 }
             }
             //setup popup
-            if (!_icon)
+            if (_willShowInteractionIcon)
             {
                 _icon = GetComponentInChildren<SpriteRenderer>();
                 _cameraTransform = Camera.main.transform;
+                if (!_icon) _willShowInteractionIcon = false;
             }
-        }        
+        }
 
         private void Update()
         {

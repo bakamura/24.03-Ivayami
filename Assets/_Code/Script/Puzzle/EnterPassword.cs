@@ -27,7 +27,7 @@ namespace Ivayami.Puzzle
         {
             if (_passwordTextField.text == _incorrectPasswordText) _passwordTextField.text = "";
             if (_passwordTextField.text.Length < _passwordTextField.characterLimit) _passwordTextField.text += text.text;
-            if(_passwordTextField.text.Length == _passwordTextField.characterLimit) _onCheckPassword?.Invoke();
+            //if(_passwordTextField.text.Length == _passwordTextField.characterLimit) _onCheckPassword?.Invoke();
         }
 
         private void OnValidate()

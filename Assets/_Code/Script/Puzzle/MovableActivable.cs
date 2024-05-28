@@ -10,6 +10,7 @@ namespace Ivayami.Puzzle
         [SerializeField, Min(0f)] private float _speed;
         [SerializeField, Min(0f)] private float _tick = .2f;
         [SerializeField, Min(0f)] private float _minDistanceFromTravelPoint = .2f;
+        [SerializeField] private bool _lockMovementOnDeactivate;
 
 #if UNITY_EDITOR
         [Header("Debug")]
@@ -36,14 +37,29 @@ namespace Ivayami.Puzzle
         protected override void HandleOnActivate()
         {
             base.HandleOnActivate();
-            _directionFactor = (sbyte)(IsActive ? 1 : -1);
-            UpdateTravelPoint();
-            if (_moveCoroutine == null)
+            if (IsActive)
             {
-                _isMoving = true;
-                _moveCoroutine = StartCoroutine(MoveCoroutine());
+                _directionFactor = 1;
+                if (_moveCoroutine == null)
+                {
+                    _isMoving = true;
+                    _moveCoroutine = StartCoroutine(MoveCoroutine());
+                }
             }
-
+            else
+            {
+                _directionFactor = -1;
+                if (_lockMovementOnDeactivate)
+                {
+                    if(_moveCoroutine != null)
+                    {
+                        StopCoroutine(_moveCoroutine);
+                        _moveCoroutine = null;
+                        _isMoving = false;
+                    }
+                }
+            }
+            UpdateTravelPoint();
         }
 
         private IEnumerator MoveCoroutine()
@@ -80,13 +96,20 @@ namespace Ivayami.Puzzle
         {
             if (_gizmoDraw)
             {
-                Vector3 pos = _initialPosition != Vector3.zero ? _initialPosition : transform.position;
+                Vector3 initialPos = _initialPosition != Vector3.zero ? _initialPosition : transform.position;
                 Gizmos.color = _gizmoColor;
-                for (int i = 0; i < _travelPoints.Length; i++)
+                int i;
+                for (i = 0; i < _travelPoints.Length; i++)
                 {
-                    Gizmos.DrawSphere(pos + _travelPoints[i], _gizmoSize);
+                    Gizmos.DrawSphere(initialPos + _travelPoints[i], _gizmoSize);
+                    UnityEditor.Handles.Label(initialPos + _travelPoints[i] + new Vector3(0, _gizmoSize * 2, 0), i.ToString());
+                }
+                for (i = 0; i < _travelPoints.Length - 1; i++)
+                {
+                    Gizmos.DrawLine(initialPos + _travelPoints[i], initialPos + _travelPoints[Mathf.Clamp(i + 1, 0, _travelPoints.Length - 1)]);
                 }
             }
+            
         }
 #endif
     }
