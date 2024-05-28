@@ -13,7 +13,7 @@ namespace Ivayami.Puzzle
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
         [SerializeField] private InputActionReference _navigateUIInput;
-        //[SerializeField] private InputActionAsset _inputActionMap;
+        [SerializeField] private InputActionReference _confirmInput;
 
         [SerializeField] private InteractionTypes _interactionType;
 
@@ -93,22 +93,16 @@ namespace Ivayami.Puzzle
             if (isActive)
             {
                 _cancelInteractionInput.action.performed += HandleExitInteraction;
-                _navigateUIInput.action.performed += HandleNavigateDeliverUI;
-                PlayerActions.Instance.ChangeInputMap("Menu");
-                ////gameplay actions
-                //_inputActionMap.actionMaps[0].Disable();
-                ////ui actions
-                //_inputActionMap.actionMaps[1].Enable();                
+                _navigateUIInput.action.performed += HandleNavigateUI;
+                _confirmInput.action.performed += HandleConfirmUI;
+                PlayerActions.Instance.ChangeInputMap("Menu");             
             }
             else
             {
                 _cancelInteractionInput.action.performed -= HandleExitInteraction;
-                _navigateUIInput.action.performed -= HandleNavigateDeliverUI;
+                _navigateUIInput.action.performed -= HandleNavigateUI;
+                _confirmInput.action.performed -= HandleConfirmUI;
                 PlayerActions.Instance.ChangeInputMap("Player");
-                ////gameplay actions
-                //_inputActionMap.actionMaps[0].Enable();
-                ////ui actions
-                //_inputActionMap.actionMaps[1].Disable();
             }
         }
 
@@ -129,7 +123,7 @@ namespace Ivayami.Puzzle
             }
         }
 
-        private void HandleNavigateDeliverUI(InputAction.CallbackContext context)
+        private void HandleNavigateUI(InputAction.CallbackContext context)
         {
             Vector2 input = context.ReadValue<Vector2>();
             if (input != Vector2.zero)
@@ -153,6 +147,11 @@ namespace Ivayami.Puzzle
                         break;
                 }
             }
+        }
+
+        private void HandleConfirmUI(InputAction.CallbackContext context)
+        {
+            TryUnlock();
         }
 
         #region DeliverUI
@@ -188,17 +187,7 @@ namespace Ivayami.Puzzle
                 }
                 EventSystem.current.SetSelectedGameObject(_deliverBtn);
             }
-        }
-
-        //private bool CheckItemType(ItemType itemType)
-        //{
-        //    for(int i = 0; i < _itemsRequired.Length; i++)
-        //    {
-        //        if (_itemsRequired[i].Item.type == itemType)
-        //            return true;
-        //    }
-        //    return false;
-        //}                
+        }  
 
         //called by interface Btn
         public void DeliverItem()

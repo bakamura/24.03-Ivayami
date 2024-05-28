@@ -47,7 +47,7 @@ namespace Ivayami.Puzzle
                 _currentChosenBtn.transform.SetSiblingIndex(btn.transform.GetSiblingIndex());
                 btn.transform.SetSiblingIndex(currentChosenIndex);
                 _currentChosenBtn = null;
-                _onCheckPassword?.Invoke();
+                //_onCheckPassword?.Invoke();
             }
         }
     }
