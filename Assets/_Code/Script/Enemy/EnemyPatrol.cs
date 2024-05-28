@@ -223,6 +223,11 @@ namespace Ivayami.Enemy
             _canChaseTarget = canChaseTarget;
             _canWalkPath = canWalkPath;
         }
+
+        public void ChangeTargetPoint(Vector3 targetPoint)
+        {
+            _navMeshAgent.SetDestination(targetPoint);
+        }
         #region Debug
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
