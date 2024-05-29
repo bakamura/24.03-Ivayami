@@ -32,7 +32,7 @@ namespace Ivayami.Scene
             }
             else
             {
-                _teleportTarget.SetLocalPositionAndRotation(transform.position, Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0));
+                _teleportTarget.SetPositionAndRotation(transform.position, Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0));
             }
         }
 
