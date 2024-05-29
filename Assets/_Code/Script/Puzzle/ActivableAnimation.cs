@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableHighlight))]
+    [RequireComponent(typeof(InteractableFeedbacks))]
     public class ActivableAnimation : Activable, IInteractable
     {
         [SerializeField] private bool _startActive;
@@ -19,7 +19,7 @@ namespace Ivayami.Puzzle
         private static int _interactionStateHash = Animator.StringToHash("interaction");
         private static int _activationStateHash = Animator.StringToHash("activation");
 
-        private InteractableHighlight _interatctableHighlight;
+        private InteractableFeedbacks _interatctableHighlight;
         private Coroutine _callbackCoroutine;
 
         [System.Serializable]
@@ -41,13 +41,13 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public InteractableHighlight InteratctableHighlight { get => _interatctableHighlight; }
+        public InteractableFeedbacks InteratctableHighlight { get => _interatctableHighlight; }
 
         protected override void Awake()
         {
             base.Awake();
             if (_startActive) IsActive = true;
-            _interatctableHighlight = GetComponent<InteractableHighlight>();
+            _interatctableHighlight = GetComponent<InteractableFeedbacks>();
             _onActivate.Setup();
             _onInteract.Setup();
         }

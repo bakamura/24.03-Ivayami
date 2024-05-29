@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace Ivayami.Save {
     public class SavePoint : MonoBehaviour, IInteractable {
 
-        public InteractableHighlight InteratctableHighlight { get; private set; }
+        public InteractableFeedbacks InteratctableHighlight { get; private set; }
 
         [Header("Save Interact")]
 
@@ -20,7 +20,7 @@ namespace Ivayami.Save {
         private bool _canSave = true;
 
         private void Awake() {
-            InteratctableHighlight = GetComponent<InteractableHighlight>();
+            InteratctableHighlight = GetComponent<InteractableFeedbacks>();
             Points.Add(_pointId, this);
         }
 

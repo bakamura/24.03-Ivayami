@@ -8,12 +8,12 @@ using UnityEngine.EventSystems;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableHighlight))]
+    [RequireComponent(typeof(InteractableFeedbacks))]
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
         [SerializeField] private InputActionReference _navigateUIInput;
-        //[SerializeField] private InputActionAsset _inputActionMap;
+        [SerializeField] private InputActionReference _confirmInput;
 
         [SerializeField] private InteractionTypes _interactionType;
 
@@ -34,9 +34,8 @@ namespace Ivayami.Puzzle
         private int _currentPositionInInventory = 0;
         private List<InventoryItem> _currentItemList = new List<InventoryItem>();
         private sbyte _currentItemsDelivered;
-        private InteractableHighlight _interatctableHighlight;
-
-        public InteractableHighlight InteratctableHighlight { get => _interatctableHighlight; }
+        private InteractableFeedbacks _interatctableHighlight;
+        public InteractableFeedbacks InteratctableHighlight { get => _interatctableHighlight; }
 
         [System.Serializable]
         public enum InteractionTypes
@@ -56,7 +55,7 @@ namespace Ivayami.Puzzle
         private void Awake()
         {
             _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
-            _interatctableHighlight = GetComponent<InteractableHighlight>();
+            _interatctableHighlight = GetComponent<InteractableFeedbacks>();
         }
 
         [ContextMenu("Interact")]
@@ -64,7 +63,7 @@ namespace Ivayami.Puzzle
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
-            _interatctableHighlight.UpdateHighlight(false);
+            _interatctableHighlight.UpdateFeedbacks(false);
             if (_interactionType == InteractionTypes.RequirePassword)
             {
                 _passwordUI.UpdateActiveState(true);
@@ -94,22 +93,16 @@ namespace Ivayami.Puzzle
             if (isActive)
             {
                 _cancelInteractionInput.action.performed += HandleExitInteraction;
-                _navigateUIInput.action.performed += HandleNavigateDeliverUI;
-                PlayerActions.Instance.ChangeInputMap("Menu");
-                ////gameplay actions
-                //_inputActionMap.actionMaps[0].Disable();
-                ////ui actions
-                //_inputActionMap.actionMaps[1].Enable();                
+                _navigateUIInput.action.performed += HandleNavigateUI;
+                _confirmInput.action.performed += HandleConfirmUI;
+                PlayerActions.Instance.ChangeInputMap("Menu");             
             }
             else
             {
                 _cancelInteractionInput.action.performed -= HandleExitInteraction;
-                _navigateUIInput.action.performed -= HandleNavigateDeliverUI;
+                _navigateUIInput.action.performed -= HandleNavigateUI;
+                _confirmInput.action.performed -= HandleConfirmUI;
                 PlayerActions.Instance.ChangeInputMap("Player");
-                ////gameplay actions
-                //_inputActionMap.actionMaps[0].Enable();
-                ////ui actions
-                //_inputActionMap.actionMaps[1].Disable();
             }
         }
 
@@ -118,7 +111,7 @@ namespace Ivayami.Puzzle
             _passwordUI.UpdateActiveState(false);
             UpdateDeliverItemUI(false);
             UpdateInputs(false);
-            _interatctableHighlight.UpdateHighlight(true);
+            _interatctableHighlight.UpdateFeedbacks(true);
             _onCancelInteraction?.Invoke();
         }
 
@@ -130,7 +123,7 @@ namespace Ivayami.Puzzle
             }
         }
 
-        private void HandleNavigateDeliverUI(InputAction.CallbackContext context)
+        private void HandleNavigateUI(InputAction.CallbackContext context)
         {
             Vector2 input = context.ReadValue<Vector2>();
             if (input != Vector2.zero)
@@ -154,6 +147,11 @@ namespace Ivayami.Puzzle
                         break;
                 }
             }
+        }
+
+        private void HandleConfirmUI(InputAction.CallbackContext context)
+        {
+            TryUnlock();
         }
 
         #region DeliverUI
@@ -189,17 +187,7 @@ namespace Ivayami.Puzzle
                 }
                 EventSystem.current.SetSelectedGameObject(_deliverBtn);
             }
-        }
-
-        //private bool CheckItemType(ItemType itemType)
-        //{
-        //    for(int i = 0; i < _itemsRequired.Length; i++)
-        //    {
-        //        if (_itemsRequired[i].Item.type == itemType)
-        //            return true;
-        //    }
-        //    return false;
-        //}                
+        }  
 
         //called by interface Btn
         public void DeliverItem()

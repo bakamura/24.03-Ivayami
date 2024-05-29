@@ -10,14 +10,14 @@ namespace Ivayami.Puzzle
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private bool _isLongInteraction;
 
-        private InteractableHighlight _interatctableHighlight;
+        private InteractableFeedbacks _interatctableHighlight;
 
-        public InteractableHighlight InteratctableHighlight
+        public InteractableFeedbacks InteratctableHighlight
         {
             get
             {
                 if (!_interatctableHighlight)
-                    _interatctableHighlight = GetComponent<InteractableHighlight>();
+                    _interatctableHighlight = GetComponent<InteractableFeedbacks>();
                 return _interatctableHighlight;
             }
         }

@@ -14,6 +14,7 @@ namespace Ivayami.Player {
         [SerializeField] private InputActionReference _interactInput;
         [SerializeField] private InputActionReference _abilityInput;
         [SerializeField] private InputActionReference _changeAbilityInput;
+        [SerializeField] private InputActionReference[] _pauseInputs;
 
         [Header("Events")]
 
@@ -111,11 +112,10 @@ namespace Ivayami.Player {
                 }
             }
             if (InteractableTarget != _interactableClosestCache) {
-                InteractableTarget?.InteratctableHighlight.UpdateHighlight(false);
+                InteractableTarget?.InteratctableHighlight.UpdateFeedbacks(false);
                 InteractableTarget = _interactableClosestCache;
-                InteractableTarget?.InteratctableHighlight.UpdateHighlight(true);
+                InteractableTarget?.InteratctableHighlight.UpdateFeedbacks(true);
                 onInteractTargetChange?.Invoke(InteractableTarget);
-
                 Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(InteractableTarget != null ? InteractableTarget.gameObject.name : "Null")}");
             }
         }
@@ -175,6 +175,13 @@ namespace Ivayami.Player {
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable(); // Change to memory current
             if(mapId != null) _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId).Enable();
             Cursor.lockState = mapId != "Player" ? CursorLockMode.None : CursorLockMode.Locked;
+        }
+
+        public void AllowPausing(bool doAllow) {
+            foreach (InputActionReference actionRef in _pauseInputs) { 
+                if(doAllow) actionRef.action.Enable();
+                else actionRef.action.Disable();
+            }
         }
 
     }
