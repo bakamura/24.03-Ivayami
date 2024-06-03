@@ -67,17 +67,23 @@ namespace Ivayami.Puzzle
             if (_icon)
             {
                 _icon.sprite = _keyboardInteractionIcon;
-                InputSystem.onDeviceChange += HandleDeviceUpdate;
+                InputExtensions.Instance.OnInputSchemeChanged += HandleDeviceUpdate;
             }
             //}
         }
 
-        private void HandleDeviceUpdate(InputDevice device, InputDeviceChange change)
+        private void HandleDeviceUpdate(InputExtensions.ControlScheme controlScheme)
         {
-            if (device.GetType() == typeof(Gamepad) && (change == InputDeviceChange.Added || change == InputDeviceChange.Reconnected))
-                _icon.sprite = _controllerInteractionIcon;
-            else if(device.GetType() == typeof(Keyboard) && (change == InputDeviceChange.Added || change == InputDeviceChange.Reconnected))
-                _icon.sprite = _keyboardInteractionIcon;
+            Debug.Log("Update device");
+            switch (controlScheme)
+            {
+                case InputExtensions.ControlScheme.KeyboardMouse:
+                    _icon.sprite = _keyboardInteractionIcon;
+                    break;
+                case InputExtensions.ControlScheme.Gamepad:
+                    _icon.sprite = _controllerInteractionIcon;
+                    break;
+            }
         }
 
         private void Update()
@@ -88,7 +94,7 @@ namespace Ivayami.Puzzle
 
         private void OnDestroy()
         {
-            if (_icon) InputSystem.onDeviceChange -= HandleDeviceUpdate;
+            if (_icon) InputExtensions.Instance.OnInputSchemeChanged -= HandleDeviceUpdate;
         }
 
         //private void OnValidate()
