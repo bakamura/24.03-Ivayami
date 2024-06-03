@@ -26,9 +26,19 @@ namespace Ivayami.Enemy
         {
             if (!TryGetComponent<EnemyPatrol>(out _enemyPatrol))
                 _enemyPatrol = GetComponentInParent<EnemyPatrol>();
-            _paraliseDelay = new WaitForSeconds(_paraliseDuration);
-            _baseSpeed = _enemyPatrol.CurrentSpeed;
+            if (_lightBehaviour == LightBehaviours.Paralise)
+            {
+                _paraliseDelay = new WaitForSeconds(_paraliseDuration);
+                _baseSpeed = _enemyPatrol.CurrentSpeed;
+            }
+            else Ivayami.Player.Ability.Lantern.OnIlluminate.AddListener(HandleIlumatePoint);
         }
+
+        private void OnDisable()
+        {
+            if(_lightBehaviour == LightBehaviours.FollowLight) Ivayami.Player.Ability.Lantern.OnIlluminate.RemoveListener(HandleIlumatePoint);
+        }
+
         [ContextMenu("Iluminate")]
         public void Iluminate()
         {
@@ -74,5 +84,24 @@ namespace Ivayami.Enemy
                 _enemyPatrol.StartBehaviour();
             }
         }
+
+        private void HandleIlumatePoint(Vector3 point)
+        {
+            if(point != Vector3.zero)
+            {
+                _enemyPatrol.UpdateBehaviour(false, true);
+                _enemyPatrol.ChangeTargetPoint(point);
+            }
+            else
+            {
+                _enemyPatrol.UpdateBehaviour(true, true);
+            }
+        }
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (_lightBehaviour == LightBehaviours.Paralise && !GetComponent<Collider>()) Debug.LogWarning("The option Paralise from IluminatedEnemy requires a collider, please add one");
+        }
+#endif
     }
 }
