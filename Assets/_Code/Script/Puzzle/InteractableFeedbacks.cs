@@ -16,7 +16,7 @@ namespace Ivayami.Puzzle
         private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
         private SpriteRenderer _icon;
         private Transform _cameraTransform;
-        //private bool _willShowInteractionIcon = true;
+        private bool _interactionIconSetupDone;
 
         public void UpdateFeedbacks(bool isActive)
         {
@@ -59,31 +59,27 @@ namespace Ivayami.Puzzle
                 }
             }
             //setup popup
-            //if (_willShowInteractionIcon)
-            //{
-            _icon = GetComponentInChildren<SpriteRenderer>();
-            _cameraTransform = Camera.main.transform;
-            //if (!_icon) _willShowInteractionIcon = false;
-            if (_icon)
+            if (!_interactionIconSetupDone)
             {
-                _icon.sprite = _keyboardInteractionIcon;
-                InputExtensions.Instance.AddEventToOnChangeControls(HandleDeviceUpdate);
+                _icon = GetComponentInChildren<SpriteRenderer>();
+                _cameraTransform = Camera.main.transform;
+                if (_icon)
+                {
+                    UpdateVisualIcon(InputCallbacks.Instance.CurrentControlScheme);
+                    InputCallbacks.Instance.AddEventToOnChangeControls(HandleDeviceUpdate);
+                }                
+                _interactionIconSetupDone = true;
             }
-            //}
         }
 
         private void HandleDeviceUpdate(PlayerInput script)
-        {            
-            //Debug.Log("Update device");
-            //switch (controlScheme)
-            //{
-            //    case InputExtensions.ControlScheme.KeyboardMouse:
-            //        _icon.sprite = _keyboardInteractionIcon;
-            //        break;
-            //    case InputExtensions.ControlScheme.Gamepad:
-            //        _icon.sprite = _controllerInteractionIcon;
-            //        break;
-            //}
+        {
+            UpdateVisualIcon(script.currentControlScheme);
+        }
+
+        private void UpdateVisualIcon(string currentControlSchemeName)
+        {
+            _icon.sprite = currentControlSchemeName.Equals("Gamepad") ? _controllerInteractionIcon : _keyboardInteractionIcon;
         }
 
         private void Update()
@@ -94,7 +90,7 @@ namespace Ivayami.Puzzle
 
         private void OnDestroy()
         {
-            if (_icon) InputExtensions.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
+            if (_icon) InputCallbacks.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
         }
 
         //private void OnValidate()

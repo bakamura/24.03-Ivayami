@@ -16,16 +16,9 @@ namespace Ivayami.Puzzle
             public Sprite GamepadIcon;
         }
 
-        private void HandleDeviceUpdate(InputDevice device, InputDeviceChange change)
+        private void HandleDeviceUpdate(PlayerInput script)
         {
-            if (device.GetType() == typeof(Gamepad) && (change == InputDeviceChange.Added || change == InputDeviceChange.Reconnected))
-            {
-                UpdateVisuals(true);
-            }
-            else if (device.GetType() == typeof(Keyboard) && (change == InputDeviceChange.Added || change == InputDeviceChange.Reconnected))
-            {
-                UpdateVisuals(false);
-            }
+            UpdateVisuals(script.currentControlScheme.Equals("Gamepad"));
         }
 
         private void UpdateVisuals(bool isGamepad)
@@ -38,13 +31,13 @@ namespace Ivayami.Puzzle
 
         private void OnEnable()
         {
-            UpdateVisuals(false);
-            InputSystem.onDeviceChange += HandleDeviceUpdate;
+            InputCallbacks.Instance.AddEventToOnChangeControls(HandleDeviceUpdate);
+            UpdateVisuals(InputCallbacks.Instance.CurrentControlScheme.Equals("Gamepad"));
         }
 
         private void OnDisable()
         {
-            InputSystem.onDeviceChange -= HandleDeviceUpdate;
+            InputCallbacks.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
         }
     }
 }
