@@ -1,4 +1,3 @@
-using Ivayami.Player;
 using System;
 using UnityEngine.InputSystem;
 //using UnityEngine.InputSystem.LowLevel;
@@ -8,13 +7,16 @@ namespace Ivayami.Puzzle
 {
     public class InputCallbacks : MonoSingleton<InputCallbacks>
     {
-        private PlayerInput _playerInput;
-        public string CurrentControlScheme => _playerInput.currentControlScheme;
-
-        private void Start()
+        private PlayerInput _playerInput
         {
-            _playerInput = PlayerMovement.Instance.GetComponent<PlayerInput>();            
+            get
+            {
+                if (!m_playerInput) m_playerInput = GetComponent<PlayerInput>();
+                return m_playerInput;
+            }
         }
+        private PlayerInput m_playerInput;
+        public string CurrentControlScheme => _playerInput.currentControlScheme;
 
         public void AddEventToOnChangeControls(Action<PlayerInput> action)
         {

@@ -31,13 +31,16 @@ namespace Ivayami.Puzzle
 
         private void OnEnable()
         {
-            InputCallbacks.Instance.AddEventToOnChangeControls(HandleDeviceUpdate);
-            UpdateVisuals(InputCallbacks.Instance.CurrentControlScheme.Equals("Gamepad"));
+            if (InputCallbacks.Instance)
+            {
+                InputCallbacks.Instance.AddEventToOnChangeControls(HandleDeviceUpdate);
+                UpdateVisuals(InputCallbacks.Instance.CurrentControlScheme.Equals("Gamepad"));
+            }
         }
 
         private void OnDisable()
         {
-            InputCallbacks.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
+            if (InputCallbacks.Instance) InputCallbacks.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
         }
     }
 }
