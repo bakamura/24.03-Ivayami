@@ -46,8 +46,8 @@ namespace Ivayami.UI
                 yield return null;
             }
             _isFading = false;
-            _onFadeEnd?.Invoke();
             SceneTransition.Instance.SetAnimationCurve(_previousCurve);
+            _onFadeEnd?.Invoke();
         }
     }
 }
