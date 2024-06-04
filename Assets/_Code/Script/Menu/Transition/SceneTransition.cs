@@ -8,6 +8,7 @@ namespace Ivayami.UI {
 
         private MenuGroup _menuGroup;
         public Menu Menu { get; private set; }
+        public AnimationCurve TransitionCurve => _transitionCurve;
 
         protected override void Awake() {
             if (Instance == null) Instance = this;
