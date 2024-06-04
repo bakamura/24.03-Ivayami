@@ -169,7 +169,7 @@ namespace Ivayami.Player {
         public void ToggleMovement(bool canMove) {
             _canMove = canMove;
             if (!_canMove) _speedCurrent = 0f;
-            _rigidbody.isKinematic = !canMove;
+            _rigidbody.constraints = canMove ? RigidbodyConstraints.FreezeRotation : RigidbodyConstraints.FreezeAll;
 
             Logger.Log(LogType.Player, $"Movement Toggle: {_canMove}");
         }
