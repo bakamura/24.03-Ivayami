@@ -55,7 +55,7 @@ namespace Ivayami.Puzzle
         private void Awake()
         {
             _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
-            _interatctableHighlight = GetComponent<InteractableFeedbacks>();
+            _interatctableHighlight = GetComponent<InteractableFeedbacks>();            
         }
 
         [ContextMenu("Interact")]
@@ -94,14 +94,22 @@ namespace Ivayami.Puzzle
             {
                 _cancelInteractionInput.action.performed += HandleExitInteraction;
                 _navigateUIInput.action.performed += HandleNavigateUI;
-                _confirmInput.action.performed += HandleConfirmUI;
-                PlayerActions.Instance.ChangeInputMap("Menu");             
+                if (_passwordUI)
+                {
+                    _passwordUI.OnCheckPassword += TryUnlock;
+                    if(_passwordUI is RotateLock) _confirmInput.action.performed += HandleConfirmUI;
+                }
+                PlayerActions.Instance.ChangeInputMap("Menu");
             }
             else
             {
                 _cancelInteractionInput.action.performed -= HandleExitInteraction;
                 _navigateUIInput.action.performed -= HandleNavigateUI;
-                _confirmInput.action.performed -= HandleConfirmUI;
+                if (_passwordUI)
+                {
+                    _passwordUI.OnCheckPassword -= TryUnlock;
+                    if (_passwordUI is RotateLock) _confirmInput.action.performed -= HandleConfirmUI;
+                }
                 PlayerActions.Instance.ChangeInputMap("Player");
             }
         }
@@ -165,11 +173,11 @@ namespace Ivayami.Puzzle
             if (isActive)
             {
                 _currentPositionInInventory = 0;
-                if(_itemsRequired.Length < Mathf.Floor(_deliverOptions.Length / 2))
+                if (_itemsRequired.Length < Mathf.Floor(_deliverOptions.Length / 2))
                     _selectedDeliverOptionIndex = Mathf.FloorToInt(_itemsRequired.Length / Mathf.Ceil(_deliverOptions.Length / 2f));
-                else                
+                else
                     _selectedDeliverOptionIndex = Mathf.FloorToInt(_deliverOptions.Length / 2);
-                
+
                 if (_currentItemList.Count == 0)
                 {
                     for (int i = 0; i < _itemsRequired.Length; i++)
@@ -187,7 +195,7 @@ namespace Ivayami.Puzzle
                 }
                 EventSystem.current.SetSelectedGameObject(_deliverBtn);
             }
-        }  
+        }
 
         //called by interface Btn
         public void DeliverItem()
