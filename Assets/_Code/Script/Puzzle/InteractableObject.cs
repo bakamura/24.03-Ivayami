@@ -33,7 +33,6 @@ namespace Ivayami.Puzzle
             {
                 PlayerInventory.Instance.AddToInventory(_itens[i]);
             }
-            Debug.Log("INTERACT");
             _onInteract?.Invoke();
         }
     }
