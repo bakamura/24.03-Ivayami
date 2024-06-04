@@ -4,6 +4,8 @@ public class SelectedIndicator : MonoBehaviour{
 
     private RectTransform _rectTransform;
 
+    [SerializeField] private Vector2 _anchoredPosOffset;
+
     private void Awake() {
         _rectTransform = GetComponent<RectTransform>();
     }

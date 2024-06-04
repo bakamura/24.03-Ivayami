@@ -15,6 +15,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "WalkToggle",
+                    "type": "Button",
+                    "id": "cf66a834-cb4a-4650-b997-8594f5e08f9d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Camera",
                     "type": "Value",
                     "id": "c0de668e-dd58-4f7e-8aa0-c06f3433d999",
@@ -190,7 +199,7 @@
                 {
                     "name": "",
                     "id": "f827d127-84cb-4974-9674-f195f9de2f16",
-                    "path": "<Keyboard>/f",
+                    "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard + Mouse",
@@ -212,7 +221,7 @@
                 {
                     "name": "",
                     "id": "df103c93-b4dd-48ef-99e2-3148cb78bedd",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/f",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard + Mouse",
@@ -311,7 +320,7 @@
                 {
                     "name": "",
                     "id": "51e458ee-0d2c-4480-b214-b60059b42a93",
-                    "path": "<Keyboard>/leftShift",
+                    "path": "<Keyboard>/ctrl",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard + Mouse",
@@ -382,6 +391,28 @@
                     "processors": "",
                     "groups": "Keyboard + Mouse",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "530faaa0-7e23-4afa-abd0-f7583e9a394c",
+                    "path": "<Gamepad>/leftStick/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "WalkToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "383a2046-2e3e-41d0-b6ce-0b55333d342f",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "WalkToggle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
@@ -489,6 +520,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ChangeTab",
+                    "type": "Value",
+                    "id": "97993630-4048-4cb6-9810-8c801b0b1230",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -817,10 +857,43 @@
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Keyboard + Mouse",
                     "action": "UnPause",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "Gamepad",
+                    "id": "5cc9599d-481d-474a-b4f8-fb30ef0f11c5",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeTab",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "339b6b3c-7070-4af2-8d13-bd8f9d61d684",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "ChangeTab",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "dacd93ec-64f5-4eb0-9d8a-1825be723165",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "ChangeTab",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },

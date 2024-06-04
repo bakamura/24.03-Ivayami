@@ -1,3 +1,4 @@
+using Ivayami.Save;
 using UnityEngine;
 
 namespace Ivayami.Player {
@@ -24,6 +25,7 @@ namespace Ivayami.Player {
             PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
             PlayerActions.Instance.onAbility.AddListener(Trigger);
+            SavePoint.onSaveGame.AddListener(() => Trigger("Seat"));
         }
 
         private void MoveAnimation(Vector2 direction) {
