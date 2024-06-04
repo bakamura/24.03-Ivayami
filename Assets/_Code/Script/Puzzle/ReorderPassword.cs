@@ -1,9 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace Ivayami.Puzzle
@@ -47,7 +44,7 @@ namespace Ivayami.Puzzle
                 _currentChosenBtn.transform.SetSiblingIndex(btn.transform.GetSiblingIndex());
                 btn.transform.SetSiblingIndex(currentChosenIndex);
                 _currentChosenBtn = null;
-                //_onCheckPassword?.Invoke();
+                OnCheckPassword?.Invoke();
             }
         }
     }
