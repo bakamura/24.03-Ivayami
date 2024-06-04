@@ -1,16 +1,14 @@
 using UnityEngine;
-using UnityEngine.UI;
-//using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.Events;
+using System;
 
 namespace Ivayami.Puzzle
 {
-    //[RequireComponent(typeof(CanvasGroup))]
+    [RequireComponent(typeof(CanvasGroup))]
     public abstract class PasswordUI : MonoBehaviour
     {
         [SerializeField] protected string password;
-        //[SerializeField] protected UnityEvent _onCheckPassword;
+        [HideInInspector] public Action OnCheckPassword;
         //[SerializeField] protected UnityEvent onPasswordCorrect;
         //[SerializeField] protected UnityEvent onPasswordWrong;
         [SerializeField] private GameObject _initialSelected;
