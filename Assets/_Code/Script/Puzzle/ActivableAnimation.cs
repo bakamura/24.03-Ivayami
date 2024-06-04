@@ -10,6 +10,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private bool _startActive;
         [SerializeField] private Animator _interactionAnimator;
         [SerializeField] private Animator _activateAnimator;
+        [SerializeField] private UnityEvent _onInteractStart;
         [SerializeField] private AnimationEvent _onActivate;
         [SerializeField] private AnimationEvent _onInteract;
 
@@ -61,6 +62,7 @@ namespace Ivayami.Puzzle
         {
             if (IsActive)
             {
+                _onInteractStart?.Invoke();
                 if (_interactionAnimator) _interactionAnimator.SetBool(_interactBoolHash, !_interactionAnimator.GetBool(_interactBoolHash));
                 CheckCallbacks(_interactBoolHash);
             }

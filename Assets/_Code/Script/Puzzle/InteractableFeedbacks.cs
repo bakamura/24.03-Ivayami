@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Ivayami.Puzzle
 {
@@ -7,13 +8,15 @@ namespace Ivayami.Puzzle
     {
         [SerializeField] private Color _highlightedColor = new Color(0.03921569f, 0.03921569f, 0.03921569f, 1);
         [SerializeField] private bool _applyToChildrens = true;
+        [SerializeField] private Sprite _controllerInteractionIcon;
+        [SerializeField] private Sprite _keyboardInteractionIcon;
 
         private List<Material> _materials;
         private List<Color> _baseColors;
         private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
         private SpriteRenderer _icon;
         private Transform _cameraTransform;
-        private bool _willShowInteractionIcon = true;
+        private bool _interactionIconSetupDone;
 
         public void UpdateFeedbacks(bool isActive)
         {
@@ -56,18 +59,38 @@ namespace Ivayami.Puzzle
                 }
             }
             //setup popup
-            if (_willShowInteractionIcon)
+            if (!_interactionIconSetupDone)
             {
                 _icon = GetComponentInChildren<SpriteRenderer>();
                 _cameraTransform = Camera.main.transform;
-                if (!_icon) _willShowInteractionIcon = false;
+                if (_icon)
+                {
+                    UpdateVisualIcon(InputCallbacks.Instance.CurrentControlScheme);
+                    InputCallbacks.Instance.AddEventToOnChangeControls(HandleDeviceUpdate);
+                }                
+                _interactionIconSetupDone = true;
             }
+        }
+
+        private void HandleDeviceUpdate(PlayerInput script)
+        {
+            UpdateVisualIcon(script.currentControlScheme);
+        }
+
+        private void UpdateVisualIcon(string currentControlSchemeName)
+        {
+            _icon.sprite = currentControlSchemeName.Equals("Gamepad") ? _controllerInteractionIcon : _keyboardInteractionIcon;
         }
 
         private void Update()
         {
             if (_icon && _icon.enabled)
                 _icon.transform.rotation = Quaternion.LookRotation(_cameraTransform.forward);
+        }
+
+        private void OnDestroy()
+        {
+            if (_icon) InputCallbacks.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
         }
 
         //private void OnValidate()
