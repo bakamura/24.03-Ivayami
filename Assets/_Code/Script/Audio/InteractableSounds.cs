@@ -64,12 +64,12 @@ namespace Ivayami.Audio
         {
             if (!_hasDoneSetup)
             {
-                _interactSoundInstance = InstantiateEvent(_interactSoundReference);
-                _interactReturnSoundInstance = InstantiateEvent(_interactReturnSoundReference);
-                _activateSoundInstance = InstantiateEvent(_activateSoundReference);
-                _activateReturnSoundInstance = InstantiateEvent(_activateReturnSoundReference);
-                _collectSoundInstance = InstantiateEvent(_collectSoundReference);
-                _actionFailedSoundInstance = InstantiateEvent(_actionFailedSoundReference);
+                if(!_interactSoundReference.IsNull)_interactSoundInstance = InstantiateEvent(_interactSoundReference);
+                if (!_interactReturnSoundReference.IsNull) _interactReturnSoundInstance = InstantiateEvent(_interactReturnSoundReference);
+                if (!_activateSoundReference.IsNull) _activateSoundInstance = InstantiateEvent(_activateSoundReference);
+                if (!_activateReturnSoundReference.IsNull) _activateReturnSoundInstance = InstantiateEvent(_activateReturnSoundReference);
+                if (!_collectSoundReference.IsNull) _collectSoundInstance = InstantiateEvent(_collectSoundReference);
+                if (!_actionFailedSoundReference.IsNull) _actionFailedSoundInstance = InstantiateEvent(_actionFailedSoundReference);
                 _hasDoneSetup = true;
             }
         }
