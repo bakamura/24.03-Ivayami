@@ -5,10 +5,11 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using Ivayami.Audio;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableFeedbacks))]
+    [RequireComponent(typeof(InteractableFeedbacks), typeof(InteractableSounds))]
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
@@ -34,8 +35,9 @@ namespace Ivayami.Puzzle
         private int _currentPositionInInventory = 0;
         private List<InventoryItem> _currentItemList = new List<InventoryItem>();
         private sbyte _currentItemsDelivered;
-        private InteractableFeedbacks _interatctableHighlight;
-        public InteractableFeedbacks InteratctableHighlight { get => _interatctableHighlight; }
+        private InteractableFeedbacks _interatctableFeedbacks;
+        private InteractableSounds _interactableSounds;
+        public InteractableFeedbacks InteratctableHighlight { get => _interatctableFeedbacks; }
 
         [System.Serializable]
         public enum InteractionTypes
@@ -55,7 +57,8 @@ namespace Ivayami.Puzzle
         private void Awake()
         {
             _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
-            _interatctableHighlight = GetComponent<InteractableFeedbacks>();            
+            _interatctableFeedbacks = GetComponent<InteractableFeedbacks>();
+            _interactableSounds = GetComponent<InteractableSounds>();
         }
 
         [ContextMenu("Interact")]
@@ -63,7 +66,8 @@ namespace Ivayami.Puzzle
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
-            _interatctableHighlight.UpdateFeedbacks(false);
+            _interatctableFeedbacks.UpdateFeedbacks(false);
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             if (_interactionType == InteractionTypes.RequirePassword)
             {
                 _passwordUI.UpdateActiveState(true);
@@ -86,6 +90,7 @@ namespace Ivayami.Puzzle
                 IsActive = !IsActive;
                 onActivate?.Invoke();
             }
+            else _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
         }
 
         private void UpdateInputs(bool isActive)
@@ -119,7 +124,8 @@ namespace Ivayami.Puzzle
             _passwordUI.UpdateActiveState(false);
             UpdateDeliverItemUI(false);
             UpdateInputs(false);
-            _interatctableHighlight.UpdateFeedbacks(true);
+            _interatctableFeedbacks.UpdateFeedbacks(true);
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.InteractReturn);
             _onCancelInteraction?.Invoke();
         }
 

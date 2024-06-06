@@ -2,6 +2,7 @@ using UnityEngine;
 using Ivayami.Player;
 using Ivayami.UI;
 using Ivayami.Dialogue;
+using Ivayami.Save;
 
 namespace Ivayami.Puzzle {
     public class ReadableObject : MonoBehaviour, IInteractable {
@@ -23,10 +24,12 @@ namespace Ivayami.Puzzle {
         }
 
         public void Interact() {
+            if(SaveSystem.Instance.Options.language != 0) _readable = Resources.Load<Readable>($"Readable/{(LanguageTypes)SaveSystem.Instance.Options.language}/{_readable.name}");
+
             PlayerActions.Instance.ChangeInputMap("Menu");
             PlayerActions.Instance.AllowPausing(false);
             DialogueCamera.Instance.MoveRotate(_focusCamera);
-            ReadableUI.Instance.ShowReadable(_readable.name, _readable.Content);
+            ReadableUI.Instance.ShowReadable(_readable.Title, _readable.Content);
             ReadableUI.Instance.CloseBtn.onClick.AddListener(StopReading);
             ReturnAction.Instance.Set(StopReading);
             if (_goesToInventory) { }
