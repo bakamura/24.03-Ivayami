@@ -8,6 +8,7 @@ namespace Ivayami.UI {
 
         private MenuGroup _menuGroup;
         public Menu Menu { get; private set; }
+        public AnimationCurve TransitionCurve => _transitionCurve;
 
         protected override void Awake() {
             if (Instance == null) Instance = this;
@@ -32,6 +33,11 @@ namespace Ivayami.UI {
 
         public void SetDuration(float durationSeconds) {
             _transitionDuration = durationSeconds;
+        }
+
+        public void SetAnimationCurve(AnimationCurve animCurve)
+        {
+            _transitionCurve = animCurve;
         }
 
     }
