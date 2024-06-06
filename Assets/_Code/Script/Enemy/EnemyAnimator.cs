@@ -10,6 +10,8 @@ namespace Ivayami.Enemy
         private static readonly int WALKING = Animator.StringToHash("walking");
         private static readonly int SPAWNING = Animator.StringToHash("spawning");
         private static readonly int ATTACK = Animator.StringToHash("attack");
+        private static readonly int TARGET_DETECTED = Animator.StringToHash("targetDetected");
+        private static readonly int INTERACT = Animator.StringToHash("interact");
 
         private Animator _animator
         {
@@ -21,10 +23,6 @@ namespace Ivayami.Enemy
         }
         private Animator m_animator;
         private Coroutine _waitAnimationEndCoroutine;
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="walking"></param>
         /// <param name="onAnimationEnd">
         /// will only activate once
         /// </param>
@@ -33,9 +31,6 @@ namespace Ivayami.Enemy
             _animator.SetBool(WALKING, walking);
             StartAnimationEvent(WALKING, onAnimationEnd);
         }
-        /// <summary>
-        /// 
-        /// </summary>
         /// <param name="onAnimationEnd">
         /// will only activate once
         /// </param>
@@ -44,12 +39,30 @@ namespace Ivayami.Enemy
             _animator.SetTrigger(SPAWNING);
             StartAnimationEvent(SPAWNING, onAnimationEnd);
         }
-
+        /// <param name="onAnimationEnd">
+        /// will only activate once
+        /// </param>
         public void Attack(Action onAnimationEnd = null)
         {
             _animator.SetTrigger(ATTACK);
             StartAnimationEvent(ATTACK, onAnimationEnd);
         }
+        /// <param name="onAnimationEnd">
+        /// will only activate once
+        /// </param>
+        public void TargetDetected(Action onAnimationEnd = null)
+        {
+            _animator.SetTrigger(TARGET_DETECTED);
+            StartAnimationEvent(TARGET_DETECTED, onAnimationEnd);
+        }
+        /// <param name="onAnimationEnd">
+        /// will only activate once
+        /// </param>
+        public void Interact(Action onAnimationEnd = null)
+        {
+            _animator.SetTrigger(INTERACT);
+            StartAnimationEvent(INTERACT, onAnimationEnd);
+        }        
 
         private void StartAnimationEvent(int stateHash, Action onAnimationEnd)
         {
