@@ -2,6 +2,7 @@ namespace Ivayami.Enemy
 {
     public interface IEnemyWalkArea
     {
-        public EnemyWalkArea CurrentWalkArea { get; set; }
+        public void SetWalkArea(EnemyWalkArea area);
+        public void SetMovementData(EnemyMovementData data);
     }
 }

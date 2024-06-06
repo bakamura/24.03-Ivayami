@@ -13,7 +13,7 @@ namespace Ivayami.Enemy
     public class PoliceOfficer : MonoBehaviour, IEnemyWalkArea
     {
         [Header("Parameters")]
-        [SerializeField] private EnemyMovementData _movementData;
+        //[SerializeField] private EnemyMovementData _movementData;
         [SerializeField, Min(0f)] private float _minDetectionRange;
         [SerializeField, Min(0f)] private float _detectionRange;
         //[SerializeField, Min(.1f)] private float _randomPointRangeAroundSelf;
@@ -38,7 +38,7 @@ namespace Ivayami.Enemy
         //[SerializeField] private Color _randomPointRangeColor = Color.black;
         [SerializeField, Tooltip("if value in NavMeshAgent is 0, the final distance will be collider radius + 0.2")] private bool _drawStoppingDistance;
         [SerializeField, Tooltip("if value in NavMeshAgent is 0, the final distance will be collider radius + 0.2")] private Color _stoppingDistanceColor = Color.green;
-        private Mesh _FOVMesh;        
+        private Mesh _FOVMesh;
 #endif
         private NavMeshAgent _navMeshAgent
         {
@@ -59,12 +59,12 @@ namespace Ivayami.Enemy
         private Collider[] _hitsCache = new Collider[1];
         private Coroutine _detectTargetPointOffBehaviourReachedCoroutine;
         private Vector3 _currentOffBehaviourTargetPoint;
+        private EnemyMovementData _currentMovementData;
+        private EnemyWalkArea _currenWalkArea;
         //private WaitForSeconds _betweenPatrolPointsDelay;
         //private bool _canChaseTarget = true;
 
         public bool IsActive { get; private set; }
-
-        public EnemyWalkArea CurrentWalkArea { get; set; }
 
         private void Awake()
         {
@@ -73,7 +73,7 @@ namespace Ivayami.Enemy
             _enemyAnimator = GetComponentInChildren<EnemyAnimator>();
             _enemySounds = GetComponent<EnemySounds>();
             //_betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints);
-            SetMovementData(_movementData);
+            //SetMovementData(_movementData);
 
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
         }
@@ -83,17 +83,12 @@ namespace Ivayami.Enemy
             _enemyAnimator.Walking(_navMeshAgent.velocity.sqrMagnitude > 0);
         }
 
-        private void OnEnable()
+        private void Start()
         {
             if (_startActive)
             {
                 StartBehaviour();
             }
-        }
-
-        private void OnDisable()
-        {
-            StopBehaviour();
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -144,6 +139,7 @@ namespace Ivayami.Enemy
                         if (!_isChasing)
                         {
                             _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
+                            _navMeshAgent.speed = _currentMovementData.ChaseSpeed;
                             _isChasing = true;
                         }
                         _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position);
@@ -168,18 +164,23 @@ namespace Ivayami.Enemy
                             else _isChasing = false;
                         }
                         else
-                        {                            
-                            if (CurrentWalkArea && Vector3.Distance(transform.position, CurrentWalkArea.GetCurrentPoint(GetInstanceID()).Position) < _navMeshAgent.stoppingDistance)
+                        {
+                            if (_currenWalkArea && _currenWalkArea.GetCurrentPoint(gameObject.GetInstanceID(), out EnemyWalkArea.Point point))
                             {
-                                yield return new WaitForSeconds(CurrentWalkArea.GetCurrentPoint(GetInstanceID()).DelayToNextPoint);
-                                _navMeshAgent.SetDestination(CurrentWalkArea.GoToNextPoint(GetInstanceID()).Position);
+                                _navMeshAgent.speed = _currentMovementData.WalkSpeed;
+                                if (Vector3.Distance(transform.position, point.Position) <= _navMeshAgent.stoppingDistance)
+                                {
+                                    yield return new WaitForSeconds(point.DelayToNextPoint);
+                                    _navMeshAgent.SetDestination(_currenWalkArea.GoToNextPoint(gameObject.GetInstanceID()).Position);
+                                }
+                                else _navMeshAgent.SetDestination(point.Position);
                             }
-                                //if (RandomPoint(out Vector3 target) && _detectTargetReachedCoroutine == null)
-                                //{
-                                //    _navMeshAgent.SetDestination(target);
-                                //    _detectTargetReachedCoroutine = StartCoroutine(DetectTargetReachedCoroutine());
-                                //}
-                                if (_debugLog) Debug.Log("Patroling");
+                            //if (RandomPoint(out Vector3 target) && _detectTargetReachedCoroutine == null)
+                            //{
+                            //    _navMeshAgent.SetDestination(target);
+                            //    _detectTargetReachedCoroutine = StartCoroutine(DetectTargetReachedCoroutine());
+                            //}
+                            if (_debugLog) Debug.Log("Patroling");
                         }
                     }
                 }
@@ -222,7 +223,7 @@ namespace Ivayami.Enemy
         private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine()
         {
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
-            while (Vector3.Distance(transform.position, _currentOffBehaviourTargetPoint) > _navMeshAgent.stoppingDistance)            
+            while (Vector3.Distance(transform.position, _currentOffBehaviourTargetPoint) > _navMeshAgent.stoppingDistance)
             {
                 yield return delay;
             }
@@ -232,10 +233,15 @@ namespace Ivayami.Enemy
 
         public void SetMovementData(EnemyMovementData data)
         {
-            _movementData = data;
+            _currentMovementData = data;
             _navMeshAgent.speed = _isChasing ? data.ChaseSpeed : data.WalkSpeed;
             _navMeshAgent.acceleration = data.Acceleration;
             _navMeshAgent.angularSpeed = data.RotationSpeed;
+        }
+
+        public void SetWalkArea(EnemyWalkArea area)
+        {
+            _currenWalkArea = area;
         }
         //public void ChangeRandomPointRange(float range)
         //{
@@ -290,7 +296,7 @@ namespace Ivayami.Enemy
             //    Gizmos.color = _randomPointRangeColor;
             //    Gizmos.DrawSphere(transform.position, _randomPointRangeAroundSelf);
             //}            
-        }
+        }        
 #endif
         #endregion
     }
