@@ -12,6 +12,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private bool _lockOnActiveState;
         [SerializeField] private Animator _interactionAnimator;
         [SerializeField] private Animator _activateAnimator;
+        [SerializeField] private UnityEvent _onInteractStart;
         [SerializeField] private AnimationEvent _onActivate;
         [SerializeField] private AnimationEvent _onInteract;
 
@@ -50,7 +51,12 @@ namespace Ivayami.Puzzle
         protected override void Awake()
         {
             base.Awake();
-            if (_startActive) IsActive = true;
+            if (_startActive)
+            {
+                IsActive = true;
+                if (_interactionAnimator) _interactionAnimator.SetBool(_activateBoolHash, true);
+                if (_activateAnimator) _activateAnimator.SetBool(_activateBoolHash, true);
+            }
             _interatctableHighlight = GetComponent<InteractableFeedbacks>();
             _interactableSounds = GetComponent<InteractableSounds>();
             _onActivate.Setup();
@@ -66,6 +72,7 @@ namespace Ivayami.Puzzle
         {
             if (IsActive)
             {
+                _onInteractStart?.Invoke();
                 if (_interactionAnimator)
                 {
                     _interactionAnimator.SetBool(_interactBoolHash, !_interactionAnimator.GetBool(_interactBoolHash));
