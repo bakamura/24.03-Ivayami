@@ -8,6 +8,8 @@ namespace Ivayami.UI {
         [SerializeField] private string[] _keys;
         [SerializeField] private string[] _values;
         private Dictionary<string, string> _dictionary;
+        public int Size { get { return _keys.Length; } }
+        public string[] Keys { get { return _keys; } }
 
         public string GetText(string key) {
             if(_dictionary == null) InitDict();
