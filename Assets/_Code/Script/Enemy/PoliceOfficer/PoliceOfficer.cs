@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using Ivayami.Player;
@@ -133,6 +132,7 @@ namespace Ivayami.Enemy
                     if (!_isChasing)
                     {
                         _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
+                        PlayerStress.Instance.SetStressMin(98);
                         _enemyAnimator.TargetDetected();
                         _navMeshAgent.speed = _currentMovementData.ChaseSpeed;
                         _isChasing = true;
@@ -160,6 +160,7 @@ namespace Ivayami.Enemy
                     }
                     else
                     {
+                        PlayerStress.Instance.SetStressMin(0);
                         if (_currenWalkArea && _currenWalkArea.GetCurrentPoint(gameObject.GetInstanceID(), out EnemyWalkArea.Point point))
                         {
                             _navMeshAgent.speed = _currentMovementData.WalkSpeed;
@@ -230,6 +231,7 @@ namespace Ivayami.Enemy
         public void ChangeTargetPoint(Transform target)
         {
             StopBehaviour();
+            PlayerStress.Instance.SetStressMin(98);
             _navMeshAgent.autoBraking = true;
             _navMeshAgent.SetDestination(new Vector3(target.position.x, 0, target.position.z));
             //Debug.Log($"given pos {new Vector3(target.position.x, 0, target.position.z)} going to {_navMeshAgent.destination}");
