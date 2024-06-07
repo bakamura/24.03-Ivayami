@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Ivayami.Enemy
 {
@@ -9,6 +10,7 @@ namespace Ivayami.Enemy
     public class EnemyWalkArea : MonoBehaviour
     {
         [SerializeField] private EnemyMovementData _movementData;
+        [SerializeField] private bool _ignoreYAxis;
         [SerializeField, Tooltip("if empty, will generate random point inside area")] private Point[] _points;
         [SerializeField] private float _delayToNextPoint;
 
@@ -18,7 +20,7 @@ namespace Ivayami.Enemy
         [SerializeField] private Color _debugColor = Color.red;
 #endif
 
-        private Dictionary<int, byte> _enemiesCurrentPathPointDic;
+        private Dictionary<int, EnemyData> _enemiesCurrentPathPointDic;
         private BoxCollider m_boxCollider;
         private BoxCollider _boxCollider
         {
@@ -48,12 +50,25 @@ namespace Ivayami.Enemy
             }
         }
 
+        [System.Serializable]
+        private struct EnemyData
+        {
+            public Point Point;
+            public byte CurrentPointIndex;
+
+            public EnemyData(Point point, byte currentPointIndex)
+            {
+                Point = point;
+                CurrentPointIndex = currentPointIndex;
+            }
+        }
         public bool GetCurrentPoint(int id, out Point point)
         {
             if (_enemiesCurrentPathPointDic != null && _enemiesCurrentPathPointDic.ContainsKey(id))
             {
-                Point temp = new Point(_points[_enemiesCurrentPathPointDic[id]]);
+                Point temp = new Point(_enemiesCurrentPathPointDic[id].Point);
                 temp.Position += transform.position;
+                if (_ignoreYAxis) temp.Position = new Vector3(temp.Position.x, 0, temp.Position.z);
                 point = temp;
                 return true;
             }
@@ -67,30 +82,52 @@ namespace Ivayami.Enemy
             {
                 if (_points.Length > 0)
                 {
-                    _enemiesCurrentPathPointDic[id]++;
-                    if (_enemiesCurrentPathPointDic[id] >= _points.Length) _enemiesCurrentPathPointDic[id] = 0;
-                    return _points[_enemiesCurrentPathPointDic[id]];
+                    EnemyData temp = _enemiesCurrentPathPointDic[id];
+                    temp.CurrentPointIndex++;
+                    if (temp.CurrentPointIndex >= _points.Length) temp.CurrentPointIndex = 0;
+                    temp.Point = _points[temp.CurrentPointIndex];
+                    _enemiesCurrentPathPointDic[id] = temp;
+                    return temp.Point;
                 }
                 else
                 {
                     Vector3 pos = new Vector3(transform.position.x + Random.Range(-_boxCollider.bounds.extents.x, _boxCollider.bounds.extents.x),
-                         transform.position.y,
+                         _ignoreYAxis ? 0 : transform.position.y,
                          transform.position.z + Random.Range(-_boxCollider.bounds.extents.z, _boxCollider.bounds.extents.z));
                     Point temp = new Point(pos, _delayToNextPoint);
-                    return temp;
+                    if(RandomPoint(temp.Position, out temp.Position))
+                    {
+                        _enemiesCurrentPathPointDic[id] = new EnemyData(temp, 0);
+                        return temp;
+                    }
                 }
             }
             return new Point();
         }
 
+        private bool RandomPoint(Vector3 center, out Vector3 result)
+        {
+            for (int i = 0; i < 30; i++)
+            {
+                if (NavMesh.SamplePosition(center, out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
+                {
+                    result = hit.position;
+                    return true;
+                }
+            }
+            result = Vector3.zero;
+            return false;
+        }
+
+
         private void OnTriggerEnter(Collider other)
         {
             if (other.TryGetComponent<IEnemyWalkArea>(out IEnemyWalkArea temp))
             {
-                if (_enemiesCurrentPathPointDic == null) _enemiesCurrentPathPointDic = new Dictionary<int, byte>();
+                if (_enemiesCurrentPathPointDic == null) _enemiesCurrentPathPointDic = new Dictionary<int, EnemyData>();
                 temp.SetMovementData(_movementData);
-                temp.SetWalkArea(this);                
-                _enemiesCurrentPathPointDic.Add(other.gameObject.GetInstanceID(), 0);
+                temp.SetWalkArea(this);
+                _enemiesCurrentPathPointDic.Add(other.gameObject.GetInstanceID(), new EnemyData(_points[0], 0));
             }
         }
 
@@ -98,7 +135,7 @@ namespace Ivayami.Enemy
         {
             if (other.TryGetComponent<IEnemyWalkArea>(out IEnemyWalkArea temp))
             {
-                if (_enemiesCurrentPathPointDic == null) _enemiesCurrentPathPointDic = new Dictionary<int, byte>();
+                if (_enemiesCurrentPathPointDic == null) _enemiesCurrentPathPointDic = new Dictionary<int, EnemyData>();
                 temp.SetWalkArea(null);
                 _enemiesCurrentPathPointDic.Remove(other.gameObject.GetInstanceID());
             }

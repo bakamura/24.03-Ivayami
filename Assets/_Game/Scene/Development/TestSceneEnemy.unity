@@ -970,6 +970,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 6c7de0eae48e59546878afb2613c9b0b, type: 2}
+  _ignoreYAxis: 1
   _points:
   - Position: {x: -32.3, y: 0, z: -8.81}
     DelayToNextPoint: 1
@@ -1000,7 +1001,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 80, y: 1.78, z: 22.55}
+  m_Size: {x: 80, y: 1.78, z: 20}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &883505626
 GameObject:
@@ -1048,6 +1049,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 5a348f06105a5804bb902113ddc9d4de, type: 2}
+  _ignoreYAxis: 1
   _points:
   - Position: {x: 32.3, y: 0, z: -8.82}
     DelayToNextPoint: 1
@@ -1078,7 +1080,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 80, y: 1, z: 22.55}
+  m_Size: {x: 80, y: 1, z: 21}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &947086038
 GameObject:
@@ -2013,7 +2015,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4038112004801439502, guid: 0f887a1a4d73c7141a2148e220f78943, type: 3}
       propertyPath: _onInteractStart.m_PersistentCalls.m_Calls.Array.size
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4038112004801439502, guid: 0f887a1a4d73c7141a2148e220f78943, type: 3}
       propertyPath: _onInteractStart.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -2256,7 +2258,7 @@ Transform:
   m_GameObject: {fileID: 1621683018}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 49.44, y: 1.37, z: 22.713}
+  m_LocalPosition: {x: 48.29, y: 1.75, z: 22.713}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2278,18 +2280,6 @@ MonoBehaviour:
   _onExecute:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7842380983405663467}
-        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
-        m_MethodName: SetTrigger
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: interact
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 1518476183}
         m_TargetAssemblyTypeName: Ivayami.Puzzle.ActivableAnimation, Assembly-CSharp
         m_MethodName: Interact
@@ -2322,7 +2312,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.9, y: 4.33, z: 1}
+  m_Size: {x: 5, y: 4.33, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1666435463
 GameObject:
@@ -2745,18 +2735,6 @@ MonoBehaviour:
   _onExecute:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7842380983405663467}
-        m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
-        m_MethodName: SetTrigger
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: interact
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 2108367690}
         m_TargetAssemblyTypeName: Ivayami.Puzzle.ActivableAnimation, Assembly-CSharp
         m_MethodName: Interact
@@ -2923,7 +2901,7 @@ PrefabInstance:
     - target: {fileID: 4038112004801439502, guid: 0f887a1a4d73c7141a2148e220f78943, type: 3}
       propertyPath: _onInteractStart.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
       value: 
-      objectReference: {fileID: 883505627}
+      objectReference: {fileID: 1923836871}
     - target: {fileID: 4038112004801439502, guid: 0f887a1a4d73c7141a2148e220f78943, type: 3}
       propertyPath: _onInteractStart.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Transform, UnityEngine
@@ -3337,9 +3315,29 @@ PrefabInstance:
       propertyPath: _drawStoppingDistance
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3899970109359011102, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5394693277866464840, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
       propertyPath: _movementData
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5394693277866464840, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
+      propertyPath: _drawMinDistance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5394693277866464840, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
+      propertyPath: _drawDetectionRange
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5394693277866464840, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
+      propertyPath: _drawStoppingDistance
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5394693277866464840, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
+      propertyPath: _stressIncreaseOnAttackTarget
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5522889164693551125, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3387,18 +3385,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8073186486778736189, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
---- !u!95 &7842380983405663467 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 4053114613249656650, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
-  m_PrefabInstance: {fileID: 7842380983405663466}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7842380983405663468 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5394693277866464840, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
