@@ -8,7 +8,7 @@ namespace Ivayami.Puzzle
     [RequireComponent(typeof(InteractableFeedbacks), typeof(InteractableSounds))]
     public class ActivableAnimation : Activable, IInteractable
     {
-        [SerializeField] private bool _startActive;
+        //[SerializeField] private bool _startActive;
         [SerializeField] private bool _lockOnActiveState;
         [SerializeField] private Animator _interactionAnimator;
         [SerializeField] private Animator _activateAnimator;
@@ -51,12 +51,9 @@ namespace Ivayami.Puzzle
         protected override void Awake()
         {
             base.Awake();
-            if (_startActive)
-            {
-                IsActive = true;
-                if (_interactionAnimator) _interactionAnimator.SetBool(_activateBoolHash, true);
-                if (_activateAnimator) _activateAnimator.SetBool(_activateBoolHash, true);
-            }
+            base.HandleOnActivate();
+            if (_interactionAnimator) _interactionAnimator.SetBool(_activateBoolHash, IsActive);
+            if (_activateAnimator) _activateAnimator.SetBool(_activateBoolHash, IsActive);
             _interatctableHighlight = GetComponent<InteractableFeedbacks>();
             _interactableSounds = GetComponent<InteractableSounds>();
             _onActivate.Setup();
