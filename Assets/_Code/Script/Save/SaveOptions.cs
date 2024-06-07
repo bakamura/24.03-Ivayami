@@ -8,5 +8,7 @@ namespace Ivayami.Save {
 
         public float cameraSensitivity = 0.5f;
 
+        public int language;
+
     }
 }
