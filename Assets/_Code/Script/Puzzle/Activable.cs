@@ -4,7 +4,7 @@ namespace Ivayami.Puzzle
 {
     public class Activable : MonoBehaviour
     {
-        [SerializeField] protected byte _activatosNeededToActivate;
+        [SerializeField, Min(0)] protected int _activatosNeededToActivate;
         [SerializeField] private Activator[] _activators;
         [HideInInspector] public bool IsActive { get; protected set; }
 
@@ -14,12 +14,10 @@ namespace Ivayami.Puzzle
             {
                 _activators[i].onActivate.AddListener(HandleOnActivate);
             }
-            if (_activatosNeededToActivate == 0) _activatosNeededToActivate = (byte)_activators.Length;
         }
 
         protected virtual void HandleOnActivate()
         {
-            //IsActive = true;
             byte currentActiveAmount = 0;
             for (int i = 0; i < _activators.Length; i++)
             {
@@ -27,5 +25,12 @@ namespace Ivayami.Puzzle
             }
             IsActive = currentActiveAmount >= _activatosNeededToActivate;
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (_activatosNeededToActivate > _activators.Length) _activatosNeededToActivate = _activators.Length;
+        }
+#endif
     }
 }
