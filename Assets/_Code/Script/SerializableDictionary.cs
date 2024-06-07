@@ -501,3 +501,5 @@ public class SerializableDictionary<TKey, TValue> : IDictionary<TKey, TValue> {
         }
     }
 }
+
+public class SerializedDictionaryStringToString : SerializableDictionary<string, string> { }
