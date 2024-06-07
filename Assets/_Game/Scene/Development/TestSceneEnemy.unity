@@ -276,6 +276,38 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3900874951496925809, guid: 567aed04f637e4046be948362d899eb3, type: 3}
+      propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3900874951496925809, guid: 567aed04f637e4046be948362d899eb3, type: 3}
+      propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3900874951496925809, guid: 567aed04f637e4046be948362d899eb3, type: 3}
+      propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1917852930}
+    - target: {fileID: 3900874951496925809, guid: 567aed04f637e4046be948362d899eb3, type: 3}
+      propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3900874951496925809, guid: 567aed04f637e4046be948362d899eb3, type: 3}
+      propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: Play
+      objectReference: {fileID: 0}
+    - target: {fileID: 3900874951496925809, guid: 567aed04f637e4046be948362d899eb3, type: 3}
+      propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.Animator, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3900874951496925809, guid: 567aed04f637e4046be948362d899eb3, type: 3}
+      propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: activation
+      objectReference: {fileID: 0}
+    - target: {fileID: 3900874951496925809, guid: 567aed04f637e4046be948362d899eb3, type: 3}
+      propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 4158926068772264370, guid: 567aed04f637e4046be948362d899eb3, type: 3}
       propertyPath: m_Name
       value: Lever1
@@ -1918,7 +1950,6 @@ Transform:
   - {fileID: 184977482}
   - {fileID: 1092828631}
   - {fileID: 1727424762}
-  - {fileID: 1265193716}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1153245688
@@ -2040,7 +2071,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1265193716
 Transform:
   m_ObjectHideFlags: 0
@@ -2050,7 +2081,7 @@ Transform:
   m_GameObject: {fileID: 1265193715}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 82.9, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2061,7 +2092,7 @@ Transform:
   - {fileID: 838259233}
   - {fileID: 883505627}
   - {fileID: 7842380983405663469}
-  m_Father: {fileID: 1153245687}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1298316954
 GameObject:
@@ -2524,7 +2555,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1591283342
 Transform:
   m_ObjectHideFlags: 0
@@ -3224,6 +3255,11 @@ GameObject:
 --- !u!4 &1842117234 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7600294611894504120, guid: 20630b7138d40b5439b122b1b1cbccb7, type: 3}
+  m_PrefabInstance: {fileID: 1842117232}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &1917852930 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 1567054598190799313, guid: 20630b7138d40b5439b122b1b1cbccb7, type: 3}
   m_PrefabInstance: {fileID: 1842117232}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1923836870
@@ -4065,4 +4101,5 @@ SceneRoots:
   - {fileID: 1708082156}
   - {fileID: 1298316958}
   - {fileID: 1153245687}
+  - {fileID: 1265193716}
   - {fileID: 1591283342}
