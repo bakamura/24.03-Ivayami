@@ -1,13 +1,15 @@
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
 
 namespace Ivayami.Puzzle
 {
     public class TriggerEvent : MonoBehaviour
     {
         [SerializeField] private TriggerTypes _triggerType;
+        [SerializeField, Min(0f)] private float _delayToActivateEvent;
         [SerializeField] private UnityEvent _onExecute;
-        [SerializeField] private string _optionalTag;        
+        [SerializeField] private string _optionalTag;
         private enum TriggerTypes
         {
             OnTriggerEnter,
@@ -15,65 +17,66 @@ namespace Ivayami.Puzzle
             OnCollisionEnter,
             OnCollisionExit
         }
+        private Coroutine _eventDelayCoroutine;
+        private bool _validTag;
 
         private void OnTriggerEnter(Collider other)
         {
-            if (_triggerType == TriggerTypes.OnTriggerEnter)
+            if (_triggerType == TriggerTypes.OnTriggerEnter && _eventDelayCoroutine == null)
             {
-                if (string.IsNullOrEmpty(_optionalTag))
+                _validTag = string.IsNullOrEmpty(_optionalTag) || other.CompareTag(_optionalTag);
+                if (_validTag)
                 {
-                    _onExecute?.Invoke();
-                }
-                else if (other.CompareTag(_optionalTag))
-                {
-                    _onExecute?.Invoke();
+                    if (_delayToActivateEvent > 0) _eventDelayCoroutine = StartCoroutine(EventDelayCoroutine());
+                    else _onExecute?.Invoke();
                 }
             }
         }
 
         private void OnTriggerExit(Collider other)
         {
-            if (_triggerType == TriggerTypes.OnTriggerExit)
+            if (_triggerType == TriggerTypes.OnTriggerExit && _eventDelayCoroutine == null)
             {
-                if (string.IsNullOrEmpty(_optionalTag))
+                _validTag = string.IsNullOrEmpty(_optionalTag) || other.CompareTag(_optionalTag);
+                if (_validTag)
                 {
-                    _onExecute?.Invoke();
-                }
-                else if (other.CompareTag(_optionalTag))
-                {
-                    _onExecute?.Invoke();
+                    if (_delayToActivateEvent > 0) _eventDelayCoroutine = StartCoroutine(EventDelayCoroutine());
+                    else _onExecute?.Invoke();
                 }
             }
         }
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (_triggerType == TriggerTypes.OnCollisionEnter)
+            if (_triggerType == TriggerTypes.OnCollisionEnter && _eventDelayCoroutine == null)
             {
-                if (string.IsNullOrEmpty(_optionalTag))
+                _validTag = string.IsNullOrEmpty(_optionalTag) || collision.collider.CompareTag(_optionalTag);
+                if (_validTag)
                 {
-                    _onExecute?.Invoke();
-                }
-                else if (collision.collider.CompareTag(_optionalTag))
-                {
-                    _onExecute?.Invoke();
+                    if (_delayToActivateEvent > 0) _eventDelayCoroutine = StartCoroutine(EventDelayCoroutine());
+                    else _onExecute?.Invoke();
                 }
             }
         }
 
         private void OnCollisionExit(Collision collision)
         {
-            if (_triggerType == TriggerTypes.OnCollisionExit)
+            if (_triggerType == TriggerTypes.OnCollisionExit && _eventDelayCoroutine == null)
             {
-                if (string.IsNullOrEmpty(_optionalTag))
+                _validTag = string.IsNullOrEmpty(_optionalTag) || collision.collider.CompareTag(_optionalTag);
+                if (_validTag)
                 {
-                    _onExecute?.Invoke();
-                }
-                else if (collision.collider.CompareTag(_optionalTag))
-                {
-                    _onExecute?.Invoke();
+                    if (_delayToActivateEvent > 0) _eventDelayCoroutine = StartCoroutine(EventDelayCoroutine());
+                    else _onExecute?.Invoke();
                 }
             }
+        }
+
+        private IEnumerator EventDelayCoroutine()
+        {
+            yield return new WaitForSeconds(_delayToActivateEvent);
+            _onExecute?.Invoke();
+            _eventDelayCoroutine = null;
         }
     }
 }
