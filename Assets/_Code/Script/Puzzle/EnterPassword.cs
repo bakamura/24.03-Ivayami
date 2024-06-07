@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.Events;
 using UnityEngine;
 using TMPro;
 
@@ -26,8 +23,8 @@ namespace Ivayami.Puzzle
         public void InsertCharacter(TMP_Text text)
         {
             if (_passwordTextField.text == _incorrectPasswordText) _passwordTextField.text = "";
-            if (_passwordTextField.text.Length < _passwordTextField.characterLimit) _passwordTextField.text += text.text;
-            if(_passwordTextField.text.Length == _passwordTextField.characterLimit) _onCheckPassword?.Invoke();
+            _passwordTextField.text += text.text;
+            if(_passwordTextField.text.Length == _passwordTextField.characterLimit) OnCheckPassword?.Invoke();
         }
 
         private void OnValidate()

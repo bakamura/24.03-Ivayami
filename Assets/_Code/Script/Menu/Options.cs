@@ -11,6 +11,7 @@ namespace Ivayami.UI {
 
         [SerializeField] private Slider _musicSlider;
         [SerializeField] private Slider _sfxSlider;
+        [SerializeField] private Slider _cameraSensitivitySlider;
 
         private void Start() {
             StartCoroutine(StartRoutine());
@@ -19,8 +20,7 @@ namespace Ivayami.UI {
         private IEnumerator StartRoutine() {
             while (SaveSystem.Instance.Progress == null) yield return null;
 
-            _musicSlider.value = SaveSystem.Instance.Options.musicVol;
-            _sfxSlider.value = SaveSystem.Instance.Options.sfxVol;
+            SliderUpdate();
             Music.Instance.SetVolume(_musicSlider.value);
         }
 
@@ -36,6 +36,7 @@ namespace Ivayami.UI {
         public void SliderUpdate() {
             _musicSlider.value = SaveSystem.Instance.Options.musicVol;
             _sfxSlider.value = SaveSystem.Instance.Options.sfxVol;
+            if(_cameraSensitivitySlider != null) _cameraSensitivitySlider.value = SaveSystem.Instance.Options.cameraSensitivity;
         }
 
         public void SaveOptions() {

@@ -2,15 +2,15 @@ using UnityEngine;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableHighlight), typeof(ActivatorAnimated))]
+    [RequireComponent(typeof(InteractableFeedbacks), typeof(ActivatorAnimated))]
     public class Lever : Activator, IInteractableLong
     {
-        private InteractableHighlight _interatctableHighlight;
-        public InteractableHighlight InteratctableHighlight => _interatctableHighlight;
+        private InteractableFeedbacks _interatctableHighlight;
+        public InteractableFeedbacks InteratctableHighlight => _interatctableHighlight;
 
         private void Awake()
         {
-            _interatctableHighlight = GetComponent<InteractableHighlight>();
+            _interatctableHighlight = GetComponent<InteractableFeedbacks>();
         }
 
         public void Interact()

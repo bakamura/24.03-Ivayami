@@ -1,21 +1,23 @@
 using System;
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableHighlight))]
+    [RequireComponent(typeof(InteractableFeedbacks), typeof(Button))]
     public class RotateLockButton : MonoBehaviour
     {
         [SerializeField, Min(0)] private int _optionsAmount;
         [SerializeField] private ButtonDetails _buttonDetails;
-        public InteractableHighlight InteratctableHighlight { get; private set; }
+        public InteractableFeedbacks InteratctableHighlight { get; private set; }
+        public Button Button { get; private set; }
 
         private sbyte _currentDetailIndex;
         //will always be 3
         private TMP_Text[] _texts;
         private sbyte _currentTextIndex;
-        private float _modelRadius;
+        //private float _modelRadius;
 
         [Serializable]
         private struct ButtonDetails
@@ -27,8 +29,9 @@ namespace Ivayami.Puzzle
         private void Awake()
         {            
             _texts = GetComponentsInChildren<TMP_Text>();
-            InteratctableHighlight = GetComponent<InteractableHighlight>();
-            _modelRadius = GetComponent<MeshFilter>().mesh.bounds.size.z / 2;
+            InteratctableHighlight = GetComponent<InteractableFeedbacks>();
+            Button = GetComponent<Button>();
+            //_modelRadius = GetComponent<MeshFilter>().mesh.bounds.size.z / 2;
 
             _texts[1].text = _buttonDetails.Content[0];
             _texts[1].color = _buttonDetails.Colors[0];

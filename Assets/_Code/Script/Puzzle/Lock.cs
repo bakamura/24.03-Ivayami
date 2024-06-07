@@ -5,15 +5,16 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using Ivayami.Audio;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableHighlight))]
+    [RequireComponent(typeof(InteractableFeedbacks), typeof(InteractableSounds))]
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
         [SerializeField] private InputActionReference _navigateUIInput;
-        //[SerializeField] private InputActionAsset _inputActionMap;
+        [SerializeField] private InputActionReference _confirmInput;
 
         [SerializeField] private InteractionTypes _interactionType;
 
@@ -34,9 +35,9 @@ namespace Ivayami.Puzzle
         private int _currentPositionInInventory = 0;
         private List<InventoryItem> _currentItemList = new List<InventoryItem>();
         private sbyte _currentItemsDelivered;
-        private InteractableHighlight _interatctableHighlight;
-
-        public InteractableHighlight InteratctableHighlight { get => _interatctableHighlight; }
+        private InteractableFeedbacks _interatctableFeedbacks;
+        private InteractableSounds _interactableSounds;
+        public InteractableFeedbacks InteratctableHighlight { get => _interatctableFeedbacks; }
 
         [System.Serializable]
         public enum InteractionTypes
@@ -56,7 +57,8 @@ namespace Ivayami.Puzzle
         private void Awake()
         {
             _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
-            _interatctableHighlight = GetComponent<InteractableHighlight>();
+            _interatctableFeedbacks = GetComponent<InteractableFeedbacks>();
+            _interactableSounds = GetComponent<InteractableSounds>();
         }
 
         [ContextMenu("Interact")]
@@ -64,6 +66,8 @@ namespace Ivayami.Puzzle
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
+            _interatctableFeedbacks.UpdateFeedbacks(false);
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             if (_interactionType == InteractionTypes.RequirePassword)
             {
                 _passwordUI.UpdateActiveState(true);
@@ -86,6 +90,7 @@ namespace Ivayami.Puzzle
                 IsActive = !IsActive;
                 onActivate?.Invoke();
             }
+            else _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
         }
 
         private void UpdateInputs(bool isActive)
@@ -93,22 +98,24 @@ namespace Ivayami.Puzzle
             if (isActive)
             {
                 _cancelInteractionInput.action.performed += HandleExitInteraction;
-                _navigateUIInput.action.performed += HandleNavigateDeliverUI;
+                _navigateUIInput.action.performed += HandleNavigateUI;
+                if (_passwordUI)
+                {
+                    _passwordUI.OnCheckPassword += TryUnlock;
+                    if(_passwordUI is RotateLock) _confirmInput.action.performed += HandleConfirmUI;
+                }
                 PlayerActions.Instance.ChangeInputMap("Menu");
-                ////gameplay actions
-                //_inputActionMap.actionMaps[0].Disable();
-                ////ui actions
-                //_inputActionMap.actionMaps[1].Enable();                
             }
             else
             {
                 _cancelInteractionInput.action.performed -= HandleExitInteraction;
-                _navigateUIInput.action.performed -= HandleNavigateDeliverUI;
+                _navigateUIInput.action.performed -= HandleNavigateUI;
+                if (_passwordUI)
+                {
+                    _passwordUI.OnCheckPassword -= TryUnlock;
+                    if (_passwordUI is RotateLock) _confirmInput.action.performed -= HandleConfirmUI;
+                }
                 PlayerActions.Instance.ChangeInputMap("Player");
-                ////gameplay actions
-                //_inputActionMap.actionMaps[0].Enable();
-                ////ui actions
-                //_inputActionMap.actionMaps[1].Disable();
             }
         }
 
@@ -117,6 +124,8 @@ namespace Ivayami.Puzzle
             _passwordUI.UpdateActiveState(false);
             UpdateDeliverItemUI(false);
             UpdateInputs(false);
+            _interatctableFeedbacks.UpdateFeedbacks(true);
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.InteractReturn);
             _onCancelInteraction?.Invoke();
         }
 
@@ -128,7 +137,7 @@ namespace Ivayami.Puzzle
             }
         }
 
-        private void HandleNavigateDeliverUI(InputAction.CallbackContext context)
+        private void HandleNavigateUI(InputAction.CallbackContext context)
         {
             Vector2 input = context.ReadValue<Vector2>();
             if (input != Vector2.zero)
@@ -154,6 +163,11 @@ namespace Ivayami.Puzzle
             }
         }
 
+        private void HandleConfirmUI(InputAction.CallbackContext context)
+        {
+            TryUnlock();
+        }
+
         #region DeliverUI
 
         private void UpdateDeliverItemUI(bool isActive)
@@ -165,11 +179,11 @@ namespace Ivayami.Puzzle
             if (isActive)
             {
                 _currentPositionInInventory = 0;
-                if(_itemsRequired.Length < Mathf.Floor(_deliverOptions.Length / 2))
+                if (_itemsRequired.Length < Mathf.Floor(_deliverOptions.Length / 2))
                     _selectedDeliverOptionIndex = Mathf.FloorToInt(_itemsRequired.Length / Mathf.Ceil(_deliverOptions.Length / 2f));
-                else                
+                else
                     _selectedDeliverOptionIndex = Mathf.FloorToInt(_deliverOptions.Length / 2);
-                
+
                 if (_currentItemList.Count == 0)
                 {
                     for (int i = 0; i < _itemsRequired.Length; i++)
@@ -188,16 +202,6 @@ namespace Ivayami.Puzzle
                 EventSystem.current.SetSelectedGameObject(_deliverBtn);
             }
         }
-
-        //private bool CheckItemType(ItemType itemType)
-        //{
-        //    for(int i = 0; i < _itemsRequired.Length; i++)
-        //    {
-        //        if (_itemsRequired[i].Item.type == itemType)
-        //            return true;
-        //    }
-        //    return false;
-        //}                
 
         //called by interface Btn
         public void DeliverItem()

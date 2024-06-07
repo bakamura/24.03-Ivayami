@@ -17,6 +17,9 @@ namespace Ivayami.Scene
         private Queue<SceneUpdateRequestData> _sceneUpdateRequests = new Queue<SceneUpdateRequestData>();
 
         public Action OnAllSceneRequestEnd;
+#if UNITY_EDITOR
+        public Action OnAllSceneRequestEndDebug;
+#endif
 
         [System.Serializable]
         private class SceneData
@@ -56,19 +59,22 @@ namespace Ivayami.Scene
                 _chapterPointers.Add(chapterPointer.name, chapterPointer);
             }
 
-#if UNITY_EDITOR
-            if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))
-            {
-                _mainMenuSceneName = Ivayami.debug.CustomSettingsHandler.CurrentSceneName;
-            }
-#endif
-
             LoadMainMenuScene();
         }
 
         public void LoadMainMenuScene()
         {
-            if (!string.IsNullOrEmpty(_mainMenuSceneName)) StartLoad(_mainMenuSceneName);//SceneManager.LoadScene(_baseSceneName);
+            if (!string.IsNullOrEmpty(_mainMenuSceneName))
+            {
+#if UNITY_EDITOR
+                if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))
+                {
+                    OnAllSceneRequestEndDebug += Ivayami.debug.CustomSettingsHandler.OnSceneLoad;
+                    _mainMenuSceneName = Ivayami.debug.CustomSettingsHandler.CurrentSceneName;
+                }
+#endif
+                StartLoad(_mainMenuSceneName);//SceneManager.LoadScene(_baseSceneName);
+            }
         }
 
         public void StartLoad(string sceneId, UnityEvent onSceneUpdate = null)
@@ -134,7 +140,20 @@ namespace Ivayami.Scene
             }
             requestData.OnSceneUpdate?.Invoke();
             if (_sceneUpdateRequests.Count > 0) UpdateScene(_sceneUpdateRequests.Peek().SceneData);
-            else OnAllSceneRequestEnd?.Invoke();
+            else
+            {
+                OnAllSceneRequestEnd?.Invoke();
+#if UNITY_EDITOR
+                StartCoroutine(WaitEndOfFrameCoroutine());
+#endif
+            }
         }
+#if UNITY_EDITOR
+        private System.Collections.IEnumerator WaitEndOfFrameCoroutine()
+        {
+            yield return new WaitForEndOfFrame();
+            OnAllSceneRequestEndDebug?.Invoke();
+        }
+#endif
     }
 }

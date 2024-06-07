@@ -5,12 +5,13 @@ using System.Collections;
 using TMPro;
 using System;
 using Ivayami.Player;
+using Ivayami.Audio;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
 
 namespace Ivayami.Dialogue
 {
-    [RequireComponent(typeof(CanvasGroup))]
+    [RequireComponent(typeof(CanvasGroup), typeof(DialogueSounds))]
     public class DialogueController : MonoSingleton<DialogueController>
     {
 
@@ -33,6 +34,7 @@ namespace Ivayami.Dialogue
         private List<DialogueEvents> _dialogueEventsList = new List<DialogueEvents>();
         //private bool _readyForNextSpeech = true;
         private sbyte _currentSpeechIndex;
+        private DialogueSounds _dialogueSounds;
 
         public bool IsDialogueActive { get; private set; }
         public bool LockInput { get; private set; }
@@ -44,26 +46,12 @@ namespace Ivayami.Dialogue
         {
             base.Awake();
 
-            _dialogues = Resources.LoadAll<Dialogue>("Dialogues");
+            ChangeLanguage(LanguageTypes.ENUS);
             _continueInput.action.performed += HandleContinueDialogue;
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
             //_autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
             _canvasGroup = GetComponent<CanvasGroup>();
-
-            for (int i = 0; i < _dialogues.Length; i++)
-            {
-                if (!_dialogueDictionary.ContainsKey(_dialogues[i].id))
-                {
-                    _dialogueDictionary.Add(_dialogues[i].id, _dialogues[i]);
-                }
-                else
-                {
-                    if (_debugLogs)
-                    {
-                        Debug.LogWarning($"the dialogue ID {_dialogues[i].id} is already in use");
-                    }
-                }
-            }
+            _dialogueSounds = GetComponent<DialogueSounds>();
         }
 
         private void HandleContinueDialogue(InputAction.CallbackContext context)
@@ -87,6 +75,7 @@ namespace Ivayami.Dialogue
             else /*(_writtingCoroutine == null && _readyForNextSpeech)*/
             {
                 _currentSpeechIndex++;
+                _dialogueSounds.PlaySound(DialogueSounds.SoundTypes.ContinueDialogue);
                 //end of current dialogue
                 if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
                 {
@@ -146,14 +135,14 @@ namespace Ivayami.Dialogue
 
             _continueDialogueIcon.SetActive(true);
             WaitForSeconds wait = null;
-            if (!LockInput) 
+            if (!LockInput)
                 wait = new WaitForSeconds(_delayToAutoStartNextSpeech);
-            else if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0) 
+            else if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0)
                 wait = new WaitForSeconds(_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech);
             yield return wait;
             //_readyForNextSpeech = true;
             _writtingCoroutine = null;
-            if (wait != null) UpdateDialogue();            
+            if (wait != null) UpdateDialogue();
         }
 
         private void SkipSpeech()
@@ -219,6 +208,26 @@ namespace Ivayami.Dialogue
                 {
                     if (dialogue == null) Debug.LogError($"The dialogue {dialogueId} couldn't be found");
                     //if (_writtingCoroutine != null) Debug.LogWarning($"There is the current dialogue {_currentDialogue.id} playing, the dialogue {dialogueId} will not play");
+                }
+            }
+        }
+
+        public void ChangeLanguage(LanguageTypes languageType)
+        {
+            _dialogues = Resources.LoadAll<Dialogue>($"Dialogues/{languageType}");
+            _dialogueDictionary.Clear();
+            for (int i = 0; i < _dialogues.Length; i++)
+            {
+                if (!_dialogueDictionary.ContainsKey(_dialogues[i].id))
+                {
+                    _dialogueDictionary.Add(_dialogues[i].id, _dialogues[i]);
+                }
+                else
+                {
+                    if (_debugLogs)
+                    {
+                        Debug.LogWarning($"the dialogue ID {_dialogues[i].id} is already in use");
+                    }
                 }
             }
         }
