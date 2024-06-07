@@ -133,6 +133,7 @@ namespace Ivayami.Enemy
                     if (!_isChasing)
                     {
                         _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
+                        _enemyAnimator.TargetDetected();
                         _navMeshAgent.speed = _currentMovementData.ChaseSpeed;
                         _isChasing = true;
                     }
