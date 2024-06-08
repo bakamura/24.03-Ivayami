@@ -18,6 +18,7 @@ namespace Ivayami.Player.Ability
         private float _distanceFromPlayer;
         private bool _isInteracting;
         private Coroutine _rotateCoroutine;
+        private Coroutine _behaviourCoroutine;
 
         public IInteractableLong InteractableLongCurrent { get; private set; }
 
@@ -31,12 +32,28 @@ namespace Ivayami.Player.Ability
 
         private void OnEnable()
         {
-            StartCoroutine(BehaviourCoroutine());
+            ActivateBehaviour();
         }
 
         private void OnDisable()
         {
-            StopCoroutine(BehaviourCoroutine());
+            DeactivateBehaviour();
+        }
+
+        [ContextMenu("Activate")]
+        public void ActivateBehaviour()
+        {
+            if (_behaviourCoroutine == null) _behaviourCoroutine = StartCoroutine(BehaviourCoroutine());
+        }
+
+        [ContextMenu("Deactivate")]
+        public void DeactivateBehaviour()
+        {
+            if (_behaviourCoroutine != null)
+            {
+                StopCoroutine(_behaviourCoroutine);
+                _behaviourCoroutine = null;
+            }
         }
 
         public void InteractLongWith(IInteractableLong interactableLong)
@@ -52,6 +69,17 @@ namespace Ivayami.Player.Ability
             _isInteracting = false;
             _navMeshAgent.enabled = true;
             InteractableLongCurrent = null;
+        }
+
+        public void GoToPosition(Transform transform)
+        {
+            DeactivateBehaviour();
+            _navMeshAgent.SetDestination(transform.position);
+        }
+
+        public void ChangeSpeed(float speed)
+        {
+            _navMeshAgent.speed = speed;
         }
 
         private IEnumerator BehaviourCoroutine()
