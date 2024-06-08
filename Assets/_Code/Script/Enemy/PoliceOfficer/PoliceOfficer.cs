@@ -236,7 +236,7 @@ namespace Ivayami.Enemy
             //_navMeshAgent.autoBraking = true;
             //new Vector3(target.position.x, 0, target.position.z)
             _navMeshAgent.SetDestination(target.position);            
-            Debug.Log($"given pos {target.position} going to {_navMeshAgent.destination}");
+            //Debug.Log($"given pos {target.position} going to {_navMeshAgent.destination}");
             if (_detectTargetPointOffBehaviourReachedCoroutine == null)
             {
                 _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine());
