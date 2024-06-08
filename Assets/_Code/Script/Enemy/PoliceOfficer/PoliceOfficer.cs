@@ -206,13 +206,14 @@ namespace Ivayami.Enemy
         private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine()
         {
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
-            while (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), _navMeshAgent.destination) > _navMeshAgent.stoppingDistance)
+            while (Vector3.Distance(new Vector3(transform.position.x, _navMeshAgent.destination.y, transform.position.z), _navMeshAgent.destination) > _navMeshAgent.stoppingDistance)
             {
                 yield return delay;
             }
+            _navMeshAgent.velocity = Vector3.zero;
             _detectTargetPointOffBehaviourReachedCoroutine = null;
-            _navMeshAgent.autoBraking = false;
-            _enemyAnimator.Interact(HandleOnInteractAnimationEnd);
+            //_navMeshAgent.autoBraking = false;
+            //_enemyAnimator.Interact(HandleOnInteractAnimationEnd);
         }
 
         public void SetMovementData(EnemyMovementData data)
@@ -232,19 +233,20 @@ namespace Ivayami.Enemy
         {
             StopBehaviour();
             PlayerStress.Instance.SetStressMin(98);
-            _navMeshAgent.autoBraking = true;
-            _navMeshAgent.SetDestination(new Vector3(target.position.x, 0, target.position.z));
-            //Debug.Log($"given pos {new Vector3(target.position.x, 0, target.position.z)} going to {_navMeshAgent.destination}");
+            //_navMeshAgent.autoBraking = true;
+            //new Vector3(target.position.x, 0, target.position.z)
+            _navMeshAgent.SetDestination(target.position);            
+            Debug.Log($"given pos {target.position} going to {_navMeshAgent.destination}");
             if (_detectTargetPointOffBehaviourReachedCoroutine == null)
             {
                 _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine());
             }
         }
 
-        private void HandleOnInteractAnimationEnd()
-        {
-            StartBehaviour();
-        }
+        //private void HandleOnInteractAnimationEnd()
+        //{
+        //    StartBehaviour();
+        //}
         #region Debug
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
