@@ -195,9 +195,9 @@ namespace Ivayami.Puzzle
                 {
                     if (i >= _itemsRequired.Length)
                     {
-                        _deliverOptions[i].sprite = _itemsRequired[^1].Item.sprite;
+                        _deliverOptions[i].sprite = _itemsRequired[^1].Item.Sprite;
                     }
-                    else _deliverOptions[i].sprite = _itemsRequired[i].Item.sprite;
+                    else _deliverOptions[i].sprite = _itemsRequired[i].Item.Sprite;
                 }
                 EventSystem.current.SetSelectedGameObject(_deliverBtn);
             }
@@ -232,7 +232,7 @@ namespace Ivayami.Puzzle
             int currentInventoryListIndex = _currentPositionInInventory;
             while (currentDeliverIndex < _deliverOptions.Length)
             {
-                _deliverOptions[currentDeliverIndex].sprite = _currentItemList[currentInventoryListIndex].sprite;
+                _deliverOptions[currentDeliverIndex].sprite = _currentItemList[currentInventoryListIndex].Sprite;
                 currentDeliverIndex++;
                 currentInventoryListIndex++;
                 currentInventoryListIndex = ConstrainValueToArrayBounds(currentInventoryListIndex, _currentItemList.Count);
