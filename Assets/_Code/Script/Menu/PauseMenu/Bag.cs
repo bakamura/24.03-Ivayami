@@ -18,7 +18,7 @@ namespace Ivayami.UI {
 
             for (int i = 0; i < items.Length; i++) {
                 if (_itemBtns.Count <= i) _itemBtns.Add(Instantiate(_itemBtnPrefab, _itemGeneralSection));
-                _itemBtns[i].transform.parent = items[i].type == ItemType.Special ? _itemSpecialSection : _itemGeneralSection;
+                _itemBtns[i].transform.parent = items[i].Type == ItemType.Special ? _itemSpecialSection : _itemGeneralSection;
                 _itemBtns[i].SetItemDisplay(items[i]);
                 byte btnN = (byte)i;
                 _itemBtns[i].GetComponent<Button>().onClick.AddListener(() => FocusItem(btnN));
