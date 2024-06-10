@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Ivayami.Player;
 using Ivayami.Save;
+using Ivayami.Scene;
 
 namespace Ivayami.UI {
     public class SaveSelector : MonoBehaviour {
@@ -12,43 +13,34 @@ namespace Ivayami.UI {
 
         [SerializeField] private Image _previewImage;
         [SerializeField] private TextMeshProUGUI _previewText;
-
-        [Header("Input Stopping")]
-
-        [SerializeField] private InputActionReference _pauseInput;
+        [SerializeField] private SaveSelectBtn[] _saveSelectBtns;
 
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
 
         private void Awake() {
+            SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate);
+
             PlayerActions.Instance.ChangeInputMap("Menu");
-            _pauseInput.action.Disable();
+        }
+
+        private void SaveSelectBtnUpdate(SaveProgress[] progressSaves) {
+            for (int i = 0; i < _saveSelectBtns.Length; i++) _saveSelectBtns[i].Setup(i < progressSaves.Length ? progressSaves[i] : null);
         }
 
         public void DisplaySaveInfo(int saveId) {
-            if (SaveSystem.Instance.Progress?.id != saveId) {
-                SaveSystem.Instance.LoadProgress((byte)saveId, DisplaySaveInfoCallback);
+            SaveSystem.Instance.LoadProgress((byte)saveId, DisplaySaveInfoCallback);
 
-                Logger.Log(LogType.UI, $"Try Display Save {saveId}");
-            }
-            else {
-                _pauseInput.action.Enable();
-                PlayerActions.Instance.ChangeInputMap("Player"); //
-                EnterSave();
-            }
+            Logger.Log(LogType.UI, $"Try Display Save {saveId}");
         }
 
         private void DisplaySaveInfoCallback() {
-            ChapterDescription chapterDescription = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.currentChapter}-{SaveSystem.Instance.Progress.currentSubChapter}");
+            ChapterDescription chapterDescription = Resources.Load<ChapterDescription>(string.IsNullOrEmpty(SaveSystem.Instance.Progress.lastProgressType) ?
+                  $"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_New"
+                : $"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]}");
             _previewImage.sprite = chapterDescription.Image;
             _previewText.text = chapterDescription.Text;
 
-            Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.id} (Progress: {SaveSystem.Instance.Progress.currentChapter}-{SaveSystem.Instance.Progress.currentSubChapter})");
-        }
-
-        public void EnterSave() {
-
-
-            Logger.Log(LogType.UI, $"Entering Save");
+            Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.id} {(string.IsNullOrEmpty(SaveSystem.Instance.Progress.lastProgressType) ? "(New)": $"(Progress: {SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]}")})");
         }
 
     }

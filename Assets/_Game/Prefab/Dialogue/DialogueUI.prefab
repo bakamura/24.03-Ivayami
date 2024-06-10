@@ -438,6 +438,7 @@ GameObject:
   - component: {fileID: 9061597358671609907}
   - component: {fileID: 6843526973766580015}
   - component: {fileID: 2360924173869617257}
+  - component: {fileID: 7242475149578815422}
   m_Layer: 5
   m_Name: DialogueUI
   m_TagString: Untagged
@@ -541,6 +542,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterShowDelay: 0.05
+  _delayToAutoStartNextSpeech: 2
   _continueInput: {fileID: -5635020411607476702, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _speechTextComponent: {fileID: 7041984907326039200}
   _announcerNameTextComponent: {fileID: 3666194328975780424}
@@ -596,3 +598,23 @@ MonoBehaviour:
     m_RotationOrder: 4
   _transitionDuration: 0.25
   _interactable: 0
+--- !u!114 &7242475149578815422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8587459058244812029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ee5e4d7e4251d94cafc3ffe67f14812, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _continueDialogueSound:
+    Guid:
+      Data1: -1125218758
+      Data2: 1243720987
+      Data3: -1322963524
+      Data4: 67063437
+    Path: event:/pass Dialogue
+  _debugLog: 0

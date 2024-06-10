@@ -23,16 +23,26 @@ namespace Ivayami.Dialogue {
                         Debug.LogWarning($"the Dialogue Event ID {_events[i].id} is already in use");
                     }
                 }
-            }
-
-            DialogueController.Instance.SetCurrentDialogueEvents(this);
+            }            
         }
 
-        public void TriggerEvent(string eventId) {
+        private void OnEnable()
+        {
+            DialogueController.Instance.UpdateDialogueEventsList(this);
+        }
+
+        private void OnDisable()
+        {
+            DialogueController.Instance.UpdateDialogueEventsList(this);
+        }
+
+        public bool TriggerEvent(string eventId) {
             if (_eventsDictionary.ContainsKey(eventId))
             {
                 _eventsDictionary[eventId].unityEvent?.Invoke();
+                return true;
             }
+            return false;
         }       
 
     }

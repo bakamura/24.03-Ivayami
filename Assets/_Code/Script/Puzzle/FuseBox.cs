@@ -8,6 +8,7 @@ using Ivayami.Player;
 
 namespace Ivayami.Puzzle
 {
+    [RequireComponent(typeof(InteractableFeedbacks))]
     public class FuseBox : Activator, IInteractable
     {
         [SerializeField] private Vector2 _matrixDimensions;
@@ -36,14 +37,14 @@ namespace Ivayami.Puzzle
         private bool _updateActivated;
         private bool _isActive;
         private GameObject _defaultBtn;
-        private InteratctableHighlight _interatctableHighlight;
+        private InteractableFeedbacks _interatctableHighlight;
         private const string _colorEmissionVarName = "_EmissionColor";
 
-        public InteratctableHighlight InteratctableHighlight { get => _interatctableHighlight; }
+        public InteractableFeedbacks InteratctableHighlight { get => _interatctableHighlight; }
 
         private void Awake()
         {
-            _interatctableHighlight = GetComponent<InteratctableHighlight>();
+            _interatctableHighlight = GetComponent<InteractableFeedbacks>();
             _defaultBtn = _fuseUIParent.GetComponentInChildren<Button>(false).gameObject;
 
             MeshRenderer[] temp = _ledsParent.GetComponentsInChildren<MeshRenderer>(false);
@@ -61,17 +62,17 @@ namespace Ivayami.Puzzle
             }
 
             _baseFuseColor = _meshRenderFuses[0].material.GetColor(_colorEmissionVarName);
+            _distanceBetweenLeds *= 1.05f;
         }
 
         [ContextMenu("Interact")]
-        public bool Interact()
+        public void Interact()
         {
             if (!_isActive)
             {
-                _interatctableHighlight.UpdateHighlight(false);
+                _interatctableHighlight.UpdateFeedbacks(false);
                 Setup();
             }
-            return false;
         }
 
         private void Setup()
@@ -152,6 +153,7 @@ namespace Ivayami.Puzzle
             {
                 _isActive = false;
                 _currentSelected.material.SetColor(_colorEmissionVarName, _baseFuseColor);
+                _interatctableHighlight.UpdateFeedbacks(true);
                 UpdateInputsAndUI(_isActive);
                 _onInteractionCancelled?.Invoke();
             }
