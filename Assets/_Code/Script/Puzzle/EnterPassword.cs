@@ -22,9 +22,10 @@ namespace Ivayami.Puzzle
 
         public void InsertCharacter(TMP_Text text)
         {
+            if (_passwordTextField.text.Length >= password.Length && _passwordTextField.text != _incorrectPasswordText) return;
             if (_passwordTextField.text == _incorrectPasswordText) _passwordTextField.text = "";
             _passwordTextField.text += text.text;
-            if(_passwordTextField.text.Length == _passwordTextField.characterLimit) OnCheckPassword?.Invoke();
+            //if(_passwordTextField.text.Length == _passwordTextField.characterLimit) OnCheckPassword?.Invoke();
         }
 
         private void OnValidate()
