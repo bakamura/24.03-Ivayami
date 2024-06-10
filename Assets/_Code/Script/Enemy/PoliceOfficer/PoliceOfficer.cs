@@ -210,11 +210,13 @@ namespace Ivayami.Enemy
             StartBehaviour();
         }
 
-        private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine()
+        private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine(Vector3 finalPos)
         {
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
+            _navMeshAgent.SetDestination(finalPos);
             while (Vector3.Distance(new Vector3(transform.position.x, _navMeshAgent.destination.y, transform.position.z), _navMeshAgent.destination) > _navMeshAgent.stoppingDistance)
             {
+                _navMeshAgent.SetDestination(finalPos);
                 yield return delay;
             }
             _navMeshAgent.velocity = Vector3.zero;
@@ -241,12 +243,12 @@ namespace Ivayami.Enemy
             StopBehaviour();
             PlayerStress.Instance.SetStressMin(98);
             //_navMeshAgent.autoBraking = true;
-            //new Vector3(target.position.x, 0, target.position.z)
-            _navMeshAgent.SetDestination(target.position);            
+            //new Vector3(target.position.x, 0, target.position.z)            
+            //_navMeshAgent.SetDestination(target.position);
             //Debug.Log($"given pos {target.position} going to {_navMeshAgent.destination}");
             if (_detectTargetPointOffBehaviourReachedCoroutine == null)
             {
-                _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine());
+                _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine(target.position));
             }
         }
 
