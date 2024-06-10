@@ -93,6 +93,12 @@ namespace Ivayami.Enemy
             {
                 if (_debugLog) Debug.Log("Attack Target");
                 StopBehaviour();
+                _navMeshAgent.isStopped = true;
+                if (_detectTargetPointOffBehaviourReachedCoroutine != null)
+                {
+                    StopCoroutine(_detectTargetPointOffBehaviourReachedCoroutine);
+                    _detectTargetPointOffBehaviourReachedCoroutine = null;
+                }
                 PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
                 _enemyAnimator.Attack(OnAttackAnimationEnd);
             }
@@ -200,6 +206,7 @@ namespace Ivayami.Enemy
 
         private void OnAttackAnimationEnd()
         {
+            _navMeshAgent.isStopped = false;
             StartBehaviour();
         }
 
