@@ -8,16 +8,13 @@ using System;
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
-    public class PoliceOfficer : MonoBehaviour, IEnemyWalkArea
+    public class PoliceOfficer : MonoBehaviour, IEnemyWalkArea, IChangeTargetPoint
     {
         [Header("Parameters")]
-        //[SerializeField] private EnemyMovementData _movementData;
         [SerializeField, Min(0f)] private float _minDetectionRange;
         [SerializeField, Min(0f)] private float _detectionRange;
-        //[SerializeField, Min(.1f)] private float _randomPointRangeAroundSelf;
         [SerializeField, Range(0f, 180f)] private float _visionAngle = 60f;
         [SerializeField] private Vector3 _visionOffset;
-        //[SerializeField, Min(0f), Tooltip("the complete delay is _tickFrequency + this value")] private float _delayBetweenPatrolPoints;
         [SerializeField, Min(.02f)] private float _tickFrequency = .5f;
         [SerializeField, Min(0f)] private float _stressIncreaseOnAttackTarget;
         [SerializeField] private bool _startActive;
@@ -32,8 +29,6 @@ namespace Ivayami.Enemy
         [SerializeField] private Color _minDistanceAreaColor = Color.yellow;
         [SerializeField] private bool _drawDetectionRange;
         [SerializeField] private Color _detectionRangeAreaColor = Color.red;
-        //[SerializeField] private bool _drawRandomPointRange;
-        //[SerializeField] private Color _randomPointRangeColor = Color.black;
         [SerializeField, Tooltip("if value in NavMeshAgent is 0, the final distance will be collider radius + 0.2")] private bool _drawStoppingDistance;
         [SerializeField, Tooltip("if value in NavMeshAgent is 0, the final distance will be collider radius + 0.2")] private Color _stoppingDistanceColor = Color.green;
         private Mesh _FOVMesh;
@@ -53,13 +48,11 @@ namespace Ivayami.Enemy
         private EnemyAnimator _enemyAnimator;
         private EnemySounds _enemySounds;
         private Vector3 _lastTargetPosition;
-        //private float _currentTargetColliderSizeFactor;
         private Collider[] _hitsCache = new Collider[1];
         private Coroutine _detectTargetPointOffBehaviourReachedCoroutine;
         private EnemyMovementData _currentMovementData;
         private EnemyWalkArea _currenWalkArea;
-        //private WaitForSeconds _betweenPatrolPointsDelay;
-        //private bool _canChaseTarget = true;
+        private float _halfVisionAngle;
 
         public bool IsActive { get; private set; }
 
@@ -69,6 +62,7 @@ namespace Ivayami.Enemy
             _behaviourTickDelay = new WaitForSeconds(_tickFrequency);
             _enemyAnimator = GetComponentInChildren<EnemyAnimator>();
             _enemySounds = GetComponent<EnemySounds>();
+            _halfVisionAngle = _visionAngle / 2f;
             //_betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints);
             //SetMovementData(_movementData);
 
@@ -129,11 +123,10 @@ namespace Ivayami.Enemy
 
         private IEnumerator BehaviourCoroutine()
         {
-            float halfVisionAngle = _visionAngle / 2f;
             while (IsActive)
             {
 
-                if (/*_canChaseTarget &&*/ CheckForTarget(halfVisionAngle))
+                if (/*_canChaseTarget &&*/ CheckForTarget(_halfVisionAngle))
                 {
                     if (!_isChasing)
                     {
@@ -177,11 +170,6 @@ namespace Ivayami.Enemy
                             }
                             else _navMeshAgent.SetDestination(point.Position);
                         }
-                        //if (RandomPoint(out Vector3 target) && _detectTargetReachedCoroutine == null)
-                        //{
-                        //    _navMeshAgent.SetDestination(target);
-                        //    _detectTargetReachedCoroutine = StartCoroutine(DetectTargetReachedCoroutine());
-                        //}
                         if (_debugLog) Debug.Log("Patroling");
                     }
                 }
@@ -210,19 +198,24 @@ namespace Ivayami.Enemy
             StartBehaviour();
         }
 
-        private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine(Vector3 finalPos)
+        private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine(Vector3 finalPos, bool stayInPath)
         {
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
             _navMeshAgent.SetDestination(finalPos);
             while (Vector3.Distance(new Vector3(transform.position.x, _navMeshAgent.destination.y, transform.position.z), _navMeshAgent.destination) > _navMeshAgent.stoppingDistance)
             {
                 _navMeshAgent.SetDestination(finalPos);
+                if (!stayInPath && CheckForTarget(_halfVisionAngle))
+                {
+                    StopCoroutine(_detectTargetPointOffBehaviourReachedCoroutine);
+                    _detectTargetPointOffBehaviourReachedCoroutine = null;
+                    StartBehaviour();
+                }
+                _navMeshAgent.SetDestination(finalPos);
                 yield return delay;
             }
             _navMeshAgent.velocity = Vector3.zero;
             _detectTargetPointOffBehaviourReachedCoroutine = null;
-            //_navMeshAgent.autoBraking = false;
-            //_enemyAnimator.Interact(HandleOnInteractAnimationEnd);
         }
 
         public void SetMovementData(EnemyMovementData data)
@@ -238,17 +231,18 @@ namespace Ivayami.Enemy
             _currenWalkArea = area;
         }
 
-        public void ChangeTargetPoint(Transform target)
+        public void GoToPointWithoutStop(Transform target)
         {
             StopBehaviour();
             PlayerStress.Instance.SetStressMin(98);
-            //_navMeshAgent.autoBraking = true;
-            //new Vector3(target.position.x, 0, target.position.z)            
-            //_navMeshAgent.SetDestination(target.position);
-            //Debug.Log($"given pos {target.position} going to {_navMeshAgent.destination}");
+            GoToPoint(target);
+        }
+
+        public void GoToPoint(Transform target)
+        {
             if (_detectTargetPointOffBehaviourReachedCoroutine == null)
             {
-                _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine(target.position));
+                _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine(target.position, false));
             }
         }
 
