@@ -98,11 +98,19 @@ namespace Ivayami.Puzzle
         }
 
         private IEnumerator CallbackDelayCoroutine(Animator animator, int stateHash, float delay, UnityEvent unityEvent)
-        {
-            //waits for the animation transition to finish
+        {            
             if (animator)
             {
-                while (animator.GetCurrentAnimatorStateInfo(0).shortNameHash != stateHash)
+                // if is in other state wait for the state to finish
+                if(animator.GetCurrentAnimatorStateInfo(0).shortNameHash != stateHash)
+                {
+                    while (animator.GetCurrentAnimatorStateInfo(0).shortNameHash != stateHash)
+                    {
+                        yield return null;
+                    }
+                }
+                // wait for the stateHash to finish
+                while (animator.GetCurrentAnimatorStateInfo(0).shortNameHash == stateHash)
                 {
                     yield return null;
                 }

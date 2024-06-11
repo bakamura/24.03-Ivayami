@@ -1,9 +1,9 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using System;
+using Ivayami.Player;
 
 namespace Ivayami.Puzzle
 {
@@ -43,6 +43,7 @@ namespace Ivayami.Puzzle
             if (_waitAnimationCoroutine == null)
             {
                 _quickTimeButton.action.started += HandleOnClick;
+                PlayerMovement.Instance.ToggleMovement(false);
                 _onStart?.Invoke();
                 for (int i = 0; i < _animations.Length; i++)
                 {
@@ -56,6 +57,7 @@ namespace Ivayami.Puzzle
         public void EndEvent()
         {
             _quickTimeButton.action.started -= HandleOnClick;
+            PlayerMovement.Instance.ToggleMovement(true);
             _currentClickAmount = 0;
             _onEnd?.Invoke();
             SetAllSpeeds(true);
@@ -91,7 +93,7 @@ namespace Ivayami.Puzzle
             }
         }
 
-        private IEnumerator WaitAnimationEndCoroutine(bool isRecordedAnimation, Action onWaitEnd)
+        private IEnumerator WaitAnimationEndCoroutine(bool waitToEnterState, Action onWaitEnd)
         {
             byte count = 0;
             while (count < _animations.Length)
@@ -99,7 +101,7 @@ namespace Ivayami.Puzzle
                 count = 0;
                 for (int i = 0; i < _animations.Length; i++)
                 {
-                    if (isRecordedAnimation)
+                    if (waitToEnterState)
                     {
                         if (_animations[i].Animator.GetCurrentAnimatorStateInfo(0).shortNameHash == _animations[i].StateHash) count++;
                     }
