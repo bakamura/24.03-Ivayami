@@ -103,7 +103,7 @@ namespace Ivayami.Puzzle
 
         private void OnDestroy()
         {
-            if (_icon) InputCallbacks.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
+            if (_icon && InputCallbacks.Instance) InputCallbacks.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
         }
 
         //private void OnValidate()

@@ -9,14 +9,16 @@ namespace Ivayami.Puzzle
     public class ActivableAnimation : Activable, IInteractable
     {
         //[SerializeField] private bool _startActive;
+        //[Header("PARAMETERS")]
         [SerializeField] private bool _lockOnActiveState;
         [SerializeField] private Animator _interactionAnimator;
         [SerializeField] private Animator _activateAnimator;
         //[SerializeField] private UnityEvent _onInteractStart;
+        [Header("EVENTS")]
         [SerializeField] private AnimationEvent _onActivate;
         [SerializeField] private AnimationEvent _onDeactivate;
         [SerializeField] private AnimationEvent _onInteract;
-        [SerializeField] private AnimationEvent _onInteractEnd;
+        [SerializeField] private AnimationEvent _onInteractReturn;
 
         private static readonly int _interactBoolHash = Animator.StringToHash("interact");
         private static readonly int _activateBoolHash = Animator.StringToHash("activate");
@@ -112,8 +114,10 @@ namespace Ivayami.Puzzle
                     }
                 }
                 // wait for the stateHash to finish
-                while (animator.GetCurrentAnimatorStateInfo(0).shortNameHash == stateHash)
+                float count = 0;
+                while (count < animator.GetCurrentAnimatorClipInfo(0)[0].clip.length)
                 {
+                    count += Time.deltaTime;
                     yield return null;
                 }
             }
@@ -123,6 +127,7 @@ namespace Ivayami.Puzzle
 
         private void CheckCallbacks(int parameterHash)
         {
+            StopCallbackCoroutine();
             if (parameterHash == _activateBoolHash)
             {
                 if (_activateAnimator.GetBool(_activateBoolHash))
@@ -130,7 +135,6 @@ namespace Ivayami.Puzzle
                     if ((!_onActivate.DoOnce || _onActivate.DoOnce && !_onActivate.EventTriggered)
                         && _onActivate.OnComplete.GetPersistentEventCount() > 0)
                     {
-                        StopCallbackCoroutine();
                         _callbackCoroutine = StartCoroutine(CallbackDelayCoroutine(_activateAnimator, _activationStateHash,
                             _activateAnimator ? _activateAnimator.GetCurrentAnimatorStateInfo(0).length + _onActivate.Delay : _onActivate.Delay,
                             _onActivate.OnComplete));
@@ -141,7 +145,6 @@ namespace Ivayami.Puzzle
                     if ((!_onDeactivate.DoOnce || _onDeactivate.DoOnce && !_onDeactivate.EventTriggered)
                         && _onDeactivate.OnComplete.GetPersistentEventCount() > 0)
                     {
-                        StopCallbackCoroutine();
                         _callbackCoroutine = StartCoroutine(CallbackDelayCoroutine(_activateAnimator, _activationStateHash,
                             _activateAnimator ? _activateAnimator.GetCurrentAnimatorStateInfo(0).length + _onDeactivate.Delay : _onDeactivate.Delay,
                             _onDeactivate.OnComplete));
@@ -155,7 +158,6 @@ namespace Ivayami.Puzzle
                     if ((!_onInteract.DoOnce || _onInteract.DoOnce && !_onInteract.EventTriggered)
                         && _onInteract.OnComplete.GetPersistentEventCount() > 0)
                     {
-                        StopCallbackCoroutine();
                         _callbackCoroutine = StartCoroutine(CallbackDelayCoroutine(_interactionAnimator, _interactionStateHash,
                             _interactionAnimator ? _interactionAnimator.GetCurrentAnimatorStateInfo(0).length + _onInteract.Delay : _onInteract.Delay,
                             _onInteract.OnComplete));
@@ -163,13 +165,12 @@ namespace Ivayami.Puzzle
                 }
                 else
                 {
-                    if ((!_onInteractEnd.DoOnce || _onInteractEnd.DoOnce && !_onInteractEnd.EventTriggered)
-                        && _onInteractEnd.OnComplete.GetPersistentEventCount() > 0)
+                    if ((!_onInteractReturn.DoOnce || _onInteractReturn.DoOnce && !_onInteractReturn.EventTriggered)
+                        && _onInteractReturn.OnComplete.GetPersistentEventCount() > 0)
                     {
-                        StopCallbackCoroutine();
                         _callbackCoroutine = StartCoroutine(CallbackDelayCoroutine(_interactionAnimator, _interactionStateHash,
-                            _interactionAnimator ? _interactionAnimator.GetCurrentAnimatorStateInfo(0).length + _onInteractEnd.Delay : _onInteractEnd.Delay,
-                            _onInteractEnd.OnComplete));
+                            _interactionAnimator ? _interactionAnimator.GetCurrentAnimatorStateInfo(0).length + _onInteractReturn.Delay : _onInteractReturn.Delay,
+                            _onInteractReturn.OnComplete));
                     }
                 }
             }
