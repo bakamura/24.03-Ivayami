@@ -53,6 +53,7 @@ namespace Ivayami.Enemy
         private EnemyMovementData _currentMovementData;
         private EnemyWalkArea _currenWalkArea;
         private float _halfVisionAngle;
+        private float _speedMultiplier;
 
         public bool IsActive { get; private set; }
 
@@ -202,20 +203,17 @@ namespace Ivayami.Enemy
         {
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
             _navMeshAgent.SetDestination(finalPos);
-            while (Vector3.Distance(new Vector3(transform.position.x, _navMeshAgent.destination.y, transform.position.z), _navMeshAgent.destination) > _navMeshAgent.stoppingDistance)
+            while (Vector3.Distance(new Vector3(transform.position.x, _navMeshAgent.destination.y, transform.position.z), _navMeshAgent.destination) > _navMeshAgent.stoppingDistance ||
+                (!stayInPath && !CheckForTarget(_halfVisionAngle)))
             {
-                _navMeshAgent.SetDestination(finalPos);
-                if (!stayInPath && CheckForTarget(_halfVisionAngle))
-                {
-                    StopCoroutine(_detectTargetPointOffBehaviourReachedCoroutine);
-                    _detectTargetPointOffBehaviourReachedCoroutine = null;
-                    StartBehaviour();
-                }
                 _navMeshAgent.SetDestination(finalPos);
                 yield return delay;
             }
             _navMeshAgent.velocity = Vector3.zero;
+            if (_speedMultiplier > 0) ChangeSpeedMultiplier(0);
             _detectTargetPointOffBehaviourReachedCoroutine = null;
+            if (stayInPath && CheckForTarget(_halfVisionAngle))
+                StartBehaviour();
         }
 
         public void SetMovementData(EnemyMovementData data)
@@ -235,14 +233,39 @@ namespace Ivayami.Enemy
         {
             StopBehaviour();
             PlayerStress.Instance.SetStressMin(98);
-            GoToPoint(target);
+            HandlePointReachedCoroutine(true, target);
+        }
+
+        private void HandlePointReachedCoroutine(bool stayInPath, Transform target)
+        {
+            if (_detectTargetPointOffBehaviourReachedCoroutine == null)
+            {
+                _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine(target.position, stayInPath));
+            }
         }
 
         public void GoToPoint(Transform target)
         {
-            if (_detectTargetPointOffBehaviourReachedCoroutine == null)
+            GoToPoint(target, 1);
+        }
+
+        public void GoToPoint(Transform target, float speedIncrease)
+        {
+            ChangeSpeedMultiplier(speedIncrease);
+            HandlePointReachedCoroutine(false, target);
+        }
+
+        private void ChangeSpeedMultiplier(float value)
+        {
+            if (value > 0)
             {
-                _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine(target.position, false));
+                _speedMultiplier = value;
+                _navMeshAgent.speed *= _speedMultiplier;
+            }
+            else
+            {
+                _speedMultiplier = value;
+                _navMeshAgent.speed /= _speedMultiplier;
             }
         }
 
