@@ -56,6 +56,7 @@ namespace Ivayami.Enemy
         private float _speedMultiplier;
 
         public bool IsActive { get; private set; }
+        public LayerMask TargetLayer => _targetLayer;
 
         private void Awake()
         {
@@ -80,22 +81,6 @@ namespace Ivayami.Enemy
             if (_startActive)
             {
                 StartBehaviour();
-            }
-        }
-        private void OnTriggerEnter(Collider other)
-        {
-            if ((1 << other.gameObject.layer) == _targetLayer)
-            {
-                if (_debugLog) Debug.Log("Attack Target");
-                StopBehaviour();
-                _navMeshAgent.isStopped = true;
-                if (_detectTargetPointOffBehaviourReachedCoroutine != null)
-                {
-                    StopCoroutine(_detectTargetPointOffBehaviourReachedCoroutine);
-                    _detectTargetPointOffBehaviourReachedCoroutine = null;
-                }
-                PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
-                _enemyAnimator.Attack(OnAttackAnimationEnd);
             }
         }
 
@@ -193,27 +178,46 @@ namespace Ivayami.Enemy
             return targetInsideRange && !blockingVision && (isInMinRange || isInVisionAngle);
         }
 
+        public void Attack()
+        {
+            if (!_navMeshAgent.isStopped)
+            {
+                if (_debugLog) Debug.Log("Attack Target");
+                StopBehaviour();
+                StopTargetPointReachedCoroutine();
+                _navMeshAgent.isStopped = true;
+                PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
+                _enemyAnimator.Attack(OnAttackAnimationEnd);
+            }
+        }
+
         private void OnAttackAnimationEnd()
         {
             _navMeshAgent.isStopped = false;
             StartBehaviour();
         }
 
-        private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine(Vector3 finalPos, bool stayInPath)
+        private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine(Vector3 finalPos, bool stayInPath, float durationInPlace)
         {
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
+            WaitForSeconds stayInPointDelay = new WaitForSeconds(durationInPlace);
+            bool targetDetected = false;
             _navMeshAgent.SetDestination(finalPos);
-            while (Vector3.Distance(new Vector3(transform.position.x, _navMeshAgent.destination.y, transform.position.z), _navMeshAgent.destination) > _navMeshAgent.stoppingDistance ||
-                (!stayInPath && !CheckForTarget(_halfVisionAngle)))
+            while (Vector3.Distance(new Vector3(transform.position.x, _navMeshAgent.destination.y, transform.position.z), _navMeshAgent.destination) > _navMeshAgent.stoppingDistance)
             {
+                if (!stayInPath && CheckForTarget(_halfVisionAngle))
+                {
+                    targetDetected = true;
+                    break;
+                }
                 _navMeshAgent.SetDestination(finalPos);
                 yield return delay;
             }
+            if (!targetDetected) yield return stayInPointDelay;
             _navMeshAgent.velocity = Vector3.zero;
             if (_speedMultiplier > 0) ChangeSpeedMultiplier(0);
             _detectTargetPointOffBehaviourReachedCoroutine = null;
-            if (stayInPath && CheckForTarget(_halfVisionAngle))
-                StartBehaviour();
+            StartBehaviour();
         }
 
         public void SetMovementData(EnemyMovementData data)
@@ -231,28 +235,35 @@ namespace Ivayami.Enemy
 
         public void GoToPointWithoutStop(Transform target)
         {
-            StopBehaviour();
-            PlayerStress.Instance.SetStressMin(98);
-            HandlePointReachedCoroutine(true, target);
+            if (!_navMeshAgent.isStopped)
+            {
+                StopBehaviour();
+                PlayerStress.Instance.SetStressMin(98);
+                HandlePointReachedCoroutine(true, 0, target);
+            }
         }
 
-        private void HandlePointReachedCoroutine(bool stayInPath, Transform target)
+        private void HandlePointReachedCoroutine(bool stayInPath, float durationInPlace, Transform target)
         {
             if (_detectTargetPointOffBehaviourReachedCoroutine == null)
             {
-                _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine(target.position, stayInPath));
+                _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine(target.position, stayInPath, durationInPlace));
             }
         }
 
         public void GoToPoint(Transform target)
         {
-            GoToPoint(target, 1);
+            GoToPoint(target, 1, 0);
         }
 
-        public void GoToPoint(Transform target, float speedIncrease)
+        public void GoToPoint(Transform target, float speedIncrease, float durationInPlace)
         {
-            ChangeSpeedMultiplier(speedIncrease);
-            HandlePointReachedCoroutine(false, target);
+            if (!_navMeshAgent.isStopped)
+            {
+                StopBehaviour();
+                ChangeSpeedMultiplier(speedIncrease);
+                HandlePointReachedCoroutine(false, durationInPlace, target);
+            }
         }
 
         private void ChangeSpeedMultiplier(float value)
@@ -264,9 +275,28 @@ namespace Ivayami.Enemy
             }
             else
             {
-                _speedMultiplier = value;
                 _navMeshAgent.speed /= _speedMultiplier;
+                _speedMultiplier = value;
             }
+        }
+
+        private void StopTargetPointReachedCoroutine()
+        {
+            if (_detectTargetPointOffBehaviourReachedCoroutine != null)
+            {
+                StopCoroutine(_detectTargetPointOffBehaviourReachedCoroutine);
+                _detectTargetPointOffBehaviourReachedCoroutine = null;
+            }
+        }
+
+        public void Trip()
+        {
+            if (_debugLog) Debug.Log("Trip Animation");
+            StopBehaviour();
+            StopTargetPointReachedCoroutine();
+            _navMeshAgent.isStopped = true;
+            _navMeshAgent.velocity = Vector3.zero;
+            _enemyAnimator.TakeDamage(OnAttackAnimationEnd);
         }
 
         //private void HandleOnInteractAnimationEnd()

@@ -6,6 +6,7 @@ namespace Ivayami.Enemy
     {
         [SerializeField, Min(0f)] private float _noiseRange;
         [SerializeField, Min(0f), Tooltip("Multiplicative")] private float _speedIncrease= 1;
+        [SerializeField, Min(0f)] private float _durationInPlace;
         [SerializeField] private LayerMask _noiseTargetLayer;
 
 #if UNITY_EDITOR
@@ -20,7 +21,7 @@ namespace Ivayami.Enemy
             {
                 if (_hitsCache[i] && _hitsCache[i].TryGetComponent<IChangeTargetPoint>(out IChangeTargetPoint temp))
                 {
-                    temp.GoToPoint(transform, _speedIncrease);
+                    temp.GoToPoint(transform, _speedIncrease, _durationInPlace);
                 }
             }
         }
