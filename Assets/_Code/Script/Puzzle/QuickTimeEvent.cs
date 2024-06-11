@@ -85,9 +85,11 @@ namespace Ivayami.Puzzle
             if (_waitAnimationCoroutine == null)
             {
                 _currentClickAmount++;
+                _interactableFeedbacks.PlayInteractionAnimation();
                 if (_currentClickAmount > _amountOfTimesToClick)
                 {
                     SetAllSpeeds(true);
+                    _interactableFeedbacks.UpdateInteractionIcon(false);
                     StartCoroutine(WaitAnimationEndCoroutine(false, EndEvent));
                 }
                 else
