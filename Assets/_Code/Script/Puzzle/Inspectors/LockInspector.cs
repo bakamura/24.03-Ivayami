@@ -10,7 +10,7 @@ namespace Ivayami.Puzzle
         SerializedProperty cancelInteractionInput, interactionType, confirmInput,
             itemsRequired, deliverItemsUI, deliverOptionsContainer, navigateUIInput, deliverBtn, onItemDeliverFailed,
             passwordUI,
-            onInteract, onCancelInteraction, onActivate;
+            onInteract, onCancelInteraction, onActivate, onInteractionFailed;
         public override void OnInspectorGUI()
         {
             GUILayout.Label("INPUTS", EditorStyles.boldLabel);
@@ -45,6 +45,7 @@ namespace Ivayami.Puzzle
             EditorGUILayout.PropertyField(onInteract, new GUIContent("On Interact"));
             EditorGUILayout.PropertyField(onCancelInteraction, new GUIContent("On Cancel Interaction"));
             EditorGUILayout.PropertyField(onActivate, new GUIContent("On Interaction Complete"));
+            EditorGUILayout.PropertyField(onInteractionFailed, new GUIContent("On Interaction Faield"));
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -64,6 +65,7 @@ namespace Ivayami.Puzzle
             onInteract = serializedObject.FindProperty("_onInteract");
             onCancelInteraction = serializedObject.FindProperty("_onCancelInteraction");
             onActivate = serializedObject.FindProperty("onActivate");
+            onInteractionFailed = serializedObject.FindProperty("_onInteractionFailed");
         }
     }
 }

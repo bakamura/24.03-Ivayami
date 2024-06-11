@@ -28,6 +28,7 @@ namespace Ivayami.Puzzle
 
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private UnityEvent _onCancelInteraction;
+        [SerializeField] private UnityEvent _onInteractionFailed;
 
 
         private int _selectedDeliverOptionIndex;
@@ -90,7 +91,11 @@ namespace Ivayami.Puzzle
                 IsActive = !IsActive;
                 onActivate?.Invoke();
             }
-            else _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
+            else
+            {
+                _onInteractionFailed?.Invoke();
+                _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
+            }
         }
 
         private void UpdateInputs(bool isActive)
