@@ -18,6 +18,15 @@ namespace Ivayami.Puzzle
 
         private byte _currentClickAmount;
         private Coroutine _waitAnimationCoroutine;
+        private InteractableFeedbacks m_interactableFeedbacks;
+        private InteractableFeedbacks _interactableFeedbacks
+        {
+            get
+            {
+                if(!m_interactableFeedbacks) m_interactableFeedbacks = GetComponent<InteractableFeedbacks>();
+                return m_interactableFeedbacks;
+            }
+        }
         [System.Serializable]
         private struct AnimatorInfo
         {
@@ -112,6 +121,7 @@ namespace Ivayami.Puzzle
                 }
                 yield return null;
             }
+            _interactableFeedbacks.UpdateInteractionIcon(waitToEnterState);
             onWaitEnd?.Invoke();
             _waitAnimationCoroutine = null;
         }

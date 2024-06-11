@@ -28,6 +28,11 @@ namespace Ivayami.Puzzle
             if (_icon) _icon.enabled = isActive;
         }
 
+        public void UpdateInteractionIcon(bool isActive)
+        {
+            if (_icon) _icon.enabled = isActive;
+        }
+
         private void Setup()
         {
             //setup materials
