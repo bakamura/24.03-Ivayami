@@ -34,7 +34,7 @@ namespace Ivayami.Puzzle
 
         public void Interact()
         {
-            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Collect);
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             GiveItem();
         }
 

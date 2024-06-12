@@ -10,16 +10,18 @@ namespace Ivayami.Audio
         [SerializeField] private EventReference _interactSoundReference;
         [SerializeField] private EventReference _interactReturnSoundReference;
         [SerializeField] private EventReference _activateSoundReference;
-        [SerializeField] private EventReference _activateReturnSoundReference;
-        [SerializeField] private EventReference _collectSoundReference;
-        [SerializeField] private EventReference _actionFailedSoundReference;
+        [SerializeField] private EventReference _deactivateSoundReference;
+        //[SerializeField] private EventReference _collectSoundReference;
+        [SerializeField, Tooltip("When Puzzle Fails")] private EventReference _actionFailedSoundReference;
+        [SerializeField, Tooltip("When Puzzle Completes")] private EventReference _actionSuccessSoundReference;
 
         private EventInstance _interactSoundInstance;
         private EventInstance _interactReturnSoundInstance;
         private EventInstance _activateSoundInstance;
-        private EventInstance _activateReturnSoundInstance;
-        private EventInstance _collectSoundInstance;
+        private EventInstance _deactivateSoundInstance;
+        //private EventInstance _collectSoundInstance;
         private EventInstance _actionFailedSoundInstance;
+        private EventInstance _actionSuccessSoundInstance;
 
         private bool _hasDoneSetup;
 
@@ -28,9 +30,10 @@ namespace Ivayami.Audio
             Interact,
             InteractReturn,
             Activate,
-            ActivateReturn,
-            Collect,
-            ActionFailed
+            Deactivate,
+            //Collect,
+            ActionFailed, 
+            ActionSuccess
         }
 
         public void PlaySound(SoundTypes soundType)
@@ -48,14 +51,17 @@ namespace Ivayami.Audio
                 case SoundTypes.Activate:
                     PlayOneShot(_activateSoundInstance);
                     break;
-                case SoundTypes.ActivateReturn:
-                    PlayOneShot(_activateReturnSoundInstance);
+                case SoundTypes.Deactivate:
+                    PlayOneShot(_deactivateSoundInstance);
                     break;
-                case SoundTypes.Collect:
-                    PlayOneShot(_collectSoundInstance);
-                    break;
+                //case SoundTypes.Collect:
+                //    PlayOneShot(_collectSoundInstance);
+                //    break;
                 case SoundTypes.ActionFailed:
                     PlayOneShot(_actionFailedSoundInstance);
+                    break;
+                case SoundTypes.ActionSuccess:
+                    PlayOneShot(_actionSuccessSoundInstance);
                     break;
             }
         }
@@ -67,9 +73,10 @@ namespace Ivayami.Audio
                 if(!_interactSoundReference.IsNull)_interactSoundInstance = InstantiateEvent(_interactSoundReference);
                 if (!_interactReturnSoundReference.IsNull) _interactReturnSoundInstance = InstantiateEvent(_interactReturnSoundReference);
                 if (!_activateSoundReference.IsNull) _activateSoundInstance = InstantiateEvent(_activateSoundReference);
-                if (!_activateReturnSoundReference.IsNull) _activateReturnSoundInstance = InstantiateEvent(_activateReturnSoundReference);
-                if (!_collectSoundReference.IsNull) _collectSoundInstance = InstantiateEvent(_collectSoundReference);
+                if (!_deactivateSoundReference.IsNull) _deactivateSoundInstance = InstantiateEvent(_deactivateSoundReference);
+                //if (!_collectSoundReference.IsNull) _collectSoundInstance = InstantiateEvent(_collectSoundReference);
                 if (!_actionFailedSoundReference.IsNull) _actionFailedSoundInstance = InstantiateEvent(_actionFailedSoundReference);
+                if (!_actionSuccessSoundReference.IsNull) _actionSuccessSoundInstance = InstantiateEvent(_actionSuccessSoundReference);
                 _hasDoneSetup = true;
             }
         }
