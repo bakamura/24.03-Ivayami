@@ -89,6 +89,7 @@ namespace Ivayami.Puzzle
                 UpdateDeliverItemUI(false);
                 UpdateInputs(false);
                 IsActive = !IsActive;
+                _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
                 onActivate?.Invoke();
             }
             else

@@ -96,7 +96,7 @@ namespace Ivayami.Puzzle
             if (_activateAnimator)
             {
                 _activateAnimator.SetBool(_activateBoolHash, IsActive);
-                _interactableSounds.PlaySound(IsActive ? InteractableSounds.SoundTypes.Activate : InteractableSounds.SoundTypes.ActivateReturn);
+                _interactableSounds.PlaySound(IsActive ? InteractableSounds.SoundTypes.Activate : InteractableSounds.SoundTypes.Deactivate);
             }
             CheckCallbacks(_activateBoolHash);
         }

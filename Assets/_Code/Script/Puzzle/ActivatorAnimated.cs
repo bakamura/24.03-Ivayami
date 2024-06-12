@@ -23,7 +23,7 @@ namespace Ivayami.Puzzle
         private void HandleOnActivate()
         {
             _animator.SetBool(ACTIVATE, _activator.IsActive);
-            _interactableSounds.PlaySound(_activator.IsActive ? InteractableSounds.SoundTypes.Activate : InteractableSounds.SoundTypes.ActivateReturn);
+            _interactableSounds.PlaySound(_activator.IsActive ? InteractableSounds.SoundTypes.Activate : InteractableSounds.SoundTypes.Deactivate);
         }
     }
 }
