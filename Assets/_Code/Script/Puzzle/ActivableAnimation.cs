@@ -116,7 +116,7 @@ namespace Ivayami.Puzzle
                 // wait for the stateHash to finish
                 float count = 0;
                 while (count < animator.GetCurrentAnimatorClipInfo(0)[0].clip.length)
-                {
+                {                    
                     count += Time.deltaTime;
                     yield return null;
                 }
