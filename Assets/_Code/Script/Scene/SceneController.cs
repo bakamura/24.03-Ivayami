@@ -9,7 +9,7 @@ namespace Ivayami.Scene
 {
     public class SceneController : MonoSingleton<SceneController>
     {
-        [SerializeField] private string _mainMenuSceneName;
+        [SceneDropdown, SerializeField] private string _mainMenuSceneName;
         [SerializeField] private bool _debugLogs;
 
         private Dictionary<string, ChapterPointers> _chapterPointers;

@@ -96,7 +96,7 @@ namespace Ivayami.Puzzle
             if (_activateAnimator)
             {
                 _activateAnimator.SetBool(_activateBoolHash, IsActive);
-                _interactableSounds.PlaySound(IsActive ? InteractableSounds.SoundTypes.Activate : InteractableSounds.SoundTypes.ActivateReturn);
+                _interactableSounds.PlaySound(IsActive ? InteractableSounds.SoundTypes.Activate : InteractableSounds.SoundTypes.Deactivate);
             }
             CheckCallbacks(_activateBoolHash);
         }
@@ -116,7 +116,7 @@ namespace Ivayami.Puzzle
                 // wait for the stateHash to finish
                 float count = 0;
                 while (count < animator.GetCurrentAnimatorClipInfo(0)[0].clip.length)
-                {
+                {                    
                     count += Time.deltaTime;
                     yield return null;
                 }
