@@ -1230,6 +1230,168 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1507228781}
   m_LocalEulerAnglesHint: {x: 29.8, y: 94.4, z: 0}
+--- !u!1 &19196853
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 19196854}
+  - component: {fileID: 19196858}
+  - component: {fileID: 19196857}
+  - component: {fileID: 19196856}
+  - component: {fileID: 19196855}
+  m_Layer: 0
+  m_Name: ExitFromPoliceStationBackEntrance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &19196854
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19196853}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 251.573, y: 362.53, z: 172.06}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1769452743}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &19196855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19196853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa73645d83a4ff468463eb130652fe7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &19196856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19196853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _duration: 1
+  _fadeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _onFadeEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 19196855}
+        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
+        m_MethodName: UnlockInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 19196853}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &19196857
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19196853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerType: 0
+  _delayToActivateEvent: 0
+  _onExecute:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 19196856}
+        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
+        m_MethodName: FadeOut
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _optionalTag: 
+--- !u!65 &19196858
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19196853}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 2.3383484, z: 1}
+  m_Center: {x: 0, y: 0.6691742, z: 0}
 --- !u!1001 &20106170
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3413,6 +3575,71 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: faf7b2c684532084bbe0770daccafd82, type: 3}
   m_PrefabInstance: {fileID: 95220481}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &95917829
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 95917830}
+  - component: {fileID: 95917831}
+  m_Layer: 0
+  m_Name: PoliceStationBackEntrance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &95917830
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95917829}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 530527308}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &95917831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95917829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sceneId: PoliceStation
+  _onSceneLoad:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1388014285}
+        m_TargetAssemblyTypeName: Ivayami.Scene.ManualTeleporter, Assembly-CSharp
+        m_MethodName: Teleport
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onSceneUnload:
+    m_PersistentCalls:
+      m_Calls: []
+  _drawGizmos: 0
+  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1001 &102667486
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10973,6 +11200,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1247378190}
+  - {fileID: 2007879734}
+  - {fileID: 1388014287}
   m_Father: {fileID: 24814409}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &367508868
@@ -15988,6 +16217,71 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7f0f028417f54dd43aa5a9eeb41f5709, type: 3}
   m_PrefabInstance: {fileID: 499703245}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &500284649
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 500284650}
+  - component: {fileID: 500284651}
+  m_Layer: 0
+  m_Name: PoliceStationFrontEntrance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &500284650
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 500284649}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 530527308}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &500284651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 500284649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sceneId: PoliceStation
+  _onSceneLoad:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2007879732}
+        m_TargetAssemblyTypeName: Ivayami.Scene.ManualTeleporter, Assembly-CSharp
+        m_MethodName: Teleport
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onSceneUnload:
+    m_PersistentCalls:
+      m_Calls: []
+  _drawGizmos: 0
+  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1001 &503097047
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16966,6 +17260,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1721083755}
+  - {fileID: 500284650}
+  - {fileID: 95917830}
   m_Father: {fileID: 24814409}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &531163189
@@ -18186,6 +18482,305 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: dff1ca0ab2f285946ad83dbe0712a37f, type: 3}
   m_PrefabInstance: {fileID: 1300277318}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &577616154
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1259635854}
+    m_Modifications:
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 3077425110441809101, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: fd8eff40f255fc54da09ddf36e15e8ca, type: 2}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 577616161}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 577616160}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: set_enabled
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: FadeIn
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.Collider, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: Ivayami.UI.ScreenFade, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_Name
+      value: DoorToPoliceStationBackEntrance
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 250.32
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 362.37
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 171.95
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7307430903965124065, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4577329257034769230, guid: cfe04a6470001f4468d9705a54374e24, type: 3}
+    m_RemovedComponents:
+    - {fileID: 1257347051849839360, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 577616161}
+    - targetCorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 577616160}
+    - targetCorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 577616159}
+    - targetCorrespondingSourceObject: {fileID: 5487894868969815570, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 577616158}
+  m_SourcePrefab: {fileID: 100100000, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+--- !u!4 &577616155 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+  m_PrefabInstance: {fileID: 577616154}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &577616156 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5487894868969815570, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+  m_PrefabInstance: {fileID: 577616154}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &577616157 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+  m_PrefabInstance: {fileID: 577616154}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &577616158
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577616156}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0018231573, y: 0.011047811, z: 0.021347947}
+  m_Center: {x: 0.00011749286, y: 0.0011532069, z: 0.011094512}
+--- !u!114 &577616159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577616157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa73645d83a4ff468463eb130652fe7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &577616160
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577616157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _duration: 1
+  _fadeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _onFadeEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 577616159}
+        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
+        m_MethodName: LockInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 95917831}
+        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!65 &577616161
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577616157}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0018231573, y: 0.011047811, z: 0.021347947}
+  m_Center: {x: 0.00011749286, y: 0.0011532069, z: 0.011094512}
 --- !u!1001 &577636264
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18404,6 +18999,168 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: faf7b2c684532084bbe0770daccafd82, type: 3}
   m_PrefabInstance: {fileID: 582335869}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &584218824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 584218825}
+  - component: {fileID: 584218829}
+  - component: {fileID: 584218828}
+  - component: {fileID: 584218827}
+  - component: {fileID: 584218826}
+  m_Layer: 0
+  m_Name: ExitFromPoliceStationFrontEntrance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &584218825
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584218824}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 218.139, y: 360.43, z: 172.978}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1769452743}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &584218826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584218824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa73645d83a4ff468463eb130652fe7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &584218827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584218824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _duration: 1
+  _fadeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _onFadeEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 584218826}
+        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
+        m_MethodName: UnlockInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 584218824}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &584218828
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584218824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerType: 0
+  _delayToActivateEvent: 0
+  _onExecute:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 584218827}
+        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
+        m_MethodName: FadeOut
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _optionalTag: 
+--- !u!65 &584218829
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 584218824}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 2.3383484, z: 1}
+  m_Center: {x: 0, y: 0.6691742, z: 0}
 --- !u!1 &584915970
 GameObject:
   m_ObjectHideFlags: 0
@@ -30745,6 +31502,305 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: df9f13f7d00230f4d98fb548de8efe94, type: 3}
   m_PrefabInstance: {fileID: 986189444}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &987367838
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1259635854}
+    m_Modifications:
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 3077425110441809101, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: fd8eff40f255fc54da09ddf36e15e8ca, type: 2}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 987367845}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 987367844}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: set_enabled
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: FadeIn
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: UnityEngine.Collider, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: Ivayami.UI.ScreenFade, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_Name
+      value: DoorToPoliceStationFrontEntrance
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 219.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 360.43
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 172.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7307430903965124065, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 4577329257034769230, guid: cfe04a6470001f4468d9705a54374e24, type: 3}
+    m_RemovedComponents:
+    - {fileID: 1257347051849839360, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 987367845}
+    - targetCorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 987367844}
+    - targetCorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 987367843}
+    - targetCorrespondingSourceObject: {fileID: 5487894868969815570, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 987367842}
+  m_SourcePrefab: {fileID: 100100000, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+--- !u!4 &987367839 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+  m_PrefabInstance: {fileID: 987367838}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &987367840 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5487894868969815570, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+  m_PrefabInstance: {fileID: 987367838}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &987367841 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+  m_PrefabInstance: {fileID: 987367838}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &987367842
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987367840}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0018231573, y: 0.011047811, z: 0.021347947}
+  m_Center: {x: 0.00011749286, y: 0.0011532069, z: 0.011094512}
+--- !u!114 &987367843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987367841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afa73645d83a4ff468463eb130652fe7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &987367844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987367841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _duration: 1
+  _fadeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _onFadeEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 987367843}
+        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
+        m_MethodName: LockInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 500284651}
+        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!65 &987367845
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 987367841}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0018231573, y: 0.011047811, z: 0.021347947}
+  m_Center: {x: 0.00011749286, y: 0.0011532069, z: 0.011094512}
 --- !u!1001 &995808627
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39395,6 +40451,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1214147750}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1214147754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39416,18 +40484,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
         m_MethodName: FadeOut
         m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1214147755}
-        m_TargetAssemblyTypeName: UnityEngine.Collider, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -41138,6 +42194,8 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1515600414}
+  - {fileID: 987367839}
+  - {fileID: 577616155}
   m_Father: {fileID: 24814409}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1263291573
@@ -45494,6 +46552,54 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: df9f13f7d00230f4d98fb548de8efe94, type: 3}
   m_PrefabInstance: {fileID: 1384916339}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1388014285
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1388014287}
+  - component: {fileID: 1388014286}
+  m_Layer: 0
+  m_Name: CityToPoliceStationBackEntrance
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1388014286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388014285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d130a63402c1b4449dcea371989edb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _teleportType: 0
+  _teleportTarget: {fileID: 0}
+  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
+  _gizmoSize: 0.2
+--- !u!4 &1388014287
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1388014285}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: -117.12, y: 1.96, z: 29.12}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 365465060}
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!1001 &1392022741
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55570,6 +56676,8 @@ Transform:
   m_Children:
   - {fileID: 1773849180}
   - {fileID: 1214147751}
+  - {fileID: 584218825}
+  - {fileID: 19196854}
   m_Father: {fileID: 24814409}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1769566839
@@ -55790,6 +56898,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1773849179}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1773849183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -55811,18 +56931,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
         m_MethodName: FadeOut
         m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1773849184}
-        m_TargetAssemblyTypeName: UnityEngine.Collider, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -63671,6 +64779,54 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: faf7b2c684532084bbe0770daccafd82, type: 3}
   m_PrefabInstance: {fileID: 2007759560}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2007879732
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2007879734}
+  - component: {fileID: 2007879733}
+  m_Layer: 0
+  m_Name: CityToPoliceStationFrontEntrance
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2007879733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007879732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d130a63402c1b4449dcea371989edb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _teleportType: 0
+  _teleportTarget: {fileID: 0}
+  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
+  _gizmoSize: 0.2
+--- !u!4 &2007879734
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2007879732}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -84, y: 1.96, z: -16.09}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 365465060}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2019104613
 PrefabInstance:
   m_ObjectHideFlags: 0
