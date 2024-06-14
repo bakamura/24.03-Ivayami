@@ -200,7 +200,7 @@ namespace Ivayami.Enemy
             StartBehaviour();
         }
 
-        private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine(Vector3 finalPos, bool stayInPath, float durationInPlace)
+        private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine(Vector3 finalPos, bool stayInPath, bool autoStartBehaviour, float durationInPlace)
         {
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
             WaitForSeconds stayInPointDelay = new WaitForSeconds(durationInPlace);
@@ -220,7 +220,7 @@ namespace Ivayami.Enemy
             _navMeshAgent.velocity = Vector3.zero;
             if (_speedMultiplier > 0) ChangeSpeedMultiplier(0);
             _detectTargetPointOffBehaviourReachedCoroutine = null;
-            StartBehaviour();
+            if(autoStartBehaviour)StartBehaviour();
         }
 
         public void SetMovementData(EnemyMovementData data)
@@ -242,15 +242,15 @@ namespace Ivayami.Enemy
             {
                 StopBehaviour();
                 PlayerStress.Instance.SetStressMin(98);
-                HandlePointReachedCoroutine(true, 0, target);
+                HandlePointReachedCoroutine(true, false, 0, target);
             }
         }
 
-        private void HandlePointReachedCoroutine(bool stayInPath, float durationInPlace, Transform target)
+        private void HandlePointReachedCoroutine(bool stayInPath, bool autoStartBehaviour, float durationInPlace, Transform target)
         {
             if (_detectTargetPointOffBehaviourReachedCoroutine == null)
             {
-                _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine(target.position, stayInPath, durationInPlace));
+                _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine(target.position, stayInPath,autoStartBehaviour, durationInPlace));
             }
         }
 
@@ -265,7 +265,7 @@ namespace Ivayami.Enemy
             {
                 StopBehaviour();
                 ChangeSpeedMultiplier(speedIncrease);
-                HandlePointReachedCoroutine(false, durationInPlace, target);
+                HandlePointReachedCoroutine(false, true, durationInPlace, target);
             }
         }
 
