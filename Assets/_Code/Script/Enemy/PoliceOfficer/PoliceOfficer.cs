@@ -149,12 +149,15 @@ namespace Ivayami.Enemy
                         if (_currenWalkArea && _currenWalkArea.GetCurrentPoint(gameObject.GetInstanceID(), out EnemyWalkArea.Point point))
                         {
                             _navMeshAgent.speed = _currentMovementData.WalkSpeed;
-                            if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), point.Position) <= _navMeshAgent.stoppingDistance)
+                            if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(point.Position.x, 0, point.Position.z)) <= _navMeshAgent.stoppingDistance)
                             {
                                 yield return new WaitForSeconds(point.DelayToNextPoint);
                                 _navMeshAgent.SetDestination(_currenWalkArea.GoToNextPoint(gameObject.GetInstanceID()).Position);
                             }
-                            else _navMeshAgent.SetDestination(point.Position);
+                            else
+                            {
+                                _navMeshAgent.SetDestination(point.Position);
+                            }
                         }
                         if (_debugLog) Debug.Log("Patroling");
                     }
