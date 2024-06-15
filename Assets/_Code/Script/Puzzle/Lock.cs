@@ -51,6 +51,7 @@ namespace Ivayami.Puzzle
         private struct ItemRequestData
         {
             public InventoryItem Item;
+            public bool UseItem;
             public UnityEvent OnItemDelivered;
             [HideInInspector] public bool ItemDelivered;
         }
@@ -108,7 +109,7 @@ namespace Ivayami.Puzzle
                 if (_passwordUI)
                 {
                     _passwordUI.OnCheckPassword += TryUnlock;
-                    if(_passwordUI is RotateLock) _confirmInput.action.performed += HandleConfirmUI;
+                    if (_passwordUI is RotateLock) _confirmInput.action.performed += HandleConfirmUI;
                 }
                 PlayerActions.Instance.ChangeInputMap("Menu");
             }
@@ -220,7 +221,7 @@ namespace Ivayami.Puzzle
                 {
                     _itemsRequired[i].ItemDelivered = true;
                     _itemsRequired[i].OnItemDelivered?.Invoke();
-                    PlayerInventory.Instance.RemoveFromInventory(_currentItemList[_selectedDeliverOptionIndex]);
+                    if (_itemsRequired[i].UseItem) PlayerInventory.Instance.RemoveFromInventory(_currentItemList[_selectedDeliverOptionIndex]);
                     _currentItemsDelivered++;
                     TryUnlock();
                     return;
