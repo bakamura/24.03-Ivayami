@@ -171,6 +171,12 @@ namespace Ivayami.Player {
             Logger.Log(LogType.Player, $"Ability Remove: {ability.name}");
         }
 
+        public bool CheckAbility(PlayerAbility abilityChecking) {
+            Debug.Log(abilityChecking.GetType()); // DEBUG REMOVE
+            foreach (PlayerAbility ability in _abilities) if (ability.GetType() == abilityChecking.GetType()) return true;
+            return false;
+        }
+
         public void ChangeInputMap(string mapId) {
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable(); // Change to memory current
             if(mapId != null) _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId).Enable();

@@ -7,7 +7,6 @@ using System;
 namespace Ivayami.Player.Ability {
     public class Lantern : PlayerAbility {
 
-
         [SerializeField] private float _lightRadius;
         [SerializeField] private float _lightDistance;
         [SerializeField] private LayerMask _lightableLayer;
