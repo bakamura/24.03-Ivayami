@@ -33,6 +33,11 @@ namespace Ivayami.Audio {
             }
         }
 
+        public void Stop() {
+            _musicInstanceCurrent.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+            _musicInstanceCurrent.release();
+        }
+
         private void UpdateMusicToStress(float stress) {
             _musicInstanceCurrent.setParameterByName("Stress", stress);
         }

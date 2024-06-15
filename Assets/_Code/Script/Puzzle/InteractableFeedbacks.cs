@@ -15,8 +15,10 @@ namespace Ivayami.Puzzle
         private List<Color> _baseColors;
         private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
         private SpriteRenderer _icon;
+        private Animator _interactionAnimation;
         private Transform _cameraTransform;
         private bool _interactionIconSetupDone;
+        private static int PULSE = Animator.StringToHash("pulse");
 
         public void UpdateFeedbacks(bool isActive)
         {
@@ -26,6 +28,16 @@ namespace Ivayami.Puzzle
                 _materials[i].SetColor(_colorVarName, isActive ? _highlightedColor : _baseColors[i]);
             }
             if (_icon) _icon.enabled = isActive;
+        }
+
+        public void UpdateInteractionIcon(bool isActive)
+        {
+            if (_icon) _icon.enabled = isActive;
+        }
+
+        public void PlayInteractionAnimation()
+        {
+            _interactionAnimation.Play(PULSE, 0);
         }
 
         private void Setup()
@@ -65,6 +77,7 @@ namespace Ivayami.Puzzle
                 _cameraTransform = Camera.main.transform;
                 if (_icon)
                 {
+                    _interactionAnimation = _icon.GetComponent<Animator>();
                     UpdateVisualIcon(InputCallbacks.Instance.CurrentControlScheme);
                     InputCallbacks.Instance.AddEventToOnChangeControls(HandleDeviceUpdate);
                 }                
@@ -90,7 +103,7 @@ namespace Ivayami.Puzzle
 
         private void OnDestroy()
         {
-            if (_icon) InputCallbacks.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
+            if (_icon && InputCallbacks.Instance) InputCallbacks.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
         }
 
         //private void OnValidate()

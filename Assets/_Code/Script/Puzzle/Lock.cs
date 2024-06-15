@@ -5,10 +5,11 @@ using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
+using Ivayami.Audio;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableFeedbacks))]
+    [RequireComponent(typeof(InteractableFeedbacks), typeof(InteractableSounds))]
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
@@ -27,6 +28,7 @@ namespace Ivayami.Puzzle
 
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private UnityEvent _onCancelInteraction;
+        [SerializeField] private UnityEvent _onInteractionFailed;
 
 
         private int _selectedDeliverOptionIndex;
@@ -34,8 +36,9 @@ namespace Ivayami.Puzzle
         private int _currentPositionInInventory = 0;
         private List<InventoryItem> _currentItemList = new List<InventoryItem>();
         private sbyte _currentItemsDelivered;
-        private InteractableFeedbacks _interatctableHighlight;
-        public InteractableFeedbacks InteratctableHighlight { get => _interatctableHighlight; }
+        private InteractableFeedbacks _interatctableFeedbacks;
+        private InteractableSounds _interactableSounds;
+        public InteractableFeedbacks InteratctableHighlight { get => _interatctableFeedbacks; }
 
         [System.Serializable]
         public enum InteractionTypes
@@ -55,7 +58,8 @@ namespace Ivayami.Puzzle
         private void Awake()
         {
             _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
-            _interatctableHighlight = GetComponent<InteractableFeedbacks>();            
+            _interatctableFeedbacks = GetComponent<InteractableFeedbacks>();
+            _interactableSounds = GetComponent<InteractableSounds>();
         }
 
         [ContextMenu("Interact")]
@@ -63,7 +67,8 @@ namespace Ivayami.Puzzle
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
-            _interatctableHighlight.UpdateFeedbacks(false);
+            _interatctableFeedbacks.UpdateFeedbacks(false);
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             if (_interactionType == InteractionTypes.RequirePassword)
             {
                 _passwordUI.UpdateActiveState(true);
@@ -84,7 +89,13 @@ namespace Ivayami.Puzzle
                 UpdateDeliverItemUI(false);
                 UpdateInputs(false);
                 IsActive = !IsActive;
+                _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
                 onActivate?.Invoke();
+            }
+            else
+            {
+                _onInteractionFailed?.Invoke();
+                _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
             }
         }
 
@@ -119,7 +130,8 @@ namespace Ivayami.Puzzle
             _passwordUI.UpdateActiveState(false);
             UpdateDeliverItemUI(false);
             UpdateInputs(false);
-            _interatctableHighlight.UpdateFeedbacks(true);
+            _interatctableFeedbacks.UpdateFeedbacks(true);
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.InteractReturn);
             _onCancelInteraction?.Invoke();
         }
 
@@ -189,9 +201,9 @@ namespace Ivayami.Puzzle
                 {
                     if (i >= _itemsRequired.Length)
                     {
-                        _deliverOptions[i].sprite = _itemsRequired[^1].Item.sprite;
+                        _deliverOptions[i].sprite = _itemsRequired[^1].Item.Sprite;
                     }
-                    else _deliverOptions[i].sprite = _itemsRequired[i].Item.sprite;
+                    else _deliverOptions[i].sprite = _itemsRequired[i].Item.Sprite;
                 }
                 EventSystem.current.SetSelectedGameObject(_deliverBtn);
             }
@@ -226,7 +238,7 @@ namespace Ivayami.Puzzle
             int currentInventoryListIndex = _currentPositionInInventory;
             while (currentDeliverIndex < _deliverOptions.Length)
             {
-                _deliverOptions[currentDeliverIndex].sprite = _currentItemList[currentInventoryListIndex].sprite;
+                _deliverOptions[currentDeliverIndex].sprite = _currentItemList[currentInventoryListIndex].Sprite;
                 currentDeliverIndex++;
                 currentInventoryListIndex++;
                 currentInventoryListIndex = ConstrainValueToArrayBounds(currentInventoryListIndex, _currentItemList.Count);
