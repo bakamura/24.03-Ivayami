@@ -22,7 +22,7 @@ namespace Ivayami.Scene {
             _pauseInput.action.Enable();
             PlayerActions.Instance.ChangeInputMap("Player");
             PlayerMovement.Instance.ToggleMovement(true);
-            PlayerMovement.Instance.transform.position = SavePoint.Points[SaveSystem.Instance.Progress.pointId].spawnPoint.position;
+            PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].spawnPoint.position);
             SceneTransition.Instance.Menu.Open();
             SceneController.Instance.OnAllSceneRequestEnd = null;
 

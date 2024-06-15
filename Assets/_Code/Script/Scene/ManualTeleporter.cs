@@ -22,7 +22,7 @@ namespace Ivayami.Scene
         {
             if(_teleportType == TeleportTypes.Player)
             {
-                PlayerMovement.Instance.transform.position = transform.position;
+                PlayerMovement.Instance.SetPosition(transform.position);
                 PlayerMovement.Instance.SetTargetAngle(transform.rotation.eulerAngles.y);
                 CinemachineFreeLook temp = FindObjectOfType<CinemachineFreeLook>();
 
@@ -32,7 +32,12 @@ namespace Ivayami.Scene
             }
             else
             {
-                _teleportTarget.SetPositionAndRotation(transform.position, Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0));
+                if(_teleportTarget.TryGetComponent<Rigidbody>(out Rigidbody rb))
+                {
+                    rb.position = transform.position;
+                    rb.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+                } 
+                else _teleportTarget.SetPositionAndRotation(transform.position, Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0));
             }
         }
 

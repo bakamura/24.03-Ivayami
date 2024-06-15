@@ -186,6 +186,10 @@ namespace Ivayami.Player {
             _canMove = true;
         }
 
+        public void SetPosition(Vector3 position) {
+            _rigidbody.position = position;
+        }
+
         public void SetTargetAngle(float angle) {
             _targetAngle = Quaternion.Euler(0f, angle, 0f);
             // cinemachine freelook
