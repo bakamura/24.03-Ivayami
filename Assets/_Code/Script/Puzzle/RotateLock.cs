@@ -11,6 +11,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private InputActionReference _navegationUIInput;
         [SerializeField, Min(.02f)] private float _animationDuration;
         [SerializeField, Range(0f, 360f)] private float _rotationAngle = 60;
+        [SerializeField] private Transform _lockBtnContainer;
 
         private RotateLockButton[] _buttons;
         private sbyte _currentBtnSelectedIndex;
@@ -21,7 +22,7 @@ namespace Ivayami.Puzzle
         protected override void Awake()
         {
             base.Awake();
-            _buttons = GetComponentsInChildren<RotateLockButton>(true);
+            _buttons = _lockBtnContainer.GetComponentsInChildren<RotateLockButton>(true);
             _lock = GetComponentInParent<Lock>();
         }
 
