@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414738, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1504,31 +1504,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   _onFadeEnd:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 19196855}
-        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
-        m_MethodName: UnlockInput
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1769452742}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &19196857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1550,6 +1526,30 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
         m_MethodName: FadeOut
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 19196855}
+        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
+        m_MethodName: UnlockInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1769452742}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -20889,31 +20889,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   _onFadeEnd:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 584218826}
-        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
-        m_MethodName: UnlockInput
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1769452742}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &584218828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20935,6 +20911,30 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
         m_MethodName: FadeOut
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 584218826}
+        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
+        m_MethodName: UnlockInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1769452742}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -33728,6 +33728,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _teleportType: 0
   _teleportTarget: {fileID: 0}
+  _onTeleportEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   _gizmoSize: 0.2
 --- !u!4 &978076589 stripped
@@ -43476,31 +43479,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   _onFadeEnd:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1214147752}
-        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
-        m_MethodName: UnlockInput
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1769452742}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1214147754
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -43522,6 +43501,30 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
         m_MethodName: FadeOut
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1214147752}
+        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
+        m_MethodName: UnlockInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1769452742}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -44942,6 +44945,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _teleportType: 0
   _teleportTarget: {fileID: 0}
+  _onTeleportEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   _gizmoSize: 0.2
 --- !u!1001 &1250789755
@@ -50169,6 +50175,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _teleportType: 0
   _teleportTarget: {fileID: 0}
+  _onTeleportEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   _gizmoSize: 0.2
 --- !u!4 &1388014287
@@ -61719,31 +61728,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   _onFadeEnd:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1773849181}
-        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
-        m_MethodName: UnlockInput
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1769452742}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1773849183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -61765,6 +61750,30 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
         m_MethodName: FadeOut
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1773849181}
+        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
+        m_MethodName: UnlockInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1769452742}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -70015,6 +70024,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _teleportType: 0
   _teleportTarget: {fileID: 0}
+  _onTeleportEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   _gizmoSize: 0.2
 --- !u!4 &2007879734

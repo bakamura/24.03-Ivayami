@@ -7836,19 +7836,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   _onFadeEnd:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 338065474}
-        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
-        m_MethodName: UnlockInput
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!65 &338065476
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7903,6 +7891,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.Collider, UnityEngine
         m_MethodName: set_enabled
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 338065474}
+        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
+        m_MethodName: UnlockInput
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -42502,6 +42502,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _teleportType: 0
   _teleportTarget: {fileID: 0}
+  _onTeleportEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 378198111}
+        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
+        m_MethodName: UnloadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   _gizmoSize: 0.2
 --- !u!65 &1450719830
@@ -49836,18 +49851,6 @@ MonoBehaviour:
       - m_Target: {fileID: 1450719829}
         m_TargetAssemblyTypeName: Ivayami.Scene.ManualTeleporter, Assembly-CSharp
         m_MethodName: Teleport
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 378198111}
-        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
-        m_MethodName: UnloadScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
