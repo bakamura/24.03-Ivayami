@@ -22,9 +22,9 @@ namespace Ivayami.Enemy
         [SerializeField] private LayerMask _targetLayer;
         [SerializeField] private LayerMask _blockVisionLayer;
 
-#if UNITY_EDITOR
         [Header("Debug")]
         [SerializeField] private bool _debugLog;
+#if UNITY_EDITOR
         [SerializeField] private bool _drawMinDistance;
         [SerializeField] private Color _minDistanceAreaColor = Color.yellow;
         [SerializeField] private bool _drawDetectionRange;

@@ -37,7 +37,7 @@ namespace Ivayami.debug
         {                        
             PlayerMovement.Instance.ToggleMovement(true);
             PlayerActions.Instance.ChangeInputMap("Player");
-            PlayerMovement.Instance.transform.position = Ivayami.debug.CustomSettingsHandler.CameraPosition;
+            PlayerMovement.Instance.SetPosition(Ivayami.debug.CustomSettingsHandler.CameraPosition);
             SceneController.Instance.OnAllSceneRequestEndDebug -= OnSceneLoad;
         }
 
