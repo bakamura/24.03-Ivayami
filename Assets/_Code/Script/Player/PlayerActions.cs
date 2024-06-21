@@ -37,6 +37,7 @@ namespace Ivayami.Player {
         [Header("Hand Item")]
 
         private GameObject _handItemCurrent;
+        [field: SerializeField] public Transform HoldPointLeft { get; private set; }
 
         [Header("Abilities")]
 
@@ -159,7 +160,11 @@ namespace Ivayami.Player {
         }
 
         public void AddAbility(PlayerAbility ability) {
-            PlayerAbility abilityInstance = Instantiate(ability, PlayerMovement.Instance.transform);
+            PlayerAbility abilityInstance = Instantiate(ability);
+            Quaternion localRotation = abilityInstance.transform.rotation;
+            abilityInstance.transform.parent = HoldPointLeft;
+            abilityInstance.transform.localPosition = Vector3.zero;
+            abilityInstance.transform.localRotation = localRotation;
             _abilities.Add(abilityInstance);
 
             Logger.Log(LogType.Player, $"Ability Add: {ability.name}");
