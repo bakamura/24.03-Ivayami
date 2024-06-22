@@ -2,6 +2,7 @@ using UnityEngine;
 using Ivayami.Player;
 using Cinemachine;
 using System.Collections;
+using UnityEngine.Events;
 
 namespace Ivayami.Scene
 {
@@ -9,6 +10,7 @@ namespace Ivayami.Scene
     {
         [SerializeField] private TeleportTypes _teleportType;
         [SerializeField] private Transform _teleportTarget;
+        [SerializeField] private UnityEvent _onTeleportEnd;
         public enum TeleportTypes
         {
             Player,
@@ -45,6 +47,7 @@ namespace Ivayami.Scene
                     rb.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
                 } 
                 else _teleportTarget.SetPositionAndRotation(transform.position, Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0));
+                _onTeleportEnd?.Invoke();
             }
         }
 
@@ -55,6 +58,7 @@ namespace Ivayami.Scene
             _playerCamera.ForceCameraPosition(_playerCamera.LookAt.transform.position + -_playerCamera.LookAt.transform.forward * _playerCamera.m_Orbits[1].m_Radius, Quaternion.identity);
             _playerCamera.m_XAxis.Value = Vector3.SignedAngle(Camera.main.transform.forward, transform.forward, Vector3.up);
             _repositionCameraCoroutine = null;
+            _onTeleportEnd?.Invoke();
         }
 
 #if UNITY_EDITOR

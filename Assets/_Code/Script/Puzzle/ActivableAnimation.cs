@@ -102,11 +102,11 @@ namespace Ivayami.Puzzle
         }
 
         private IEnumerator CallbackDelayCoroutine(Animator animator, int stateHash, float delay, UnityEvent unityEvent)
-        {            
+        {
             if (animator)
             {
                 // if is in other state wait for the state to finish
-                if(animator.GetCurrentAnimatorStateInfo(0).shortNameHash != stateHash)
+                if (animator.GetCurrentAnimatorStateInfo(0).shortNameHash != stateHash)
                 {
                     while (animator.GetCurrentAnimatorStateInfo(0).shortNameHash != stateHash)
                     {
@@ -116,12 +116,12 @@ namespace Ivayami.Puzzle
                 // wait for the stateHash to finish
                 float count = 0;
                 while (count < animator.GetCurrentAnimatorClipInfo(0)[0].clip.length)
-                {                    
+                {
                     count += Time.deltaTime;
                     yield return null;
                 }
             }
-            yield return new WaitForSeconds(delay);
+            if (delay > 0) yield return new WaitForSeconds(delay);
             unityEvent?.Invoke();
         }
 
@@ -136,8 +136,7 @@ namespace Ivayami.Puzzle
                         && _onActivate.OnComplete.GetPersistentEventCount() > 0)
                     {
                         _callbackCoroutine = StartCoroutine(CallbackDelayCoroutine(_activateAnimator, _activationStateHash,
-                            _activateAnimator ? _activateAnimator.GetCurrentAnimatorStateInfo(0).length + _onActivate.Delay : _onActivate.Delay,
-                            _onActivate.OnComplete));
+                            _onActivate.Delay, _onActivate.OnComplete));
                     }
                 }
                 else
@@ -146,8 +145,7 @@ namespace Ivayami.Puzzle
                         && _onDeactivate.OnComplete.GetPersistentEventCount() > 0)
                     {
                         _callbackCoroutine = StartCoroutine(CallbackDelayCoroutine(_activateAnimator, _activationStateHash,
-                            _activateAnimator ? _activateAnimator.GetCurrentAnimatorStateInfo(0).length + _onDeactivate.Delay : _onDeactivate.Delay,
-                            _onDeactivate.OnComplete));
+                            _onDeactivate.Delay, _onDeactivate.OnComplete));
                     }
                 }
             }
@@ -159,8 +157,7 @@ namespace Ivayami.Puzzle
                         && _onInteract.OnComplete.GetPersistentEventCount() > 0)
                     {
                         _callbackCoroutine = StartCoroutine(CallbackDelayCoroutine(_interactionAnimator, _interactionStateHash,
-                            _interactionAnimator ? _interactionAnimator.GetCurrentAnimatorStateInfo(0).length + _onInteract.Delay : _onInteract.Delay,
-                            _onInteract.OnComplete));
+                            _onInteract.Delay, _onInteract.OnComplete));
                     }
                 }
                 else
@@ -169,8 +166,7 @@ namespace Ivayami.Puzzle
                         && _onInteractReturn.OnComplete.GetPersistentEventCount() > 0)
                     {
                         _callbackCoroutine = StartCoroutine(CallbackDelayCoroutine(_interactionAnimator, _interactionStateHash,
-                            _interactionAnimator ? _interactionAnimator.GetCurrentAnimatorStateInfo(0).length + _onInteractReturn.Delay : _onInteractReturn.Delay,
-                            _onInteractReturn.OnComplete));
+                            _onInteractReturn.Delay, _onInteractReturn.OnComplete));
                     }
                 }
             }

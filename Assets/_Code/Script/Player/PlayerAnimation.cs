@@ -12,10 +12,13 @@ namespace Ivayami.Player {
         private static int CROUCH = Animator.StringToHash("Crouch");
         private static int INTERACT = Animator.StringToHash("Interact");
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
+        private static int HOLDING = Animator.StringToHash("Holding");
 
         private Animator _animator;
 
         protected override void Awake() {
+            base.Awake();
+
             _animator = GetComponent<Animator>();
         }
 
@@ -44,6 +47,10 @@ namespace Ivayami.Player {
 
         private void InteractLong(bool isInteracting) {
             _animator.SetBool(INTERACT_LONG, isInteracting);
+        }
+
+        public void Hold(bool isHolding) {
+            _animator.SetBool(HOLDING, isHolding);
         }
 
         private void Trigger(string abilityName) {
