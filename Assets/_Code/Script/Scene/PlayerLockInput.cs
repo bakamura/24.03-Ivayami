@@ -8,12 +8,14 @@ namespace Ivayami.Scene
         public void LockInput()
         {
             PlayerMovement.Instance.ToggleMovement(false);
+            PlayerActions.Instance.AllowPausing(false);
             PlayerActions.Instance.ChangeInputMap(null);
         }
 
         public void UnlockInput()
         {
             PlayerMovement.Instance.ToggleMovement(true);
+            PlayerActions.Instance.AllowPausing(true);
             PlayerActions.Instance.ChangeInputMap("Player");
         }
     }
