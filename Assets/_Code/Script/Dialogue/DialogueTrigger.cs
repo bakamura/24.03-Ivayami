@@ -10,10 +10,14 @@ namespace Ivayami.Dialogue
         private bool _activated;
         public void StartDialogue()
         {
-            if (!_activateOnce || (_activateOnce && !_activated))
+            if (_activated) DialogueController.Instance.UpdateDialogue();
+            else
             {
-                DialogueController.Instance.StartDialogue(_dialogue.id, _lockPlayerInput);
-                _activated = true;
+                if (!_activateOnce || (_activateOnce && !_activated))
+                {
+                    DialogueController.Instance.StartDialogue(_dialogue.id, _lockPlayerInput);
+                    _activated = true;
+                }
             }
         }
 

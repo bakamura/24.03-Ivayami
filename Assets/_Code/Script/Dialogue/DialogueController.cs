@@ -36,7 +36,8 @@ namespace Ivayami.Dialogue
         private sbyte _currentSpeechIndex;
         private DialogueSounds _dialogueSounds;
 
-        public bool IsDialogueActive { get; private set; }
+        public bool IsPaused { get; private set; }
+        public Dialogue CurrentDialogue => _currentDialogue;
         public bool LockInput { get; private set; }
         public Action OnDialogeStart;
         public Action OnDialogueEnd;
@@ -46,7 +47,7 @@ namespace Ivayami.Dialogue
         {
             base.Awake();
 
-            ChangeLanguage(LanguageTypes.ENUS);
+            ChangeLanguage(LanguageTypes.ENUS);//TEMPORARY
             _continueInput.action.performed += HandleContinueDialogue;
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
             //_autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
@@ -56,7 +57,7 @@ namespace Ivayami.Dialogue
 
         private void HandleContinueDialogue(InputAction.CallbackContext context)
         {
-            if (context.ReadValue<float>() == 1 && _currentDialogue && _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech == 0)
+            if (_currentDialogue /*&& _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech == 0*/)
             {
                 UpdateDialogue();
             }
@@ -66,7 +67,7 @@ namespace Ivayami.Dialogue
             }
         }
 
-        private void UpdateDialogue()
+        public void UpdateDialogue()
         {
             if (_writtingCoroutine != null)
             {
@@ -79,20 +80,7 @@ namespace Ivayami.Dialogue
                 //end of current dialogue
                 if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
                 {
-                    if (_debugLogs) Debug.Log($"End of Dialogue {_currentDialogue.id}");
-                    ActivateDialogueEvents(_currentDialogue.onEndEventId);
-                    _currentSpeechIndex = 0;
-                    _currentDialogue = null;
-                    _canvasGroup.alpha = 0;
-                    _canvasGroup.blocksRaycasts = false;
-                    OnDialogueEnd?.Invoke();
-                    if (LockInput)
-                    {
-                        PlayerActions.Instance.ChangeInputMap("Player");
-                        //_continueInput.action.Disable();
-                    }
-                    LockInput = false;
-                    IsDialogueActive = false;
+                    StopDialogue();
                 }
                 //continue current dialogue
                 else
@@ -115,27 +103,31 @@ namespace Ivayami.Dialogue
             _canvasGroup.alpha = chars.Length > 0 ? 1 : 0;
             for (int i = 0; i < chars.Length; i++)
             {
-                if (chars[i] == '<')
+                if (!IsPaused)
                 {
-                    int index = i;
-                    while (chars[index] != '>')
+                    if (chars[i] == '<')
                     {
+                        int index = i;
+                        while (chars[index] != '>')
+                        {
+                            _speechTextComponent.text += chars[index];
+                            index++;
+                        }
                         _speechTextComponent.text += chars[index];
-                        index++;
+                        i = index;
                     }
-                    _speechTextComponent.text += chars[index];
-                    i = index;
+                    else
+                    {
+                        _speechTextComponent.text += chars[i];
+                        yield return _typeWrittingDelay;
+                    }
                 }
-                else
-                {
-                    _speechTextComponent.text += chars[i];
-                    yield return _typeWrittingDelay;
-                }
+                else yield return null;
             }
 
             _continueDialogueIcon.SetActive(true);
             WaitForSeconds wait = null;
-            if (!LockInput)
+            if (!LockInput && !CutsceneController.IsPlaying)
                 wait = new WaitForSeconds(_delayToAutoStartNextSpeech);
             else if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0)
                 wait = new WaitForSeconds(_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech);
@@ -155,6 +147,26 @@ namespace Ivayami.Dialogue
             //_readyForNextSpeech = true;
             OnSkipSpeech?.Invoke();
             _writtingCoroutine = null;
+        }
+
+        public void StopDialogue()
+        {
+            if (CurrentDialogue)
+            {
+                if (_debugLogs) Debug.Log($"End of Dialogue {_currentDialogue.id}");
+                ActivateDialogueEvents(_currentDialogue.onEndEventId);
+                _currentSpeechIndex = 0;
+                _currentDialogue = null;
+                _canvasGroup.alpha = 0;
+                _canvasGroup.blocksRaycasts = false;
+                OnDialogueEnd?.Invoke();
+                if (LockInput)
+                {
+                    PlayerActions.Instance.ChangeInputMap("Player");
+                    //_continueInput.action.Disable();
+                }
+                LockInput = false;
+            }
         }
 
         public void UpdateDialogueEventsList(DialogueEvents dialogueEvents)
@@ -180,9 +192,13 @@ namespace Ivayami.Dialogue
 
         public void StartDialogue(string dialogueId, bool lockInput)
         {
+            if (IsPaused) 
+            {
+                if (_debugLogs) Debug.Log($"Dialogue is Paused, will not start {dialogueId}");
+                return;
+            }
             if (_dialogueDictionary.TryGetValue(dialogueId, out Dialogue dialogue) /*&& _writtingCoroutine == null*/)
             {
-                IsDialogueActive = true;
                 LockInput = lockInput;
                 if (LockInput)
                 {
@@ -229,6 +245,14 @@ namespace Ivayami.Dialogue
                         Debug.LogWarning($"the dialogue ID {_dialogues[i].id} is already in use");
                     }
                 }
+            }
+        }
+
+        public void PauseDialogue(bool isPaused)
+        {
+            if (CurrentDialogue)
+            {
+                IsPaused = isPaused;
             }
         }
 
