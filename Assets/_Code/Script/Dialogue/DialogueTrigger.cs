@@ -17,6 +17,11 @@ namespace Ivayami.Dialogue
             }
         }
 
+        public void ContinueDialogue()
+        {
+            if (DialogueController.Instance.CurrentDialogue.id == _dialogue.id) DialogueController.Instance.UpdateDialogue();
+        }
+
         public void ChangeDialogue(Dialogue dialogue)
         {
             _dialogue = dialogue;
