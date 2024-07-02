@@ -412,7 +412,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6e871dd239ff0846b96b9e497f3a39e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentMenu: {fileID: 5765292668744803864}
+  _currentMenu: {fileID: 1792469534738672601}
   _delayToOpen: 0
   _setMenuBtnSelectedOnStart: 1
 --- !u!1 &4038557254148330237
@@ -643,7 +643,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3d05efcb384423478abcf72c6c43ea7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pauseCutsceneInput: {fileID: -289706603977083587, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
+  _pauseCutsceneInput: {fileID: 7034977383457959385, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _onPause:
     m_PersistentCalls:
       m_Calls:
@@ -692,6 +692,7 @@ MonoBehaviour:
   _onCutsceneEnd:
     m_PersistentCalls:
       m_Calls: []
+  _debug: 0
 --- !u!114 &3194268924047896570
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -705,7 +706,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 0}
-  _activateOnce: 1
+  _activateOnce: 0
   _lockPlayerInput: 0
 --- !u!1 &6288267226879727766
 GameObject:
@@ -808,7 +809,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 1, g: 0, b: 0, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -941,7 +942,7 @@ MonoBehaviour:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_SelectedColor: {r: 1, g: 0, b: 0, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -961,9 +962,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5721016753906124718}
-        m_TargetAssemblyTypeName: UnityEngine.Playables.PlayableDirector, UnityEngine
-        m_MethodName: Resume
+      - m_Target: {fileID: 2793149467296294870}
+        m_TargetAssemblyTypeName: Ivayami.Dialogue.CutsceneController, Assembly-CSharp
+        m_MethodName: ResumeCutscene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

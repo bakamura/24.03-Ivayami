@@ -19,6 +19,9 @@ namespace Ivayami.Dialogue
         [SerializeField] private UnityEvent _onCutsceneStart;
         [SerializeField] private UnityEvent _onCutsceneEnd;
 
+		[Header("Debug")]
+		[SerializeField] private bool _debug;
+
 		private PlayableDirector _playableDirector;
 		private bool _isPaused;
 		public static bool IsPlaying { get; private set; }
@@ -29,9 +32,11 @@ namespace Ivayami.Dialogue
 
 			_onCutsceneStart.AddListener(HandleOnCutsceneStart);
 			_onCutsceneEnd.AddListener(HandleOnCutsceneEnd);
+			_playableDirector.stopped += HandleDirectorEnd;
             _onCutsceneStart?.Invoke();
             IsPlaying = true;
             _playableDirector.Play();
+			if (_debug) Debug.Log("Cutscene Start");
         }
 
 		private void HandlePauseInput(InputAction.CallbackContext ctx)
@@ -39,6 +44,7 @@ namespace Ivayami.Dialogue
 			_isPaused = !_isPaused;
             if (_isPaused)
             {
+				if (_debug) Debug.Log("Cutscene Pause");
 				_playableDirector.Pause();
 				RuntimeManager.PauseAllEvents(true);
 				DialogueController.Instance.PauseDialogue(true);
@@ -57,13 +63,11 @@ namespace Ivayami.Dialogue
 
 			_playableDirector.Stop();
             if (_isPaused)
-            {
-				DialogueController.Instance.PauseDialogue(false);
-				DialogueController.Instance.StopDialogue();
-				RuntimeManager.PauseAllEvents(false);
+            {				
 				_onUnpause?.Invoke();
 			}
 			IsPlaying = false;
+			if (_debug) Debug.Log("Cutscene Skip");
 			_onCutsceneEnd?.Invoke();
 		}
 
@@ -72,22 +76,34 @@ namespace Ivayami.Dialogue
 			if (!IsPlaying)
 				return;
 
+			_isPaused = false;
 			_playableDirector.Resume();
 			DialogueController.Instance.PauseDialogue(false);
 			RuntimeManager.PauseAllEvents(false);
 			_onUnpause?.Invoke();
+			if (_debug) Debug.Log("Cutscene Resume");
 		}
 
 		private void HandleOnCutsceneEnd()
         {
 			PlayerActions.Instance.ChangeInputMap(null);
+			PlayerActions.Instance.AllowPausing(true);
+			DialogueController.Instance.StopDialogue();
+			RuntimeManager.PauseAllEvents(false);
 			_pauseCutsceneInput.action.performed -= HandlePauseInput;
 		}
 
 		private void HandleOnCutsceneStart()
         {
-			PlayerActions.Instance.ChangeInputMap("Cutscene");
+			PlayerActions.Instance.ChangeInputMap("Menu");
+			PlayerActions.Instance.AllowPausing(false);
 			_pauseCutsceneInput.action.performed += HandlePauseInput;
 		}
+
+		private void HandleDirectorEnd(PlayableDirector director)
+        {
+			if (_debug) Debug.Log("Cutscene completed");
+			_onCutsceneEnd?.Invoke();
+        }
 	}
 }
