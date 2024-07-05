@@ -49,6 +49,15 @@ namespace Ivayami.Player {
         [SerializeField] private float _crouchHeightChangeDuration;
         private Coroutine _crouchRoutine;
 
+        [Header("Hiding")]
+
+        public HidingState hidingState;
+        public enum HidingState {
+            None,
+            Wardrobe,
+            Garbage
+        }
+
         [Header("Camera")]
 
         [SerializeField] private Transform _cameraAimTargetRotator;

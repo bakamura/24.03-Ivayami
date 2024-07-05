@@ -19,7 +19,7 @@ namespace Ivayami.Player {
 
         [Header("Events")]
 
-        public UnityEvent onInteract = new UnityEvent();
+        public UnityEvent<InteractAnimation> onInteract = new UnityEvent<InteractAnimation>();
         public UnityEvent<bool> onInteractLong = new UnityEvent<bool>();
         public UnityEvent<IInteractable> onInteractTargetChange = new UnityEvent<IInteractable>();
         public UnityEvent<string> onAbility = new UnityEvent<string>();
@@ -33,6 +33,11 @@ namespace Ivayami.Player {
         private IInteractable _interactableIterator;
         public bool Interacting { get; private set; } = false;
         public IInteractable InteractableTarget { get; private set; }
+
+        public enum InteractAnimation {
+            Default,
+            EnterWardrobe
+        }
 
         [Header("Hand Item")]
 
