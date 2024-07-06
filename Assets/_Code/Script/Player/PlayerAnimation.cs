@@ -1,4 +1,5 @@
 using Ivayami.Save;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Ivayami.Player {
@@ -10,7 +11,10 @@ namespace Ivayami.Player {
         private static int MOVE_X = Animator.StringToHash("MoveX");
         private static int MOVE_Y = Animator.StringToHash("MoveY");
         private static int CROUCH = Animator.StringToHash("Crouch");
-        private static int INTERACT = Animator.StringToHash("Interact");
+        private static Dictionary<PlayerActions.InteractAnimation, int> INTERACT_DICTIONARY = new Dictionary<PlayerActions.InteractAnimation, int> {
+            { PlayerActions.InteractAnimation.Default, Animator.StringToHash("Interact") },
+            { PlayerActions.InteractAnimation.EnterWardrobe, Animator.StringToHash("EnterWardrobe") },
+        };
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
         private static int HOLDING = Animator.StringToHash("Holding");
 
@@ -41,8 +45,8 @@ namespace Ivayami.Player {
             _animator.SetBool(CROUCH, isCrouching);
         }
 
-        private void Interact() {
-            _animator.SetTrigger(INTERACT);
+        private void Interact(PlayerActions.InteractAnimation animation) {
+            _animator.SetTrigger(INTERACT_DICTIONARY[animation]);
         }
 
         private void InteractLong(bool isInteracting) {
