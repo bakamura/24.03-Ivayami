@@ -36,13 +36,14 @@ namespace Ivayami.Save {
             Logger.Log(LogType.Save, "SavePoint Call Save");
         }
 
-        public void Interact() {
+        public PlayerActions.InteractAnimation Interact() {
             if (_canSave) Save();
             else {
                 onCantSaveGame?.Invoke();
 
                 Logger.Log(LogType.Save, "SavePoint Cannot Save");
             }
+            return PlayerActions.InteractAnimation.Default;
         }
 
         public void ForceSave() {
