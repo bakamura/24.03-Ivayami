@@ -27,7 +27,7 @@ namespace Ivayami.Puzzle {
             _playerCamPriority = FindObjectOfType<CinemachineFreeLook>().Priority;
         }
 
-        public void Interact() {
+        public PlayerActions.InteractAnimation Interact() {
             if (PlayerMovement.Instance.hidingState == PlayerMovement.HidingState.None) {
                 PlayerMovement.Instance.hidingState = _hiddenType;
                 PlayerActions.Instance.ChangeInputMap("Menu");
@@ -36,9 +36,11 @@ namespace Ivayami.Puzzle {
                 _hiddenCam.Priority = _playerCamPriority + 1;
                 PlayerMovement.Instance.SetPosition(_animationPoint.position);
                 PlayerMovement.Instance.SetTargetAngle(_animationPoint.eulerAngles.y);
+                return PlayerActions.InteractAnimation.EnterWardrobe;
             }
             else {
                 Debug.LogWarning($"Trying to interact with '{name}' while already hidden");
+                return PlayerActions.InteractAnimation.Default;
             }
         }
 

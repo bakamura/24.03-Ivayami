@@ -32,10 +32,11 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public void Interact()
+        public PlayerActions.InteractAnimation Interact()
         {
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             GiveItem();
+            return PlayerActions.InteractAnimation.Default;
         }
 
         public void GiveItem()
