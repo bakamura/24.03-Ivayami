@@ -100,7 +100,8 @@ namespace Ivayami.Player {
 
         private void Update() {
             if (_canMove) Rotate();
-            //OverTheShoulderSpring();
+            //if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, Mathf.Infinity, _terrain)) transform.position = hit.point + (0.1f * Vector3.up);
+            //else Debug.LogWarning("Player not above ground");
         }
 
         private void FixedUpdate() {

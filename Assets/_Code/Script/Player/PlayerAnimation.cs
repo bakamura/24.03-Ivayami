@@ -14,8 +14,7 @@ namespace Ivayami.Player {
         private static Dictionary<PlayerActions.InteractAnimation, int> INTERACT_DICTIONARY = new Dictionary<PlayerActions.InteractAnimation, int> {
             { PlayerActions.InteractAnimation.Default, Animator.StringToHash("Interact") },
             { PlayerActions.InteractAnimation.EnterWardrobe, Animator.StringToHash("EnterWardrobe") },
-
-        }
+        };
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
         private static int HOLDING = Animator.StringToHash("Holding");
 
@@ -46,8 +45,8 @@ namespace Ivayami.Player {
             _animator.SetBool(CROUCH, isCrouching);
         }
 
-        private void Interact() {
-            _animator.SetTrigger(INTERACT);
+        private void Interact(PlayerActions.InteractAnimation animation) {
+            _animator.SetTrigger(INTERACT_DICTIONARY[animation]);
         }
 
         private void InteractLong(bool isInteracting) {
