@@ -66,13 +66,14 @@ namespace Ivayami.Puzzle
         }
 
         [ContextMenu("Interact")]
-        public void Interact()
+        public PlayerActions.InteractAnimation Interact()
         {
             if (!_isActive)
             {
                 _interatctableHighlight.UpdateFeedbacks(false);
                 Setup();
             }
+            return PlayerActions.InteractAnimation.Default;
         }
 
         private void Setup()

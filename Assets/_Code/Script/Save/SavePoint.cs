@@ -29,17 +29,25 @@ namespace Ivayami.Save {
             PlayerStress.Instance.onStressChange.AddListener(stress => _canSave = stress <= 0);
         }
 
-        public void Interact() {
-            if (_canSave) {
-                onSaveGame?.Invoke();
+        private void Save() {
+            SaveSystem.Instance.Progress.pointId = _pointId;
+            onSaveGame?.Invoke();
 
-                Logger.Log(LogType.Save, "SavePoint Call Save");
-            }
+            Logger.Log(LogType.Save, "SavePoint Call Save");
+        }
+
+        public void Interact() {
+            if (_canSave) Save();
             else {
                 onCantSaveGame?.Invoke();
 
                 Logger.Log(LogType.Save, "SavePoint Cannot Save");
             }
         }
+
+        public void ForceSave() {
+            Save();
+        }
+
     }
 }

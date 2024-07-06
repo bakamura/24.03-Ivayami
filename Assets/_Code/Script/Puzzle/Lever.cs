@@ -1,3 +1,4 @@
+using Ivayami.Player;
 using UnityEngine;
 
 namespace Ivayami.Puzzle
@@ -13,10 +14,11 @@ namespace Ivayami.Puzzle
             _interatctableHighlight = GetComponent<InteractableFeedbacks>();
         }
 
-        public void Interact()
+        public PlayerActions.InteractAnimation Interact()
         {
             IsActive = true;
             onActivate?.Invoke();
+            return PlayerActions.InteractAnimation.Default;
         }
 
         public void InteractStop()
