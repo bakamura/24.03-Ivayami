@@ -82,14 +82,14 @@ namespace Ivayami.Player {
         private void Interact(InputAction.CallbackContext input) {
             if (input.phase == InputActionPhase.Started) {
                 if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
-                    InteractableTarget.Interact();
+                    InteractAnimation animation = InteractableTarget.Interact();
                     if (InteractableTarget is IInteractableLong) {
                         onInteractLong?.Invoke(true);
 
                         Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
                     }
                     else {
-                        onInteract?.Invoke();
+                        onInteract?.Invoke(animation);
 
                         Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
                     }
@@ -108,10 +108,14 @@ namespace Ivayami.Player {
             _interactableClosestDistanceCache = _interactRange;
             _interactableClosestCache = null;
             _raycastHitsCache = Physics.SphereCastAll(_cam.ScreenPointToRay(_screenCenter), _interactSphereCastRadius, Mathf.Infinity);
+            Vector2 playerPositionFlat = new Vector2(transform.position.x, transform.position.z); // Make Cache
+            Vector2 hitPositionFlat = Vector2.zero; // Make Cache
             foreach (RaycastHit hit in _raycastHitsCache) {
                 _interactableIterator = hit.collider.GetComponent<IInteractable>();
                 if (_interactableIterator != null) {
-                    _interactableDistanceIterator = Vector3.Distance(transform.position, _interactableIterator.gameObject.transform.position);
+                    hitPositionFlat[0] = hit.point.x;
+                    hitPositionFlat[1] = hit.point.z;
+                    _interactableDistanceIterator = Vector3.Distance(playerPositionFlat, hitPositionFlat);
                     if (_interactableClosestDistanceCache > _interactableDistanceIterator) {
                         _interactableClosestDistanceCache = _interactableDistanceIterator;
                         _interactableClosestCache = _interactableIterator;
@@ -176,7 +180,7 @@ namespace Ivayami.Player {
         }
 
         public void RemoveAbility(PlayerAbility ability) {
-            PlayerAbility abilityInList = _abilities.OrderBy(abilityIterator =>  abilityIterator.GetType() == ability.GetType()).First();
+            PlayerAbility abilityInList = _abilities.OrderBy(abilityIterator => abilityIterator.GetType() == ability.GetType()).First();
             if (_abilityCurrent >= _abilities.FindIndex((abilityIterator) => abilityIterator == abilityInList)) _abilityCurrent--;
             _abilities.Remove(abilityInList);
             onAbilityChange?.Invoke(_abilityCurrent); // Update UI etc
