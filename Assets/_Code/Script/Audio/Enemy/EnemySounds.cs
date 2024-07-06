@@ -18,7 +18,7 @@ namespace Ivayami.Audio
 
         private void Awake()
         {
-            _targetDetectedSoundInstance = InstantiateEvent(_targetDetectedSound);
+            if(!_targetDetectedSound.IsNull)_targetDetectedSoundInstance = InstantiateEvent(_targetDetectedSound);
         }
 
         public void PlaySound(SoundTypes soundType)

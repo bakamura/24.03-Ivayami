@@ -5,8 +5,12 @@ namespace Ivayami.Player.Ability {
     public class TakePhoto : PlayerAbility {
 
         private bool _cameraOpen;
-        [SerializeField] private CinemachineFreeLook _cameraFreelook;
+        private CinemachineFreeLook _cameraFreelook;
         [SerializeField] private int _priorityWhenOpen;
+
+        private void Awake() {
+            _cameraFreelook = FindObjectOfType<CinemachineFreeLook>();
+        }
 
         public override void AbilityStart() {
             _cameraFreelook.Priority = _cameraOpen ? _priorityWhenOpen : -1;

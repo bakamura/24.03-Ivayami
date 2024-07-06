@@ -4,7 +4,8 @@ namespace Ivayami.Puzzle
 {
     public class Activable : MonoBehaviour
     {
-        [SerializeField, Min(0)] protected int _activatosNeededToActivate;
+        [Header("PARAMETERS")]
+        [SerializeField, Min(0), Tooltip("If 0 will start active")] protected int _activatosNeededToActivate;
         [SerializeField] private Activator[] _activators;
         [HideInInspector] public bool IsActive { get; protected set; }
 

@@ -28,6 +28,7 @@ namespace Ivayami.Puzzle
 
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private UnityEvent _onCancelInteraction;
+        [SerializeField] private UnityEvent _onInteractionFailed;
 
 
         private int _selectedDeliverOptionIndex;
@@ -50,6 +51,7 @@ namespace Ivayami.Puzzle
         private struct ItemRequestData
         {
             public InventoryItem Item;
+            public bool UseItem;
             public UnityEvent OnItemDelivered;
             [HideInInspector] public bool ItemDelivered;
         }
@@ -88,9 +90,14 @@ namespace Ivayami.Puzzle
                 UpdateDeliverItemUI(false);
                 UpdateInputs(false);
                 IsActive = !IsActive;
+                _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
                 onActivate?.Invoke();
             }
-            else _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
+            else
+            {
+                _onInteractionFailed?.Invoke();
+                _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
+            }
         }
 
         private void UpdateInputs(bool isActive)
@@ -102,7 +109,7 @@ namespace Ivayami.Puzzle
                 if (_passwordUI)
                 {
                     _passwordUI.OnCheckPassword += TryUnlock;
-                    if(_passwordUI is RotateLock) _confirmInput.action.performed += HandleConfirmUI;
+                    if (_passwordUI is RotateLock) _confirmInput.action.performed += HandleConfirmUI;
                 }
                 PlayerActions.Instance.ChangeInputMap("Menu");
             }
@@ -195,9 +202,9 @@ namespace Ivayami.Puzzle
                 {
                     if (i >= _itemsRequired.Length)
                     {
-                        _deliverOptions[i].sprite = _itemsRequired[^1].Item.sprite;
+                        _deliverOptions[i].sprite = _itemsRequired[^1].Item.Sprite;
                     }
-                    else _deliverOptions[i].sprite = _itemsRequired[i].Item.sprite;
+                    else _deliverOptions[i].sprite = _itemsRequired[i].Item.Sprite;
                 }
                 EventSystem.current.SetSelectedGameObject(_deliverBtn);
             }
@@ -214,7 +221,7 @@ namespace Ivayami.Puzzle
                 {
                     _itemsRequired[i].ItemDelivered = true;
                     _itemsRequired[i].OnItemDelivered?.Invoke();
-                    PlayerInventory.Instance.RemoveFromInventory(_currentItemList[_selectedDeliverOptionIndex]);
+                    if (_itemsRequired[i].UseItem) PlayerInventory.Instance.RemoveFromInventory(_currentItemList[_selectedDeliverOptionIndex]);
                     _currentItemsDelivered++;
                     TryUnlock();
                     return;
@@ -232,7 +239,7 @@ namespace Ivayami.Puzzle
             int currentInventoryListIndex = _currentPositionInInventory;
             while (currentDeliverIndex < _deliverOptions.Length)
             {
-                _deliverOptions[currentDeliverIndex].sprite = _currentItemList[currentInventoryListIndex].sprite;
+                _deliverOptions[currentDeliverIndex].sprite = _currentItemList[currentInventoryListIndex].Sprite;
                 currentDeliverIndex++;
                 currentInventoryListIndex++;
                 currentInventoryListIndex = ConstrainValueToArrayBounds(currentInventoryListIndex, _currentItemList.Count);

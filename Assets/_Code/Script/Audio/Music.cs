@@ -1,7 +1,7 @@
+using System.Collections;
+using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
-using UnityEngine;
-using System.Collections;
 using Ivayami.Player;
 using Ivayami.Save;
 
@@ -12,6 +12,7 @@ namespace Ivayami.Audio {
 
         [SerializeField] private float _musicReplayDelayMin;
         [SerializeField] private float _musicReplayDelayMax;
+        private bool _shouldDelayToRepeat = true;
 
         [Header("Cache")]
 
@@ -23,12 +24,18 @@ namespace Ivayami.Audio {
 
         public void SetMusic(EventReference musicEventRef) {
             if (!musicEventRef.IsNull) {
+                _musicInstanceCurrent.getParameterByName("Stress", out float stress);
                 _musicInstanceCurrent.release();
                 _musicInstanceCurrent = RuntimeManager.CreateInstance(musicEventRef);
                 _musicInstanceCurrent.setVolume(SaveSystem.Instance.Options.musicVol);
+                _musicInstanceCurrent.setParameterByName("Stress", stress); //
 
                 StopAllCoroutines();
-                _musicInstanceCurrent.setCallback((eventCallback, a, b) => { StartCoroutine(ReplayMusicAfterDelay()); return FMOD.RESULT.OK; }, EVENT_CALLBACK_TYPE.STOPPED);
+                _musicInstanceCurrent.setCallback((eventCallback, a, b) => { 
+                    if(_shouldDelayToRepeat) StartCoroutine(ReplayMusicAfterDelay()); 
+                    else _musicInstanceCurrent.start();
+                    return FMOD.RESULT.OK; 
+                }, EVENT_CALLBACK_TYPE.STOPPED);
                 _musicInstanceCurrent.start();
             }
         }
@@ -46,6 +53,10 @@ namespace Ivayami.Audio {
             yield return new WaitForSeconds(Random.Range(_musicReplayDelayMin, _musicReplayDelayMax));
 
             _musicInstanceCurrent.start();
+        }
+
+        public void ShouldDelayToRepeat(bool should) {
+            _shouldDelayToRepeat = should;
         }
 
         public void SetVolume(float volume) {

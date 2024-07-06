@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
 using System.Linq;
+using System;
 
 namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -36,6 +37,7 @@ namespace Ivayami.Player {
         [Header("Hand Item")]
 
         private GameObject _handItemCurrent;
+        [field: SerializeField] public Transform HoldPointLeft { get; private set; }
 
         [Header("Abilities")]
 
@@ -158,28 +160,40 @@ namespace Ivayami.Player {
         }
 
         public void AddAbility(PlayerAbility ability) {
-            _abilities.Add(ability);
+            PlayerAbility abilityInstance = Instantiate(ability);
+            Quaternion localRotation = abilityInstance.transform.rotation;
+            abilityInstance.transform.parent = HoldPointLeft;
+            abilityInstance.transform.localPosition = Vector3.zero;
+            abilityInstance.transform.localRotation = localRotation;
+            _abilities.Add(abilityInstance);
 
             Logger.Log(LogType.Player, $"Ability Add: {ability.name}");
         }
 
         public void RemoveAbility(PlayerAbility ability) {
-            if (_abilityCurrent >= _abilities.FindIndex((abilityInList) => abilityInList == ability)) _abilityCurrent--;
-            _abilities.Remove(ability);
+            PlayerAbility abilityInList = _abilities.OrderBy(abilityIterator =>  abilityIterator.GetType() == ability.GetType()).First();
+            if (_abilityCurrent >= _abilities.FindIndex((abilityIterator) => abilityIterator == abilityInList)) _abilityCurrent--;
+            _abilities.Remove(abilityInList);
             onAbilityChange?.Invoke(_abilityCurrent); // Update UI etc
 
             Logger.Log(LogType.Player, $"Ability Remove: {ability.name}");
         }
 
+        public bool CheckAbility(PlayerAbility abilityChecking) {
+            Debug.Log(abilityChecking.GetType()); // DEBUG REMOVE
+            foreach (PlayerAbility ability in _abilities) if (ability.GetType() == abilityChecking.GetType()) return true;
+            return false;
+        }
+
         public void ChangeInputMap(string mapId) {
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable(); // Change to memory current
-            if(mapId != null) _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId).Enable();
+            if (mapId != null) _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId).Enable();
             Cursor.lockState = mapId != "Player" ? CursorLockMode.None : CursorLockMode.Locked;
         }
 
         public void AllowPausing(bool doAllow) {
-            foreach (InputActionReference actionRef in _pauseInputs) { 
-                if(doAllow) actionRef.action.Enable();
+            foreach (InputActionReference actionRef in _pauseInputs) {
+                if (doAllow) actionRef.action.Enable();
                 else actionRef.action.Disable();
             }
         }

@@ -66,6 +66,11 @@ namespace Ivayami.Player.Ability
         public void InteractLongStop()
         {
             InteractableLongCurrent?.InteractStop();
+            if (_rotateCoroutine != null)
+            {
+                StopCoroutine(_rotateCoroutine);
+                _rotateCoroutine = null;
+            }
             _isInteracting = false;
             _navMeshAgent.enabled = true;
             InteractableLongCurrent = null;
@@ -86,37 +91,35 @@ namespace Ivayami.Player.Ability
         {
             while (true)
             {
-                //follow player
-                if (InteractableLongCurrent == null)
+                if (_navMeshAgent.enabled)
                 {
-                    _navMeshAgent.stoppingDistance = _distanceFromPlayer;
-                    if (_rotateCoroutine != null)
+                    //follow player
+                    if (InteractableLongCurrent == null)
                     {
-                        StopCoroutine(_rotateCoroutine);
-                        _rotateCoroutine = null;
+                        _navMeshAgent.stoppingDistance = _distanceFromPlayer;
+                        if (Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) <= _navMeshAgent.stoppingDistance * _distanceExtrapolateFactor)
+                        {
+                            //get out of the way of the player
+                            _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + _navMeshAgent.stoppingDistance * 1.5f * PlayerMovement.Instance.transform.right);
+                        }
+                        else _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position);
+                        _friendAnimator.UpdateInteracting(false);
                     }
-                    if (Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) <= _navMeshAgent.stoppingDistance * _distanceExtrapolateFactor)
-                    {
-                        //get out of the way of the player
-                        _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + _navMeshAgent.stoppingDistance * 1.5f * PlayerMovement.Instance.transform.right);
-                    }
-                    else _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position);
-                    _friendAnimator.UpdateInteracting(false);
-                }
-                //interact
-                else
-                {
-                    _navMeshAgent.stoppingDistance = _distanceFromInteractable;
-                    if (Vector3.Distance(InteractableLongCurrent.gameObject.transform.position, transform.position) <= _navMeshAgent.stoppingDistance * _distanceExtrapolateFactor)
-                    {
-                        if (!_isInteracting) _rotateCoroutine = StartCoroutine(RotateCoroutine());
-                    }
+                    //interact
                     else
                     {
-                        _navMeshAgent.SetDestination(InteractableLongCurrent.gameObject.transform.position);
+                        _navMeshAgent.stoppingDistance = _distanceFromInteractable;
+                        if (Vector3.Distance(InteractableLongCurrent.gameObject.transform.position, transform.position) <= _navMeshAgent.stoppingDistance * _distanceExtrapolateFactor)
+                        {
+                            if (!_isInteracting) _rotateCoroutine = StartCoroutine(RotateCoroutine());
+                        }
+                        else
+                        {
+                            _navMeshAgent.SetDestination(InteractableLongCurrent.gameObject.transform.position);
+                        }
                     }
+                    _friendAnimator.UpdateWalking(_navMeshAgent.velocity.sqrMagnitude > 0);
                 }
-                _friendAnimator.UpdateWalking(_navMeshAgent.velocity.sqrMagnitude > 0);
                 yield return _delay;
             }
         }
