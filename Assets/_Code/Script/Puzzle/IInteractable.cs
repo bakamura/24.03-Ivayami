@@ -1,3 +1,4 @@
+using Ivayami.Player;
 using UnityEngine;
 
 namespace Ivayami.Puzzle {    
@@ -7,7 +8,7 @@ namespace Ivayami.Puzzle {
 
         public InteractableFeedbacks InteratctableHighlight { get; }
 
-        public abstract void Interact();
+        public abstract PlayerActions.InteractAnimation Interact();
 
     }
 }
