@@ -9,5 +9,9 @@ namespace Ivayami.Player.Ability {
             PlayerActions.Instance.AddAbility(_ability);
         }
 
+        public void RemoveAbility() {
+            PlayerActions.Instance.RemoveAbility(_ability);
+        }
+
     }
 }

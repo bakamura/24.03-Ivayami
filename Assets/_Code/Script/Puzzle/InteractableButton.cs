@@ -1,3 +1,4 @@
+using Ivayami.Player;
 using UnityEngine;
 
 namespace Ivayami.Puzzle
@@ -15,10 +16,11 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public void Interact()
+        public PlayerActions.InteractAnimation Interact()
         {
             IsActive = !IsActive;
             onActivate?.Invoke();
+            return PlayerActions.InteractAnimation.Default;
         }
     }
 }
