@@ -25,7 +25,13 @@ namespace Ivayami.Save {
         }
 
         private void Start() {
-            onSaveGame.AddListener(() => PlayerMovement.Instance.transform.position = _playerAnimationPoint.position);
+            onSaveGame.AddListener(() =>
+            {
+                if (_playerAnimationPoint)
+                {
+                    PlayerMovement.Instance.transform.position = _playerAnimationPoint.position;
+                }
+            });
             PlayerStress.Instance.onStressChange.AddListener(stress => _canSave = stress <= 0);
         }
 
@@ -55,6 +61,7 @@ namespace Ivayami.Save {
             {
                 Points.Add(key, value);
             }
+            else Points[key] = value;
         }
 
     }
