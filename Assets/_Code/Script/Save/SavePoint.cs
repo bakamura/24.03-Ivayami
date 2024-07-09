@@ -21,7 +21,7 @@ namespace Ivayami.Save {
 
         private void Awake() {
             InteratctableHighlight = GetComponent<InteractableFeedbacks>();
-            Points.Add(_pointId, this);
+            UpdatePointsDictionary(_pointId, this);
         }
 
         private void Start() {
@@ -48,6 +48,13 @@ namespace Ivayami.Save {
 
         public void ForceSave() {
             Save();
+        }
+
+        private void UpdatePointsDictionary(int key, SavePoint value) {
+            if (!Points.ContainsKey(key))
+            {
+                Points.Add(key, value);
+            }
         }
 
     }
