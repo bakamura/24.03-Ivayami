@@ -11,7 +11,7 @@ namespace Ivayami.Puzzle
         {
             get
             {
-                if (!_interatctableHighlight) _interatctableHighlight = GetComponent<InteractableFeedbacks>();
+                if (!_interatctableHighlight && this) _interatctableHighlight = GetComponent<InteractableFeedbacks>();
                 return _interatctableHighlight;
             }
         }
