@@ -33,12 +33,13 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public void Interact()
+        public PlayerActions.InteractAnimation Interact()
         {
             UpdateInputs(true);
             InteratctableHighlight.UpdateFeedbacks(false);
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             _onInteract?.Invoke();
+            return PlayerActions.InteractAnimation.Default;
         }
 
         private void UpdateInputs(bool isActive)

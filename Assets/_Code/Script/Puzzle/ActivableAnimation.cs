@@ -1,4 +1,5 @@
 using Ivayami.Audio;
+using Ivayami.Player;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -69,7 +70,7 @@ namespace Ivayami.Puzzle
             StopCallbackCoroutine();
         }
 
-        public void Interact()
+        public PlayerActions.InteractAnimation Interact()
         {
             if (IsActive)
             {
@@ -81,6 +82,7 @@ namespace Ivayami.Puzzle
                 }
                 CheckCallbacks(_interactBoolHash);
             }
+            return PlayerActions.InteractAnimation.Default;
         }
 
         protected override void HandleOnActivate()
@@ -128,7 +130,7 @@ namespace Ivayami.Puzzle
         private void CheckCallbacks(int parameterHash)
         {
             StopCallbackCoroutine();
-            if (parameterHash == _activateBoolHash)
+            if (parameterHash == _activateBoolHash && _activateAnimator)
             {
                 if (_activateAnimator.GetBool(_activateBoolHash))
                 {
@@ -149,7 +151,7 @@ namespace Ivayami.Puzzle
                     }
                 }
             }
-            else if (parameterHash == _interactBoolHash && _interactionAnimator.GetBool(_activateBoolHash))
+            else if (parameterHash == _interactBoolHash && _interactionAnimator && _interactionAnimator.GetBool(_activateBoolHash))
             {
                 if (_interactionAnimator.GetBool(_interactBoolHash))
                 {

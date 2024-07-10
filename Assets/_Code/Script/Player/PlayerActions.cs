@@ -19,7 +19,7 @@ namespace Ivayami.Player {
 
         [Header("Events")]
 
-        public UnityEvent onInteract = new UnityEvent();
+        public UnityEvent<InteractAnimation> onInteract = new UnityEvent<InteractAnimation>();
         public UnityEvent<bool> onInteractLong = new UnityEvent<bool>();
         public UnityEvent<IInteractable> onInteractTargetChange = new UnityEvent<IInteractable>();
         public UnityEvent<string> onAbility = new UnityEvent<string>();
@@ -34,9 +34,15 @@ namespace Ivayami.Player {
         public bool Interacting { get; private set; } = false;
         public IInteractable InteractableTarget { get; private set; }
 
+        public enum InteractAnimation {
+            Default,
+            EnterWardrobe
+        }
+
         [Header("Hand Item")]
 
         private GameObject _handItemCurrent;
+        [field: SerializeField] public Transform HoldPointLeft { get; private set; }
 
         [Header("Abilities")]
 
@@ -76,14 +82,14 @@ namespace Ivayami.Player {
         private void Interact(InputAction.CallbackContext input) {
             if (input.phase == InputActionPhase.Started) {
                 if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
-                    InteractableTarget.Interact();
+                    InteractAnimation animation = InteractableTarget.Interact();
                     if (InteractableTarget is IInteractableLong) {
                         onInteractLong?.Invoke(true);
 
                         Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
                     }
                     else {
-                        onInteract?.Invoke();
+                        onInteract?.Invoke(animation);
 
                         Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
                     }
@@ -102,10 +108,14 @@ namespace Ivayami.Player {
             _interactableClosestDistanceCache = _interactRange;
             _interactableClosestCache = null;
             _raycastHitsCache = Physics.SphereCastAll(_cam.ScreenPointToRay(_screenCenter), _interactSphereCastRadius, Mathf.Infinity);
+            Vector2 playerPositionFlat = new Vector2(transform.position.x, transform.position.z); // Make Cache
+            Vector2 hitPositionFlat = Vector2.zero; // Make Cache
             foreach (RaycastHit hit in _raycastHitsCache) {
                 _interactableIterator = hit.collider.GetComponent<IInteractable>();
                 if (_interactableIterator != null) {
-                    _interactableDistanceIterator = Vector3.Distance(transform.position, _interactableIterator.gameObject.transform.position);
+                    hitPositionFlat[0] = hit.point.x;
+                    hitPositionFlat[1] = hit.point.z;
+                    _interactableDistanceIterator = Vector3.Distance(playerPositionFlat, hitPositionFlat);
                     if (_interactableClosestDistanceCache > _interactableDistanceIterator) {
                         _interactableClosestDistanceCache = _interactableDistanceIterator;
                         _interactableClosestCache = _interactableIterator;
@@ -141,15 +151,19 @@ namespace Ivayami.Player {
         private void ChangeAbility(InputAction.CallbackContext input) {
             switch (input.ReadValue<Vector2>()) {
                 case Vector2 v2 when v2.Equals(Vector2.up):
+                    if (_abilities.Count < 1) return;
                     _abilityCurrent = 0;
                     break;
                 case Vector2 v2 when v2.Equals(Vector2.right):
+                    if (_abilities.Count < 2) return;
                     _abilityCurrent = 1;
                     break;
                 case Vector2 v2 when v2.Equals(Vector2.down):
+                    if (_abilities.Count < 3) return;
                     _abilityCurrent = 2;
                     break;
                 case Vector2 v2 when v2.Equals(Vector2.left):
+                    if (_abilities.Count < 4) return;
                     _abilityCurrent = 3;
                     break;
             }
@@ -159,14 +173,18 @@ namespace Ivayami.Player {
         }
 
         public void AddAbility(PlayerAbility ability) {
-            PlayerAbility abilityInstance = Instantiate(ability, PlayerMovement.Instance.transform);
+            PlayerAbility abilityInstance = Instantiate(ability);
+            Quaternion localRotation = abilityInstance.transform.rotation;
+            abilityInstance.transform.parent = HoldPointLeft;
+            abilityInstance.transform.localPosition = Vector3.zero;
+            abilityInstance.transform.localRotation = localRotation;
             _abilities.Add(abilityInstance);
 
             Logger.Log(LogType.Player, $"Ability Add: {ability.name}");
         }
 
         public void RemoveAbility(PlayerAbility ability) {
-            PlayerAbility abilityInList = _abilities.OrderBy(abilityIterator =>  abilityIterator.GetType() == ability.GetType()).First();
+            PlayerAbility abilityInList = _abilities.OrderBy(abilityIterator => abilityIterator.GetType() == ability.GetType()).First();
             if (_abilityCurrent >= _abilities.FindIndex((abilityIterator) => abilityIterator == abilityInList)) _abilityCurrent--;
             _abilities.Remove(abilityInList);
             onAbilityChange?.Invoke(_abilityCurrent); // Update UI etc
