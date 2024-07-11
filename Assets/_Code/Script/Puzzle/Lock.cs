@@ -64,7 +64,7 @@ namespace Ivayami.Puzzle
         }
 
         [ContextMenu("Interact")]
-        public void Interact()
+        public PlayerActions.InteractAnimation Interact()
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
@@ -78,6 +78,7 @@ namespace Ivayami.Puzzle
             {
                 UpdateDeliverItemUI(true);
             }
+            return PlayerActions.InteractAnimation.Default;
         }
 
         public void TryUnlock()
