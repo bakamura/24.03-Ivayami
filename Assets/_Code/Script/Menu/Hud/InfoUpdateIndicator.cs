@@ -27,6 +27,10 @@ namespace Ivayami.UI {
         private Coroutine _currentDisplayRoutine;
         private WaitForSeconds _stayWait;
 
+        private void Awake() {
+            _stayWait = new WaitForSeconds(_stayDuration);
+        }
+
         public void DisplayUpdate(Sprite spriteToDisplay) {
             if (_currentDisplayRoutine != null) _displayQueue.Enqueue(spriteToDisplay);
             Logger.Log(LogType.UI, $"Display Update {spriteToDisplay.name}");
