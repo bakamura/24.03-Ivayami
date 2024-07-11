@@ -39,6 +39,8 @@ namespace Ivayami.Puzzle
             return PlayerActions.InteractAnimation.Default;
         }
 
+        public void ForceInteract() => Interact();
+
         public void GiveItem()
         {
             for (int i = 0; i < _itens.Length; i++)
