@@ -22,5 +22,7 @@ namespace Ivayami.Puzzle
             onActivate?.Invoke();
             return PlayerActions.InteractAnimation.Default;
         }
+
+        public void ForceInteract() => Interact();
     }
 }
