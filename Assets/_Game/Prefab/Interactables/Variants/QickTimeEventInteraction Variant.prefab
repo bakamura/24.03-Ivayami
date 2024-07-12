@@ -101,6 +101,46 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _interactSoundReference.Path
+      value: event:/Player_SFX/Searching
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _actionSuccessSoundReference.Path
+      value: event:/Puzzle_SFX/Puzzle feedback
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _interactSoundReference.Guid.Data1
+      value: 1028258334
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _interactSoundReference.Guid.Data2
+      value: 1330055466
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _interactSoundReference.Guid.Data3
+      value: -1060530248
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _interactSoundReference.Guid.Data4
+      value: 1449399038
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _actionSuccessSoundReference.Guid.Data1
+      value: 1463205368
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _actionSuccessSoundReference.Guid.Data2
+      value: 1116814665
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _actionSuccessSoundReference.Guid.Data3
+      value: -427302468
+      objectReference: {fileID: 0}
+    - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _actionSuccessSoundReference.Guid.Data4
+      value: -694821964
+      objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.size
       value: 2
@@ -125,10 +165,6 @@ PrefabInstance:
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 3230316187420196928}
-    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
-      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[2].m_Target
-      value: 
-      objectReference: {fileID: 8043860339415069974}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -235,9 +271,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3230316187420196928}
-    - targetCorrespondingSourceObject: {fileID: 2893729587816268008, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2801634198300338484}
   m_SourcePrefab: {fileID: 100100000, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
 --- !u!1 &121730017989909599 stripped
 GameObject:
@@ -300,29 +333,3 @@ SphereCollider:
   m_CorrespondingSourceObject: {fileID: 1257347051849839360, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
   m_PrefabInstance: {fileID: 5154686322084132350}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &8043860339415069974 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2893729587816268008, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
-  m_PrefabInstance: {fileID: 5154686322084132350}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &2801634198300338484
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8043860339415069974}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d1cf3e558673542469dae9c909749454, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0

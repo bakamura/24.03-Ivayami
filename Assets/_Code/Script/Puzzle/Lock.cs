@@ -9,7 +9,7 @@ using Ivayami.Audio;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableFeedbacks), typeof(InteractableSounds))]
+    [RequireComponent(typeof(InteractableFeedbacks), typeof(InteractableSounds), typeof(LockPuzzleSounds))]
     public class Lock : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
@@ -38,7 +38,9 @@ namespace Ivayami.Puzzle
         private sbyte _currentItemsDelivered;
         private InteractableFeedbacks _interatctableFeedbacks;
         private InteractableSounds _interactableSounds;
+        private LockPuzzleSounds _lockSounds;
         public InteractableFeedbacks InteratctableHighlight { get => _interatctableFeedbacks; }
+        public LockPuzzleSounds LockSounds => _lockSounds;
 
         [System.Serializable]
         public enum InteractionTypes
@@ -61,6 +63,7 @@ namespace Ivayami.Puzzle
             _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
             _interatctableFeedbacks = GetComponent<InteractableFeedbacks>();
             _interactableSounds = GetComponent<InteractableSounds>();
+            _lockSounds = GetComponent<LockPuzzleSounds>();
         }
 
         [ContextMenu("Interact")]
@@ -147,9 +150,10 @@ namespace Ivayami.Puzzle
 
         private void HandleNavigateUI(InputAction.CallbackContext context)
         {
-            Vector2 input = context.ReadValue<Vector2>();
+            Vector2 input = context.ReadValue<Vector2>();            
             if (input != Vector2.zero)
             {
+                _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ChangeOption);
                 switch (_interactionType)
                 {
                     case InteractionTypes.RequirePassword:
@@ -214,6 +218,7 @@ namespace Ivayami.Puzzle
         //called by interface Btn
         public void DeliverItem()
         {
+            _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ConfirmOption);
             for (int i = 0; i < _itemsRequired.Length; i++)
             {
                 if (_itemsRequired[i].Item.name == _currentItemList[_selectedDeliverOptionIndex].name
