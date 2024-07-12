@@ -299,6 +299,7 @@ namespace Ivayami.Enemy
             StopTargetPointReachedCoroutine();
             _navMeshAgent.isStopped = true;
             _navMeshAgent.velocity = Vector3.zero;
+            _enemySounds.PlaySound(EnemySounds.SoundTypes.TakeDamage);
             _enemyAnimator.TakeDamage(OnAttackAnimationEnd);
         }
 
