@@ -18,9 +18,9 @@ namespace Ivayami.UI {
         }
 
         public void SetItemDisplay(InventoryItem item) {
-            name = item.displayName;
+            name = item.DisplayName;
             if (_itemPreview != null) Destroy(_itemPreview);
-            _itemPreview.sprite = item.sprite;
+            _itemPreview.sprite = item.Sprite;
             _itemPreview.transform.localPosition = Vector3.zero;
         }
 

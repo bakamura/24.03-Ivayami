@@ -13,21 +13,26 @@ namespace Ivayami.Scene {
 
         private void Awake() {
             _pauseInput.action.Disable();
-            SceneController.Instance.OnAllSceneRequestEnd = () => SceneController.Instance.OnAllSceneRequestEnd = EnablePlayerInput;
-            DontDestroyOnLoad(gameObject);
+            SceneController.Instance.OnAllSceneRequestEnd += EnablePlayerInput;
+            //DontDestroyOnLoad(gameObject);
         }
 
         private void EnablePlayerInput() {
-            Debug.Log("EnablePlayerInput");
+            //Debug.Log("EnablePlayerInput");
             _pauseInput.action.Enable();
             PlayerActions.Instance.ChangeInputMap("Player");
             PlayerMovement.Instance.ToggleMovement(true);
-            PlayerMovement.Instance.transform.position = SavePoint.Points[SaveSystem.Instance.Progress.pointId].spawnPoint.position;
-            SceneTransition.Instance.Menu.Open();
-            SceneController.Instance.OnAllSceneRequestEnd = null;
+            PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].spawnPoint.position);
+            GetComponent<ScreenFade>().FadeOut(HandleOnAllSceneRequestEnd);
+            //SceneTransition.Instance.Menu.Open();
+        }
+
+        private void HandleOnAllSceneRequestEnd()
+        {
+            SceneController.Instance.OnAllSceneRequestEnd -= EnablePlayerInput;
 
             Logger.Log(LogType.UI, $"EnablePlayerInput callback");
-            Destroy(gameObject);
+            //Destroy(gameObject);
         }
 
     }

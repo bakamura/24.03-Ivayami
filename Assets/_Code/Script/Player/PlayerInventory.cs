@@ -19,13 +19,13 @@ namespace Ivayami.Player {
         public void AddToInventory(InventoryItem item) {
             _itemList.Add(item);
 
-            Logger.Log(LogType.Player, $"Inventory Add: {item.displayName} ({item.name}) / {item.type}");
+            Logger.Log(LogType.Player, $"Inventory Add: {item.DisplayName} ({item.name}) / {item.Type}");
         }
 
         public void RemoveFromInventory(InventoryItem item) {
             _itemList.Remove(item);
 
-            Logger.Log(LogType.Player, $"Inventory Remove: {item.displayName} ({item.name}) / {item.type}");
+            Logger.Log(LogType.Player, $"Inventory Remove: {item.DisplayName} ({item.name}) / {item.Type}");
         }
 
     }

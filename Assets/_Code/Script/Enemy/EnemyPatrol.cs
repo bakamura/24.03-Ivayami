@@ -28,9 +28,9 @@ namespace Ivayami.Enemy
         [SerializeField] private LayerMask _blockVisionLayer;
         [SerializeField] private Vector3[] _patrolPoints;
 
-#if UNITY_EDITOR
         [Header("Debug")]
         [SerializeField] private bool _debugLog;
+#if UNITY_EDITOR
         [SerializeField] private bool _drawMinDistance;
         [SerializeField] private Color _minDistanceAreaColor = Color.yellow;
         [SerializeField] private bool _drawDetectionRange;
@@ -136,8 +136,8 @@ namespace Ivayami.Enemy
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                             _isChasing = true;
                         }
-                        _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position);
-                        _lastTargetPosition = PlayerMovement.Instance.transform.position;
+                        _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
+                        _lastTargetPosition = _hitsCache[0].transform.position;
                         if (_debugLog) Debug.Log("Chase Target");
                         if (_attackTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance + _currentTargetColliderSizeFactor)
                         {
@@ -196,12 +196,13 @@ namespace Ivayami.Enemy
 
         private bool CheckForTarget(float halfVisionAngle)
         {
-            bool isNotInBush = (_loseTargetWhenInBush && !Bush.IsPlayerHidden) || !_loseTargetWhenInBush;
             bool targetInsideRange = Physics.OverlapSphereNonAlloc(transform.position, _detectionRange, _hitsCache, _targetLayer) > 0;
+            if (!targetInsideRange) return false;
+            bool isNotInBush = (_loseTargetWhenInBush && !Bush.IsPlayerHidden) || !_loseTargetWhenInBush;
             if (targetInsideRange) _currentTargetColliderSizeFactor = _hitsCache[0].bounds.extents.z;
-            bool blockingVision = Physics.Raycast(transform.position + _visionOffset, (PlayerMovement.Instance.transform.position - transform.position).normalized, Vector3.Distance(transform.position, PlayerMovement.Instance.transform.position), _blockVisionLayer);
-            bool isInMinRange = Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) <= _minDetectionRange;
-            bool isInVisionAngle = Vector3.Angle(transform.forward, (PlayerMovement.Instance.transform.position - transform.position).normalized) <= halfVisionAngle;
+            bool blockingVision = Physics.Raycast(transform.position + _visionOffset, (_hitsCache[0].transform.position - transform.position).normalized, Vector3.Distance(transform.position, _hitsCache[0].transform.position), _blockVisionLayer);
+            bool isInMinRange = Vector3.Distance(_hitsCache[0].transform.position, transform.position) <= _minDetectionRange;
+            bool isInVisionAngle = Vector3.Angle(transform.forward, (_hitsCache[0].transform.position - transform.position).normalized) <= halfVisionAngle;
 
             if (_debugLog)
                 Debug.Log($"blocked by bush {!isNotInBush}, target Inside Radius {targetInsideRange}, blocking vision {blockingVision}, is in Min range {isInMinRange}, is in Vision Angle {isInVisionAngle}");
