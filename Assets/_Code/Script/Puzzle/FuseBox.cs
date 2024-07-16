@@ -5,10 +5,11 @@ using UnityEngine.InputSystem;
 using System;
 using UnityEngine.Events;
 using Ivayami.Player;
+using Ivayami.Audio;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableFeedbacks))]
+    [RequireComponent(typeof(InteractableFeedbacks), typeof(InteractableSounds))]
     public class FuseBox : Activator, IInteractable
     {
         [SerializeField] private Vector2 _matrixDimensions;
@@ -38,6 +39,7 @@ namespace Ivayami.Puzzle
         private bool _isActive;
         private GameObject _defaultBtn;
         private InteractableFeedbacks _interatctableHighlight;
+        private InteractableSounds _interactableSounds; 
         private const string _colorEmissionVarName = "_EmissionColor";
 
         public InteractableFeedbacks InteratctableHighlight { get => _interatctableHighlight; }
@@ -45,6 +47,7 @@ namespace Ivayami.Puzzle
         private void Awake()
         {
             _interatctableHighlight = GetComponent<InteractableFeedbacks>();
+            _interactableSounds = GetComponent<InteractableSounds>();
             _defaultBtn = _fuseUIParent.GetComponentInChildren<Button>(false).gameObject;
 
             MeshRenderer[] temp = _ledsParent.GetComponentsInChildren<MeshRenderer>(false);
@@ -71,6 +74,7 @@ namespace Ivayami.Puzzle
             if (!_isActive)
             {
                 _interatctableHighlight.UpdateFeedbacks(false);
+                _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
                 Setup();
             }
             return PlayerActions.InteractAnimation.Default;
@@ -218,6 +222,7 @@ namespace Ivayami.Puzzle
             _isActive = false;
             _currentSelected.material.SetColor(_colorEmissionVarName, _baseFuseColor);
             UpdateInputsAndUI(_isActive);
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
             IsActive = !IsActive;
             onActivate?.Invoke();
         }

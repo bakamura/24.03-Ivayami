@@ -85,6 +85,8 @@ namespace Ivayami.Puzzle
             return PlayerActions.InteractAnimation.Default;
         }
 
+        public void ForceInteract() => Interact();
+
         protected override void HandleOnActivate()
         {
             base.HandleOnActivate();
