@@ -17,9 +17,10 @@ namespace Ivayami.UI {
         [SerializeField] private float _stayDuration;
         [SerializeField] private float _hideDuration;
 
-        [Header("Debug")]
+        [Header("?")] // These should probably be external
 
         [SerializeField] private Sprite _mapIcon;
+        [SerializeField] private Sprite _readableIcon;
 
         [Header("Cache")]
 
@@ -59,6 +60,10 @@ namespace Ivayami.UI {
 
         public void DisplayMap() {
             DisplayUpdate(_mapIcon);
+        }
+        
+        public void DisplayReadable() {
+            DisplayUpdate(_readableIcon);
         }
 
     }
