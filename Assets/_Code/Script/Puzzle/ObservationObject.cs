@@ -13,7 +13,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private UnityEvent _onExitInteraction;
 
-        private InteractableFeedbacks _interatctableHighlight;
+        private InteractableFeedbacks m_interatctableHighlight;
         private InteractableSounds _interactableSounds
         {
             get
@@ -28,17 +28,18 @@ namespace Ivayami.Puzzle
         {
             get
             {
-                if (!_interatctableHighlight) _interatctableHighlight = GetComponent<InteractableFeedbacks>();
-                return _interatctableHighlight;
+                if (!m_interatctableHighlight && this) m_interatctableHighlight = GetComponent<InteractableFeedbacks>();
+                return m_interatctableHighlight;
             }
         }
 
-        public void Interact()
+        public PlayerActions.InteractAnimation Interact()
         {
             UpdateInputs(true);
             InteratctableHighlight.UpdateFeedbacks(false);
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             _onInteract?.Invoke();
+            return PlayerActions.InteractAnimation.Default;
         }
 
         private void UpdateInputs(bool isActive)

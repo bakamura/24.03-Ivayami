@@ -23,7 +23,7 @@ namespace Ivayami.Puzzle {
             _focusCamera = GetComponentInChildren<CameraAnimationInfo>();
         }
 
-        public void Interact() {
+        public PlayerActions.InteractAnimation Interact() {
             if(SaveSystem.Instance.Options.language != 0) _readable = Resources.Load<Readable>($"Readable/{(LanguageTypes)SaveSystem.Instance.Options.language}/{_readable.name}");
 
             PlayerActions.Instance.ChangeInputMap("Menu");
@@ -33,6 +33,7 @@ namespace Ivayami.Puzzle {
             ReadableUI.Instance.CloseBtn.onClick.AddListener(StopReading);
             ReturnAction.Instance.Set(StopReading);
             if (_goesToInventory) { }
+            return PlayerActions.InteractAnimation.Default;
         }
 
         public void StopReading() {

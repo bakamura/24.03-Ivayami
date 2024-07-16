@@ -88,11 +88,12 @@ namespace Ivayami.Scene
             }
         }
 
-        public void UnloadAllScenes()
+        public void UnloadAllScenes(Action onAllScenesUnload)
         {
+            OnAllSceneRequestEnd += onAllScenesUnload;
             for (int i = 0; i < _sceneList.Count; i++)
             {
-                StartLoad(_sceneList[i].SceneName);
+                if (_sceneList[i].IsLoaded) StartLoad(_sceneList[i].SceneName);
             }
         }
 
