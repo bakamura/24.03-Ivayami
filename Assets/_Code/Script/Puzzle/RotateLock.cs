@@ -17,13 +17,11 @@ namespace Ivayami.Puzzle
         private sbyte _currentBtnSelectedIndex;
         private Coroutine _animateCoroutine;
         private RotateLockButton _previousBtn;
-        private Lock _lock;
 
         protected override void Awake()
         {
             base.Awake();
             _buttons = _lockBtnContainer.GetComponentsInChildren<RotateLockButton>(true);
-            _lock = GetComponentInParent<Lock>();
         }
 
         public override void UpdateActiveState(bool isActive)
@@ -81,6 +79,7 @@ namespace Ivayami.Puzzle
 
             if (input.y != 0 && _animateCoroutine == null)
             {
+                _lock.LockSounds.PlaySound(Audio.LockPuzzleSounds.SoundTypes.ConfirmOption);
                 _buttons[_currentBtnSelectedIndex].UpdateButtonDisplay((sbyte)Mathf.Sign(input.y));
                 _animateCoroutine = StartCoroutine(AnimateButtonCoroutine((sbyte)Mathf.Sign(input.y), _buttons[_currentBtnSelectedIndex].transform));
             }
