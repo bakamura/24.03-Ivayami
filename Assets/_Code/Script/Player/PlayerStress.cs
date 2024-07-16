@@ -103,14 +103,20 @@ namespace Ivayami.Player {
 
         private IEnumerator DelayToRespawn() {
             PlayerMovement.Instance.ToggleMovement(false);
+
             yield return _restartWait;
 
             SceneTransition.Instance.Menu.Close();
+
+            if (false) {
+                // If not in world
+            }
 
             yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
 
             PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].transform.position);
             PlayerMovement.Instance.ToggleMovement(true);
+            PlayerAnimation.Instance.GoToIdle();
             SceneTransition.Instance.Menu.Open();
         }
 
