@@ -1,19 +1,24 @@
-using Ivayami.Save;
 using System.Collections.Generic;
 using UnityEngine;
+using Ivayami.Save;
 
 namespace Ivayami.Player {
     public class PlayerAnimation : MonoSingleton<PlayerAnimation> {
 
-        [Header("Parameter Names")]
+        [SerializeField] private AnimationClip _enterLockerAnimation;
+        public float EnterLockerDuration { get { return _enterLockerAnimation.length; } }
 
+        [Header("Cache")]
+
+        private static int IDLE = Animator.StringToHash("Idle");
+        private static int FAIL = Animator.StringToHash("Idle");
         private static int MOVE_SPEED = Animator.StringToHash("MoveSpeed");
         private static int MOVE_X = Animator.StringToHash("MoveX");
         private static int MOVE_Y = Animator.StringToHash("MoveY");
         private static int CROUCH = Animator.StringToHash("Crouch");
         private static Dictionary<PlayerActions.InteractAnimation, int> INTERACT_DICTIONARY = new Dictionary<PlayerActions.InteractAnimation, int> {
             { PlayerActions.InteractAnimation.Default, Animator.StringToHash("Interact") },
-            { PlayerActions.InteractAnimation.EnterWardrobe, Animator.StringToHash("EnterWardrobe") },
+            { PlayerActions.InteractAnimation.EnterLocker, Animator.StringToHash("EnterLocker") },
         };
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
         private static int HOLDING = Animator.StringToHash("Holding");
@@ -29,6 +34,7 @@ namespace Ivayami.Player {
         private void Start() {
             PlayerMovement.Instance.onMovement.AddListener(MoveAnimation);
             PlayerMovement.Instance.onCrouch.AddListener(Crouch);
+            PlayerStress.Instance.onFailState.AddListener(Fail);
             PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
             PlayerActions.Instance.onAbility.AddListener(Trigger);
@@ -59,6 +65,14 @@ namespace Ivayami.Player {
 
         private void Trigger(string abilityName) {
             _animator.SetTrigger(abilityName);
+        }
+
+        public void GoToIdle() {
+            _animator.SetTrigger(IDLE);
+        }
+
+        private void Fail() {
+            _animator.SetTrigger(FAIL);
         }
 
     }
