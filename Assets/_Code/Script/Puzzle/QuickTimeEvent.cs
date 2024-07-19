@@ -4,9 +4,11 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using System;
 using Ivayami.Player;
+using Ivayami.Audio;
 
 namespace Ivayami.Puzzle
 {
+    [RequireComponent(typeof(InteractableFeedbacks), typeof(InteractableSounds))]
     public class QuickTimeEvent : MonoBehaviour
     {
         [SerializeField] private InputActionReference _quickTimeButton;
@@ -19,6 +21,15 @@ namespace Ivayami.Puzzle
         private byte _currentClickAmount;
         private Coroutine _waitAnimationCoroutine;
         private InteractableFeedbacks m_interactableFeedbacks;
+        private InteractableSounds m_interactableSounds;
+        private InteractableSounds _interactableSounds
+        {
+            get
+            {
+                if (!m_interactableSounds) m_interactableSounds = GetComponent<InteractableSounds>();
+                return m_interactableSounds;
+            }
+        }
         private InteractableFeedbacks _interactableFeedbacks
         {
             get
@@ -86,8 +97,10 @@ namespace Ivayami.Puzzle
             {
                 _currentClickAmount++;
                 _interactableFeedbacks.PlayInteractionAnimation();
+                _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
                 if (_currentClickAmount > _amountOfTimesToClick)
                 {
+                    _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
                     SetAllSpeeds(true);
                     _interactableFeedbacks.UpdateInteractionIcon(false);
                     StartCoroutine(WaitAnimationEndCoroutine(false, EndEvent));
