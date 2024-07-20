@@ -253,6 +253,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   _crouchHeightChangeDuration: 0.25
+  hidingState: 0
   _cameraAimTargetRotator: {fileID: 9087933524707385343}
   _overTheShoulderTarget: {fileID: 5114778192365935469}
   _overTheShoulderSpringCollisions:
@@ -386,10 +387,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _aimPoint: {fileID: 5114778192365935469}
+  _distanceFactor: 0.8
   _obstaclesLayer:
     serializedVersion: 2
     m_Bits: 72
-  _tickFrequency: 0.02
 --- !u!1001 &1859338547899245415
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -455,6 +456,30 @@ PrefabInstance:
       value: 0.0125
       objectReference: {fileID: 0}
     - target: {fileID: -8531248215242998404, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+      propertyPath: m_AABB.m_Extent.z
+      value: 0.0375
+      objectReference: {fileID: 0}
+    - target: {fileID: -7823293702887809713, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+      propertyPath: m_AABB.m_Center.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7823293702887809713, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+      propertyPath: m_AABB.m_Center.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7823293702887809713, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+      propertyPath: m_AABB.m_Center.z
+      value: 0.037
+      objectReference: {fileID: 0}
+    - target: {fileID: -7823293702887809713, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+      propertyPath: m_AABB.m_Extent.x
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: -7823293702887809713, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+      propertyPath: m_AABB.m_Extent.y
+      value: 0.0125
+      objectReference: {fileID: 0}
+    - target: {fileID: -7823293702887809713, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
       propertyPath: m_AABB.m_Extent.z
       value: 0.0375
       objectReference: {fileID: 0}
@@ -613,6 +638,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9afca3879bb863e4abdb04d0a4c00609, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _enterLockerAnimation: {fileID: 4866158927099243651, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
 --- !u!4 &2181725685440365708 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}

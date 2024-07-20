@@ -13,6 +13,7 @@ namespace Ivayami.Enemy
         private static readonly int TARGET_DETECTED_TRIGGER = Animator.StringToHash("targetDetected");
         private static readonly int INTERACT_TRIGGER = Animator.StringToHash("interacting");
         private static readonly int TAKE_DAMAGE_TRIGGER = Animator.StringToHash("takeDamage");
+        private static readonly int CHASING_FLOAT = Animator.StringToHash("chasing");
 
         private static readonly int WALKING_STATE = Animator.StringToHash("walk");
         private static readonly int SPAWNING_STATE = Animator.StringToHash("spawn");
@@ -61,6 +62,7 @@ namespace Ivayami.Enemy
         public void TargetDetected(Action onAnimationEnd = null)
         {
             _animator.SetTrigger(TARGET_DETECTED_TRIGGER);
+            _animator.SetFloat(CHASING_FLOAT, 1);
             StartAnimationEvent(TARGET_DETECTED_STATE, onAnimationEnd);
         }
         /// <param name="onAnimationEnd">
@@ -78,6 +80,12 @@ namespace Ivayami.Enemy
         {
             _animator.SetTrigger(TAKE_DAMAGE_TRIGGER);
             StartAnimationEvent(TAKE_DAMAGE_STATE, onAnimationEnd);
+        }
+        /// <param name="isChasing"></param>
+        /// <param name="onAnimationEnd">will only activate once</param>
+        public void Chasing(bool isChasing)
+        {
+            _animator.SetFloat(CHASING_FLOAT, isChasing ? 1 : 0);
         }
 
         private void StartAnimationEvent(int stateHash, Action onAnimationEnd)

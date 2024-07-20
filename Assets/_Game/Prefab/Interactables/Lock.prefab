@@ -2338,10 +2338,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8051011512502463676}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -150}
-  m_SizeDelta: {x: 200, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5159464585855888823
 CanvasRenderer:
@@ -2413,10 +2413,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8051011512502463676}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -450}
-  m_SizeDelta: {x: 200, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9116068300538003433
 CanvasRenderer:
@@ -4297,10 +4297,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8051011512502463676}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -350}
-  m_SizeDelta: {x: 200, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6447643642703690755
 CanvasRenderer:
@@ -4479,10 +4479,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8051011512502463676}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -250}
-  m_SizeDelta: {x: 200, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2681353257889519575
 CanvasRenderer:
@@ -7430,7 +7430,7 @@ MonoBehaviour:
   password: 01234
   _initialSelected: {fileID: 8821316924181504595}
   _navegationUIInput: {fileID: 2501893477794616356, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
-  _animationDuration: 0.5
+  _animationDuration: 0.125
   _rotationAngle: 40
   _lockBtnContainer: {fileID: 6574509429653933991}
 --- !u!225 &2965491906067843459
@@ -11453,6 +11453,7 @@ GameObject:
   - component: {fileID: 1251927608148748884}
   - component: {fileID: 1981985357784697215}
   - component: {fileID: 4854698839255661216}
+  - component: {fileID: 66456861983389335}
   m_Layer: 6
   m_Name: Lock
   m_TagString: Untagged
@@ -11639,8 +11640,35 @@ MonoBehaviour:
       Data2: 1176837851
       Data3: 220537750
       Data4: -2143912616
-    Path: event:/Fail to puzzle
+    Path: event:/Puzzle_SFX/Fail to puzzle
   _actionSuccessSoundReference:
+    Guid:
+      Data1: 1463205368
+      Data2: 1116814665
+      Data3: -427302468
+      Data4: -694821964
+    Path: event:/Puzzle_SFX/Puzzle feedback
+--- !u!114 &66456861983389335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7819979270802992687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2d32fcc61acf8a488d3629d547d0cae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _debugLog: 0
+  _changeOptionSoundReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  _confirmOptionSoundReference:
     Guid:
       Data1: 0
       Data2: 0
@@ -13126,10 +13154,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8051011512502463676}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100, y: -50}
-  m_SizeDelta: {x: 200, y: 100}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5053561260385640686
 CanvasRenderer:

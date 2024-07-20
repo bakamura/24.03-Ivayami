@@ -12,7 +12,6 @@ namespace Ivayami.Puzzle
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private bool _isLongInteraction;
 
-        private InteractableFeedbacks _interatctableHighlight;
         private InteractableSounds _interactableSounds
         {
             get
@@ -27,10 +26,11 @@ namespace Ivayami.Puzzle
         {
             get
             {
-                if (!_interatctableHighlight) _interatctableHighlight = GetComponent<InteractableFeedbacks>();
-                return _interatctableHighlight;
+                if (!m_interatctableHighlight && this) m_interatctableHighlight = GetComponent<InteractableFeedbacks>();
+                return m_interatctableHighlight;
             }
         }
+        private InteractableFeedbacks m_interatctableHighlight;
 
         public PlayerActions.InteractAnimation Interact()
         {
@@ -38,6 +38,8 @@ namespace Ivayami.Puzzle
             GiveItem();
             return PlayerActions.InteractAnimation.Default;
         }
+
+        public void ForceInteract() => Interact();
 
         public void GiveItem()
         {

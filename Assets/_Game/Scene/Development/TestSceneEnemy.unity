@@ -1147,11 +1147,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 260663987}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!95 &290643116 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 4053114613249656650, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
-  m_PrefabInstance: {fileID: 7842380983405663466}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &295221346
 GameObject:
   m_ObjectHideFlags: 0
@@ -1198,6 +1193,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _teleportType: 1
   _teleportTarget: {fileID: 2515703614948467775}
+  _onTeleportEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   _gizmoSize: 0.2
 --- !u!1 &297532031
@@ -4728,7 +4726,7 @@ MonoBehaviour:
   _onExecute:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 290643116}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
         m_MethodName: Play
         m_Mode: 5
@@ -6404,7 +6402,7 @@ MonoBehaviour:
   _onExecute:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 290643116}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
         m_MethodName: Play
         m_Mode: 5
@@ -6727,7 +6725,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1518476183}
         m_TargetAssemblyTypeName: Ivayami.Puzzle.ActivableAnimation, Assembly-CSharp
-        m_MethodName: Interact
+        m_MethodName: ForceInteract
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7601,7 +7599,7 @@ MonoBehaviour:
   _onExecute:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 290643116}
+      - m_Target: {fileID: 7842380983405663467}
         m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
         m_MethodName: SetTrigger
         m_Mode: 5
@@ -8069,7 +8067,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8099076137256110353, guid: 18d1503aee2ca9942a656035e382c5b8, type: 3}
       propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: Interact
+      value: ForceInteract
       objectReference: {fileID: 0}
     - target: {fileID: 8099076137256110353, guid: 18d1503aee2ca9942a656035e382c5b8, type: 3}
       propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
@@ -9965,6 +9963,11 @@ PrefabInstance:
       addedObject: {fileID: 672108342}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
+--- !u!95 &7842380983405663467 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 7248594055850837907, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}
+  m_PrefabInstance: {fileID: 7842380983405663466}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7842380983405663468 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5394693277866464840, guid: 3e0bc26d5b48a8d4ca21c19e57c2fe0c, type: 3}

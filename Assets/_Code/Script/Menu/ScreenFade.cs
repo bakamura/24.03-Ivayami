@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using System;
 
 namespace Ivayami.UI
 {
@@ -37,7 +38,32 @@ namespace Ivayami.UI
             }
         }
 
-        private IEnumerator WaitFadeCoroutine()
+        public void FadeIn(Action onFadeEnd = null)
+        {
+            if (!_isFading)
+            {
+                _isFading = true;
+                if (_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
+                _previousCurve = SceneTransition.Instance.TransitionCurve;
+                SceneTransition.Instance.SetAnimationCurve(_fadeCurve);
+                SceneTransition.Instance.Menu.Open();
+                StartCoroutine(WaitFadeCoroutine(onFadeEnd));
+            }
+        }
+        public void FadeOut(Action onFadeEnd = null)
+        {
+            if (!_isFading)
+            {
+                _isFading = true;
+                if (_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
+                _previousCurve = SceneTransition.Instance.TransitionCurve;
+                SceneTransition.Instance.SetAnimationCurve(_fadeCurve);
+                SceneTransition.Instance.Menu.Close();
+                StartCoroutine(WaitFadeCoroutine(onFadeEnd));
+            }
+        }
+
+        private IEnumerator WaitFadeCoroutine(Action onFadeEnd = null)
         {
             float count = 0;
             while(count < SceneTransition.Instance.Menu.TransitionDuration)
@@ -47,6 +73,7 @@ namespace Ivayami.UI
             }
             _isFading = false;
             SceneTransition.Instance.SetAnimationCurve(_previousCurve);
+            onFadeEnd?.Invoke();
             _onFadeEnd?.Invoke();
         }
     }
