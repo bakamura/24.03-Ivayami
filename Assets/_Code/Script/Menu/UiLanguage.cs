@@ -16,6 +16,10 @@ public class UiLanguage : MonoBehaviour {
     [SerializeField] private UiText _uiText;
     [SerializeField] private LanguageComponent[] _languageComponents;
 
+    private void Start() {
+        Options.OnChangeLanguage.AddListener(UpdateLanguage);
+    }
+
     public void UpdateLanguage(LanguageTypes language) {
         UiText uiText = language == LanguageTypes.ENUS ? _uiText : Resources.Load<UiText>($"UiText/{language}/{_uiText.name}");
         foreach(LanguageComponent languageComponent in _languageComponents) languageComponent.Tmp.text = uiText.GetText(languageComponent.Id);
