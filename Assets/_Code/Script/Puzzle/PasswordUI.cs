@@ -14,6 +14,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private GameObject _initialSelected;
 
         private CanvasGroup _canvasGroup;
+        protected Lock _lock;
         //private Transform _container;
 
         public GameObject FallbackButton => _initialSelected;
@@ -21,6 +22,7 @@ namespace Ivayami.Puzzle
         protected virtual void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
+            _lock = GetComponentInParent<Lock>();
             //_container = transform.Find("Container");
         }
         public abstract bool CheckPassword();

@@ -1,11 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
-using System.Linq;
-using System;
 
 namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -36,7 +35,7 @@ namespace Ivayami.Player {
 
         public enum InteractAnimation {
             Default,
-            EnterWardrobe
+            EnterLocker
         }
 
         [Header("Hand Item")]
