@@ -26,6 +26,7 @@ namespace Ivayami.Puzzle
         {
             Button btn = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
             Image btnImage = btn.GetComponent<Image>();
+            _lock.LockSounds.PlaySound(Audio.LockPuzzleSounds.SoundTypes.ConfirmOption);
             if (btn == _currentChosenBtn)
             {
                 btnImage.color = Color.white;
