@@ -2338,10 +2338,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8051011512502463676}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 100}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -150}
+  m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5159464585855888823
 CanvasRenderer:
@@ -2413,10 +2413,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8051011512502463676}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 100}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -450}
+  m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9116068300538003433
 CanvasRenderer:
@@ -4297,10 +4297,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8051011512502463676}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 100}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -350}
+  m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6447643642703690755
 CanvasRenderer:
@@ -4479,10 +4479,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8051011512502463676}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 100}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -250}
+  m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2681353257889519575
 CanvasRenderer:
@@ -9187,6 +9187,7 @@ GameObject:
   m_Component:
   - component: {fileID: 264424122684794620}
   - component: {fileID: 2219076811916831893}
+  - component: {fileID: 7537619661277081790}
   m_Layer: 5
   m_Name: InputDisplayUI
   m_TagString: Untagged
@@ -9242,6 +9243,28 @@ MonoBehaviour:
   - Icon: {fileID: 6406420632741301298}
     KeyboardIcon: {fileID: 21300000, guid: b90414f123435834d9bc42d7213e09b7, type: 3}
     GamepadIcon: {fileID: 21300000, guid: e942d5643c22fef469e0ea46e9f14f86, type: 3}
+--- !u!114 &7537619661277081790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6574531629201510454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cdab7fbe0b3a1848822baadf3abe675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiText: {fileID: 11400000, guid: b21f963107ecebc438bc2cd69fb78792, type: 2}
+  _languageComponents:
+  - <Tmp>k__BackingField: {fileID: 4185707580201344616}
+    Id: ChangeSelectionContainer
+  - <Tmp>k__BackingField: {fileID: 349829810258457789}
+    Id: ActivateContainer
+  - <Tmp>k__BackingField: {fileID: 7780924900634643236}
+    Id: TryUnlcokContainer
+  - <Tmp>k__BackingField: {fileID: 2455940462398572179}
+    Id: ExitPuzzleContainer
 --- !u!1 &6588293454110260718
 GameObject:
   m_ObjectHideFlags: 0
@@ -11856,6 +11879,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8429393784762166781}
   - component: {fileID: 8580512418905726098}
+  - component: {fileID: 317180680510702320}
   m_Layer: 5
   m_Name: InputDisplayUI
   m_TagString: Untagged
@@ -11907,6 +11931,26 @@ MonoBehaviour:
   - Icon: {fileID: 9053646333240427808}
     KeyboardIcon: {fileID: 21300000, guid: b90414f123435834d9bc42d7213e09b7, type: 3}
     GamepadIcon: {fileID: 21300000, guid: e942d5643c22fef469e0ea46e9f14f86, type: 3}
+--- !u!114 &317180680510702320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7913900823120947301}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cdab7fbe0b3a1848822baadf3abe675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiText: {fileID: 11400000, guid: eb416722f6a96e642a5caff46e108970, type: 2}
+  _languageComponents:
+  - <Tmp>k__BackingField: {fileID: 3870591107537380450}
+    Id: ChangeSelectionContainer
+  - <Tmp>k__BackingField: {fileID: 9087379477088691985}
+    Id: ActivateContainer
+  - <Tmp>k__BackingField: {fileID: 1423734178665203106}
+    Id: ExitPuzzleContainer
 --- !u!1 &7934322718918746825
 GameObject:
   m_ObjectHideFlags: 0
@@ -12354,6 +12398,7 @@ GameObject:
   m_Component:
   - component: {fileID: 961776547123147473}
   - component: {fileID: 6589772298457819649}
+  - component: {fileID: 4218452153270858520}
   m_Layer: 5
   m_Name: InputDisplayUI
   m_TagString: Untagged
@@ -12405,6 +12450,26 @@ MonoBehaviour:
   - Icon: {fileID: 7162826766863053681}
     KeyboardIcon: {fileID: 21300000, guid: b90414f123435834d9bc42d7213e09b7, type: 3}
     GamepadIcon: {fileID: 21300000, guid: e942d5643c22fef469e0ea46e9f14f86, type: 3}
+--- !u!114 &4218452153270858520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8036118496376900248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cdab7fbe0b3a1848822baadf3abe675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiText: {fileID: 11400000, guid: 5fb2266343ac04b4f99eb764b177231b, type: 2}
+  _languageComponents:
+  - <Tmp>k__BackingField: {fileID: 9040552148973940330}
+    Id: ChangeSelectionContainer
+  - <Tmp>k__BackingField: {fileID: 3463944391724135505}
+    Id: ActivateContainer
+  - <Tmp>k__BackingField: {fileID: 7390683822706815980}
+    Id: ExitPuzzleContainer
 --- !u!1 &8046948511211410146
 GameObject:
   m_ObjectHideFlags: 0
@@ -13154,10 +13219,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 8051011512502463676}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 100}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -50}
+  m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5053561260385640686
 CanvasRenderer:
@@ -13912,6 +13977,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4031080126117942349}
   - component: {fileID: 5250473134205605350}
+  - component: {fileID: 862221186499461883}
   m_Layer: 5
   m_Name: InputDisplayUI
   m_TagString: Untagged
@@ -13963,6 +14029,26 @@ MonoBehaviour:
   - Icon: {fileID: 3273341703918949164}
     KeyboardIcon: {fileID: 21300000, guid: b90414f123435834d9bc42d7213e09b7, type: 3}
     GamepadIcon: {fileID: 21300000, guid: e942d5643c22fef469e0ea46e9f14f86, type: 3}
+--- !u!114 &862221186499461883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9217372110161568187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cdab7fbe0b3a1848822baadf3abe675, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiText: {fileID: 11400000, guid: 7632041a34306c641a3446b05b936ed9, type: 2}
+  _languageComponents:
+  - <Tmp>k__BackingField: {fileID: 3195092332334752359}
+    Id: ChangeSelectionContainer
+  - <Tmp>k__BackingField: {fileID: 8241008274952093671}
+    Id: ActivateContainer
+  - <Tmp>k__BackingField: {fileID: 7440759062487655261}
+    Id: ExitPuzzleContainer
 --- !u!1001 &6681054876929615948
 PrefabInstance:
   m_ObjectHideFlags: 0
