@@ -1,6 +1,6 @@
+using System.Collections;
 using UnityEngine;
 using FMODUnity;
-using System.Collections;
 using Ivayami.Save;
 
 namespace Ivayami.Audio {
