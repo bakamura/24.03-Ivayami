@@ -36,7 +36,9 @@ namespace Ivayami.Player {
         public enum InteractAnimation {
             Default,
             EnterLocker,
-            PullRope
+            PullRope,
+            PullLever,
+            PushButton
         }
 
         [Header("Hand Item")]
