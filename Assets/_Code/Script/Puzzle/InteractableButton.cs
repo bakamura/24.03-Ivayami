@@ -20,7 +20,7 @@ namespace Ivayami.Puzzle
         {
             IsActive = !IsActive;
             onActivate?.Invoke();
-            return PlayerActions.InteractAnimation.Default;
+            return PlayerActions.InteractAnimation.PushButton;
         }
 
         public void ForceInteract() => Interact();

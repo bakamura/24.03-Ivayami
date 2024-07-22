@@ -6,6 +6,7 @@ using TMPro;
 using System;
 using Ivayami.Player;
 using Ivayami.Audio;
+using Ivayami.UI;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
 
@@ -55,6 +56,10 @@ namespace Ivayami.Dialogue
             //_autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
             _canvasGroup = GetComponent<CanvasGroup>();
             _dialogueSounds = GetComponent<DialogueSounds>();
+        }
+
+        private void Start() {
+            Options.OnChangeLanguage.AddListener(ChangeLanguage);
         }
 
         private void HandleContinueDialogue(InputAction.CallbackContext context)

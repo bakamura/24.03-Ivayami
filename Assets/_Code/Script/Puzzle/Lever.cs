@@ -6,6 +6,7 @@ namespace Ivayami.Puzzle
     [RequireComponent(typeof(InteractableFeedbacks), typeof(ActivatorAnimated))]
     public class Lever : Activator, IInteractableLong
     {
+        [SerializeField] private PlayerActions.InteractAnimation _animationType;
         public InteractableFeedbacks InteratctableHighlight
         {
             get
@@ -20,7 +21,7 @@ namespace Ivayami.Puzzle
         {
             IsActive = true;
             onActivate?.Invoke();
-            return PlayerActions.InteractAnimation.Default;
+            return _animationType;
         }
 
         public void InteractStop()
