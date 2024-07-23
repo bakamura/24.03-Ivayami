@@ -14,7 +14,6 @@ namespace Ivayami.Dialogue
             {
                 DialogueController.Instance.StartDialogue(_dialogue.id, _lockPlayerInput);
                 _activated = true;
-                Debug.Log($"{gameObject.name}");
             }
         }
 
