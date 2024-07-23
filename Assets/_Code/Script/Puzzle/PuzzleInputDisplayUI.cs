@@ -48,7 +48,7 @@ namespace Ivayami.Puzzle
                 InputCallbacks.Instance.AddEventToOnChangeControls(HandleDeviceUpdate);
                 UpdateVisuals(InputCallbacks.Instance.CurrentControlScheme.Equals("Gamepad"));
             }
-            _uiLanguage.UpdateLanguage((LanguageTypes)SaveSystem.Instance.Options.language);
+            if (SaveSystem.Instance && SaveSystem.Instance.Options != null) _uiLanguage.UpdateLanguage((LanguageTypes)SaveSystem.Instance.Options.language);
         }
 
         private void OnDisable()
