@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Ivayami.UI {
-    public class InfoUpdateIndicator : MonoBehaviour {
+    public class InfoUpdateIndicator : MonoSingleton<InfoUpdateIndicator> {
         
         [Header("Parameters")]
 
@@ -28,7 +28,9 @@ namespace Ivayami.UI {
         private Coroutine _currentDisplayRoutine;
         private WaitForSeconds _stayWait;
 
-        private void Awake() {
+        protected override void Awake() {
+            base.Awake();
+            
             _stayWait = new WaitForSeconds(_stayDuration);
         }
 
