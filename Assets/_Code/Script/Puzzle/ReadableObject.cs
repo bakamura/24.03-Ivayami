@@ -3,11 +3,14 @@ using Ivayami.Player;
 using Ivayami.UI;
 using Ivayami.Dialogue;
 using Ivayami.Save;
+using Ivayami.Audio;
 
 namespace Ivayami.Puzzle {
+    [RequireComponent(typeof(InteractableSounds))]
     public class ReadableObject : MonoBehaviour, IInteractable {
 
         public InteractableFeedbacks InteratctableHighlight { get; private set; }
+        private InteractableSounds _interactableSounds;
 
         [Header("Reading")]
 
@@ -21,6 +24,7 @@ namespace Ivayami.Puzzle {
         private void Awake() {
             InteratctableHighlight = GetComponent<InteractableFeedbacks>();
             _focusCamera = GetComponentInChildren<CameraAnimationInfo>();
+            _interactableSounds = GetComponent<InteractableSounds>();
         }
 
         public PlayerActions.InteractAnimation Interact() {
@@ -33,6 +37,7 @@ namespace Ivayami.Puzzle {
             ReadableUI.Instance.CloseBtn.onClick.AddListener(StopReading);
             ReturnAction.Instance.Set(StopReading);
             if (_goesToInventory) { }
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             return PlayerActions.InteractAnimation.Default;
         }
 
