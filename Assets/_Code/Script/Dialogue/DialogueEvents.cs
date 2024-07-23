@@ -28,12 +28,12 @@ namespace Ivayami.Dialogue {
 
         private void OnEnable()
         {
-            DialogueController.Instance.UpdateDialogueEventsList(this);
+            if(DialogueController.Instance) DialogueController.Instance.UpdateDialogueEventsList(this);
         }
 
         private void OnDisable()
         {
-            DialogueController.Instance.UpdateDialogueEventsList(this);
+            if (DialogueController.Instance) DialogueController.Instance.UpdateDialogueEventsList(this);
         }
 
         public bool TriggerEvent(string eventId) {
