@@ -19,8 +19,9 @@ namespace Ivayami.Player.Ability
         private bool _isInteracting;
         private Coroutine _rotateCoroutine;
         private Coroutine _behaviourCoroutine;
+        private PlayerActions.InteractAnimation _currentInteractionType;
 
-        public IInteractableLong InteractableLongCurrent { get; private set; }
+        public IInteractableLong InteractableLongCurrent { get; private set; }        
 
         protected override void Awake()
         {
@@ -60,7 +61,6 @@ namespace Ivayami.Player.Ability
         {
             InteractableLongCurrent = interactableLong;
             _distanceFromInteractable = Mathf.Round(interactableLong.gameObject.GetComponent<Collider>().bounds.size.magnitude);
-            //InteractableLongCurrent.Interact();
         }
 
         public void InteractLongStop()
@@ -73,6 +73,7 @@ namespace Ivayami.Player.Ability
             }
             _isInteracting = false;
             _navMeshAgent.enabled = true;
+            _friendAnimator.UpdateInteraction(_currentInteractionType, false);
             InteractableLongCurrent = null;
         }
 
@@ -85,6 +86,7 @@ namespace Ivayami.Player.Ability
         public void ChangeSpeed(float speed)
         {
             _navMeshAgent.speed = speed;
+            _friendAnimator.UpdateWalking(_navMeshAgent.velocity.sqrMagnitude / (_navMeshAgent.speed * _navMeshAgent.speed));
         }
 
         private IEnumerator BehaviourCoroutine()
@@ -103,7 +105,7 @@ namespace Ivayami.Player.Ability
                             _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + _navMeshAgent.stoppingDistance * 1.5f * PlayerMovement.Instance.transform.right);
                         }
                         else _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position);
-                        _friendAnimator.UpdateInteracting(false);
+                        //_friendAnimator.UpdateInteracting(false);
                     }
                     //interact
                     else
@@ -118,7 +120,7 @@ namespace Ivayami.Player.Ability
                             _navMeshAgent.SetDestination(InteractableLongCurrent.gameObject.transform.position);
                         }
                     }
-                    _friendAnimator.UpdateWalking(_navMeshAgent.velocity.sqrMagnitude > 0);
+                    _friendAnimator.UpdateWalking(_navMeshAgent.velocity.sqrMagnitude / (_navMeshAgent.speed * _navMeshAgent.speed));
                 }
                 yield return _delay;
             }
@@ -136,8 +138,11 @@ namespace Ivayami.Player.Ability
                 count += Time.deltaTime * _rotationSpeed;
                 yield return null;
             }
-            _friendAnimator.UpdateInteracting(true);
-            if (InteractableLongCurrent != null) InteractableLongCurrent.Interact();
+            if (InteractableLongCurrent != null)
+            {
+                _currentInteractionType = InteractableLongCurrent.Interact();
+                _friendAnimator.UpdateInteraction(_currentInteractionType, true);
+            }
             _rotateCoroutine = null;
         }
     }
