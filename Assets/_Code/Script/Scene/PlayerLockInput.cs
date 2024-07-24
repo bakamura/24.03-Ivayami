@@ -4,7 +4,7 @@ using Ivayami.Player;
 namespace Ivayami.Scene
 {
     public class PlayerLockInput : MonoBehaviour
-    {
+    {       
         public void LockInput()
         {
             PlayerMovement.Instance.ToggleMovement(false);
@@ -17,6 +17,11 @@ namespace Ivayami.Scene
             PlayerMovement.Instance.ToggleMovement(true);
             PlayerActions.Instance.AllowPausing(true);
             PlayerActions.Instance.ChangeInputMap("Player");
+        }        
+
+        public void ChangeInputToUI()
+        {
+            PlayerActions.Instance.ChangeInputMap("Menu");
         }
     }
 }
