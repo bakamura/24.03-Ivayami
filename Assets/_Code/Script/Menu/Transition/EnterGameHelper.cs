@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Ivayami.Player;
-using Ivayami.UI;
 using Ivayami.Save;
 
 namespace Ivayami.Scene {
@@ -23,7 +22,8 @@ namespace Ivayami.Scene {
             PlayerActions.Instance.ChangeInputMap("Player");
             PlayerMovement.Instance.ToggleMovement(true);
             PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].spawnPoint.position);
-            GetComponent<ScreenFade>().FadeOut(HandleOnAllSceneRequestEnd);
+            HandleOnAllSceneRequestEnd();
+            //GetComponent<ScreenFade>().FadeOut(HandleOnAllSceneRequestEnd);
             //SceneTransition.Instance.Menu.Open();
         }
 
