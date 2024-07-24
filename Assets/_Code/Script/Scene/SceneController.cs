@@ -107,7 +107,7 @@ namespace Ivayami.Scene
             AsyncOperation operation;
             if (data.IsLoaded) operation = SceneManager.UnloadSceneAsync(data.SceneName);
             else operation = SceneManager.LoadSceneAsync(data.SceneName, LoadSceneMode.Additive);
-            operation.completed += HandleOnSceneUpdate;
+            if (operation != null) operation.completed += HandleOnSceneUpdate;
         }
 
         private SceneData UpdateSceneList(string sceneName)
