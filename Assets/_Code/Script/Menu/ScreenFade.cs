@@ -11,6 +11,7 @@ namespace Ivayami.UI
         [SerializeField, Min(0f)] private float _duration = 1f;
         [SerializeField] private AnimationCurve _fadeCurve = AnimationCurve.Linear(0,0,1,1);
         [SerializeField] private UnityEvent _onFadeEnd;
+        [SerializeField] private bool _debugLogs;
 
         private AnimationCurve _previousCurve;
         private Action _onFadeEndCallback;
@@ -20,6 +21,7 @@ namespace Ivayami.UI
         {
             if (!_isFading)
             {
+                if (_debugLogs) Debug.Log($"FadeInFrom {gameObject.name}");
                 _isFading = true;
                 if(_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
                 _previousCurve = SceneTransition.Instance.TransitionCurve;
@@ -33,6 +35,7 @@ namespace Ivayami.UI
         {
             if (!_isFading)
             {
+                if (_debugLogs) Debug.Log($"FadeOutFrom {gameObject.name}");
                 _isFading = true;
                 if (_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
                 _previousCurve = SceneTransition.Instance.TransitionCurve;
@@ -42,30 +45,30 @@ namespace Ivayami.UI
             }
         }
 
-        public void FadeIn(Action onFadeEnd = null)
-        {
-            if (!_isFading)
-            {
-                _isFading = true;
-                if (_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
-                _previousCurve = SceneTransition.Instance.TransitionCurve;
-                SceneTransition.Instance.SetAnimationCurve(_fadeCurve);
-                SceneTransition.Instance.Menu.Open();
-                StartCoroutine(WaitFadeCoroutine(onFadeEnd));
-            }
-        }
-        public void FadeOut(Action onFadeEnd = null)
-        {
-            if (!_isFading)
-            {
-                _isFading = true;
-                if (_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
-                _previousCurve = SceneTransition.Instance.TransitionCurve;
-                SceneTransition.Instance.SetAnimationCurve(_fadeCurve);
-                SceneTransition.Instance.Menu.Close();
-                _waitEndCoroutione = StartCoroutine(WaitFadeCoroutine(onFadeEnd));
-            }
-        }
+        //public void FadeIn(Action onFadeEnd = null)
+        //{
+        //    if (!_isFading)
+        //    {
+        //        _isFading = true;
+        //        if (_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
+        //        _previousCurve = SceneTransition.Instance.TransitionCurve;
+        //        SceneTransition.Instance.SetAnimationCurve(_fadeCurve);
+        //        SceneTransition.Instance.Menu.Open();
+        //        StartCoroutine(WaitFadeCoroutine(onFadeEnd));
+        //    }
+        //}
+        //public void FadeOut(Action onFadeEnd = null)
+        //{
+        //    if (!_isFading)
+        //    {
+        //        _isFading = true;
+        //        if (_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
+        //        _previousCurve = SceneTransition.Instance.TransitionCurve;
+        //        SceneTransition.Instance.SetAnimationCurve(_fadeCurve);
+        //        SceneTransition.Instance.Menu.Close();
+        //        _waitEndCoroutione = StartCoroutine(WaitFadeCoroutine(onFadeEnd));
+        //    }
+        //}
 
         private IEnumerator WaitFadeCoroutine(Action onFadeEnd = null)
         {
@@ -82,6 +85,7 @@ namespace Ivayami.UI
 
         private void FadeEnd()
         {
+            if (_debugLogs) Debug.Log($"FadeEndFrom {gameObject.name}");
             _isFading = false;
             SceneTransition.Instance.SetAnimationCurve(_previousCurve);
             _onFadeEndCallback?.Invoke();
