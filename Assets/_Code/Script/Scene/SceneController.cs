@@ -126,7 +126,7 @@ namespace Ivayami.Scene
 
         public Vector2 PointerInChapter(string chapterId)
         {
-            return _chapterPointers[chapterId].SubChapterPointer((byte)SaveSystem.Instance.Progress.progress[chapterId]);
+            return _chapterPointers[chapterId].SubChapterPointer((byte)SaveSystem.Instance.Progress.GetProgressOfType(chapterId));
         }
 
         private void HandleOnSceneUpdate(AsyncOperation operation)
