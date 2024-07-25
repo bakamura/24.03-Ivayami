@@ -45,12 +45,13 @@ namespace Ivayami.Puzzle
             public UnityEvent OnPathEnd;
         }
 
-        private void Awake()
+        private void Start()
         {
             _rigidbody = GetComponent<Rigidbody>();
             _animator = GetComponentInChildren<EnemyAnimator>();
             _initialPosition = transform.position;
-            TryLookAtPlayer();
+            if (PlayerMovement.Instance)
+                TryLookAtPlayer();
         }
 
         private void FixedUpdate()
