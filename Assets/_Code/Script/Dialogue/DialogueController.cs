@@ -51,7 +51,7 @@ namespace Ivayami.Dialogue
         {
             base.Awake();
 
-            ChangeLanguage(LanguageTypes.ENUS);//TEMPORARY            
+            //ChangeLanguage(LanguageTypes.ENUS);//TEMPORARY            
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
             //_autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
             _canvasGroup = GetComponent<CanvasGroup>();
