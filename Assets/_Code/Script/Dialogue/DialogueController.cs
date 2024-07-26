@@ -7,6 +7,7 @@ using System;
 using Ivayami.Player;
 using Ivayami.Audio;
 using Ivayami.UI;
+using UnityEngine.UI;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
 
@@ -22,7 +23,10 @@ namespace Ivayami.Dialogue
         [SerializeField] private InputActionReference _continueInput;
         [SerializeField] private TMP_Text _speechTextComponent;
         [SerializeField] private TMP_Text _announcerNameTextComponent;
+        [SerializeField] private Image _dialogueBackground;
+        [SerializeField] private RectTransform _dialogueContainer;
         [SerializeField] private GameObject _continueDialogueIcon;
+        [SerializeField] private DialogueLayout[] _dialogueVariations;
         [SerializeField] private bool _debugLogs;
 
         private Dialogue[] _dialogues;
@@ -39,6 +43,12 @@ namespace Ivayami.Dialogue
         private char[] _currentDialogueCharArray;
         private int _currentCharIndex;
         private float _currentDelay;
+        [System.Serializable]
+        private struct DialogueLayout
+        {
+            public Sprite Background;
+            public Vector2 Dimensions;
+        }
 
         public bool IsPaused { get; private set; }
         public Dialogue CurrentDialogue => _currentDialogue;
@@ -105,6 +115,18 @@ namespace Ivayami.Dialogue
                 _currentCharIndex = 0;
                 _currentDelay = 0;
                 _currentDialogueCharArray = _currentDialogue.dialogue[_currentSpeechIndex].content.ToCharArray();
+                if(CutsceneController.IsPlaying || !LockInput)
+                {
+                    _dialogueBackground.sprite = _dialogueVariations[1].Background;
+                    _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _dialogueVariations[1].Dimensions.x);
+                    _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _dialogueVariations[1].Dimensions.y);
+                }
+                else
+                {
+                    _dialogueBackground.sprite = _dialogueVariations[0].Background;
+                    _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _dialogueVariations[0].Dimensions.x);
+                    _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _dialogueVariations[0].Dimensions.y);
+                }
                 ActivateDialogueEvents(_currentDialogue.dialogue[_currentSpeechIndex].eventId);
             }
 
