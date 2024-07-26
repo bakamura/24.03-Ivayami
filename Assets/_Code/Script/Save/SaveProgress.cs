@@ -1,4 +1,6 @@
 
+using UnityEngine;
+
 namespace Ivayami.Save {
     [System.Serializable]
     public class SaveProgress {
@@ -16,7 +18,10 @@ namespace Ivayami.Save {
         }
 
         public void SaveProgressOfType(string type, int amount) {
-            if(progress.ContainsKey(type)) progress[type] = amount;
+            if (progress.ContainsKey(type)) {
+                if (progress[type] < amount) progress[type] = amount;
+                else Debug.LogWarning("");
+            }
             else progress.Add(type, amount);
         }
 
