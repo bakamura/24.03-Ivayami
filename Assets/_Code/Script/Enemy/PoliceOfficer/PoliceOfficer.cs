@@ -123,7 +123,7 @@ namespace Ivayami.Enemy
                         PlayerStress.Instance.SetStressMin(98);
                         _enemyAnimator.TargetDetected(HandleTargetDetected);
                     }
-                    if(_isChasing) _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
+                    if (_isChasing) _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                     if (_debugLog) Debug.Log("Chase Target");
                 }
                 else
@@ -239,12 +239,13 @@ namespace Ivayami.Enemy
 
         public void GoToPointWithoutStop(Transform target)
         {
-            if (!_navMeshAgent.isStopped)
-            {
-                StopBehaviour();
-                PlayerStress.Instance.SetStressMin(98);
-                HandlePointReachedCoroutine(true, false, 0, target);
-            }
+            //if (!_navMeshAgent.isStopped)
+            //{
+            _navMeshAgent.isStopped = false;
+            StopBehaviour();
+            PlayerStress.Instance.SetStressMin(98);
+            HandlePointReachedCoroutine(true, false, 0, target);
+            //}
         }
 
         private void HandlePointReachedCoroutine(bool stayInPath, bool autoStartBehaviour, float durationInPlace, Transform target)
