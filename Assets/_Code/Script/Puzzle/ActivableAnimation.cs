@@ -16,10 +16,10 @@ namespace Ivayami.Puzzle
         [SerializeField] private Animator _activateAnimator;
         //[SerializeField] private UnityEvent _onInteractStart;
         [Header("EVENTS")]
-        [SerializeField] private AnimationEvent _onActivate;
-        [SerializeField] private AnimationEvent _onDeactivate;
-        [SerializeField] private AnimationEvent _onInteract;
-        [SerializeField] private AnimationEvent _onInteractReturn;
+        [SerializeField, Tooltip("The event will play at the end of the state and only once per aniamtion end")] private AnimationEvent _onActivate;
+        [SerializeField, Tooltip("The event will play at the end of the state and only once per aniamtion end")] private AnimationEvent _onDeactivate;
+        [SerializeField, Tooltip("The event will play at the end of the state and only once per aniamtion end")] private AnimationEvent _onInteract;
+        [SerializeField, Tooltip("The event will play at the end of the state and only once per aniamtion end")] private AnimationEvent _onInteractReturn;
 
         private static readonly int _interactBoolHash = Animator.StringToHash("interact");
         private static readonly int _activateBoolHash = Animator.StringToHash("activate");
