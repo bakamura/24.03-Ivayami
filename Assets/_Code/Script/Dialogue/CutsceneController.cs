@@ -65,8 +65,7 @@ namespace Ivayami.Dialogue
             if (_isPaused)
             {				
 				_onUnpause?.Invoke();
-			}
-			IsPlaying = false;
+			}			
 			if (_debug) Debug.Log("Cutscene Skip");
 			_onCutsceneEnd?.Invoke();
 		}
@@ -90,6 +89,7 @@ namespace Ivayami.Dialogue
 			PlayerActions.Instance.AllowPausing(true);
 			DialogueController.Instance.StopDialogue();
 			RuntimeManager.PauseAllEvents(false);
+			IsPlaying = false;
 			_pauseCutsceneInput.action.performed -= HandlePauseInput;
 		}
 
