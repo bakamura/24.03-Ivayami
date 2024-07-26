@@ -30,5 +30,9 @@ namespace Ivayami.UI {
             }
         }
 
+        public UiText GetTranslation(LanguageTypes language) {
+            return language == LanguageTypes.ENUS? this : Resources.Load<UiText>($"UiText/{language}/{name}");
+        }
+
     }
 }

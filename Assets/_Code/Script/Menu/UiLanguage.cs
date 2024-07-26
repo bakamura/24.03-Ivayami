@@ -1,7 +1,8 @@
-using Ivayami.UI;
 using System;
-using TMPro;
 using UnityEngine;
+using TMPro;
+using Ivayami.Save;
+using Ivayami.UI;
 
 public class UiLanguage : MonoBehaviour {
 
@@ -18,10 +19,11 @@ public class UiLanguage : MonoBehaviour {
 
     private void Start() {
         Options.OnChangeLanguage.AddListener(UpdateLanguage);
+        if(SaveSystem.Instance.Options != null) UpdateLanguage((LanguageTypes) SaveSystem.Instance.Options.language);
     }
 
     public void UpdateLanguage(LanguageTypes language) {
-        UiText uiText = language == LanguageTypes.ENUS ? _uiText : Resources.Load<UiText>($"UiText/{language}/{_uiText.name}");
+        UiText uiText = _uiText.GetTranslation(language);
         foreach(LanguageComponent languageComponent in _languageComponents) languageComponent.Tmp.text = uiText.GetText(languageComponent.Id);
     }
 
