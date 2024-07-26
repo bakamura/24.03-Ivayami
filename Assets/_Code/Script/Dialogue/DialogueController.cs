@@ -68,7 +68,8 @@ namespace Ivayami.Dialogue
             _dialogueSounds = GetComponent<DialogueSounds>();
         }
 
-        private void Start() {
+        private void Start()
+        {
             Options.OnChangeLanguage.AddListener(ChangeLanguage);
         }
 
@@ -115,7 +116,7 @@ namespace Ivayami.Dialogue
                 _currentCharIndex = 0;
                 _currentDelay = 0;
                 _currentDialogueCharArray = _currentDialogue.dialogue[_currentSpeechIndex].content.ToCharArray();
-                if(CutsceneController.IsPlaying || !LockInput)
+                if (CutsceneController.IsPlaying || !LockInput)
                 {
                     _dialogueBackground.sprite = _dialogueVariations[1].Background;
                     _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _dialogueVariations[1].Dimensions.x);
@@ -175,7 +176,7 @@ namespace Ivayami.Dialogue
             StopCoroutine(_writtingCoroutine);
             _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].content;
             _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].announcerName;
-            _continueDialogueIcon.SetActive(true);
+            if (LockInput) _continueDialogueIcon.SetActive(true);
             //_readyForNextSpeech = true;
             OnSkipSpeech?.Invoke();
             _writtingCoroutine = null;
