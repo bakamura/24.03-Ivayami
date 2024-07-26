@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Ivayami.UI;
+using Ivayami.Puzzle;
 
 public class KeyTutorial : MonoBehaviour {
 
@@ -17,13 +18,15 @@ public class KeyTutorial : MonoBehaviour {
 
     public void StartTutorial() {
         GameObject instance = Instantiate(_uiPrefab, FindObjectOfType<InfoUpdateIndicator>().GetComponentInChildren<Fade>().transform);
+        InputCallbacks.Instance.AddEventToOnChangeControls((callbackContext) => KeyPressed(instance));
         instance.GetComponentInChildren<Image>().sprite = _indicatorKeyboard;
         _actionIndicator.action.performed += (callbackContext) => KeyPressed(instance);
     }
 
     private void KeyPressed(GameObject instance) {
-        Destroy(instance);
         _actionIndicator.action.performed -= (callbackContext) => KeyPressed(instance);
+        InputCallbacks.Instance.RemoveEventToOnChangeControls((callbackContext) => KeyPressed(instance));
+        Destroy(instance);
     }
 
 }
