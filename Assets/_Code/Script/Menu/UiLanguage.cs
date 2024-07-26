@@ -25,7 +25,8 @@ public class UiLanguage : MonoBehaviour {
         foreach(LanguageComponent languageComponent in _languageComponents) languageComponent.Tmp.text = uiText.GetText(languageComponent.Id);
     }
 
-    private void OnValidate() {
+    [ContextMenu("Set To UI Text")]
+    private void SetToUiText() {
         if (_uiText != null) {
             if (_languageComponents == null) _languageComponents = new LanguageComponent[_uiText.Size];
             else Array.Resize(ref _languageComponents, _uiText.Size);

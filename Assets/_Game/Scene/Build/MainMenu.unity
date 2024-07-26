@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028463, g: 0.22571552, b: 0.3069231, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028465, g: 0.22571552, b: 0.3069231, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -294,6 +294,7 @@ MonoBehaviour:
   _musicSlider: {fileID: 1263859838}
   _sfxSlider: {fileID: 615451789}
   _cameraSensitivitySlider: {fileID: 0}
+  _languageDropdown: {fileID: 1094422782}
 --- !u!1 &11337709
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,6 +353,7 @@ MonoBehaviour:
   _chapterPreviewImage: {fileID: 1258324205}
   _chapterNumberText: {fileID: 1786075597}
   _saveDateText: {fileID: 1172372746}
+  _uiText: {fileID: 11400000, guid: 26143b4e7cbaca542b29e76b4a5092a6, type: 2}
 --- !u!114 &11337712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -474,9 +476,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 843943616}
-        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
-        m_MethodName: FadeIn
+      - m_Target: {fileID: 11337711}
+        m_TargetAssemblyTypeName: Ivayami.UI.SaveSelectBtn, Assembly-CSharp
+        m_MethodName: EnterSave
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -858,6 +860,103 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 180449518}
   m_CullTransparentMesh: 1
+--- !u!1 &212839537
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 212839539}
+  - component: {fileID: 212839538}
+  m_Layer: 0
+  m_Name: ScreenFadeNormal
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &212839538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 212839537}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _duration: 1
+  _fadeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _onFadeEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 920223975}
+        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1966414318}
+        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
+        m_MethodName: UnloadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _debugLogs: 0
+--- !u!4 &212839539
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 212839537}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &220029791
 GameObject:
   m_ObjectHideFlags: 0
@@ -1337,6 +1436,7 @@ MonoBehaviour:
   _chapterPreviewImage: {fileID: 180449520}
   _chapterNumberText: {fileID: 822023501}
   _saveDateText: {fileID: 83965792}
+  _uiText: {fileID: 11400000, guid: 26143b4e7cbaca542b29e76b4a5092a6, type: 2}
 --- !u!114 &303069191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1459,9 +1559,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 843943616}
-        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
-        m_MethodName: FadeIn
+      - m_Target: {fileID: 303069190}
+        m_TargetAssemblyTypeName: Ivayami.UI.SaveSelectBtn, Assembly-CSharp
+        m_MethodName: EnterSave
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1729,7 +1829,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
+  m_fontSize: 100
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2118,6 +2218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2b5974240a78904f98648348e7c8c1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _pauseInput: {fileID: -1037600358843939453, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
 --- !u!114 &515700698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2144,9 +2245,9 @@ MonoBehaviour:
     Id: SfxVol
   - <Tmp>k__BackingField: {fileID: 1448333991}
     Id: Language
-  - <Tmp>k__BackingField: {fileID: 2043928155}
-    Id: Back
   - <Tmp>k__BackingField: {fileID: 1075055483}
+    Id: Back
+  - <Tmp>k__BackingField: {fileID: 2043928155}
     Id: Back1
 --- !u!1 &518498502
 GameObject:
@@ -3071,9 +3172,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 843943616}
-        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
-        m_MethodName: FadeIn
+      - m_Target: {fileID: 685226700}
+        m_TargetAssemblyTypeName: Ivayami.UI.SaveSelectBtn, Assembly-CSharp
+        m_MethodName: EnterSave
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3176,6 +3277,7 @@ MonoBehaviour:
   _chapterPreviewImage: {fileID: 239255699}
   _chapterNumberText: {fileID: 834411111}
   _saveDateText: {fileID: 1612200825}
+  _uiText: {fileID: 11400000, guid: 26143b4e7cbaca542b29e76b4a5092a6, type: 2}
 --- !u!1 &695252709
 GameObject:
   m_ObjectHideFlags: 0
@@ -3952,7 +4054,6 @@ GameObject:
   - component: {fileID: 843943611}
   - component: {fileID: 843943610}
   - component: {fileID: 843943609}
-  - component: {fileID: 843943616}
   m_Layer: 5
   m_Name: SaveSelector
   m_TagString: Untagged
@@ -3980,6 +4081,8 @@ MonoBehaviour:
   - {fileID: 1178387337}
   - {fileID: 303069190}
   - {fileID: 11337711}
+  <FirstTimeFade>k__BackingField: {fileID: 1829073761}
+  <NormalFade>k__BackingField: {fileID: 212839538}
 --- !u!114 &843943610
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4114,71 +4217,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &843943616
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 843943608}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _duration: 1
-  _fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _onFadeEnd:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 920223975}
-        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
-        m_MethodName: LoadScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1966414318}
-        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
-        m_MethodName: UnloadScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _debugLogs: 0
 --- !u!1 &844799728
 GameObject:
   m_ObjectHideFlags: 0
@@ -4847,7 +4885,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
+  m_fontSize: 100
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5792,6 +5830,7 @@ MonoBehaviour:
   _chapterPreviewImage: {fileID: 1467830582}
   _chapterNumberText: {fileID: 1455037711}
   _saveDateText: {fileID: 514262753}
+  _uiText: {fileID: 11400000, guid: 26143b4e7cbaca542b29e76b4a5092a6, type: 2}
 --- !u!114 &1178387338
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5914,9 +5953,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 843943616}
-        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
-        m_MethodName: FadeIn
+      - m_Target: {fileID: 1178387337}
+        m_TargetAssemblyTypeName: Ivayami.UI.SaveSelectBtn, Assembly-CSharp
+        m_MethodName: EnterSave
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6855,7 +6894,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 100
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7743,6 +7782,62 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 40b53ff32895b0549b0f5e8096dfb954, type: 3}
+--- !u!1 &1491121340
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1491121342}
+  - component: {fileID: 1491121341}
+  m_Layer: 0
+  m_Name: CutsceneLoader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1491121341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491121340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sceneId: Cutscene_CarScene
+  _onSceneLoad:
+    m_PersistentCalls:
+      m_Calls: []
+  _onSceneUnload:
+    m_PersistentCalls:
+      m_Calls: []
+  _onAllScenesRequestEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  _drawGizmos: 0
+  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!4 &1491121342
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491121340}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1509778819
 GameObject:
   m_ObjectHideFlags: 0
@@ -8052,7 +8147,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 100
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -9458,6 +9553,103 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1803587984}
   m_CullTransparentMesh: 1
+--- !u!1 &1829073760
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1829073762}
+  - component: {fileID: 1829073761}
+  m_Layer: 0
+  m_Name: ScreenFadeFirst
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1829073761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1829073760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _duration: 1
+  _fadeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _onFadeEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1491121341}
+        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1966414318}
+        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
+        m_MethodName: UnloadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _debugLogs: 0
+--- !u!4 &1829073762
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1829073760}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1845557804
 GameObject:
   m_ObjectHideFlags: 0
@@ -9948,7 +10140,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
+  m_fontSize: 100
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10082,7 +10274,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 80
+  m_fontSize: 60
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10259,6 +10451,7 @@ MonoBehaviour:
   _chapterPreviewImage: {fileID: 1536595464}
   _chapterNumberText: {fileID: 1717538570}
   _saveDateText: {fileID: 1619764323}
+  _uiText: {fileID: 11400000, guid: 26143b4e7cbaca542b29e76b4a5092a6, type: 2}
 --- !u!114 &2065061387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10381,9 +10574,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 843943616}
-        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
-        m_MethodName: FadeIn
+      - m_Target: {fileID: 2065061386}
+        m_TargetAssemblyTypeName: Ivayami.UI.SaveSelectBtn, Assembly-CSharp
+        m_MethodName: EnterSave
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10736,8 +10929,11 @@ SceneRoots:
   - {fileID: 4846610}
   - {fileID: 518498504}
   - {fileID: 920223976}
+  - {fileID: 1491121342}
   - {fileID: 1966414319}
   - {fileID: 1977346664}
+  - {fileID: 1829073762}
+  - {fileID: 212839539}
   - {fileID: 979241548}
   - {fileID: 811019042}
   - {fileID: 2100512402}

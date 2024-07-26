@@ -20,8 +20,10 @@ namespace Ivayami.UI {
             if (_keys != null && _keys.Length > 0) {
                 _dictionary = new Dictionary<string, string>();
                 for (int i = 0; i < _keys.Length; i++) _dictionary.Add(_keys[i], _values[i]);
+#if !UNITY_EDITOR
                 _keys = null;
                 _values = null;
+#endif
             }
             else {
                 Debug.LogError($"Could not initialize UiText with null Key/Values '{name}'");

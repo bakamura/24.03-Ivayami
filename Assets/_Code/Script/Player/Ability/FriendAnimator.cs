@@ -20,6 +20,7 @@ namespace Ivayami.Puzzle
         private static readonly int INTERACT_BUTTON_BOOL = Animator.StringToHash("interactButton");
         private static readonly int INTERACT_ROPE_BOOL = Animator.StringToHash("interactRope");
         private static readonly int INTERACT_LEVER_BOOL = Animator.StringToHash("interactLever");
+        private static readonly int DEFAULT_INTERACT_BOOL = Animator.StringToHash("defaultInteract");
 
         public void UpdateWalking(float velocity)
         {
@@ -40,6 +41,7 @@ namespace Ivayami.Puzzle
                     _animator.SetBool(INTERACT_BUTTON_BOOL, interacting);
                     break;
                 default:
+                    _animator.SetBool(DEFAULT_INTERACT_BOOL, interacting);
                     break;
             }
         }
