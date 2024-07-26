@@ -6,7 +6,7 @@ using Ivayami.Player;
 using Ivayami.Save;
 
 namespace Ivayami.UI {
-    public class SaveSelector : MonoBehaviour {
+    public class SaveSelector : MonoSingleton<SaveSelector> {
 
         [Header("UI")]
 
@@ -14,9 +14,16 @@ namespace Ivayami.UI {
         [SerializeField] private TextMeshProUGUI _previewText;
         [SerializeField] private SaveSelectBtn[] _saveSelectBtns;
 
+        //Game Entering
+
+        [field: SerializeField] public ScreenFade FirstTimeFade { get; private set; }
+        [field: SerializeField] public ScreenFade NormalFade { get; private set; }
+
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
 
-        private void Awake() {
+        protected override void Awake() {
+            base.Awake();
+
             StartCoroutine(WaitForSaveOptions());
 
             PlayerActions.Instance.ChangeInputMap("Menu");
