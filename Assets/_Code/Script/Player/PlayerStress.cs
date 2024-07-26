@@ -5,8 +5,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Ivayami.Player {
-    public class PlayerStress : MonoSingleton<PlayerStress> {
+namespace Ivayami.Player
+{
+    public class PlayerStress : MonoSingleton<PlayerStress>
+    {
 
         [Header("Events")]
 
@@ -32,7 +34,8 @@ namespace Ivayami.Player {
 
         private Coroutine _stressRelieveRoutine;
 
-        private void Start() {
+        private void Start()
+        {
             onStressChange.AddListener(FailStateCheck);
             onFailState.AddListener(() => StartCoroutine(DelayToRespawn()));
             _restartWait = new WaitForSeconds(_restartDelay);
@@ -40,16 +43,20 @@ namespace Ivayami.Player {
             Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");
         }
 
-        public void AddStress(float amount) {
-            if (!_failState) {
+        public void AddStress(float amount)
+        {
+            if (!_failState)
+            {
                 _stressCurrent += amount;
                 onStressChange.Invoke(_stressCurrent);
 
                 float stressRelieveDelayTimerLast = _stressRelieveDelayTimer;
                 _stressRelieveDelayTimer = 0;
                 if (_stressRelieveRoutine == null) _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
-                else {
-                    if (stressRelieveDelayTimerLast >= _stressRelieveDelay) {
+                else
+                {
+                    if (stressRelieveDelayTimerLast >= _stressRelieveDelay)
+                    {
                         StopCoroutine(_stressRelieveRoutine);
                         _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
 
@@ -62,8 +69,10 @@ namespace Ivayami.Player {
             }
         }
 
-        private IEnumerator StressRelieveAuto() {
-            while (_stressRelieveDelayTimer < _stressRelieveDelay) {
+        private IEnumerator StressRelieveAuto()
+        {
+            while (_stressRelieveDelayTimer < _stressRelieveDelay)
+            {
                 _stressRelieveDelayTimer += Time.deltaTime;
 
                 yield return null;
@@ -71,7 +80,8 @@ namespace Ivayami.Player {
 
             Logger.Log(LogType.Player, $"Started Relieving Stress");
 
-            while (_stressCurrent > _stressMin) {
+            while (_stressCurrent > _stressMin)
+            {
                 _stressCurrent -= _stressRelieveRate * Time.deltaTime;
                 onStressChange.Invoke(_stressCurrent);
 
@@ -84,8 +94,10 @@ namespace Ivayami.Player {
             _stressRelieveRoutine = null;
         }
 
-        private void FailStateCheck(float stressCurrent) {
-            if (!_failState && stressCurrent >= _stressMax) {
+        private void FailStateCheck(float stressCurrent)
+        {
+            if (!_failState && stressCurrent >= _stressMax)
+            {
                 _failState = true;
                 onFailState.Invoke();
 
@@ -93,32 +105,51 @@ namespace Ivayami.Player {
             }
         }
 
-        public void SetStressMin(float stressMin) {
+        public void SetStressMin(float stressMin)
+        {
             _stressMin = stressMin;
-            if (_stressCurrent > _stressMin && _stressRelieveRoutine == null) {
+            if (_stressCurrent > _stressMin && _stressRelieveRoutine == null)
+            {
                 _stressRelieveDelayTimer = 0;
                 _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
             }
         }
 
-        private IEnumerator DelayToRespawn() {
+        private IEnumerator DelayToRespawn()
+        {
+            Debug.Log("Respawn");
             PlayerMovement.Instance.ToggleMovement(false);
 
             yield return _restartWait;
 
             SceneTransition.Instance.Menu.Close();
 
-            if (false) {
-                // If not in world
-            }
-
             yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
 
-            PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].transform.position);
-            PlayerMovement.Instance.ToggleMovement(true);
-            PlayerAnimation.Instance.GoToIdle();
-            SceneTransition.Instance.Menu.Open();
+            SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes);
         }
+
+        private void HandleUnloadAllScenes()
+        {
+            SceneController.Instance.OnAllSceneRequestEnd -= HandleUnloadAllScenes;
+            UnityEvent temp = new UnityEvent();
+            temp.AddListener(UnlockPlayer);
+            SceneController.Instance.StartLoad("BaseTerrain", temp);
+        }
+
+        private void UnlockPlayer()
+        {
+            PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].transform.position);
+            //PlayerMovement.Instance.ToggleMovement(true);
+            PlayerAnimation.Instance.GoToIdle();
+            //SceneTransition.Instance.Menu.Open();
+        }
+
+        //[ContextMenu("KILL")]
+        //private void KillPlayer()
+        //{
+        //    AddStress(10000);
+        //}
 
     }
 }

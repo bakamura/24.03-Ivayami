@@ -9,6 +9,7 @@ namespace Ivayami.Player.Ability
     public class Friend : MonoSingleton<Friend>
     {
         [SerializeField, Min(.01f)] private float _rotationSpeed = 1;
+        [SerializeField, Tooltip("Force a specific direction to look when in match animation type relative to the object")] private AnimationOrientation[] _animationsOrientation;
         private NavMeshAgent _navMeshAgent;
         private FriendAnimator _friendAnimator;
         private const float _tick = .2f;
@@ -20,8 +21,21 @@ namespace Ivayami.Player.Ability
         private Coroutine _rotateCoroutine;
         private Coroutine _behaviourCoroutine;
         private PlayerActions.InteractAnimation _currentInteractionType;
+        [System.Serializable]
+        private struct AnimationOrientation
+        {
+            public PlayerActions.InteractAnimation AnimatyonType;
+            public DirectionTypes LookDirection;
+        }
+        private enum DirectionTypes
+        {
+            Forward,
+            Back,
+            Left,
+            Right
+        }
 
-        public IInteractableLong InteractableLongCurrent { get; private set; }        
+        public IInteractableLong InteractableLongCurrent { get; private set; }
 
         protected override void Awake()
         {
@@ -131,7 +145,12 @@ namespace Ivayami.Player.Ability
             _navMeshAgent.enabled = false;
             float count = 0;
             Quaternion initialRotation = transform.rotation;
-            Quaternion finalRotation = Quaternion.LookRotation(InteractableLongCurrent.gameObject.transform.position - transform.position).normalized;
+            Quaternion finalRotation;
+            if (TryGetSpecifiedLookDirection(_currentInteractionType, out Vector3 direction))
+            {
+                finalRotation = Quaternion.LookRotation(direction);
+            }
+            else finalRotation = Quaternion.LookRotation(InteractableLongCurrent.gameObject.transform.position - transform.position).normalized;
             while (count < 1)
             {
                 transform.rotation = Quaternion.Lerp(initialRotation, new Quaternion(0, finalRotation.y, 0, finalRotation.w), count);
@@ -144,6 +163,35 @@ namespace Ivayami.Player.Ability
                 _friendAnimator.UpdateInteraction(_currentInteractionType, true);
             }
             _rotateCoroutine = null;
+        }
+
+        private bool TryGetSpecifiedLookDirection(PlayerActions.InteractAnimation animation, out Vector3 direction)
+        {
+            direction = Vector3.zero;
+            for (int i = 0; i < _animationsOrientation.Length; i++)
+            {
+                if (_animationsOrientation[i].AnimatyonType == animation)
+                {
+                    switch (_animationsOrientation[i].LookDirection)
+                    {
+                        case DirectionTypes.Forward:
+                            direction = InteractableLongCurrent.gameObject.transform.forward;
+                            break;
+                        case DirectionTypes.Back:
+                            direction = -InteractableLongCurrent.gameObject.transform.forward;
+                            break;
+                        case DirectionTypes.Left:
+                            direction = -InteractableLongCurrent.gameObject.transform.right;
+                            break;
+                        case DirectionTypes.Right:
+                            direction = InteractableLongCurrent.gameObject.transform.right;
+                            break;
+                    }
+                    direction += new Vector3(0, .25f, 0);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
