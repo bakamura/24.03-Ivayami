@@ -117,7 +117,7 @@ namespace Ivayami.Player
 
         private IEnumerator DelayToRespawn()
         {
-            Debug.Log("Respawn");
+            _failState = false;
             PlayerMovement.Instance.ToggleMovement(false);
 
             yield return _restartWait;
