@@ -19,7 +19,7 @@ public class UiLanguage : MonoBehaviour {
 
     private void Start() {
         Options.OnChangeLanguage.AddListener(UpdateLanguage);
-        UpdateLanguage((LanguageTypes) SaveSystem.Instance.Options.language);
+        if(SaveSystem.Instance.Options != null) UpdateLanguage((LanguageTypes) SaveSystem.Instance.Options.language);
     }
 
     public void UpdateLanguage(LanguageTypes language) {
