@@ -1,18 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-namespace Paranapiacaba.Puzzle
+namespace Ivayami.Puzzle
 {
     public class ReorderPassword : PasswordUI
     {
         [SerializeField] private RectTransform _buttonsContainer;
         [SerializeField] private Color _selectedButtonColor = Color.red;
-        [SerializeField] private UnityEvent _onCheckPassword;
 
         private Button _currentChosenBtn;
 
@@ -30,6 +26,7 @@ namespace Paranapiacaba.Puzzle
         {
             Button btn = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
             Image btnImage = btn.GetComponent<Image>();
+            _lock.LockSounds.PlaySound(Audio.LockPuzzleSounds.SoundTypes.ConfirmOption);
             if (btn == _currentChosenBtn)
             {
                 btnImage.color = Color.white;
@@ -48,7 +45,7 @@ namespace Paranapiacaba.Puzzle
                 _currentChosenBtn.transform.SetSiblingIndex(btn.transform.GetSiblingIndex());
                 btn.transform.SetSiblingIndex(currentChosenIndex);
                 _currentChosenBtn = null;
-                _onCheckPassword?.Invoke();
+                OnCheckPassword?.Invoke();
             }
         }
     }

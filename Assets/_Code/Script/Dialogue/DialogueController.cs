@@ -4,20 +4,29 @@ using System.Collections.Generic;
 using System.Collections;
 using TMPro;
 using System;
-using Paranapiacaba.Player;
+using Ivayami.Player;
+using Ivayami.Audio;
+using Ivayami.UI;
+using UnityEngine.UI;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
 
-namespace Paranapiacaba.Dialogue {
-    [RequireComponent(typeof(CanvasGroup))]
-    public class DialogueController : MonoSingleton<DialogueController> {
+namespace Ivayami.Dialogue
+{
+    [RequireComponent(typeof(CanvasGroup), typeof(DialogueSounds))]
+    public class DialogueController : MonoSingleton<DialogueController>
+    {
 
-        [SerializeField] private float _characterShowDelay;
+        [SerializeField, Min(0f)] private float _characterShowDelay;
+        //[SerializeField, Min(0f), Tooltip("default value for when dialogue canot be skipped by player input")] private float _delayToAutoStartNextSpeech;
         //[SerializeField] private InputActionAsset _inputActionMap;
         [SerializeField] private InputActionReference _continueInput;
         [SerializeField] private TMP_Text _speechTextComponent;
         [SerializeField] private TMP_Text _announcerNameTextComponent;
+        [SerializeField] private Image _dialogueBackground;
+        [SerializeField] private RectTransform _dialogueContainer;
         [SerializeField] private GameObject _continueDialogueIcon;
+        [SerializeField] private DialogueLayout[] _dialogueVariations;
         [SerializeField] private bool _debugLogs;
 
         private Dialogue[] _dialogues;
@@ -25,12 +34,25 @@ namespace Paranapiacaba.Dialogue {
         private Dictionary<string, Dialogue> _dialogueDictionary = new Dictionary<string, Dialogue>();
         private Coroutine _writtingCoroutine;
         private WaitForSeconds _typeWrittingDelay;
+        //private WaitForSeconds _autoStartNextDelay;
         private Dialogue _currentDialogue;
-        private DialogueEvents _currentDialogueEvents;
-        private bool _readyForNextSpeech = true;
+        private List<DialogueEvents> _dialogueEventsList = new List<DialogueEvents>();
+        //private bool _readyForNextSpeech = true;
         private sbyte _currentSpeechIndex;
+        private DialogueSounds _dialogueSounds;
+        private char[] _currentDialogueCharArray;
+        private int _currentCharIndex;
+        private float _currentDelay;
+        [System.Serializable]
+        private struct DialogueLayout
+        {
+            public Sprite Background;
+            public Vector2 Dimensions;
+        }
 
-        public bool IsDialogueActive { get; private set; }
+        public bool IsPaused { get; private set; }
+        public Dialogue CurrentDialogue => _currentDialogue;
+        public bool LockInput { get; private set; }
         public Action OnDialogeStart;
         public Action OnDialogueEnd;
         public Action OnSkipSpeech;
@@ -39,11 +61,215 @@ namespace Paranapiacaba.Dialogue {
         {
             base.Awake();
 
-            _dialogues = Resources.LoadAll<Dialogue>("Dialogues");            
-            _continueInput.action.performed += HandleContinueDialogue;
+            //ChangeLanguage(LanguageTypes.ENUS);//TEMPORARY            
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
+            //_autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
             _canvasGroup = GetComponent<CanvasGroup>();
+            _dialogueSounds = GetComponent<DialogueSounds>();
+        }
 
+        private void Start()
+        {
+            Options.OnChangeLanguage.AddListener(ChangeLanguage);
+        }
+
+        private void HandleContinueDialogue(InputAction.CallbackContext context)
+        {
+            if (_currentDialogue && _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech == 0)
+            {
+                UpdateDialogue();
+            }
+        }
+
+        public void UpdateDialogue()
+        {
+            if (_writtingCoroutine != null)
+            {
+                SkipSpeech();
+            }
+            else /*(_writtingCoroutine == null && _readyForNextSpeech)*/
+            {
+                _currentSpeechIndex++;
+                _dialogueSounds.PlaySound(DialogueSounds.SoundTypes.ContinueDialogue);
+                //end of current dialogue
+                if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
+                {
+                    StopDialogue();
+                }
+                //continue current dialogue
+                else
+                {
+                    _continueDialogueIcon.SetActive(false);
+                    //_readyForNextSpeech = false;
+                    _writtingCoroutine = StartCoroutine(WrittingCoroutine(true));
+                }
+            }
+        }
+
+        private IEnumerator WrittingCoroutine(bool eraseCurrentContent)
+        {
+            if (eraseCurrentContent)
+            {
+                _continueDialogueIcon.SetActive(false);
+                _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].announcerName;
+                _speechTextComponent.text = "";
+                _currentCharIndex = 0;
+                _currentDelay = 0;
+                _currentDialogueCharArray = _currentDialogue.dialogue[_currentSpeechIndex].content.ToCharArray();
+                if (CutsceneController.IsPlaying || !LockInput)
+                {
+                    _dialogueBackground.sprite = _dialogueVariations[1].Background;
+                    _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _dialogueVariations[1].Dimensions.x);
+                    _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _dialogueVariations[1].Dimensions.y);
+                }
+                else
+                {
+                    _dialogueBackground.sprite = _dialogueVariations[0].Background;
+                    _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _dialogueVariations[0].Dimensions.x);
+                    _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _dialogueVariations[0].Dimensions.y);
+                }
+                ActivateDialogueEvents(_currentDialogue.dialogue[_currentSpeechIndex].eventId);
+            }
+
+            _canvasGroup.alpha = _currentDialogueCharArray.Length > 0 ? 1 : 0;
+            while (_currentCharIndex < _currentDialogueCharArray.Length)
+            {
+                if (_currentDialogueCharArray[_currentCharIndex] == '<')
+                {
+                    int index = _currentCharIndex;
+                    while (_currentDialogueCharArray[index] != '>')
+                    {
+                        _speechTextComponent.text += _currentDialogueCharArray[index];
+                        index++;
+                    }
+                    _currentCharIndex = index;
+                }
+                else
+                {
+                    _speechTextComponent.text += _currentDialogueCharArray[_currentCharIndex];
+                    _currentCharIndex++;
+                    yield return _typeWrittingDelay;
+                }
+            }
+
+            if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0 && _currentDelay < _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech)
+            {
+                while (_currentDelay < _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech)
+                {
+                    _currentDelay += Time.deltaTime;
+                    yield return null;
+                }
+            }
+            if (LockInput) _continueDialogueIcon.SetActive(true);
+            //_readyForNextSpeech = true;
+            _writtingCoroutine = null;
+            if (_currentDelay > 0)
+            {
+                if (CutsceneController.IsPlaying) _canvasGroup.alpha = 0;
+                else UpdateDialogue();
+            }
+        }
+
+        private void SkipSpeech()
+        {
+            if (_debugLogs) Debug.Log($"Skipping typewrite anim");
+            StopCoroutine(_writtingCoroutine);
+            _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].content;
+            _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].announcerName;
+            if (LockInput) _continueDialogueIcon.SetActive(true);
+            //_readyForNextSpeech = true;
+            OnSkipSpeech?.Invoke();
+            _writtingCoroutine = null;
+        }
+
+        public void StopDialogue()
+        {
+            if (CurrentDialogue)
+            {
+                if (_debugLogs) Debug.Log($"End of Dialogue {_currentDialogue.id}");
+                if (_writtingCoroutine != null) StopCoroutine(_writtingCoroutine);
+                _writtingCoroutine = null;
+                ActivateDialogueEvents(_currentDialogue.onEndEventId);
+                _currentSpeechIndex = 0;
+                _currentDialogue = null;
+                _canvasGroup.alpha = 0;
+                _canvasGroup.blocksRaycasts = false;
+                OnDialogueEnd?.Invoke();
+                if (LockInput)
+                {
+                    PlayerActions.Instance.ChangeInputMap("Player");
+                    _continueInput.action.performed -= HandleContinueDialogue;
+                    //_continueInput.action.Disable();
+                }
+                LockInput = false;
+                PauseDialogue(false);
+            }
+        }
+
+        public void UpdateDialogueEventsList(DialogueEvents dialogueEvents)
+        {
+            if (_dialogueEventsList.Contains(dialogueEvents)) _dialogueEventsList.Remove(dialogueEvents);
+            else _dialogueEventsList.Add(dialogueEvents);
+        }
+
+        private void ActivateDialogueEvents(string eventID)
+        {
+            if (!string.IsNullOrEmpty(eventID))
+            {
+                for (int i = 0; i < _dialogueEventsList.Count; i++)
+                {
+                    if (_dialogueEventsList[i].TriggerEvent(eventID))
+                    {
+                        if (_debugLogs) Debug.Log($"Dialogue Event {eventID} Triggered");
+                        break;
+                    }
+                }
+            }
+        }
+
+        public void StartDialogue(string dialogueId, bool lockInput)
+        {
+            if (IsPaused)
+            {
+                if (_debugLogs) Debug.Log($"Dialogue is Paused, will not start {dialogueId}");
+                return;
+            }
+            if (_dialogueDictionary.TryGetValue(dialogueId, out Dialogue dialogue) /*&& _writtingCoroutine == null*/)
+            {
+                LockInput = lockInput;
+                if (LockInput)
+                {
+                    PlayerActions.Instance.ChangeInputMap("Dialogue");
+                    _continueInput.action.performed += HandleContinueDialogue;
+                    //_continueInput.action.Enable();
+                }
+                if (_debugLogs) Debug.Log($"Starting dialogue {dialogueId}");
+                _canvasGroup.alpha = 1;
+                _canvasGroup.blocksRaycasts = true;
+                _currentSpeechIndex = 0;
+                _currentDialogue = dialogue;
+                OnDialogeStart?.Invoke();
+                if (_writtingCoroutine != null)
+                {
+                    StopCoroutine(_writtingCoroutine);
+                    _writtingCoroutine = null;
+                }
+                _writtingCoroutine = StartCoroutine(WrittingCoroutine(true));
+            }
+            else
+            {
+                if (_debugLogs)
+                {
+                    if (dialogue == null) Debug.LogError($"The dialogue {dialogueId} couldn't be found");
+                    //if (_writtingCoroutine != null) Debug.LogWarning($"There is the current dialogue {_currentDialogue.id} playing, the dialogue {dialogueId} will not play");
+                }
+            }
+        }
+
+        public void ChangeLanguage(LanguageTypes languageType)
+        {
+            _dialogues = Resources.LoadAll<Dialogue>($"Dialogues/{languageType}");
+            _dialogueDictionary.Clear();
             for (int i = 0; i < _dialogues.Length; i++)
             {
                 if (!_dialogueDictionary.ContainsKey(_dialogues[i].id))
@@ -60,124 +286,21 @@ namespace Paranapiacaba.Dialogue {
             }
         }
 
-        private void HandleContinueDialogue(InputAction.CallbackContext context)
+        public void PauseDialogue(bool isPaused)
         {
-            if (context.ReadValue<float>() == 1 && _currentDialogue)
+            IsPaused = isPaused;
+            if (CurrentDialogue)
             {
-                UpdateDialogue();
-            }
-        }
-
-        private void UpdateDialogue()
-        {
-            if (_writtingCoroutine != null)
-            {
-                SkipSpeech();
-            }
-            else if (_writtingCoroutine == null && _readyForNextSpeech)
-            {
-                _currentSpeechIndex++;
-                //end of current dialogue
-                if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
+                if (isPaused)
                 {
-                    _continueInput.action.Disable();
-                    ActivateDialogueEvents(_currentDialogue.onEndEventId);
-                    _currentSpeechIndex = 0;
-                    _currentDialogue = null;
-                    _canvasGroup.alpha = 0;
-                    _canvasGroup.blocksRaycasts = false;
-                    OnDialogueEnd?.Invoke();
-                    PlayerActions.Instance.ChangeInputMap("Dialogue");
-                    //_inputActionMap.actionMaps[0].Enable();
-                    IsDialogueActive = false;
-                }
-                //continue current dialogue
-                else
-                {
-                    _continueDialogueIcon.SetActive(false);
-                    _readyForNextSpeech = false;
-                    _writtingCoroutine = StartCoroutine(WrittingCoroutine());
-                }
-            }
-        }        
-
-        private IEnumerator WrittingCoroutine()
-        {
-            _continueDialogueIcon.SetActive(false);
-            _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].announcerName;
-            _speechTextComponent.text = "";
-            ActivateDialogueEvents(_currentDialogue.dialogue[_currentSpeechIndex].eventId);
-
-            char[] chars = _currentDialogue.dialogue[_currentSpeechIndex].content.ToCharArray();
-            for (int i = 0; i < chars.Length; i++)
-            {
-                if (chars[i] == '<')
-                {
-                    int index = i;
-                    while (chars[index] != '>')
-                    {
-                        _speechTextComponent.text += chars[index];
-                        index++;
-                    }
-                    _speechTextComponent.text += chars[index];
-                    i = index;
+                    if (_writtingCoroutine != null) StopCoroutine(_writtingCoroutine);
+                    _writtingCoroutine = null;
                 }
                 else
                 {
-                    _speechTextComponent.text += chars[i];
-                    yield return _typeWrittingDelay;
-                }
-            }
-            _continueDialogueIcon.SetActive(true);
-            _readyForNextSpeech = true;
-            _writtingCoroutine = null;
-        }
-
-        private void SkipSpeech()
-        {
-            StopCoroutine(_writtingCoroutine);
-            _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].content;
-            _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].announcerName;
-            _continueDialogueIcon.SetActive(true);
-            _readyForNextSpeech = true;
-            OnSkipSpeech?.Invoke();
-            _writtingCoroutine = null;
-        }
-
-        public void SetCurrentDialogueEvents(DialogueEvents dialogueEvents)
-        {
-            _currentDialogueEvents = dialogueEvents;
-        }
-
-        private void ActivateDialogueEvents(string eventID)
-        {
-            if (_currentDialogueEvents && !string.IsNullOrEmpty(eventID)) _currentDialogueEvents.TriggerEvent(eventID);
-        }
-
-        public void StartDialogue(string dialogueId)
-        {
-            if (_dialogueDictionary.TryGetValue(dialogueId, out Dialogue dialogue) && _writtingCoroutine == null)
-            {
-                IsDialogueActive = true;
-                PlayerActions.Instance.ChangeInputMap("Player");
-                //_inputActionMap.actionMaps[0].Disable();
-                _continueInput.action.Enable();
-                if (_debugLogs) Debug.Log($"Starting dialogue {dialogueId}");
-                _canvasGroup.alpha = 1;
-                _canvasGroup.blocksRaycasts = true;
-                _currentDialogue = dialogue;
-                OnDialogeStart?.Invoke();
-                _writtingCoroutine = StartCoroutine(WrittingCoroutine());
-            }
-            else
-            {
-                if (_debugLogs)
-                {
-                    if (dialogue == null) Debug.LogError($"The dialogue {dialogueId} couldn't be found");
-                    if (_writtingCoroutine != null) Debug.LogWarning($"There is the current dialogue {_currentDialogue.id} playing, the dialogue {dialogueId} will not play");
+                    _writtingCoroutine = StartCoroutine(WrittingCoroutine(false));
                 }
             }
         }
-
     }
 }

@@ -34,8 +34,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 200}
+  m_AnchoredPosition: {x: 0, y: -40}
+  m_SizeDelta: {x: -360, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7807761406071554785
 CanvasRenderer:
@@ -92,14 +92,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -244,10 +244,10 @@ RectTransform:
   - {fileID: 146100947779668813}
   m_Father: {fileID: 7018147323069803980}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 400}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 37}
+  m_SizeDelta: {x: 1001, y: 300}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &6743125699985122113
 CanvasRenderer:
@@ -270,15 +270,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.5882353}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 4100b1ea0a08452499f21736762a9543, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -321,7 +321,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -25}
+  m_AnchoredPosition: {x: 0, y: -50}
   m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5282732051543473101
@@ -381,8 +381,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -437,6 +437,8 @@ GameObject:
   - component: {fileID: 4133540588037031929}
   - component: {fileID: 9061597358671609907}
   - component: {fileID: 6843526973766580015}
+  - component: {fileID: 2360924173869617257}
+  - component: {fileID: 7242475149578815422}
   m_Layer: 5
   m_Name: DialogueUI
   m_TagString: Untagged
@@ -485,7 +487,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &7297742323402803667
 MonoBehaviour:
@@ -540,11 +542,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _characterShowDelay: 0.05
-  _inputActionMap: {fileID: -944628639613478452, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _continueInput: {fileID: -5635020411607476702, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _speechTextComponent: {fileID: 7041984907326039200}
   _announcerNameTextComponent: {fileID: 3666194328975780424}
+  _dialogueBackground: {fileID: 5829119723001010458}
+  _dialogueContainer: {fileID: 3206955496031567864}
   _continueDialogueIcon: {fileID: 3124008226672220718}
+  _dialogueVariations:
+  - Background: {fileID: 21300000, guid: 4100b1ea0a08452499f21736762a9543, type: 3}
+    Dimensions: {x: 1001, y: 300}
+  - Background: {fileID: 21300000, guid: 6b5992c19bf737e4fbdd29537d384c17, type: 3}
+    Dimensions: {x: 945, y: 300}
   _debugLogs: 0
 --- !u!225 &6843526973766580015
 CanvasGroup:
@@ -558,3 +566,61 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &2360924173869617257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8587459058244812029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _transitionDuration: 0.25
+  _interactable: 0
+--- !u!114 &7242475149578815422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8587459058244812029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ee5e4d7e4251d94cafc3ffe67f14812, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _continueDialogueSound:
+    Guid:
+      Data1: -1125218758
+      Data2: 1243720987
+      Data3: -1322963524
+      Data4: 67063437
+    Path: event:/pass Dialogue
+  _debugLog: 0

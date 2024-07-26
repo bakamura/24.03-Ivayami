@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Paranapiacaba.Scene
+namespace Ivayami.Scene
 {
     public class SceneLoader : MonoBehaviour
-    {
-        [SerializeField] private string _sceneId;
+    {        
+        [SceneDropdown, SerializeField] private string _sceneId;
         [SerializeField] private UnityEvent _onSceneLoad;
         [SerializeField] private UnityEvent _onSceneUnload;
+        [SerializeField] private UnityEvent _onAllScenesRequestEnd;
 #if UNITY_EDITOR
         [SerializeField] private bool _drawGizmos;
         [SerializeField] private Color _gizmoColor = Color.red;
@@ -31,7 +32,18 @@ namespace Paranapiacaba.Scene
 
         public void UnloadScene()
         {
-            SceneController.Instance.StartLoad(_sceneId, _onSceneLoad);
+            SceneController.Instance.StartLoad(_sceneId, _onSceneUnload);
+        }
+
+        public void UnloadAllScenes()
+        {
+            SceneController.Instance.UnloadAllScenes(HandleOnAllScenesUnload);
+        }
+
+        private void HandleOnAllScenesUnload()
+        {
+            _onAllScenesRequestEnd?.Invoke();
+            SceneController.Instance.OnAllSceneRequestEnd -= HandleOnAllScenesUnload;
         }
 
 #if UNITY_EDITOR

@@ -1,21 +1,25 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-using Paranapiacaba.Save;
 using UnityEngine.Events;
-using Paranapiacaba.Player;
-using System.Collections;
+using Ivayami.Save;
+using System;
 
-namespace Paranapiacaba.Scene
+namespace Ivayami.Scene
 {
     public class SceneController : MonoSingleton<SceneController>
     {
-        [SerializeField] private string _mainMenuSceneName;
+        [SceneDropdown, SerializeField] private string _mainMenuSceneName;
         [SerializeField] private bool _debugLogs;
 
-        private ChapterPointers[] _chapterPointers;
+        private Dictionary<string, ChapterPointers> _chapterPointers;
         private List<SceneData> _sceneList = new List<SceneData>();
         private Queue<SceneUpdateRequestData> _sceneUpdateRequests = new Queue<SceneUpdateRequestData>();
+
+        public Action OnAllSceneRequestEnd;
+#if UNITY_EDITOR
+        public Action OnAllSceneRequestEndDebug;
+#endif
 
         [System.Serializable]
         private class SceneData
@@ -49,19 +53,28 @@ namespace Paranapiacaba.Scene
         {
             base.Awake();
 
-            _chapterPointers = Resources.LoadAll<ChapterPointers>("ChapterPointers");
+            _chapterPointers = new Dictionary<string, ChapterPointers>();
+            foreach (ChapterPointers chapterPointer in Resources.LoadAll<ChapterPointers>("ChapterPointers"))
+            {
+                _chapterPointers.Add(chapterPointer.name, chapterPointer);
+            }
 
             LoadMainMenuScene();
         }
 
         public void LoadMainMenuScene()
         {
-            if (!string.IsNullOrEmpty(_mainMenuSceneName)) StartLoad(_mainMenuSceneName);//SceneManager.LoadScene(_baseSceneName);
-        }
-
-        public void PositionPlayer()
-        {
-            PlayerMovement.Instance.transform.position = _chapterPointers[SaveSystem.Instance.Progress.currentChapter].playerPositionOnChapterStart;
+            if (!string.IsNullOrEmpty(_mainMenuSceneName))
+            {
+#if UNITY_EDITOR
+                if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))
+                {
+                    OnAllSceneRequestEndDebug += Ivayami.debug.CustomSettingsHandler.OnSceneLoad;
+                    _mainMenuSceneName = Ivayami.debug.CustomSettingsHandler.CurrentSceneName;
+                }
+#endif
+                StartLoad(_mainMenuSceneName);//SceneManager.LoadScene(_baseSceneName);
+            }
         }
 
         public void StartLoad(string sceneId, UnityEvent onSceneUpdate = null)
@@ -71,7 +84,16 @@ namespace Paranapiacaba.Scene
             {
                 data.IsBeingLoaded = true;
                 _sceneUpdateRequests.Enqueue(new SceneUpdateRequestData(data, onSceneUpdate));
-                if(_sceneUpdateRequests.Count == 1)UpdateScene(data);
+                if (_sceneUpdateRequests.Count == 1) UpdateScene(data);
+            }
+        }
+
+        public void UnloadAllScenes(Action onAllScenesUnload)
+        {
+            OnAllSceneRequestEnd += onAllScenesUnload;
+            for (int i = 0; i < _sceneList.Count; i++)
+            {
+                if (_sceneList[i].IsLoaded) StartLoad(_sceneList[i].SceneName);
             }
         }
 
@@ -85,7 +107,7 @@ namespace Paranapiacaba.Scene
             AsyncOperation operation;
             if (data.IsLoaded) operation = SceneManager.UnloadSceneAsync(data.SceneName);
             else operation = SceneManager.LoadSceneAsync(data.SceneName, LoadSceneMode.Additive);
-            operation.completed += HandleOnSceneUpdate;
+            if (operation != null) operation.completed += HandleOnSceneUpdate;
         }
 
         private SceneData UpdateSceneList(string sceneName)
@@ -102,9 +124,9 @@ namespace Paranapiacaba.Scene
             return temp;
         }
 
-        public Vector2 PointerInChapter(byte chapter, byte subChapter)
+        public Vector2 PointerInChapter(string chapterId)
         {
-            return _chapterPointers[chapter].SubChapterPointer(subChapter);
+            return _chapterPointers[chapterId].SubChapterPointer((byte)SaveSystem.Instance.Progress.GetProgressOfType(chapterId));
         }
 
         private void HandleOnSceneUpdate(AsyncOperation operation)
@@ -119,6 +141,20 @@ namespace Paranapiacaba.Scene
             }
             requestData.OnSceneUpdate?.Invoke();
             if (_sceneUpdateRequests.Count > 0) UpdateScene(_sceneUpdateRequests.Peek().SceneData);
+            else
+            {
+                OnAllSceneRequestEnd?.Invoke();
+#if UNITY_EDITOR
+                StartCoroutine(WaitEndOfFrameCoroutine());
+#endif
+            }
         }
+#if UNITY_EDITOR
+        private System.Collections.IEnumerator WaitEndOfFrameCoroutine()
+        {
+            yield return new WaitForEndOfFrame();
+            OnAllSceneRequestEndDebug?.Invoke();
+        }
+#endif
     }
 }

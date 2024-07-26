@@ -1,14 +1,14 @@
-
+using Ivayami.Player;
 using UnityEngine;
 
-namespace Paranapiacaba.Puzzle {
+namespace Ivayami.Puzzle {    
     public interface IInteractable {
 
         public GameObject gameObject { get; }
 
-        public abstract bool Interact();
+        public InteractableFeedbacks InteratctableHighlight { get; }
 
-        public virtual void InteractStop() { }
+        public abstract PlayerActions.InteractAnimation Interact();
 
     }
 }

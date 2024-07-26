@@ -1,11 +1,13 @@
 using UnityEngine;
 
-namespace Paranapiacaba.Player {
+namespace Ivayami.Player {
+    [CreateAssetMenu(menuName = "Inventory/Item")]
     public class InventoryItem : ScriptableObject {
 
-        public string id;
-        public ItemType type;
-        public Sprite sprite;
+        [field: SerializeField] public string DisplayName { get; private set; }
+        [field: SerializeField] public ItemType Type { get; private set; }
+        [field: SerializeField] public Sprite Sprite { get; private set; }
+        [field: SerializeField] public GameObject FocusedObjectPrefab { get; private set; }
 
     }
 }

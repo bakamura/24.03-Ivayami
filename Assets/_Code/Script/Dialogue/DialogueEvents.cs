@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace Paranapiacaba.Dialogue {
+namespace Ivayami.Dialogue {
     public class DialogueEvents : MonoBehaviour {
         [SerializeField] private bool _debugLogs;
         [SerializeField] private SpeechEvent[] _events;
@@ -23,16 +23,26 @@ namespace Paranapiacaba.Dialogue {
                         Debug.LogWarning($"the Dialogue Event ID {_events[i].id} is already in use");
                     }
                 }
-            }
-
-            DialogueController.Instance.SetCurrentDialogueEvents(this);
+            }            
         }
 
-        public void TriggerEvent(string eventId) {
+        private void OnEnable()
+        {
+            if(DialogueController.Instance) DialogueController.Instance.UpdateDialogueEventsList(this);
+        }
+
+        private void OnDisable()
+        {
+            if (DialogueController.Instance) DialogueController.Instance.UpdateDialogueEventsList(this);
+        }
+
+        public bool TriggerEvent(string eventId) {
             if (_eventsDictionary.ContainsKey(eventId))
             {
                 _eventsDictionary[eventId].unityEvent?.Invoke();
+                return true;
             }
+            return false;
         }       
 
     }

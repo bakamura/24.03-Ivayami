@@ -1,9 +1,16 @@
 
-namespace Paranapiacaba.Save {
+using System;
+
+namespace Ivayami.Save {
+    [System.Serializable]
     public class SaveOptions {
 
-        public float musicVol;
-        public float sfxVol;
+        public float musicVol = 0.5f;
+        public float sfxVol = 0.5f;
+
+        public float cameraSensitivity = 0.5f;
+
+        public Int32 language;
 
     }
 }

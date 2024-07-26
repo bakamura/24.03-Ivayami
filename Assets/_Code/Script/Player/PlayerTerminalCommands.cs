@@ -1,8 +1,8 @@
 using UnityEngine;
 using IngameDebugConsole;
-using Paranapiacaba.Player;
+using Ivayami.Player;
 
-public class PlayerTerminalCommands : MonoBehaviour {
+public static class PlayerTerminalCommands {
 
     [ConsoleMethod("TogglePlayerMovement", "Toggles Player's Movement", "canMove")]
     public static void TogglePlayerMovement(bool canMove) {
