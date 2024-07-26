@@ -1,15 +1,10 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Ivayami.UI {
     public class Quit : MonoBehaviour {
 
-        [Header("Input Stopping")]
-
-        [SerializeField] private InputActionReference _pauseInput;
-
         private void Awake() {
-            _pauseInput.action.Disable();
+            Pause.Instance.canPause = false;
         }
 
         public void QuitGame() {
