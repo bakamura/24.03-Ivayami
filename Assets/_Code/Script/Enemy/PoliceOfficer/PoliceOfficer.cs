@@ -266,7 +266,7 @@ namespace Ivayami.Enemy
 
         public void GoToPoint(Transform target, float speedIncrease, float durationInPlace)
         {
-            if (!_navMeshAgent.isStopped)
+            if (!_navMeshAgent.isStopped && IsActive)
             {
                 StopBehaviour();
                 ChangeSpeedMultiplier(speedIncrease);
