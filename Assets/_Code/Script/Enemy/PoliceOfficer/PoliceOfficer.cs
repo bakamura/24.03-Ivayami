@@ -13,6 +13,7 @@ namespace Ivayami.Enemy
         [Header("Parameters")]
         [SerializeField, Min(0f)] private float _minDetectionRange;
         [SerializeField, Min(0f)] private float _detectionRange;
+        [SerializeField, Min(0f)] private float _delayToLoseTarget;
         [SerializeField, Range(0f, 180f)] private float _visionAngle = 60f;
         [SerializeField] private Vector3 _visionOffset;
         [SerializeField, Min(.02f)] private float _tickFrequency = .5f;
@@ -54,6 +55,7 @@ namespace Ivayami.Enemy
         private EnemyWalkArea _currenWalkArea;
         private float _halfVisionAngle;
         private float _speedMultiplier;
+        private float _followTargetValue;
 
         public bool IsActive { get; private set; }
         public LayerMask TargetLayer => _targetLayer;
@@ -112,8 +114,9 @@ namespace Ivayami.Enemy
         {
             while (IsActive)
             {
-
-                if (/*_canChaseTarget &&*/ CheckForTarget(_halfVisionAngle))
+                if (CheckForTarget(_halfVisionAngle)) _followTargetValue = _delayToLoseTarget;
+                _followTargetValue = Mathf.Clamp(_followTargetValue - _tickFrequency, 0, _delayToLoseTarget);
+                if (/*_canChaseTarget &&*/ _followTargetValue > 0)
                 {
                     if (!_isChasing && !_navMeshAgent.isStopped)
                     {
