@@ -3,11 +3,11 @@ using UnityEngine;
 
 namespace Ivayami.Player
 {
-    public class CameraLookAtReposition : MonoBehaviour
+    public class CameraAimReposition : MonoBehaviour
     {
         [SerializeField] private Transform _aimPoint;
         [SerializeField, Min(0f)] private float _distanceFactor = .8f;
-        //[SerializeField, Min(0f)] private float _lerpSpeed;
+        [SerializeField, Min(0f)] private float _lerpSpeed = 1f;
         [SerializeField] private LayerMask _obstaclesLayer;
 #if UNITY_EDITOR
         [SerializeField, Min(0f)] private float _gizmoSize;
@@ -36,17 +36,17 @@ namespace Ivayami.Player
                 //_camera.LookAt = _aimPoint.parent;
                 float distance = Vector3.Distance(origin, _hits[0].point);
                 //Debug.Log(_hits[0].point);
-                //_aimPoint.localPosition = new Vector3(Mathf.MoveTowards(_aimPoint.localPosition.x, distance * _distanceFactor, _lerpSpeed * Time.deltaTime)
-                 //   , _aimPoint.localPosition.y, _aimPoint.localPosition.z);
-                _aimPoint.localPosition = new Vector3(distance * _distanceFactor, _aimPoint.localPosition.y, _aimPoint.localPosition.z);
+                _aimPoint.localPosition = new Vector3(Mathf.MoveTowards(_aimPoint.localPosition.x, distance * _distanceFactor, _lerpSpeed * Time.deltaTime)
+                   , _aimPoint.localPosition.y, _aimPoint.localPosition.z);
+                //_aimPoint.localPosition = new Vector3(distance * _distanceFactor, _aimPoint.localPosition.y, _aimPoint.localPosition.z);
             }
             else
             {               
                 //Debug.Log("NOTHING");
                 //_camera.LookAt = _aimP                oint;
-                //_aimPoint.localPosition = new Vector3(Mathf.MoveTowards(_aimPoint.localPosition.x, _maxDistance, _lerpSpeed * Time.deltaTime),
-                //    _aimPoint.localPosition.y, _aimPoint.localPosition.z);
-                _aimPoint.localPosition = new Vector3(_maxDistance, _aimPoint.localPosition.y, _aimPoint.localPosition.z);
+                _aimPoint.localPosition = new Vector3(Mathf.MoveTowards(_aimPoint.localPosition.x, _maxDistance, _lerpSpeed * Time.deltaTime),
+                    _aimPoint.localPosition.y, _aimPoint.localPosition.z);
+                //_aimPoint.localPosition = new Vector3(_maxDistance, _aimPoint.localPosition.y, _aimPoint.localPosition.z);
             }
         }
 
