@@ -204,8 +204,8 @@ namespace Ivayami.Enemy
             bool isInVisionAngle = Vector3.Angle(transform.forward, (_hitsCache[0].transform.position - transform.position).normalized) <= halfVisionAngle;
 
             if (_debugLog)
-                Debug.Log($"blocked by bush {!isHidden}, target Inside Radius {targetInsideRange}, blocking vision {blockingVision}, is in Min range {isInMinRange}, is in Vision Angle {isInVisionAngle}");
-            return isHidden && targetInsideRange && !blockingVision && (isInMinRange || isInVisionAngle);
+                Debug.Log($"is Hidden {isHidden}, target Inside Radius {targetInsideRange}, blocking vision {blockingVision}, is in Min range {isInMinRange}, is in Vision Angle {isInVisionAngle}");
+            return !isHidden && targetInsideRange && !blockingVision && (isInMinRange || isInVisionAngle);
         }
 
         private void OnAttackAnimationEnd()
