@@ -55,7 +55,8 @@ namespace Ivayami.Player {
         public enum HidingState {
             None,
             Wardrobe,
-            Garbage
+            Garbage,
+            Bush
         }
 
         [Header("Camera")]
