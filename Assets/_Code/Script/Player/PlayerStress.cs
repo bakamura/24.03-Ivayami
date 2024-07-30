@@ -147,11 +147,11 @@ namespace Ivayami.Player
             //SceneTransition.Instance.Menu.Open();
         }
 
-        [ContextMenu("KILL")]
-        private void KillPlayer()
-        {
-            AddStress(10000);
-        }
+        //[ContextMenu("KILL")]
+        //private void KillPlayer()
+        //{
+        //    AddStress(10000);
+        //}
 
     }
 }
