@@ -117,7 +117,6 @@ namespace Ivayami.Player
 
         private IEnumerator DelayToRespawn()
         {
-            _failState = false;
             PlayerMovement.Instance.ToggleMovement(false);
 
             yield return _restartWait;
@@ -142,14 +141,17 @@ namespace Ivayami.Player
             PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].transform.position);
             //PlayerMovement.Instance.ToggleMovement(true);
             PlayerAnimation.Instance.GoToIdle();
+            _stressCurrent = _stressMin;
+            _failState = false;
+            onStressChange?.Invoke(_stressCurrent);
             //SceneTransition.Instance.Menu.Open();
         }
 
-        //[ContextMenu("KILL")]
-        //private void KillPlayer()
-        //{
-        //    AddStress(10000);
-        //}
+        [ContextMenu("KILL")]
+        private void KillPlayer()
+        {
+            AddStress(10000);
+        }
 
     }
 }
