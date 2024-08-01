@@ -9,8 +9,17 @@ namespace Ivayami.Player.Ability
     public class Friend : MonoSingleton<Friend>
     {
         [SerializeField, Min(.01f)] private float _rotationSpeed = 1;
+        [SerializeField, Range(0f,359f)] private float _angle;
         [SerializeField, Tooltip("Force a specific direction to look when in match animation type relative to the object")] private AnimationOrientation[] _animationsOrientation;
-        private NavMeshAgent _navMeshAgent;
+        private NavMeshAgent _navMeshAgent
+        {
+            get
+            {
+                if (!m_navMeshAgent) m_navMeshAgent = GetComponent<NavMeshAgent>();
+                return m_navMeshAgent;
+            }
+        }
+        private NavMeshAgent m_navMeshAgent;
         private FriendAnimator _friendAnimator;
         private const float _tick = .2f;
         private const float _distanceExtrapolateFactor = 1.2f;
@@ -40,7 +49,6 @@ namespace Ivayami.Player.Ability
         protected override void Awake()
         {
             base.Awake();
-            _navMeshAgent = GetComponent<NavMeshAgent>();
             _friendAnimator = GetComponent<FriendAnimator>();
             _distanceFromPlayer = _navMeshAgent.stoppingDistance;
         }
@@ -113,12 +121,14 @@ namespace Ivayami.Player.Ability
                     if (InteractableLongCurrent == null)
                     {
                         _navMeshAgent.stoppingDistance = _distanceFromPlayer;
-                        if (Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) <= _navMeshAgent.stoppingDistance * _distanceExtrapolateFactor)
-                        {
-                            //get out of the way of the player
-                            _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + _navMeshAgent.stoppingDistance * 1.5f * PlayerMovement.Instance.transform.right);
-                        }
-                        else _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position);
+                        //if (Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) < _navMeshAgent.stoppingDistance * _distanceExtrapolateFactor)
+                        //{
+                        //    //get out of the way of the player
+                        //    _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + _navMeshAgent.stoppingDistance * _distanceExtrapolateFactor * -PlayerMovement.Instance.transform.forward);
+                        //}
+                        //else 
+                        Vector3 vec = Quaternion.AngleAxis(_angle, Vector3.up) * PlayerMovement.Instance.GetVisualForwardVector() * _navMeshAgent.stoppingDistance;
+                        _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + vec);
                         //_friendAnimator.UpdateInteracting(false);
                     }
                     //interact
@@ -193,5 +203,24 @@ namespace Ivayami.Player.Ability
             }
             return false;
         }
-    }
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Vector3 vec;
+            if (Application.isPlaying)
+            {
+                vec = Quaternion.AngleAxis(_angle, Vector3.up) * PlayerMovement.Instance.GetVisualForwardVector() * _navMeshAgent.stoppingDistance;
+                Gizmos.DrawLine(PlayerMovement.Instance.transform.position, PlayerMovement.Instance.transform.position + vec);
+                Gizmos.DrawSphere(PlayerMovement.Instance.transform.position + vec, .1f);
+            }
+            else
+            {
+                vec = Quaternion.AngleAxis(_angle, Vector3.up) * transform.forward * _navMeshAgent.stoppingDistance;
+                Gizmos.DrawLine(transform.position, transform.position + vec);
+                Gizmos.DrawSphere(transform.position + vec, .1f);
+            }
+        }
+#endif
+    }    
 }

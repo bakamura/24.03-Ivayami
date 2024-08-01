@@ -207,5 +207,7 @@ namespace Ivayami.Player {
             // cinemachine freelook
         }
 
+        public Vector3 GetVisualForwardVector() { return _visualTransform.forward; }
+
     }
 }
