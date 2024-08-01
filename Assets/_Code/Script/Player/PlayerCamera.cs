@@ -6,17 +6,17 @@ namespace Ivayami.Player {
 
         [SerializeField] private float _sensitivityMultiplierX;
         [SerializeField] private float _sensitivityMultiplierY;
-        private CinemachineFreeLook _freeLookCam;
+        public CinemachineFreeLook FreeLookCam { get; private set; }
 
         protected override void Awake() {
             base.Awake();
             
-            _freeLookCam = GetComponent<CinemachineFreeLook>();
+            FreeLookCam = GetComponent<CinemachineFreeLook>();
         }
 
         public void SetCameraSensitivity(float sensitivity) {
-            _freeLookCam.m_XAxis.m_MaxSpeed = sensitivity * _sensitivityMultiplierX;
-            _freeLookCam.m_YAxis.m_MaxSpeed = sensitivity * _sensitivityMultiplierY;
+            FreeLookCam.m_XAxis.m_MaxSpeed = sensitivity * _sensitivityMultiplierX;
+            FreeLookCam.m_YAxis.m_MaxSpeed = sensitivity * _sensitivityMultiplierY;
         }
 
     }
