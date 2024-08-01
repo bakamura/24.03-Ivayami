@@ -127,7 +127,7 @@ namespace Ivayami.Player.Ability
                         //    _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + _navMeshAgent.stoppingDistance * _distanceExtrapolateFactor * -PlayerMovement.Instance.transform.forward);
                         //}
                         //else 
-                        Vector3 vec = Quaternion.AngleAxis(_angle, Vector3.up) * PlayerMovement.Instance.GetVisualForwardVector() * _navMeshAgent.stoppingDistance;
+                        Vector3 vec = Quaternion.AngleAxis(_angle, Vector3.up) * PlayerMovement.Instance.VisualForward * _navMeshAgent.stoppingDistance;
                         _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + vec);
                         //_friendAnimator.UpdateInteracting(false);
                     }
@@ -210,7 +210,7 @@ namespace Ivayami.Player.Ability
             Vector3 vec;
             if (Application.isPlaying)
             {
-                vec = Quaternion.AngleAxis(_angle, Vector3.up) * PlayerMovement.Instance.GetVisualForwardVector() * _navMeshAgent.stoppingDistance;
+                vec = Quaternion.AngleAxis(_angle, Vector3.up) * PlayerMovement.Instance.VisualForward * _navMeshAgent.stoppingDistance;
                 Gizmos.DrawLine(PlayerMovement.Instance.transform.position, PlayerMovement.Instance.transform.position + vec);
                 Gizmos.DrawSphere(PlayerMovement.Instance.transform.position + vec, .1f);
             }
