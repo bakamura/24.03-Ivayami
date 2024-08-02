@@ -169,11 +169,11 @@ namespace Ivayami.Player {
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
-        private void OverTheShoulderSpring() {
-            _overTheShoulderTarget.localPosition = Vector3.right *
-               (Physics.Raycast(_overTheShoulderTarget.position, _overTheShoulderTarget.right, out RaycastHit hit, _overTheShoulderMaxDistance, _overTheShoulderSpringCollisions) ?
-                hit.distance : _overTheShoulderMaxDistance);
-        }
+        //private void OverTheShoulderSpring() {
+        //    _overTheShoulderTarget.localPosition = Vector3.right *
+        //       (Physics.Raycast(_overTheShoulderTarget.position, _overTheShoulderTarget.right, out RaycastHit hit, _overTheShoulderMaxDistance, _overTheShoulderSpringCollisions) ?
+        //        hit.distance : _overTheShoulderMaxDistance);
+        //}
 
         private void ToggleWalk(InputAction.CallbackContext input) {
             _movementSpeedMax = _movementSpeedMax != _movementSpeedRun ? _movementSpeedRun : _movementSpeedWalk;
@@ -181,7 +181,11 @@ namespace Ivayami.Player {
 
         public void ToggleMovement(bool canMove) {
             _canMove = canMove;
-            if (!_canMove) _speedCurrent = 0f;
+            if (!_canMove)
+            {
+                _speedCurrent = 0f;
+                onMovement?.Invoke(Vector2.zero);
+            }
             _rigidbody.constraints = canMove ? RigidbodyConstraints.FreezeRotation : RigidbodyConstraints.FreezeAll;
 
             Logger.Log(LogType.Player, $"Movement Toggle: {_canMove}");
