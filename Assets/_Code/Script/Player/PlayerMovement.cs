@@ -79,6 +79,8 @@ namespace Ivayami.Player {
         private CapsuleCollider _collider;
         private Transform _cameraTransform;
 
+        public Vector3 VisualForward => _visualTransform.forward;
+
         protected override void Awake() {
             base.Awake();
 
@@ -205,9 +207,11 @@ namespace Ivayami.Player {
             _targetAngle = Quaternion.Euler(0f, angle, 0f);
             _visualTransform.rotation = _targetAngle;
             // cinemachine freelook
+        }        
+
+        public void UpdateVisualsVisibility(bool isVisible)
+        {
+            _visualTransform.gameObject.SetActive(isVisible);
         }
-
-        public Vector3 GetVisualForwardVector() { return _visualTransform.forward; }
-
     }
 }
