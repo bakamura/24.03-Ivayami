@@ -29,6 +29,16 @@ namespace Ivayami.Puzzle
             //if(_passwordTextField.text.Length == _passwordTextField.characterLimit) OnCheckPassword?.Invoke();
         }
 
+        public void RemoveCharacter()
+        {
+            _passwordTextField.text = _passwordTextField.text.Remove(_passwordTextField.text.Length - 1);
+        }
+
+        public void EraseAll()
+        {
+            _passwordTextField.text = null;
+        }
+
         private void OnValidate()
         {
             if (_passwordTextField)

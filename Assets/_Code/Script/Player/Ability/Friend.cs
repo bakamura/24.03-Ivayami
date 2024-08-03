@@ -9,7 +9,17 @@ namespace Ivayami.Player.Ability
     public class Friend : MonoSingleton<Friend>
     {
         [SerializeField, Min(.01f)] private float _rotationSpeed = 1;
-        private NavMeshAgent _navMeshAgent;
+        [SerializeField, Range(0f,359f)] private float _angle;
+        [SerializeField, Tooltip("Force a specific direction to look when in match animation type relative to the object")] private AnimationOrientation[] _animationsOrientation;
+        private NavMeshAgent _navMeshAgent
+        {
+            get
+            {
+                if (!m_navMeshAgent) m_navMeshAgent = GetComponent<NavMeshAgent>();
+                return m_navMeshAgent;
+            }
+        }
+        private NavMeshAgent m_navMeshAgent;
         private FriendAnimator _friendAnimator;
         private const float _tick = .2f;
         private const float _distanceExtrapolateFactor = 1.2f;
@@ -20,13 +30,25 @@ namespace Ivayami.Player.Ability
         private Coroutine _rotateCoroutine;
         private Coroutine _behaviourCoroutine;
         private PlayerActions.InteractAnimation _currentInteractionType;
+        [System.Serializable]
+        private struct AnimationOrientation
+        {
+            public PlayerActions.InteractAnimation AnimatyonType;
+            public DirectionTypes LookDirection;
+        }
+        private enum DirectionTypes
+        {
+            Forward,
+            Back,
+            Left,
+            Right
+        }
 
-        public IInteractableLong InteractableLongCurrent { get; private set; }        
+        public IInteractableLong InteractableLongCurrent { get; private set; }
 
         protected override void Awake()
         {
             base.Awake();
-            _navMeshAgent = GetComponent<NavMeshAgent>();
             _friendAnimator = GetComponent<FriendAnimator>();
             _distanceFromPlayer = _navMeshAgent.stoppingDistance;
         }
@@ -99,12 +121,14 @@ namespace Ivayami.Player.Ability
                     if (InteractableLongCurrent == null)
                     {
                         _navMeshAgent.stoppingDistance = _distanceFromPlayer;
-                        if (Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) <= _navMeshAgent.stoppingDistance * _distanceExtrapolateFactor)
-                        {
-                            //get out of the way of the player
-                            _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + _navMeshAgent.stoppingDistance * 1.5f * PlayerMovement.Instance.transform.right);
-                        }
-                        else _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position);
+                        //if (Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) < _navMeshAgent.stoppingDistance * _distanceExtrapolateFactor)
+                        //{
+                        //    //get out of the way of the player
+                        //    _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + _navMeshAgent.stoppingDistance * _distanceExtrapolateFactor * -PlayerMovement.Instance.transform.forward);
+                        //}
+                        //else 
+                        Vector3 vec = Quaternion.AngleAxis(_angle, Vector3.up) * PlayerMovement.Instance.VisualForward * _navMeshAgent.stoppingDistance;
+                        _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + vec);
                         //_friendAnimator.UpdateInteracting(false);
                     }
                     //interact
@@ -131,7 +155,12 @@ namespace Ivayami.Player.Ability
             _navMeshAgent.enabled = false;
             float count = 0;
             Quaternion initialRotation = transform.rotation;
-            Quaternion finalRotation = Quaternion.LookRotation(InteractableLongCurrent.gameObject.transform.position - transform.position).normalized;
+            Quaternion finalRotation;
+            if (TryGetSpecifiedLookDirection(_currentInteractionType, out Vector3 direction))
+            {
+                finalRotation = Quaternion.LookRotation(direction);
+            }
+            else finalRotation = Quaternion.LookRotation(InteractableLongCurrent.gameObject.transform.position - transform.position).normalized;
             while (count < 1)
             {
                 transform.rotation = Quaternion.Lerp(initialRotation, new Quaternion(0, finalRotation.y, 0, finalRotation.w), count);
@@ -145,5 +174,53 @@ namespace Ivayami.Player.Ability
             }
             _rotateCoroutine = null;
         }
-    }
+
+        private bool TryGetSpecifiedLookDirection(PlayerActions.InteractAnimation animation, out Vector3 direction)
+        {
+            direction = Vector3.zero;
+            for (int i = 0; i < _animationsOrientation.Length; i++)
+            {
+                if (_animationsOrientation[i].AnimatyonType == animation)
+                {
+                    switch (_animationsOrientation[i].LookDirection)
+                    {
+                        case DirectionTypes.Forward:
+                            direction = InteractableLongCurrent.gameObject.transform.forward;
+                            break;
+                        case DirectionTypes.Back:
+                            direction = -InteractableLongCurrent.gameObject.transform.forward;
+                            break;
+                        case DirectionTypes.Left:
+                            direction = -InteractableLongCurrent.gameObject.transform.right;
+                            break;
+                        case DirectionTypes.Right:
+                            direction = InteractableLongCurrent.gameObject.transform.right;
+                            break;
+                    }
+                    direction += new Vector3(0, .25f, 0);
+                    return true;
+                }
+            }
+            return false;
+        }
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Vector3 vec;
+            if (Application.isPlaying)
+            {
+                vec = Quaternion.AngleAxis(_angle, Vector3.up) * PlayerMovement.Instance.VisualForward * _navMeshAgent.stoppingDistance;
+                Gizmos.DrawLine(PlayerMovement.Instance.transform.position, PlayerMovement.Instance.transform.position + vec);
+                Gizmos.DrawSphere(PlayerMovement.Instance.transform.position + vec, .1f);
+            }
+            else
+            {
+                vec = Quaternion.AngleAxis(_angle, Vector3.up) * transform.forward * _navMeshAgent.stoppingDistance;
+                Gizmos.DrawLine(transform.position, transform.position + vec);
+                Gizmos.DrawSphere(transform.position + vec, .1f);
+            }
+        }
+#endif
+    }    
 }

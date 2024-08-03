@@ -13,6 +13,7 @@ namespace Ivayami.Enemy
         [Header("Parameters")]
         [SerializeField, Min(0f)] private float _minDetectionRange;
         [SerializeField, Min(0f)] private float _detectionRange;
+        [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
         [SerializeField, Range(0f, 180f)] private float _visionAngle = 60f;
         [SerializeField] private Vector3 _visionOffset;
         [SerializeField, Min(.02f)] private float _tickFrequency = .5f;
@@ -54,6 +55,7 @@ namespace Ivayami.Enemy
         private EnemyWalkArea _currenWalkArea;
         private float _halfVisionAngle;
         private float _speedMultiplier;
+        private float _followTargetValue;
 
         public bool IsActive { get; private set; }
         public LayerMask TargetLayer => _targetLayer;
@@ -102,6 +104,7 @@ namespace Ivayami.Enemy
                 StopCoroutine(BehaviourCoroutine());
                 IsActive = false;
                 _isChasing = false;
+                PlayerStress.Instance.SetStressMin(0);
                 //_navMeshAgent.isStopped = true;
                 _navMeshAgent.velocity = Vector3.zero;
             }
@@ -111,8 +114,9 @@ namespace Ivayami.Enemy
         {
             while (IsActive)
             {
-
-                if (/*_canChaseTarget &&*/ CheckForTarget(_halfVisionAngle))
+                _followTargetValue = Mathf.Clamp(_followTargetValue - _tickFrequency, 0, _delayToLoseTarget);
+                if (CheckForTarget(_halfVisionAngle)) _followTargetValue = _delayToLoseTarget;
+                if (/*_canChaseTarget &&*/ _followTargetValue > 0)
                 {
                     if (!_isChasing && !_navMeshAgent.isStopped)
                     {
@@ -122,7 +126,7 @@ namespace Ivayami.Enemy
                         PlayerStress.Instance.SetStressMin(98);
                         _enemyAnimator.TargetDetected(HandleTargetDetected);
                     }
-                    if(_isChasing) _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
+                    if (_isChasing) _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                     if (_debugLog) Debug.Log("Chase Target");
                 }
                 else
@@ -238,12 +242,13 @@ namespace Ivayami.Enemy
 
         public void GoToPointWithoutStop(Transform target)
         {
-            if (!_navMeshAgent.isStopped)
-            {
-                StopBehaviour();
-                PlayerStress.Instance.SetStressMin(98);
-                HandlePointReachedCoroutine(true, false, 0, target);
-            }
+            //if (!_navMeshAgent.isStopped)
+            //{
+            _navMeshAgent.isStopped = false;
+            StopBehaviour();
+            PlayerStress.Instance.SetStressMin(98);
+            HandlePointReachedCoroutine(true, false, 0, target);
+            //}
         }
 
         private void HandlePointReachedCoroutine(bool stayInPath, bool autoStartBehaviour, float durationInPlace, Transform target)
@@ -261,7 +266,7 @@ namespace Ivayami.Enemy
 
         public void GoToPoint(Transform target, float speedIncrease, float durationInPlace)
         {
-            if (!_navMeshAgent.isStopped)
+            if (!_navMeshAgent.isStopped && IsActive)
             {
                 StopBehaviour();
                 ChangeSpeedMultiplier(speedIncrease);
