@@ -7,7 +7,7 @@ namespace Ivayami.Puzzle
     [CustomEditor(typeof(Lock))]
     public class LockInspector : Editor
     {
-        SerializedProperty cancelInteractionInput, interactionType, confirmInput,
+        SerializedProperty cancelInteractionInput, interactionType, confirmInput, unlockDelay,
             itemsRequired, deliverItemsUI, deliverOptionsContainer, navigateUIInput, deliverBtn, onItemDeliverFailed,
             passwordUI,
             onInteract, onCancelInteraction, onActivate, onInteractionFailed;
@@ -23,6 +23,7 @@ namespace Ivayami.Puzzle
             GUILayout.Label("BEHAVIOUR", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
             EditorGUILayout.PropertyField(interactionType, new GUIContent("Interaction Type"));
+            EditorGUILayout.PropertyField(unlockDelay, new GUIContent("Unlock Delay"));
             switch ((Lock.InteractionTypes)interactionType.enumValueFlag)
             {
                 case Lock.InteractionTypes.RequireItems:
@@ -54,6 +55,7 @@ namespace Ivayami.Puzzle
         {
             cancelInteractionInput = serializedObject.FindProperty("_cancelInteractionInput");
             interactionType = serializedObject.FindProperty("_interactionType");
+            unlockDelay = serializedObject.FindProperty("_unlockDelay");
             confirmInput = serializedObject.FindProperty("_confirmInput");
             itemsRequired = serializedObject.FindProperty("_itemsRequired");
             deliverItemsUI = serializedObject.FindProperty("_deliverItemsUI");
