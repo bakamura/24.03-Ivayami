@@ -13,13 +13,13 @@ namespace Ivayami.Dialogue
 
         public void StartMovement()
         {
-            if(_hidePlayerModel) PlayerMovement.Instance.UpdateVisualsVisibility(true);
+            if(_hidePlayerModel) PlayerMovement.Instance.UpdateVisualsVisibility(false);
             DialogueCamera.Instance.MoveRotate(this);
         }
 
         public void ExitDialogueCamera()
         {
-            if (_hidePlayerModel) PlayerMovement.Instance.UpdateVisualsVisibility(false);
+            if (_hidePlayerModel) PlayerMovement.Instance.UpdateVisualsVisibility(true);
             DialogueCamera.Instance.ExitDialogeCamera();
         }
     }
