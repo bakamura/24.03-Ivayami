@@ -86,6 +86,7 @@ namespace Ivayami.Player {
                 if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
                     InteractAnimation animation = InteractableTarget.Interact();
                     if (InteractableTarget is IInteractableLong) {
+                        PlayerMovement.Instance.ToggleMovement(false);
                         onInteractLong?.Invoke(true);
 
                         Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
@@ -99,7 +100,8 @@ namespace Ivayami.Player {
                 else Logger.Log(LogType.Player, $"Interact: No Target");
             }
             else if (input.phase == InputActionPhase.Canceled && Interacting) {
-                (InteractableTarget as IInteractableLong).InteractStop();
+                if (InteractableTarget is IInteractableLong) PlayerMovement.Instance.ToggleMovement(true);
+                (InteractableTarget as IInteractableLong).InteractStop();                
                 onInteractLong?.Invoke(false);
 
                 Logger.Log(LogType.Player, $"Stop Interact Long with: {InteractableTarget.gameObject.name}");
