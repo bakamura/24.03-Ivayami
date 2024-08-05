@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using Ivayami.Audio;
+using System.Collections;
 
 namespace Ivayami.Puzzle
 {
@@ -16,12 +17,13 @@ namespace Ivayami.Puzzle
         [SerializeField] private InputActionReference _navigateUIInput;
         [SerializeField] private InputActionReference _confirmInput;
 
+        [SerializeField, Min(0f)] private float _unlockDelay;
         [SerializeField] private InteractionTypes _interactionType;
 
         [SerializeField] private ItemRequestData[] _itemsRequired;
         [SerializeField] private CanvasGroup _deliverItemsUI;
         [SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
-        [SerializeField] private GameObject _deliverBtn;
+        [SerializeField] private Selectable _deliverBtn;
         [SerializeField] private UnityEvent _onItemDeliverFailed;
 
         [SerializeField] private PasswordUI _passwordUI;
@@ -37,6 +39,8 @@ namespace Ivayami.Puzzle
         private InteractableFeedbacks _interatctableFeedbacks;
         private InteractableSounds _interactableSounds;
         private LockPuzzleSounds _lockSounds;
+        private WaitForSeconds _unlockWait;
+        private Coroutine _unlockCoroutine;
         public InteractableFeedbacks InteratctableHighlight { get => _interatctableFeedbacks; }
         public LockPuzzleSounds LockSounds => _lockSounds;
 
@@ -61,6 +65,7 @@ namespace Ivayami.Puzzle
             _interatctableFeedbacks = GetComponent<InteractableFeedbacks>();
             _interactableSounds = GetComponent<InteractableSounds>();
             _lockSounds = GetComponent<LockPuzzleSounds>();
+            _unlockWait = new WaitForSeconds(_unlockDelay);
         }
 
         [ContextMenu("Interact")]
@@ -83,22 +88,32 @@ namespace Ivayami.Puzzle
 
         public void TryUnlock()
         {
-            bool isPasswordCorrect = _interactionType == InteractionTypes.RequirePassword && _passwordUI.CheckPassword();
-            bool hasDeliveredAllItems = _interactionType == InteractionTypes.RequireItems && _currentRequests.Count == 0/*_itemsRequired.Length == _currentItemsDelivered*/;
-            if (hasDeliveredAllItems || isPasswordCorrect)
+            if(_unlockCoroutine == null)
             {
-                _passwordUI.UpdateActiveState(false);
-                UpdateDeliverItemUI(false);
-                UpdateInputs(false);
-                IsActive = !IsActive;
-                _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
-                onActivate?.Invoke();
+                bool isPasswordCorrect = _interactionType == InteractionTypes.RequirePassword && _passwordUI.CheckPassword();
+                bool hasDeliveredAllItems = _interactionType == InteractionTypes.RequireItems && _currentRequests.Count == 0/*_itemsRequired.Length == _currentItemsDelivered*/;
+                if (hasDeliveredAllItems || isPasswordCorrect)
+                {
+                    _unlockCoroutine = StartCoroutine(UnlockFeedbackCoroutine());
+                }
+                else
+                {
+                    _onInteractionFailed?.Invoke();
+                    _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
+                }
             }
-            else
-            {
-                _onInteractionFailed?.Invoke();
-                _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
-            }
+        }
+
+        private IEnumerator UnlockFeedbackCoroutine()
+        {
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
+            yield return _unlockWait;
+            _passwordUI.UpdateActiveState(false);
+            UpdateDeliverItemUI(false);
+            UpdateInputs(false);
+            IsActive = !IsActive;
+            onActivate?.Invoke();
+            _unlockCoroutine = null;
         }
 
         private void UpdateInputs(bool isActive)
@@ -153,13 +168,15 @@ namespace Ivayami.Puzzle
                 _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ChangeOption);
                 switch (_interactionType)
                 {
-                    case InteractionTypes.RequirePassword:
-                        if (EventSystem.current.currentSelectedGameObject == null)
-                            EventSystem.current.SetSelectedGameObject(_passwordUI.FallbackButton);
-                        break;
+                    //case InteractionTypes.RequirePassword:
+                    //    if (EventSystem.current.currentSelectedGameObject == null)
+                    //        _passwordUI.FallbackButton.Select();
+                    //        //EventSystem.current.SetSelectedGameObject(_passwordUI.FallbackButton);
+                    //    break;
                     case InteractionTypes.RequireItems:
                         if (EventSystem.current.currentSelectedGameObject == null)
-                            EventSystem.current.SetSelectedGameObject(_deliverBtn);
+                            _deliverBtn.Select();
+                            //EventSystem.current.SetSelectedGameObject(_deliverBtn);
                         else if (input.x != 0)
                         {
                             int temp = input.x > 0 ? 1 : -1;
@@ -197,7 +214,8 @@ namespace Ivayami.Puzzle
                     }
                 }
                 UpdateDeliverIcons(0);
-                EventSystem.current.SetSelectedGameObject(_deliverBtn);
+                _deliverBtn.Select();
+                //EventSystem.current.SetSelectedGameObject(_deliverBtn);
             }
         }
 

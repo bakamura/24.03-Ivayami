@@ -5,8 +5,10 @@ namespace Ivayami.Puzzle
 {
     public class EnterPassword : PasswordUI
     {
-        [SerializeField] private TMP_InputField _passwordTextField;        
+        [SerializeField] private TMP_Text _passwordTextField;
         private const string _incorrectPasswordText = "INCORRECT";
+        private const char _emptyCharacter = '-';
+        private string _currentPassword;
         public override bool CheckPassword()
         {
             bool result = string.Equals(_passwordTextField.text, password);
@@ -17,34 +19,38 @@ namespace Ivayami.Puzzle
         public override void UpdateActiveState(bool isActive)
         {
             base.UpdateActiveState(isActive);
-            if (isActive) _passwordTextField.text = "";
+            if (isActive) EraseAll();
         }
 
         public void InsertCharacter(TMP_Text text)
         {
-            if (_passwordTextField.text.Length >= password.Length && _passwordTextField.text != _incorrectPasswordText) return;
-            if (_passwordTextField.text == _incorrectPasswordText) _passwordTextField.text = "";
-            _passwordTextField.text += text.text;
+            if (_currentPassword.Length >= password.Length && _passwordTextField.text != _incorrectPasswordText) return;
+            if (_passwordTextField.text == _incorrectPasswordText) EraseAll();
+            _currentPassword += text.text;
+            FormatPasswordText();
             _lock.LockSounds.PlaySound(Audio.LockPuzzleSounds.SoundTypes.ConfirmOption);
             //if(_passwordTextField.text.Length == _passwordTextField.characterLimit) OnCheckPassword?.Invoke();
         }
 
+        private void FormatPasswordText()
+        {
+            _passwordTextField.text = _currentPassword;
+            for (int i = _currentPassword.Length; i < password.Length; i++)
+            {
+                _passwordTextField.text += _emptyCharacter;
+            }
+        }
+
         public void RemoveCharacter()
         {
-            _passwordTextField.text = _passwordTextField.text.Remove(_passwordTextField.text.Length - 1);
+            _currentPassword = _currentPassword.Remove(_currentPassword.Length - 1);
+            FormatPasswordText();
         }
 
         public void EraseAll()
         {
-            _passwordTextField.text = null;
-        }
-
-        private void OnValidate()
-        {
-            if (_passwordTextField)
-            {
-                _passwordTextField.characterLimit = password.Length;
-            }
+            _currentPassword = "";
+            FormatPasswordText();
         }
     }
 }
