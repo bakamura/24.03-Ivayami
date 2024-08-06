@@ -95,8 +95,9 @@ namespace Ivayami.Dialogue
 
 		private void HandleOnCutsceneStart()
         {
-			PlayerActions.Instance.ChangeInputMap("Menu");
+			PlayerMovement.Instance.ToggleMovement(false);
 			PlayerActions.Instance.AllowPausing(false);
+			PlayerActions.Instance.ChangeInputMap("Menu");
 			UpdateInputs(true);
 		}
 
