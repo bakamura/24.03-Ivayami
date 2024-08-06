@@ -1,26 +1,45 @@
+using Ivayami.Scene;
 using System;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Ivayami.Save {
-    [RequireComponent(typeof(BoxCollider))]
+    //[RequireComponent(typeof(BoxCollider))]
     public class ProgressTriggerEvent : MonoBehaviour {
 
         [Serializable]
-        private struct ProgressConditionInfo
+        public struct ProgressConditionInfo
         {
             public AreaProgress AreaProgress;
-            public string ProgressStepMin;
-            public string ProgressStepMax;
-        }
+            public int ProgressStepMin;
+            public int ProgressStepMax;
 
-        [SerializeField] private UnityEvent _onTrigger = new UnityEvent();
-        [SerializeField] private string _progressType;
-        [SerializeField] private int _progressAmountMin;
-        [SerializeField] private int _progressAmountMax;
+            public ProgressConditionInfo(AreaProgress areaProgress, int min, int max)
+            {
+                AreaProgress = areaProgress;
+                ProgressStepMin = min;
+                ProgressStepMax = max;
+            }
+        }
+        [SerializeField, ProgressStepAttribute] private ProgressConditionInfo[] _progressConditions;
+        [SerializeField] private UnityEvent _onTrigger;
 
         private void OnTriggerEnter(Collider other) {
-            if (_progressAmountMin <= SaveSystem.Instance.Progress.progress[_progressType] && SaveSystem.Instance.Progress.progress[_progressType] <= _progressAmountMax) _onTrigger.Invoke();
+            TryTrigger();
+        }
+
+        public void TryTrigger()
+        {
+            for(int i = 0; i < _progressConditions.Length; i++)
+            {
+                if (SaveSystem.Instance.Progress.progress.ContainsKey(_progressConditions[i].AreaProgress.Id) && 
+                    (SaveSystem.Instance.Progress.progress[_progressConditions[i].AreaProgress.Id] < _progressConditions[i].ProgressStepMin ||
+                    SaveSystem.Instance.Progress.progress[_progressConditions[i].AreaProgress.Id] > _progressConditions[i].ProgressStepMax))
+                {
+                    return;
+                }
+            }
+            _onTrigger?.Invoke();
         }
 
     }
