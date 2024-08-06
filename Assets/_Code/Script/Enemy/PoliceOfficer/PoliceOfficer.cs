@@ -13,6 +13,7 @@ namespace Ivayami.Enemy
         [Header("Parameters")]
         [SerializeField, Min(0f)] private float _minDetectionRange;
         [SerializeField, Min(0f)] private float _detectionRange;
+        [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
         [SerializeField, Range(0f, 180f)] private float _visionAngle = 60f;
         [SerializeField] private Vector3 _visionOffset;
         [SerializeField, Min(.02f)] private float _tickFrequency = .5f;
@@ -54,6 +55,7 @@ namespace Ivayami.Enemy
         private EnemyWalkArea _currenWalkArea;
         private float _halfVisionAngle;
         private float _speedMultiplier;
+        private float _followTargetValue;
 
         public bool IsActive { get; private set; }
         public LayerMask TargetLayer => _targetLayer;
@@ -102,6 +104,7 @@ namespace Ivayami.Enemy
                 StopCoroutine(BehaviourCoroutine());
                 IsActive = false;
                 _isChasing = false;
+                PlayerStress.Instance.SetStressMin(0);
                 //_navMeshAgent.isStopped = true;
                 _navMeshAgent.velocity = Vector3.zero;
             }
@@ -111,24 +114,24 @@ namespace Ivayami.Enemy
         {
             while (IsActive)
             {
-
-                if (/*_canChaseTarget &&*/ CheckForTarget(_halfVisionAngle))
+                _followTargetValue = Mathf.Clamp(_followTargetValue - _tickFrequency, 0, _delayToLoseTarget);
+                if (CheckForTarget(_halfVisionAngle)) _followTargetValue = _delayToLoseTarget;
+                if (/*_canChaseTarget &&*/ _followTargetValue > 0)
                 {
-                    if (!_isChasing)
+                    if (!_isChasing && !_navMeshAgent.isStopped)
                     {
+                        _navMeshAgent.isStopped = true;
+                        _navMeshAgent.velocity = Vector3.zero;
                         _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
                         PlayerStress.Instance.SetStressMin(98);
-                        _enemyAnimator.TargetDetected();
-                        _navMeshAgent.speed = _currentMovementData.ChaseSpeed;
-                        _isChasing = true;
+                        _enemyAnimator.TargetDetected(HandleTargetDetected);
                     }
-                    _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
-                    _lastTargetPosition = _hitsCache[0].transform.position;
+                    if (_isChasing) _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                     if (_debugLog) Debug.Log("Chase Target");
                 }
                 else
                 {
-                    //lost target, will look in last seen point
+                    //lost target, will look in last seen point                    
                     if (_isChasing)
                     {
                         if (_goToLastTargetPosition)
@@ -161,6 +164,7 @@ namespace Ivayami.Enemy
                         }
                         if (_debugLog) Debug.Log("Patroling");
                     }
+                    _enemyAnimator.Chasing(_isChasing);
                 }
 
                 yield return _behaviourTickDelay;
@@ -220,7 +224,7 @@ namespace Ivayami.Enemy
             _navMeshAgent.velocity = Vector3.zero;
             if (_speedMultiplier > 0) ChangeSpeedMultiplier(0);
             _detectTargetPointOffBehaviourReachedCoroutine = null;
-            if(autoStartBehaviour)StartBehaviour();
+            if (autoStartBehaviour) StartBehaviour();
         }
 
         public void SetMovementData(EnemyMovementData data)
@@ -238,19 +242,20 @@ namespace Ivayami.Enemy
 
         public void GoToPointWithoutStop(Transform target)
         {
-            if (!_navMeshAgent.isStopped)
-            {
-                StopBehaviour();
-                PlayerStress.Instance.SetStressMin(98);
-                HandlePointReachedCoroutine(true, false, 0, target);
-            }
+            //if (!_navMeshAgent.isStopped)
+            //{
+            _navMeshAgent.isStopped = false;
+            StopBehaviour();
+            PlayerStress.Instance.SetStressMin(98);
+            HandlePointReachedCoroutine(true, false, 0, target);
+            //}
         }
 
         private void HandlePointReachedCoroutine(bool stayInPath, bool autoStartBehaviour, float durationInPlace, Transform target)
         {
             if (_detectTargetPointOffBehaviourReachedCoroutine == null)
             {
-                _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine(target.position, stayInPath,autoStartBehaviour, durationInPlace));
+                _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine(target.position, stayInPath, autoStartBehaviour, durationInPlace));
             }
         }
 
@@ -261,7 +266,7 @@ namespace Ivayami.Enemy
 
         public void GoToPoint(Transform target, float speedIncrease, float durationInPlace)
         {
-            if (!_navMeshAgent.isStopped)
+            if (!_navMeshAgent.isStopped && IsActive)
             {
                 StopBehaviour();
                 ChangeSpeedMultiplier(speedIncrease);
@@ -299,7 +304,16 @@ namespace Ivayami.Enemy
             StopTargetPointReachedCoroutine();
             _navMeshAgent.isStopped = true;
             _navMeshAgent.velocity = Vector3.zero;
+            _enemySounds.PlaySound(EnemySounds.SoundTypes.TakeDamage);
             _enemyAnimator.TakeDamage(OnAttackAnimationEnd);
+        }
+
+        private void HandleTargetDetected()
+        {
+            _navMeshAgent.speed = _currentMovementData.ChaseSpeed;
+            _isChasing = true;
+            _lastTargetPosition = _hitsCache[0].transform.position;
+            _navMeshAgent.isStopped = false;
         }
 
         //private void HandleOnInteractAnimationEnd()

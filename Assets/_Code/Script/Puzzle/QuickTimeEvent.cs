@@ -4,9 +4,11 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using System;
 using Ivayami.Player;
+using Ivayami.Audio;
 
 namespace Ivayami.Puzzle
 {
+    [RequireComponent(typeof(InteractableFeedbacks), typeof(InteractableSounds))]
     public class QuickTimeEvent : MonoBehaviour
     {
         [SerializeField] private InputActionReference _quickTimeButton;
@@ -19,11 +21,20 @@ namespace Ivayami.Puzzle
         private byte _currentClickAmount;
         private Coroutine _waitAnimationCoroutine;
         private InteractableFeedbacks m_interactableFeedbacks;
+        private InteractableSounds m_interactableSounds;
+        private InteractableSounds _interactableSounds
+        {
+            get
+            {
+                if (!m_interactableSounds) m_interactableSounds = GetComponent<InteractableSounds>();
+                return m_interactableSounds;
+            }
+        }
         private InteractableFeedbacks _interactableFeedbacks
         {
             get
             {
-                if(!m_interactableFeedbacks) m_interactableFeedbacks = GetComponent<InteractableFeedbacks>();
+                if (!m_interactableFeedbacks) m_interactableFeedbacks = GetComponent<InteractableFeedbacks>();
                 return m_interactableFeedbacks;
             }
         }
@@ -86,8 +97,10 @@ namespace Ivayami.Puzzle
             {
                 _currentClickAmount++;
                 _interactableFeedbacks.PlayInteractionAnimation();
-                if (_currentClickAmount > _amountOfTimesToClick)
+                _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
+                if (_currentClickAmount >= _amountOfTimesToClick)
                 {
+                    _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
                     SetAllSpeeds(true);
                     _interactableFeedbacks.UpdateInteractionIcon(false);
                     StartCoroutine(WaitAnimationEndCoroutine(false, EndEvent));
@@ -98,7 +111,7 @@ namespace Ivayami.Puzzle
                     for (int i = 0; i < _animations.Length; i++)
                     {
                         temp = _animations[i].Animator.GetCurrentAnimatorClipInfo(0)[0].clip;
-                        _animations[i].Animator.Play(_animations[i].StateHash, 0, _currentClickAmount * (_framesAdvancePerClick / (temp.length * temp.frameRate)));                        
+                        _animations[i].Animator.Play(_animations[i].StateHash, 0, _currentClickAmount * (_framesAdvancePerClick / (temp.length * temp.frameRate)));
                     }
                 }
             }

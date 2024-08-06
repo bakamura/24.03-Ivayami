@@ -181,10 +181,10 @@ namespace Ivayami.Enemy
                     {
                         Gizmos.DrawSphere(transform.position + _points[i].Position, _gizmoSize);
                         Handles.Label(transform.position + _points[i].Position + new Vector3(0, _gizmoSize * 2, 0), i.ToString());
-                        for (int a = 0; a < _points.Length - 1; a++)
-                        {
-                            Gizmos.DrawLine(transform.position + _points[i].Position, transform.position + _points[Mathf.Clamp(a + 1, 0, _points.Length - 1)].Position);
-                        }
+                    }
+                    for (int a = 0; a < _points.Length - 1; a++)
+                    {
+                        Gizmos.DrawLine(transform.position + _points[a].Position, transform.position + _points[Mathf.Clamp(a + 1, 0, _points.Length - 1)].Position);
                     }
                 }
                 else

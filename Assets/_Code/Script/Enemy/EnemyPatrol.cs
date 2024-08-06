@@ -2,7 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using Ivayami.Player;
-using Ivayami.Puzzle;
 using Ivayami.Audio;
 
 namespace Ivayami.Enemy
@@ -23,7 +22,7 @@ namespace Ivayami.Enemy
         [SerializeField] private bool _startActive;
         [SerializeField] private bool _goToLastTargetPosition;
         [SerializeField] private bool _attackTarget;
-        [SerializeField] private bool _loseTargetWhenInBush = true;
+        [SerializeField] private bool _loseTargetWhenHidden = true;
         [SerializeField] private LayerMask _targetLayer;
         [SerializeField] private LayerMask _blockVisionLayer;
         [SerializeField] private Vector3[] _patrolPoints;
@@ -198,15 +197,15 @@ namespace Ivayami.Enemy
         {
             bool targetInsideRange = Physics.OverlapSphereNonAlloc(transform.position, _detectionRange, _hitsCache, _targetLayer) > 0;
             if (!targetInsideRange) return false;
-            bool isNotInBush = (_loseTargetWhenInBush && !Bush.IsPlayerHidden) || !_loseTargetWhenInBush;
+            bool isHidden = (_loseTargetWhenHidden && PlayerMovement.Instance.hidingState != PlayerMovement.HidingState.None) || !_loseTargetWhenHidden;
             if (targetInsideRange) _currentTargetColliderSizeFactor = _hitsCache[0].bounds.extents.z;
             bool blockingVision = Physics.Raycast(transform.position + _visionOffset, (_hitsCache[0].transform.position - transform.position).normalized, Vector3.Distance(transform.position, _hitsCache[0].transform.position), _blockVisionLayer);
             bool isInMinRange = Vector3.Distance(_hitsCache[0].transform.position, transform.position) <= _minDetectionRange;
             bool isInVisionAngle = Vector3.Angle(transform.forward, (_hitsCache[0].transform.position - transform.position).normalized) <= halfVisionAngle;
 
             if (_debugLog)
-                Debug.Log($"blocked by bush {!isNotInBush}, target Inside Radius {targetInsideRange}, blocking vision {blockingVision}, is in Min range {isInMinRange}, is in Vision Angle {isInVisionAngle}");
-            return isNotInBush && targetInsideRange && !blockingVision && (isInMinRange || isInVisionAngle);
+                Debug.Log($"is Hidden {isHidden}, target Inside Radius {targetInsideRange}, blocking vision {blockingVision}, is in Min range {isInMinRange}, is in Vision Angle {isInVisionAngle}");
+            return !isHidden && targetInsideRange && !blockingVision && (isInMinRange || isInVisionAngle);
         }
 
         private void OnAttackAnimationEnd()

@@ -49,6 +49,16 @@ namespace Ivayami.Player {
         [SerializeField] private float _crouchHeightChangeDuration;
         private Coroutine _crouchRoutine;
 
+        [Header("Hiding")]
+
+        public HidingState hidingState;
+        public enum HidingState {
+            None,
+            Wardrobe,
+            Garbage,
+            Bush
+        }
+
         [Header("Camera")]
 
         [SerializeField] private Transform _cameraAimTargetRotator;
@@ -68,6 +78,8 @@ namespace Ivayami.Player {
         private Rigidbody _rigidbody;
         private CapsuleCollider _collider;
         private Transform _cameraTransform;
+
+        public Vector3 VisualForward => _visualTransform.forward;
 
         protected override void Awake() {
             base.Awake();
@@ -91,7 +103,8 @@ namespace Ivayami.Player {
 
         private void Update() {
             if (_canMove) Rotate();
-            //OverTheShoulderSpring();
+            //if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, Mathf.Infinity, _terrain)) transform.position = hit.point + (0.1f * Vector3.up);
+            //else Debug.LogWarning("Player not above ground");
         }
 
         private void FixedUpdate() {
@@ -156,11 +169,11 @@ namespace Ivayami.Player {
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
-        private void OverTheShoulderSpring() {
-            _overTheShoulderTarget.localPosition = Vector3.right *
-               (Physics.Raycast(_overTheShoulderTarget.position, _overTheShoulderTarget.right, out RaycastHit hit, _overTheShoulderMaxDistance, _overTheShoulderSpringCollisions) ?
-                hit.distance : _overTheShoulderMaxDistance);
-        }
+        //private void OverTheShoulderSpring() {
+        //    _overTheShoulderTarget.localPosition = Vector3.right *
+        //       (Physics.Raycast(_overTheShoulderTarget.position, _overTheShoulderTarget.right, out RaycastHit hit, _overTheShoulderMaxDistance, _overTheShoulderSpringCollisions) ?
+        //        hit.distance : _overTheShoulderMaxDistance);
+        //}
 
         private void ToggleWalk(InputAction.CallbackContext input) {
             _movementSpeedMax = _movementSpeedMax != _movementSpeedRun ? _movementSpeedRun : _movementSpeedWalk;
@@ -168,7 +181,11 @@ namespace Ivayami.Player {
 
         public void ToggleMovement(bool canMove) {
             _canMove = canMove;
-            if (!_canMove) _speedCurrent = 0f;
+            if (!_canMove)
+            {
+                _speedCurrent = 0f;
+                onMovement?.Invoke(Vector2.zero);
+            }
             _rigidbody.constraints = canMove ? RigidbodyConstraints.FreezeRotation : RigidbodyConstraints.FreezeAll;
 
             Logger.Log(LogType.Player, $"Movement Toggle: {_canMove}");
@@ -194,7 +211,11 @@ namespace Ivayami.Player {
             _targetAngle = Quaternion.Euler(0f, angle, 0f);
             _visualTransform.rotation = _targetAngle;
             // cinemachine freelook
-        }
+        }        
 
+        public void UpdateVisualsVisibility(bool isVisible)
+        {
+            _visualTransform.gameObject.SetActive(isVisible);
+        }
     }
 }

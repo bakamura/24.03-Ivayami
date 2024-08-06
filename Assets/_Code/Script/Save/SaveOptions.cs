@@ -1,4 +1,6 @@
 
+using System;
+
 namespace Ivayami.Save {
     [System.Serializable]
     public class SaveOptions {
@@ -8,7 +10,7 @@ namespace Ivayami.Save {
 
         public float cameraSensitivity = 0.5f;
 
-        public int language;
+        public Int32 language;
 
     }
 }

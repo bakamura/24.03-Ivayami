@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 namespace Ivayami.UI {
-    public class InfoUpdateIndicator : MonoBehaviour {
+    public class InfoUpdateIndicator : MonoSingleton<InfoUpdateIndicator> {
         
         [Header("Parameters")]
 
@@ -17,15 +17,22 @@ namespace Ivayami.UI {
         [SerializeField] private float _stayDuration;
         [SerializeField] private float _hideDuration;
 
-        [Header("Debug")]
+        [Header("?")] // These should probably be external
 
         [SerializeField] private Sprite _mapIcon;
+        [SerializeField] private Sprite _readableIcon;
 
         [Header("Cache")]
 
         private Queue<Sprite> _displayQueue = new Queue<Sprite>();
         private Coroutine _currentDisplayRoutine;
         private WaitForSeconds _stayWait;
+
+        protected override void Awake() {
+            base.Awake();
+            
+            _stayWait = new WaitForSeconds(_stayDuration);
+        }
 
         public void DisplayUpdate(Sprite spriteToDisplay) {
             if (_currentDisplayRoutine != null) _displayQueue.Enqueue(spriteToDisplay);
@@ -55,6 +62,10 @@ namespace Ivayami.UI {
 
         public void DisplayMap() {
             DisplayUpdate(_mapIcon);
+        }
+        
+        public void DisplayReadable() {
+            DisplayUpdate(_readableIcon);
         }
 
     }
