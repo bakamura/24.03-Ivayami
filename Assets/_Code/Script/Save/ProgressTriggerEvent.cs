@@ -1,9 +1,18 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Ivayami.Save {
     [RequireComponent(typeof(BoxCollider))]
     public class ProgressTriggerEvent : MonoBehaviour {
+
+        [Serializable]
+        private struct ProgressConditionInfo
+        {
+            public AreaProgress AreaProgress;
+            public string ProgressStepMin;
+            public string ProgressStepMax;
+        }
 
         [SerializeField] private UnityEvent _onTrigger = new UnityEvent();
         [SerializeField] private string _progressType;
