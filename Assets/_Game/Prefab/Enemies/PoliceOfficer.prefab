@@ -80,6 +80,7 @@ GameObject:
   - component: {fileID: 5394693277866464840}
   - component: {fileID: 6107188303698434723}
   - component: {fileID: 6771547839866747852}
+  - component: {fileID: 1357920713885657322}
   m_Layer: 8
   m_Name: PoliceOfficer
   m_TagString: Untagged
@@ -161,6 +162,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59bfe6288ddfceb44a872348099add9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _stressIncreaseTickFrequency: 0.2
+  _stressAreas: []
+  _drawGizmos: 0
   _minDetectionRange: 2
   _detectionRange: 10
   _delayToLoseTarget: 0.01
@@ -237,6 +241,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!135 &1357920713885657322
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8073186486778736189}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &7742484225022221978
 PrefabInstance:
   m_ObjectHideFlags: 0

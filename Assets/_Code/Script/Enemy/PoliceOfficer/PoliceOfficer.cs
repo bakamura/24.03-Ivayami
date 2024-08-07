@@ -8,7 +8,7 @@ using System;
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
-    public class PoliceOfficer : MonoBehaviour, IEnemyWalkArea, IChangeTargetPoint
+    public class PoliceOfficer : StressEntity, IEnemyWalkArea, IChangeTargetPoint
     {
         [Header("Parameters")]
         [SerializeField, Min(0f)] private float _minDetectionRange;
@@ -60,8 +60,10 @@ namespace Ivayami.Enemy
         public bool IsActive { get; private set; }
         public LayerMask TargetLayer => _targetLayer;
 
-        private void Awake()
+        #region MainBehaviour
+        protected override void Awake()
         {
+            base.Awake();
             _collision = GetComponent<CapsuleCollider>();
             _behaviourTickDelay = new WaitForSeconds(_tickFrequency);
             _enemyAnimator = GetComponentInChildren<EnemyAnimator>();
@@ -71,11 +73,6 @@ namespace Ivayami.Enemy
             //SetMovementData(_movementData);
 
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
-        }
-
-        private void Update()
-        {
-            _enemyAnimator.Walking(_navMeshAgent.velocity.sqrMagnitude > 0);
         }
 
         private void Start()
@@ -107,6 +104,8 @@ namespace Ivayami.Enemy
                 PlayerStress.Instance.SetStressMin(0);
                 //_navMeshAgent.isStopped = true;
                 _navMeshAgent.velocity = Vector3.zero;
+                _enemyAnimator.Walking(false);
+                isStressAreaActive = true;
             }
         }
 
@@ -116,6 +115,7 @@ namespace Ivayami.Enemy
             {
                 _followTargetValue = Mathf.Clamp(_followTargetValue - _tickFrequency, 0, _delayToLoseTarget);
                 if (CheckForTarget(_halfVisionAngle)) _followTargetValue = _delayToLoseTarget;
+                isStressAreaActive = _followTargetValue <= 0;
                 if (/*_canChaseTarget &&*/ _followTargetValue > 0)
                 {
                     if (!_isChasing && !_navMeshAgent.isStopped)
@@ -166,7 +166,7 @@ namespace Ivayami.Enemy
                     }
                     _enemyAnimator.Chasing(_isChasing);
                 }
-
+                _enemyAnimator.Walking(_navMeshAgent.velocity.sqrMagnitude > 0);
                 yield return _behaviourTickDelay;
             }
         }
@@ -184,7 +184,9 @@ namespace Ivayami.Enemy
                 Debug.Log($"target Inside Radius {targetInsideRange}, blocking vision {blockingVision}, is in Min range {isInMinRange}, is in Vision Angle {isInVisionAngle}");
             return targetInsideRange && !blockingVision && (isInMinRange || isInVisionAngle);
         }
+        #endregion
 
+        #region CustomBehaviours
         public void Attack()
         {
             if (!_navMeshAgent.isStopped)
@@ -212,6 +214,7 @@ namespace Ivayami.Enemy
             _navMeshAgent.SetDestination(finalPos);
             while (Vector3.Distance(new Vector3(transform.position.x, _navMeshAgent.destination.y, transform.position.z), _navMeshAgent.destination) > _navMeshAgent.stoppingDistance)
             {
+                _enemyAnimator.Walking(true);
                 if (!stayInPath && CheckForTarget(_halfVisionAngle))
                 {
                     targetDetected = true;
@@ -220,6 +223,7 @@ namespace Ivayami.Enemy
                 _navMeshAgent.SetDestination(finalPos);
                 yield return delay;
             }
+            _enemyAnimator.Walking(false);
             if (!targetDetected) yield return stayInPointDelay;
             _navMeshAgent.velocity = Vector3.zero;
             if (_speedMultiplier > 0) ChangeSpeedMultiplier(0);
@@ -315,15 +319,16 @@ namespace Ivayami.Enemy
             _lastTargetPosition = _hitsCache[0].transform.position;
             _navMeshAgent.isStopped = false;
         }
-
+        #endregion
         //private void HandleOnInteractAnimationEnd()
         //{
         //    StartBehaviour();
         //}
         #region Debug
 #if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
+        protected override void OnDrawGizmosSelected()
         {
+            base.OnDrawGizmosSelected();
             if (_drawDetectionRange)
             {
                 _FOVMesh = DebugUtilities.CreateConeMesh(transform, _visionAngle, _detectionRange);
