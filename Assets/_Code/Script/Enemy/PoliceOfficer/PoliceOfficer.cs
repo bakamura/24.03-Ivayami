@@ -101,7 +101,7 @@ namespace Ivayami.Enemy
                 StopCoroutine(BehaviourCoroutine());
                 IsActive = false;
                 _isChasing = false;
-                PlayerStress.Instance.SetStressMin(0);
+                //PlayerStress.Instance.SetStressMin(0);
                 //_navMeshAgent.isStopped = true;
                 _navMeshAgent.velocity = Vector3.zero;
                 _enemyAnimator.Walking(false);
@@ -123,7 +123,7 @@ namespace Ivayami.Enemy
                         _navMeshAgent.isStopped = true;
                         _navMeshAgent.velocity = Vector3.zero;
                         _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
-                        PlayerStress.Instance.SetStressMin(98);
+                        //PlayerStress.Instance.SetStressMin(98);
                         _enemyAnimator.TargetDetected(HandleTargetDetected);
                     }
                     if (_isChasing) _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
@@ -148,7 +148,7 @@ namespace Ivayami.Enemy
                     }
                     else
                     {
-                        PlayerStress.Instance.SetStressMin(0);
+                        //PlayerStress.Instance.SetStressMin(0);
                         if (_currenWalkArea && _currenWalkArea.GetCurrentPoint(gameObject.GetInstanceID(), out EnemyWalkArea.Point point))
                         {
                             _navMeshAgent.speed = _currentMovementData.WalkSpeed;
@@ -250,7 +250,7 @@ namespace Ivayami.Enemy
             //{
             _navMeshAgent.isStopped = false;
             StopBehaviour();
-            PlayerStress.Instance.SetStressMin(98);
+            //PlayerStress.Instance.SetStressMin(98);
             HandlePointReachedCoroutine(true, false, 0, target);
             //}
         }

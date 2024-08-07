@@ -43,8 +43,6 @@ namespace Ivayami.Enemy
         private Coroutine _stressIncreaseCoroutine;
         private WaitForSeconds _delay;
         private bool _targetInsideArea;
-        private static float _currentMaxStress;
-        private static byte _currentStressAreasInEffect;
 
         protected virtual void Awake()
         {
@@ -64,28 +62,19 @@ namespace Ivayami.Enemy
             {
                 StopCoroutine(_stressIncreaseCoroutine);
                 _stressIncreaseCoroutine = null;
-                _currentStressAreasInEffect--;
-                //will reset the max stress
-                if (_currentStressAreasInEffect == 0)
-                {
-                    _currentMaxStress = 0;
-                    PlayerStress.Instance.AddStress(0);
-                }
             }
             _targetInsideArea = false;
         }
 
         private IEnumerator StressIncreaseCoroutine()
         {
-            _currentStressAreasInEffect++;
             while (_targetInsideArea && isStressAreaActive)
             {
                 for (int i = 0; i < _stressAreasInOrder.Length; i++)
                 {
                     if (Vector3.Distance(transform.position, PlayerMovement.Instance.transform.position) <= _stressAreasInOrder[i].Range)
                     {
-                        _currentMaxStress = _currentMaxStress < _stressAreasInOrder[i].MaxStress ? _stressAreasInOrder[i].MaxStress : _currentMaxStress;
-                        PlayerStress.Instance.AddStress(_stressAreasInOrder[i].StressIncrease/*, _currentMaxStress*/);
+                        PlayerStress.Instance.AddStress(_stressAreasInOrder[i].StressIncrease, _stressAreasInOrder[i].MaxStress);
                         break;
                     }
                 }
@@ -97,7 +86,6 @@ namespace Ivayami.Enemy
         private void SetActiveState(bool isActive)
         {
             _isStressAreaActive = isActive;
-            if (!isActive) _currentStressAreasInEffect--;
         }
 
 #if UNITY_EDITOR
