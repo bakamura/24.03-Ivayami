@@ -1,9 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using IngameDebugConsole;
 using Ivayami.Player;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 public static class PlayerTerminalCommands
 {
@@ -28,11 +27,6 @@ public static class PlayerTerminalCommands
         PlayerStress.Instance.AddStress(amount);
     }
 
-    [ConsoleMethod("SetMinPlayerStress", "Sets min stress to Player", "amount")]
-    public static void SetMinPlayerStress(float amount)
-    {
-        PlayerStress.Instance.SetStressMin(amount);
-    }
 
     [ConsoleMethod("GiveItem", "", "itemID")]
     public static void GiveItem(string itemID)
