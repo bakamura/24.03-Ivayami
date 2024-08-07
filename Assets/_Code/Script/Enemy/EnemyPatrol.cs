@@ -7,15 +7,16 @@ using Ivayami.Audio;
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
-    public class EnemyPatrol : MonoBehaviour
+    public class EnemyPatrol : StressEntity
     {
-        [Header("Parameters")]
+        [Header("Enemy Parameters")]
         [SerializeField, Min(0f)] private float _minDetectionRange;
         [SerializeField, Min(0f)] private float _detectionRange;
+        [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
         [SerializeField, Range(0f, 180f)] private float _visionAngle = 60f;
         [SerializeField] private Vector3 _visionOffset;
         [SerializeField, Min(0f), Tooltip("the complete delay is _tickFrequency + this value")] private float _delayBetweenPatrolPoints;
-        [SerializeField, Min(.02f)] private float _tickFrequency = .5f;
+        [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
         [SerializeField, Min(0f)] private float _stressIncreaseOnTargetDetected;
         [SerializeField, Min(0f)] private float _stressIncreaseWhileChasing;
         [SerializeField, Min(0f)] private float _stressIncreaseOnAttackTarget;
@@ -64,14 +65,16 @@ namespace Ivayami.Enemy
         private Collider[] _hitsCache = new Collider[1];
         private bool _canChaseTarget = true;
         private bool _canWalkPath = true;
+        private float _followTargetValue;
 
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _collision = GetComponent<CapsuleCollider>();
-            _behaviourTickDelay = new WaitForSeconds(_tickFrequency);
+            _behaviourTickDelay = new WaitForSeconds(_behaviourTickFrequency);
             _betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints);
             _enemyAnimator = GetComponentInChildren<EnemyAnimator>();
             _enemySounds = GetComponent<EnemySounds>();
@@ -83,7 +86,6 @@ namespace Ivayami.Enemy
 
         private void Update()
         {
-            _enemyAnimator.Walking(_navMeshAgent.velocity.sqrMagnitude > 0);
             if (_isChasing && _stressIncreaseWhileChasing > 0)
                 PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * Time.deltaTime);
         }
@@ -113,8 +115,7 @@ namespace Ivayami.Enemy
                 StopCoroutine(BehaviourCoroutine());
                 IsActive = false;
                 _isChasing = false;
-                _navMeshAgent.isStopped = true;
-                _navMeshAgent.velocity = Vector3.zero;
+                StopMovement();
             }
         }
 
@@ -127,24 +128,28 @@ namespace Ivayami.Enemy
             {
                 if (!_navMeshAgent.isStopped)
                 {
-                    if (_canChaseTarget && CheckForTarget(halfVisionAngle))
+                    _followTargetValue = Mathf.Clamp(_followTargetValue - _behaviourTickFrequency, 0, _delayToLoseTarget);
+                    if (CheckForTarget(halfVisionAngle)) _followTargetValue = _delayToLoseTarget;
+                    isStressAreaActive = _followTargetValue <= 0;
+                    if (_canChaseTarget && _followTargetValue > 0)
                     {
                         if (!_isChasing)
                         {
+                            if (_debugLog) Debug.Log("Target Detected");
+                            StopMovement();
                             _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
-                            _isChasing = true;
+                            _enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);                            
                         }
                         _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                         _lastTargetPosition = _hitsCache[0].transform.position;
                         if (_debugLog) Debug.Log("Chase Target");
                         if (_attackTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance + _currentTargetColliderSizeFactor)
                         {
-                            _navMeshAgent.isStopped = true;
-                            _navMeshAgent.velocity = Vector3.zero;
+                            StopMovement();
                             PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
-                            _isChasing = false;
-                            _enemyAnimator.Attack(OnAttackAnimationEnd);
+                            //_isChasing = false;
+                            _enemyAnimator.Attack(HandleAttackAnimationEnd);
                             if (_debugLog) Debug.Log("Attack Target");
                         }
                     }
@@ -182,34 +187,52 @@ namespace Ivayami.Enemy
                                     }
                                     else
                                     {
-                                        transform.rotation = Quaternion.RotateTowards(transform.rotation, _initialRotation, _navMeshAgent.angularSpeed * _tickFrequency);
+                                        transform.rotation = Quaternion.RotateTowards(transform.rotation, _initialRotation, _navMeshAgent.angularSpeed * _behaviourTickFrequency);
                                     }
                                 }
                             }
                         }
                     }
+                    _enemyAnimator.Walking(_navMeshAgent.velocity.sqrMagnitude > 0);
                 }
                 yield return _behaviourTickDelay;
             }
         }
 
-        private bool CheckForTarget(float halfVisionAngle)
+        private void StopMovement()
         {
-            bool targetInsideRange = Physics.OverlapSphereNonAlloc(transform.position, _detectionRange, _hitsCache, _targetLayer) > 0;
-            if (!targetInsideRange) return false;
-            bool isHidden = (_loseTargetWhenHidden && PlayerMovement.Instance.hidingState != PlayerMovement.HidingState.None) || !_loseTargetWhenHidden;
-            if (targetInsideRange) _currentTargetColliderSizeFactor = _hitsCache[0].bounds.extents.z;
-            bool blockingVision = Physics.Raycast(transform.position + _visionOffset, (_hitsCache[0].transform.position - transform.position).normalized, Vector3.Distance(transform.position, _hitsCache[0].transform.position), _blockVisionLayer);
-            bool isInMinRange = Vector3.Distance(_hitsCache[0].transform.position, transform.position) <= _minDetectionRange;
-            bool isInVisionAngle = Vector3.Angle(transform.forward, (_hitsCache[0].transform.position - transform.position).normalized) <= halfVisionAngle;
-
-            if (_debugLog)
-                Debug.Log($"is Hidden {isHidden}, target Inside Radius {targetInsideRange}, blocking vision {blockingVision}, is in Min range {isInMinRange}, is in Vision Angle {isInVisionAngle}");
-            return !isHidden && targetInsideRange && !blockingVision && (isInMinRange || isInVisionAngle);
+            _navMeshAgent.isStopped = true;
+            _navMeshAgent.velocity = Vector3.zero;
         }
 
-        private void OnAttackAnimationEnd()
+        private bool CheckForTarget(float halfVisionAngle)
         {
+            bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(transform.position, _detectionRange, _hitsCache, _targetLayer) > 0 : true;
+
+            bool isInMinRange;
+            if (_hitsCache[0]) isInMinRange = Vector3.Distance(_hitsCache[0].transform.position, transform.position) <= _minDetectionRange;
+            else isInMinRange = Physics.OverlapSphereNonAlloc(transform.position, _minDetectionRange, _hitsCache, _targetLayer) > 0;
+
+            if (!_hitsCache[0]) return false;
+
+            bool isHidden = (_loseTargetWhenHidden && PlayerMovement.Instance.hidingState != PlayerMovement.HidingState.None) || !_loseTargetWhenHidden;
+            bool blockingVision = Physics.Raycast(transform.position + _visionOffset, (_hitsCache[0].transform.position - transform.position).normalized, Vector3.Distance(transform.position, _hitsCache[0].transform.position), _blockVisionLayer);
+            bool isInVisionAngle = Vector3.Angle(transform.forward, (_hitsCache[0].transform.position - transform.position).normalized) <= halfVisionAngle;
+            _currentTargetColliderSizeFactor = _hitsCache[0].bounds.extents.z;
+
+            if (_debugLog)
+                Debug.Log($"is Hidden {isHidden}, blocking vision {blockingVision}, is in Min range {isInMinRange}, target Inside Radius {targetInsideRange}, is in Vision Angle {isInVisionAngle}");
+            return !isHidden && !blockingVision && (isInMinRange || (isInVisionAngle && targetInsideRange));
+        }
+
+        private void HandleAttackAnimationEnd()
+        {
+            _navMeshAgent.isStopped = false;
+        }
+
+        private void HandleTargetDetectedAnimationEnd()
+        {
+            _isChasing = true;
             _navMeshAgent.isStopped = false;
         }
 
@@ -230,9 +253,9 @@ namespace Ivayami.Enemy
         }
         #region Debug
 #if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
+        protected override void OnDrawGizmosSelected()
         {
-            Vector3 pos = _initialPosition != Vector3.zero ? _initialPosition : transform.position;
+            base.OnDrawGizmosSelected();
             if (_drawDetectionRange)
             {
                 _FOVMesh = DebugUtilities.CreateConeMesh(transform, _visionAngle, _detectionRange);
@@ -243,9 +266,10 @@ namespace Ivayami.Enemy
             {
                 Gizmos.color = _minDistanceAreaColor;
                 Gizmos.DrawSphere(transform.position, _minDetectionRange);
-            }
+            }            
             if (_drawPatrolPoints)
             {
+                Vector3 pos = _initialPosition != Vector3.zero ? _initialPosition : transform.position;
                 Gizmos.color = _patrolPointsColor;
                 int i;
                 for (i = 0; i < _patrolPoints.Length; i++)
@@ -261,7 +285,7 @@ namespace Ivayami.Enemy
             if (_drawStoppingDistance)
             {
                 Gizmos.color = _stoppingDistanceColor;
-                Gizmos.DrawLine(pos, pos + transform.right * _navMeshAgent.stoppingDistance);
+                Gizmos.DrawLine(transform.position, transform.position + transform.right * _navMeshAgent.stoppingDistance);
             }
         }        
 #endif
