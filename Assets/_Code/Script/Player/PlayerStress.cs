@@ -5,10 +5,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Ivayami.Player
-{
-    public class PlayerStress : MonoSingleton<PlayerStress>
-    {
+namespace Ivayami.Player {
+    public class PlayerStress : MonoSingleton<PlayerStress> {
 
         [Header("Events")]
 
@@ -18,11 +16,9 @@ namespace Ivayami.Player
         [Header("Stress")]
 
         [SerializeField] private float _stressMax;
-        private float _stressMin;
         private float _stressCurrent;
         [SerializeField] private float _stressRelieveDelay;
         private float _stressRelieveDelayTimer;
-        [SerializeField, Tooltip("In seconds")] private float _stressRelieveRate;
 
         [Header("Fail")]
 
@@ -34,70 +30,49 @@ namespace Ivayami.Player
 
         private Coroutine _stressRelieveRoutine;
 
-        private void Start()
-        {
+        private void Start() {
             onStressChange.AddListener(FailStateCheck);
             onFailState.AddListener(() => StartCoroutine(DelayToRespawn()));
             _restartWait = new WaitForSeconds(_restartDelay);
 
             Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");
+            float Counter = 100f;
+            int cycles = 0;
+            while (Counter > 20f) {
+                cycles++;
+                Counter += StressRelieveFormula(Counter);
+                if (cycles == 30) Debug.Log($"30 Cycles, Counter: {Counter}");
+                if (cycles == 60) Debug.Log($"60 Cycles, Counter: {Counter}");
+                if (cycles > 90) break;
+            }
+            Debug.Log($"{cycles}, Counter: {Counter}");
         }
 
-        public void AddStress(float amount)
-        {
-            if (!_failState)
-            {
-                _stressCurrent += amount;
+        private void Update() {
+            if (_stressCurrent > 20f) RelieveStressAuto();
+        }
+
+        public void AddStress(float amount, float capValue = -1) {
+            if (!_failState) {
+                _stressCurrent = Mathf.Clamp(_stressCurrent + amount, 0, capValue >= 0 ? capValue : _stressMax);
                 onStressChange.Invoke(_stressCurrent);
-
-                float stressRelieveDelayTimerLast = _stressRelieveDelayTimer;
-                _stressRelieveDelayTimer = 0;
-                if (_stressRelieveRoutine == null) _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
-                else
-                {
-                    if (stressRelieveDelayTimerLast >= _stressRelieveDelay)
-                    {
-                        StopCoroutine(_stressRelieveRoutine);
-                        _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
-
-                        Logger.Log(LogType.Player, $"Interrupted Relieving Stress");
-                    }
-                }
-
 
                 Logger.Log(LogType.Player, $"Stress Meter: {_stressCurrent}/{_stressMax}");
             }
         }
 
-        private IEnumerator StressRelieveAuto()
-        {
-            while (_stressRelieveDelayTimer < _stressRelieveDelay)
-            {
-                _stressRelieveDelayTimer += Time.deltaTime;
-
-                yield return null;
-            }
-
-            Logger.Log(LogType.Player, $"Started Relieving Stress");
-
-            while (_stressCurrent > _stressMin)
-            {
-                _stressCurrent -= _stressRelieveRate * Time.deltaTime;
-                onStressChange.Invoke(_stressCurrent);
-
-                yield return null;
-            }
-
-            Logger.Log(LogType.Player, $"Ended Relieving Stress");
-
-            _stressCurrent = _stressMin;
-            _stressRelieveRoutine = null;
+        private void RelieveStressAuto() {
+            _stressCurrent += StressRelieveFormula(_stressCurrent);
+            onStressChange.Invoke(_stressCurrent);
         }
 
-        private void FailStateCheck(float stressCurrent)
-        {
-            if (!_failState && stressCurrent >= _stressMax)
-            {
+        private float StressRelieveFormula(float intake) {
+            if (intake > 20) return -0.0001f * Mathf.Pow(intake + 65f, 2f); // Tweak / Modularize values later
+            else return 0;
+        }
+
+        private void FailStateCheck(float stressCurrent) {
+            if (!_failState && stressCurrent >= _stressMax) {
                 _failState = true;
                 onFailState.Invoke();
 
@@ -105,18 +80,7 @@ namespace Ivayami.Player
             }
         }
 
-        public void SetStressMin(float stressMin)
-        {
-            _stressMin = stressMin;
-            if (_stressCurrent > _stressMin && _stressRelieveRoutine == null)
-            {
-                _stressRelieveDelayTimer = 0;
-                _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
-            }
-        }
-
-        private IEnumerator DelayToRespawn()
-        {
+        private IEnumerator DelayToRespawn() {
             PlayerMovement.Instance.ToggleMovement(false);
 
             yield return _restartWait;
@@ -128,30 +92,21 @@ namespace Ivayami.Player
             SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes);
         }
 
-        private void HandleUnloadAllScenes()
-        {
+        private void HandleUnloadAllScenes() {
             SceneController.Instance.OnAllSceneRequestEnd -= HandleUnloadAllScenes;
-            UnityEvent temp = new UnityEvent();
-            temp.AddListener(UnlockPlayer);
-            SceneController.Instance.StartLoad("BaseTerrain", temp);
+            UnityEvent onSceneLoaded = new UnityEvent();
+            onSceneLoaded.AddListener(UnlockPlayer);
+            SceneController.Instance.StartLoad("BaseTerrain", onSceneLoaded);
         }
 
-        private void UnlockPlayer()
-        {
+        private void UnlockPlayer() {
             PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].transform.position);
             //PlayerMovement.Instance.ToggleMovement(true);
             PlayerAnimation.Instance.GoToIdle();
-            _stressCurrent = _stressMin;
+            _stressCurrent = 0;
             _failState = false;
             onStressChange?.Invoke(_stressCurrent);
-            //SceneTransition.Instance.Menu.Open();
         }
-
-        //[ContextMenu("KILL")]
-        //private void KillPlayer()
-        //{
-        //    AddStress(10000);
-        //}
 
     }
 }
