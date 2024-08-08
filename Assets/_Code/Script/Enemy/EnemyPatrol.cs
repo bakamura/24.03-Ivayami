@@ -65,7 +65,8 @@ namespace Ivayami.Enemy
         private Collider[] _hitsCache = new Collider[1];
         private bool _canChaseTarget = true;
         private bool _canWalkPath = true;
-        private float _followTargetValue;
+        private float _chaseTargetPatience;
+        private float _goToLastTargetPointPatience;
 
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
@@ -128,10 +129,10 @@ namespace Ivayami.Enemy
             {
                 if (!_navMeshAgent.isStopped)
                 {
-                    _followTargetValue = Mathf.Clamp(_followTargetValue - _behaviourTickFrequency, 0, _delayToLoseTarget);
-                    if (CheckForTarget(halfVisionAngle)) _followTargetValue = _delayToLoseTarget;
-                    isStressAreaActive = _followTargetValue <= 0;
-                    if (_canChaseTarget && _followTargetValue > 0)
+                    _chaseTargetPatience = Mathf.Clamp(_chaseTargetPatience - _behaviourTickFrequency, 0, _delayToLoseTarget);
+                    if (CheckForTarget(halfVisionAngle)) _chaseTargetPatience = _delayToLoseTarget;
+                    isStressAreaActive = _chaseTargetPatience <= 0;
+                    if (_canChaseTarget && _chaseTargetPatience > 0)
                     {
                         if (!_isChasing)
                         {
@@ -139,7 +140,7 @@ namespace Ivayami.Enemy
                             StopMovement();
                             _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
-                            _enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);                            
+                            _enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);
                         }
                         _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                         _lastTargetPosition = _hitsCache[0].transform.position;
@@ -158,13 +159,19 @@ namespace Ivayami.Enemy
                         if (_isChasing)
                         {
                             if (_goToLastTargetPosition)
-                            {
+                            {                                
                                 _navMeshAgent.SetDestination(_lastTargetPosition);
                                 if (_debugLog) Debug.Log($"Moving to last target position {_lastTargetPosition}");
                                 if (Vector3.Distance(transform.position, _lastTargetPosition) <= _navMeshAgent.stoppingDistance)
                                 {
-                                    _isChasing = false;
+                                    _goToLastTargetPointPatience += _behaviourTickFrequency;
+                                    _navMeshAgent.velocity = Vector3.zero;
                                     if (_debugLog) Debug.Log("Last target point reached");
+                                    if(_goToLastTargetPointPatience >= _delayBetweenPatrolPoints)
+                                    {
+                                        _isChasing = false;
+                                        _goToLastTargetPointPatience = 0;
+                                    }
                                 }
                             }
                             else _isChasing = false;
@@ -266,7 +273,7 @@ namespace Ivayami.Enemy
             {
                 Gizmos.color = _minDistanceAreaColor;
                 Gizmos.DrawSphere(transform.position, _minDetectionRange);
-            }            
+            }
             if (_drawPatrolPoints)
             {
                 Vector3 pos = _initialPosition != Vector3.zero ? _initialPosition : transform.position;
@@ -287,7 +294,7 @@ namespace Ivayami.Enemy
                 Gizmos.color = _stoppingDistanceColor;
                 Gizmos.DrawLine(transform.position, transform.position + transform.right * _navMeshAgent.stoppingDistance);
             }
-        }        
+        }
 #endif
         #endregion
     }

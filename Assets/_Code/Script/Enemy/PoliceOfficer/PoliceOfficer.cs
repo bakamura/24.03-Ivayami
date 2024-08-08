@@ -14,9 +14,10 @@ namespace Ivayami.Enemy
         [SerializeField, Min(0f)] private float _minDetectionRange;
         [SerializeField, Min(0f)] private float _detectionRange;
         [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
+        [SerializeField, Min(0f)] private float _stayInLastTargetPositionDuration;
         [SerializeField, Range(0f, 180f)] private float _visionAngle = 60f;
         [SerializeField] private Vector3 _visionOffset;
-        [SerializeField, Min(.02f)] private float _tickFrequency = .5f;
+        [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
         [SerializeField, Min(0f)] private float _stressIncreaseOnAttackTarget;
         [SerializeField] private bool _startActive;
         [SerializeField] private bool _goToLastTargetPosition;
@@ -55,7 +56,8 @@ namespace Ivayami.Enemy
         private EnemyWalkArea _currenWalkArea;
         private float _halfVisionAngle;
         private float _speedMultiplier;
-        private float _followTargetValue;
+        private float _chaseTargetPatience;
+        private float _goToLastTargetPointPatience;
 
         public bool IsActive { get; private set; }
         public LayerMask TargetLayer => _targetLayer;
@@ -65,7 +67,7 @@ namespace Ivayami.Enemy
         {
             base.Awake();
             _collision = GetComponent<CapsuleCollider>();
-            _behaviourTickDelay = new WaitForSeconds(_tickFrequency);
+            _behaviourTickDelay = new WaitForSeconds(_behaviourTickFrequency);
             _enemyAnimator = GetComponentInChildren<EnemyAnimator>();
             _enemySounds = GetComponent<EnemySounds>();
             _halfVisionAngle = _visionAngle / 2f;
@@ -113,10 +115,10 @@ namespace Ivayami.Enemy
         {
             while (IsActive)
             {
-                _followTargetValue = Mathf.Clamp(_followTargetValue - _tickFrequency, 0, _delayToLoseTarget);
-                if (CheckForTarget(_halfVisionAngle)) _followTargetValue = _delayToLoseTarget;
-                isStressAreaActive = _followTargetValue <= 0;
-                if (/*_canChaseTarget &&*/ _followTargetValue > 0)
+                _chaseTargetPatience = Mathf.Clamp(_chaseTargetPatience - _behaviourTickFrequency, 0, _delayToLoseTarget);
+                if (CheckForTarget(_halfVisionAngle)) _chaseTargetPatience = _delayToLoseTarget;
+                isStressAreaActive = _chaseTargetPatience <= 0;
+                if (/*_canChaseTarget &&*/ _chaseTargetPatience > 0)
                 {
                     if (!_isChasing && !_navMeshAgent.isStopped)
                     {
@@ -140,8 +142,17 @@ namespace Ivayami.Enemy
                             if (_debugLog) Debug.Log($"Moving to last target position {_lastTargetPosition}");
                             if (_navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
                             {
-                                _isChasing = false;
+                                _goToLastTargetPointPatience += _behaviourTickFrequency;
                                 if (_debugLog) Debug.Log("Last target point reached");
+                                if (_goToLastTargetPointPatience >= _stayInLastTargetPositionDuration)
+                                {
+                                    _isChasing = false;
+                                    _goToLastTargetPointPatience = 0;
+                                }
+                                else
+                                {
+                                    if(_debugLog) Debug.Log("Waiting in Last Target Point");
+                                }
                             }
                         }
                         else _isChasing = false;

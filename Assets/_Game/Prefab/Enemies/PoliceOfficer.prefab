@@ -97,7 +97,7 @@ Transform:
   m_GameObject: {fileID: 8073186486778736189}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10.46, y: 0.201, z: -12.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -163,14 +163,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stressIncreaseTickFrequency: 0.2
-  _stressAreas: []
-  _drawGizmos: 0
+  _stressAreas:
+  - Range: 2
+    MaxStress: 999
+    StressIncrease: 10
+    GizmoColor: {r: 1, g: 0, b: 0.7920542, a: 0.39215687}
+  - Range: 7.5
+    MaxStress: 60
+    StressIncrease: 2.5
+    GizmoColor: {r: 1, g: 0.495283, b: 0.495283, a: 0.39215687}
+  _drawGizmos: 1
   _minDetectionRange: 2
   _detectionRange: 10
   _delayToLoseTarget: 0.01
+  _stayInLastTargetPositionDuration: 0.1
   _visionAngle: 60
   _visionOffset: {x: 0, y: 1.5, z: 0}
-  _tickFrequency: 0.2
+  _behaviourTickFrequency: 0.2
   _stressIncreaseOnAttackTarget: 1e+9
   _startActive: 1
   _goToLastTargetPosition: 1
@@ -260,7 +269,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 7.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &7742484225022221978
 PrefabInstance:
