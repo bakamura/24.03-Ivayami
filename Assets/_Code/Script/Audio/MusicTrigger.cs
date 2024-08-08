@@ -10,7 +10,7 @@ namespace Ivayami.Audio {
             Music.Instance.SetMusic(_music);
         }
 
-        private void OnTriggerExit() {
+        private void OnTriggerExit(Collider other) {
             Music.Instance.Stop();
         }
 

@@ -12,12 +12,13 @@ GameObject:
   - component: {fileID: 7138728116100595425}
   - component: {fileID: 4128719164006322650}
   - component: {fileID: 9121941922368105926}
+  - component: {fileID: 5109694597788556374}
   m_Layer: 6
   m_Name: Readable
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6567198174584259444
 Transform:
@@ -88,6 +89,61 @@ MonoBehaviour:
   _applyToChildrens: 1
   _controllerInteractionIcon: {fileID: 21300000, guid: 24f08fc209a15634b89835799e799e29, type: 3}
   _keyboardInteractionIcon: {fileID: 21300000, guid: 2db7e48706ebdaf4ea4aeb3503544834, type: 3}
+--- !u!114 &5109694597788556374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6175502076992414270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7806374cbbff6f40bb7951caa89f70e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _debugLog: 0
+  _interactSoundReference:
+    Guid:
+      Data1: 81025313
+      Data2: 1186041003
+      Data3: -1353194858
+      Data4: -1468616129
+    Path: event:/Player_SFX/Pegando_papel
+  _interactReturnSoundReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  _activateSoundReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  _deactivateSoundReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  _actionFailedSoundReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  _actionSuccessSoundReference:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
 --- !u!1 &8118632734155427259
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,7 +159,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6218234860860214331
 Transform:
@@ -197,7 +253,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &193914827755509068
 Transform:
@@ -230,12 +286,12 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8374561544625193583}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
-  m_LightProbeUsage: 1
+  m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 2
   m_RayTraceProcedural: 0
@@ -315,6 +371,10 @@ PrefabInstance:
     - target: {fileID: 5765627851176342930, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
       propertyPath: m_Name
       value: InteractablePopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 5765627851176342930, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

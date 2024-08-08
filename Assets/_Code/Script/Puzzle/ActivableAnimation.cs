@@ -1,4 +1,5 @@
 using Ivayami.Audio;
+using Ivayami.Player;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -15,10 +16,10 @@ namespace Ivayami.Puzzle
         [SerializeField] private Animator _activateAnimator;
         //[SerializeField] private UnityEvent _onInteractStart;
         [Header("EVENTS")]
-        [SerializeField] private AnimationEvent _onActivate;
-        [SerializeField] private AnimationEvent _onDeactivate;
-        [SerializeField] private AnimationEvent _onInteract;
-        [SerializeField] private AnimationEvent _onInteractReturn;
+        [SerializeField, Tooltip("The event will play at the end of the state and only once per aniamtion end")] private AnimationEvent _onActivate;
+        [SerializeField, Tooltip("The event will play at the end of the state and only once per aniamtion end")] private AnimationEvent _onDeactivate;
+        [SerializeField, Tooltip("The event will play at the end of the state and only once per aniamtion end")] private AnimationEvent _onInteract;
+        [SerializeField, Tooltip("The event will play at the end of the state and only once per aniamtion end")] private AnimationEvent _onInteractReturn;
 
         private static readonly int _interactBoolHash = Animator.StringToHash("interact");
         private static readonly int _activateBoolHash = Animator.StringToHash("activate");
@@ -69,7 +70,7 @@ namespace Ivayami.Puzzle
             StopCallbackCoroutine();
         }
 
-        public void Interact()
+        public PlayerActions.InteractAnimation Interact()
         {
             if (IsActive)
             {
@@ -81,7 +82,10 @@ namespace Ivayami.Puzzle
                 }
                 CheckCallbacks(_interactBoolHash);
             }
+            return PlayerActions.InteractAnimation.Default;
         }
+
+        public void ForceInteract() => Interact();
 
         protected override void HandleOnActivate()
         {
@@ -128,7 +132,7 @@ namespace Ivayami.Puzzle
         private void CheckCallbacks(int parameterHash)
         {
             StopCallbackCoroutine();
-            if (parameterHash == _activateBoolHash)
+            if (parameterHash == _activateBoolHash && _activateAnimator)
             {
                 if (_activateAnimator.GetBool(_activateBoolHash))
                 {
@@ -149,7 +153,7 @@ namespace Ivayami.Puzzle
                     }
                 }
             }
-            else if (parameterHash == _interactBoolHash && _interactionAnimator.GetBool(_activateBoolHash))
+            else if (parameterHash == _interactBoolHash && _interactionAnimator && _interactionAnimator.GetBool(_activateBoolHash))
             {
                 if (_interactionAnimator.GetBool(_interactBoolHash))
                 {

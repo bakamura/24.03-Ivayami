@@ -1,7 +1,7 @@
 using UnityEngine;
+using System.Linq;
 using Ivayami.Scene;
 using Ivayami.Player;
-using System.Linq;
 
 namespace Ivayami.UI {
     public class Map : MonoBehaviour {
@@ -28,7 +28,11 @@ namespace Ivayami.UI {
             _playerPointer.anchoredPosition = _placesInMap.OrderBy(rect => Vector2.Distance(rect.anchoredPosition, playerPosInMap)).FirstOrDefault().anchoredPosition;
             _playerPointer.rotation = Quaternion.Euler(0f, 0f, _cam.transform.eulerAngles.y); //
 
-            foreach(RectTransform goalPointer in _goalPointers) goalPointer.anchoredPosition = SceneController.Instance.PointerInChapter(goalPointer.name.Split('_')[1]);
+            foreach (RectTransform goalPointer in _goalPointers) {
+                Vector2 goalPosInMap = SceneController.Instance.PointerInChapter(goalPointer.name.Split('_')[1]);
+                goalPointer.gameObject.SetActive(goalPosInMap != Vector2.zero);
+                if (goalPosInMap != Vector2.zero) goalPointer.anchoredPosition = goalPosInMap;
+            }
         }
 
     }

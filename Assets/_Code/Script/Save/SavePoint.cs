@@ -21,25 +21,48 @@ namespace Ivayami.Save {
 
         private void Awake() {
             InteratctableHighlight = GetComponent<InteractableFeedbacks>();
-            Points.Add(_pointId, this);
+            UpdatePointsDictionary(_pointId, this);
         }
 
         private void Start() {
-            onSaveGame.AddListener(() => PlayerMovement.Instance.transform.position = _playerAnimationPoint.position);
+            onSaveGame.AddListener(() =>
+            {
+                if (_playerAnimationPoint)
+                {
+                    PlayerMovement.Instance.transform.position = _playerAnimationPoint.position;
+                }
+            });
             PlayerStress.Instance.onStressChange.AddListener(stress => _canSave = stress <= 0);
         }
 
-        public void Interact() {
-            if (_canSave) {
-                onSaveGame?.Invoke();
+        private void Save() {
+            SaveSystem.Instance.Progress.pointId = _pointId;
+            onSaveGame?.Invoke();
 
-                Logger.Log(LogType.Save, "SavePoint Call Save");
-            }
+            Logger.Log(LogType.Save, "SavePoint Call Save");
+        }
+
+        public PlayerActions.InteractAnimation Interact() {
+            if (_canSave) Save();
             else {
                 onCantSaveGame?.Invoke();
 
                 Logger.Log(LogType.Save, "SavePoint Cannot Save");
             }
+            return PlayerActions.InteractAnimation.Default;
         }
+
+        public void ForceSave() {
+            Save();
+        }
+
+        private void UpdatePointsDictionary(int key, SavePoint value) {
+            if (!Points.ContainsKey(key))
+            {
+                Points.Add(key, value);
+            }
+            else Points[key] = value;
+        }
+
     }
 }

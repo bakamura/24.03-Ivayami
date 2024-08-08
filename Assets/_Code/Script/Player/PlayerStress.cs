@@ -16,11 +16,9 @@ namespace Ivayami.Player {
         [Header("Stress")]
 
         [SerializeField] private float _stressMax;
-        private float _stressMin;
         private float _stressCurrent;
         [SerializeField] private float _stressRelieveDelay;
         private float _stressRelieveDelayTimer;
-        [SerializeField, Tooltip("In seconds")] private float _stressRelieveRate;
 
         [Header("Fail")]
 
@@ -40,48 +38,27 @@ namespace Ivayami.Player {
             Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");
         }
 
-        public void AddStress(float amount) {
+        private void Update() {
+            if (_stressCurrent > 20f) RelieveStressAuto();
+        }
+
+        public void AddStress(float amount, float capValue = -1) {
             if (!_failState) {
-                _stressCurrent += amount;
+                _stressCurrent = Mathf.Clamp(_stressCurrent + amount, 0, capValue >= 0 ? capValue : _stressMax);
                 onStressChange.Invoke(_stressCurrent);
-
-                float stressRelieveDelayTimerLast = _stressRelieveDelayTimer;
-                _stressRelieveDelayTimer = 0;
-                if (_stressRelieveRoutine == null) _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
-                else {
-                    if (stressRelieveDelayTimerLast >= _stressRelieveDelay) {
-                        StopCoroutine(_stressRelieveRoutine);
-                        _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
-
-                        Logger.Log(LogType.Player, $"Interrupted Relieving Stress");
-                    }
-                }
-
 
                 Logger.Log(LogType.Player, $"Stress Meter: {_stressCurrent}/{_stressMax}");
             }
         }
 
-        private IEnumerator StressRelieveAuto() {
-            while (_stressRelieveDelayTimer < _stressRelieveDelay) {
-                _stressRelieveDelayTimer += Time.deltaTime;
+        private void RelieveStressAuto() {
+            _stressCurrent += StressRelieveFormula(_stressCurrent);
+            onStressChange.Invoke(_stressCurrent);
+        }
 
-                yield return null;
-            }
-
-            Logger.Log(LogType.Player, $"Started Relieving Stress");
-
-            while (_stressCurrent > _stressMin) {
-                _stressCurrent -= _stressRelieveRate * Time.deltaTime;
-                onStressChange.Invoke(_stressCurrent);
-
-                yield return null;
-            }
-
-            Logger.Log(LogType.Player, $"Ended Relieving Stress");
-
-            _stressCurrent = _stressMin;
-            _stressRelieveRoutine = null;
+        private float StressRelieveFormula(float intake) {
+            if (intake > 20) return -0.0001f * Mathf.Pow(intake + 65f, 2f); // Tweak / Modularize values later
+            else return 0;
         }
 
         private void FailStateCheck(float stressCurrent) {
@@ -93,25 +70,32 @@ namespace Ivayami.Player {
             }
         }
 
-        public void SetStressMin(float stressMin) {
-            _stressMin = stressMin;
-            if (_stressCurrent > _stressMin && _stressRelieveRoutine == null) {
-                _stressRelieveDelayTimer = 0;
-                _stressRelieveRoutine = StartCoroutine(StressRelieveAuto());
-            }
-        }
-
         private IEnumerator DelayToRespawn() {
             PlayerMovement.Instance.ToggleMovement(false);
+
             yield return _restartWait;
 
             SceneTransition.Instance.Menu.Close();
 
             yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
 
+            SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes);
+        }
+
+        private void HandleUnloadAllScenes() {
+            SceneController.Instance.OnAllSceneRequestEnd -= HandleUnloadAllScenes;
+            UnityEvent onSceneLoaded = new UnityEvent();
+            onSceneLoaded.AddListener(UnlockPlayer);
+            SceneController.Instance.StartLoad("BaseTerrain", onSceneLoaded);
+        }
+
+        private void UnlockPlayer() {
             PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].transform.position);
-            PlayerMovement.Instance.ToggleMovement(true);
-            SceneTransition.Instance.Menu.Open();
+            //PlayerMovement.Instance.ToggleMovement(true);
+            PlayerAnimation.Instance.GoToIdle();
+            _stressCurrent = 0;
+            _failState = false;
+            onStressChange?.Invoke(_stressCurrent);
         }
 
     }

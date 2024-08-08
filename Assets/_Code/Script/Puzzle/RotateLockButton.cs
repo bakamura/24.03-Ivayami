@@ -60,6 +60,7 @@ namespace Ivayami.Puzzle
             return _buttonDetails.Content[_currentDetailIndex];
         }
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
             if (_buttonDetails.Content != null && _buttonDetails.Content.Length != _optionsAmount)
@@ -71,5 +72,6 @@ namespace Ivayami.Puzzle
                 Array.Resize(ref _buttonDetails.Colors, _optionsAmount);
             }
         }
+#endif
     }
 }

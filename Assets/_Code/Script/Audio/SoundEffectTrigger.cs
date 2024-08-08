@@ -10,6 +10,7 @@ namespace Ivayami.Audio
 
         private EventInstance _soundInstance;
 
+        [ContextMenu("PlayAudio")]
         public void Play()
         {
             if (Setup())
