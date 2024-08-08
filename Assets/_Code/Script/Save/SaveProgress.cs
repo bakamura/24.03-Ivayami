@@ -20,7 +20,7 @@ namespace Ivayami.Save {
         public void SaveProgressOfType(string type, int amount) {
             if (progress.ContainsKey(type)) {
                 if (progress[type] < amount) progress[type] = amount;
-                else Debug.LogWarning("");
+                else Debug.LogWarning("The value is smaller then the current progress step");
             }
             else progress.Add(type, amount);
         }
