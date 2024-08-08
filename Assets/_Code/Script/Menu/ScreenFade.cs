@@ -9,7 +9,7 @@ namespace Ivayami.UI
     {
         private static bool _isFading;
         [SerializeField, Min(0f)] private float _delayBeforeStartFade;
-        [SerializeField] private UnityEvent _onDelayBeforeFadeEnd;
+        [SerializeField] private UnityEvent _onAfterDelayBeforeFadeStart;
         [SerializeField, Min(0f)] private float _duration = 1f;
         [SerializeField] private AnimationCurve _fadeCurve = AnimationCurve.Linear(0, 0, 1, 1);
         [SerializeField] private UnityEvent _onFadeEnd;
@@ -96,7 +96,7 @@ namespace Ivayami.UI
 
         private void DelayFadeStartEnd()
         {
-            _onDelayBeforeFadeEnd?.Invoke();
+            _onAfterDelayBeforeFadeStart?.Invoke();
         }
 
         private void FadeEnd()
