@@ -31,7 +31,7 @@ namespace Ivayami.Puzzle {
             if(SaveSystem.Instance.Options.language != 0) _readable = Resources.Load<Readable>($"Readable/{(LanguageTypes)SaveSystem.Instance.Options.language}/{_readable.name}");
 
             PlayerActions.Instance.ChangeInputMap("Menu");
-            PlayerActions.Instance.AllowPausing(false);
+            Pause.Instance.canPause = false;
             DialogueCamera.Instance.MoveRotate(_focusCamera);
             ReadableUI.Instance.ShowReadable(_readable.Title, _readable.Content);
             ReadableUI.Instance.CloseBtn.onClick.AddListener(StopReading);
@@ -43,7 +43,7 @@ namespace Ivayami.Puzzle {
 
         public void StopReading() {
             PlayerActions.Instance.ChangeInputMap("Player");
-            PlayerActions.Instance.AllowPausing(true);
+            Pause.Instance.canPause = true;
             DialogueCamera.Instance.ExitDialogeCamera();
             ReadableUI.Instance.Menu.Close();
             ReadableUI.Instance.CloseBtn.onClick.RemoveAllListeners();
