@@ -208,12 +208,5 @@ namespace Ivayami.Player {
             Cursor.lockState = mapId != "Player" ? CursorLockMode.None : CursorLockMode.Locked;
         }
 
-        public void AllowPausing(bool doAllow) {
-            foreach (InputActionReference actionRef in _pauseInputs) {
-                if (doAllow) actionRef.action.Enable();
-                else actionRef.action.Disable();
-            }
-        }
-
     }
 }

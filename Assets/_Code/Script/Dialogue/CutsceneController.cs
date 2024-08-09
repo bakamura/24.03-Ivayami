@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODUnity;
 using Ivayami.Player;
+using Ivayami.UI;
 
 namespace Ivayami.Dialogue
 {
@@ -86,7 +87,7 @@ namespace Ivayami.Dialogue
 		private void HandleOnCutsceneEnd()
         {
 			PlayerActions.Instance.ChangeInputMap(null);
-			PlayerActions.Instance.AllowPausing(true);
+			Pause.Instance.canPause = true;
 			DialogueController.Instance.StopDialogue();
 			RuntimeManager.PauseAllEvents(false);
 			IsPlaying = false;
@@ -96,8 +97,8 @@ namespace Ivayami.Dialogue
 		private void HandleOnCutsceneStart()
         {
 			PlayerMovement.Instance.ToggleMovement(false);
-			PlayerActions.Instance.AllowPausing(false);
-			PlayerActions.Instance.ChangeInputMap("Menu");
+            Pause.Instance.canPause = false;
+            PlayerActions.Instance.ChangeInputMap("Menu");
 			UpdateInputs(true);
 		}
 
