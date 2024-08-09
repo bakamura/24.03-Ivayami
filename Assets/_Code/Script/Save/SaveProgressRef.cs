@@ -4,11 +4,11 @@ namespace Ivayami.Save {
     public class SaveProgressRef : MonoBehaviour {
 
         [Header("Parameters")]
-
-        [SerializeField] private string _saveName;
+        [SerializeField] private AreaProgress _areaProgress;
+        //[SerializeField] private string _saveName;
 
         public void SetProgressTo(int progress) {
-            SaveSystem.Instance.Progress.SaveProgressOfType(_saveName, progress);
+            SaveSystem.Instance.Progress.SaveProgressOfType(_areaProgress.Id, progress);
         }
 
     }

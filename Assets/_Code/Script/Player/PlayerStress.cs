@@ -36,16 +36,6 @@ namespace Ivayami.Player {
             _restartWait = new WaitForSeconds(_restartDelay);
 
             Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");
-            float Counter = 100f;
-            int cycles = 0;
-            while (Counter > 20f) {
-                cycles++;
-                Counter += StressRelieveFormula(Counter);
-                if (cycles == 30) Debug.Log($"30 Cycles, Counter: {Counter}");
-                if (cycles == 60) Debug.Log($"60 Cycles, Counter: {Counter}");
-                if (cycles > 90) break;
-            }
-            Debug.Log($"{cycles}, Counter: {Counter}");
         }
 
         private void Update() {
