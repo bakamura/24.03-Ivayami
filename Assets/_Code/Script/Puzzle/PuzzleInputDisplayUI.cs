@@ -6,7 +6,7 @@ using Ivayami.Save;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(UiLanguage))]
+    //[RequireComponent(typeof(UiLanguage))]
     public class PuzzleInputDisplayUI : MonoBehaviour
     {
         [SerializeField] private DisplayInfo[] _displays;
@@ -18,15 +18,15 @@ namespace Ivayami.Puzzle
             public Sprite GamepadIcon;
         }
 
-        private UiLanguage _uiLanguage
-        {
-            get
-            {
-                if (!m_uiLanguage) m_uiLanguage = GetComponent<UiLanguage>();
-                return m_uiLanguage;
-            }
-        }
-        private UiLanguage m_uiLanguage;
+        //private UiLanguage _uiLanguage
+        //{
+        //    get
+        //    {
+        //        if (!m_uiLanguage) m_uiLanguage = GetComponent<UiLanguage>();
+        //        return m_uiLanguage;
+        //    }
+        //}
+        //private UiLanguage m_uiLanguage;
 
         private void HandleDeviceUpdate(PlayerInput script)
         {
@@ -48,7 +48,7 @@ namespace Ivayami.Puzzle
                 InputCallbacks.Instance.AddEventToOnChangeControls(HandleDeviceUpdate);
                 UpdateVisuals(InputCallbacks.Instance.CurrentControlScheme.Equals("Gamepad"));
             }
-            if (SaveSystem.Instance && SaveSystem.Instance.Options != null) _uiLanguage.UpdateLanguage((LanguageTypes)SaveSystem.Instance.Options.language);
+            //if (SaveSystem.Instance && SaveSystem.Instance.Options != null) _uiLanguage.UpdateLanguage((LanguageTypes)SaveSystem.Instance.Options.language);
         }
 
         private void OnDisable()

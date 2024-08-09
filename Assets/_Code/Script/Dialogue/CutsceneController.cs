@@ -4,6 +4,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using FMODUnity;
 using Ivayami.Player;
+using Ivayami.UI;
 
 namespace Ivayami.Dialogue
 {
@@ -11,7 +12,7 @@ namespace Ivayami.Dialogue
     public class CutsceneController : MonoBehaviour
     {
 		[Header("UI Components")]
-		[SerializeField] private InputActionReference _pauseCutsceneInput;
+		[SerializeField] private InputActionReference[] _pauseCutsceneInputs;
 		[SerializeField] private UnityEvent _onPause;
 		[SerializeField] private UnityEvent _onUnpause;
 
@@ -65,8 +66,7 @@ namespace Ivayami.Dialogue
             if (_isPaused)
             {				
 				_onUnpause?.Invoke();
-			}
-			IsPlaying = false;
+			}			
 			if (_debug) Debug.Log("Cutscene Skip");
 			_onCutsceneEnd?.Invoke();
 		}
@@ -87,23 +87,34 @@ namespace Ivayami.Dialogue
 		private void HandleOnCutsceneEnd()
         {
 			PlayerActions.Instance.ChangeInputMap(null);
-			PlayerActions.Instance.AllowPausing(true);
+			Pause.Instance.canPause = true;
 			DialogueController.Instance.StopDialogue();
 			RuntimeManager.PauseAllEvents(false);
-			_pauseCutsceneInput.action.performed -= HandlePauseInput;
+			IsPlaying = false;
+			UpdateInputs(false);
 		}
 
 		private void HandleOnCutsceneStart()
         {
-			PlayerActions.Instance.ChangeInputMap("Menu");
-			PlayerActions.Instance.AllowPausing(false);
-			_pauseCutsceneInput.action.performed += HandlePauseInput;
+			PlayerMovement.Instance.ToggleMovement(false);
+            Pause.Instance.canPause = false;
+            PlayerActions.Instance.ChangeInputMap("Menu");
+			UpdateInputs(true);
 		}
 
 		private void HandleDirectorEnd(PlayableDirector director)
         {
 			if (_debug) Debug.Log("Cutscene completed");
 			_onCutsceneEnd?.Invoke();
+        }
+
+		private void UpdateInputs(bool isActive)
+        {
+			for(int i = 0; i < _pauseCutsceneInputs.Length; i++)
+            {
+				if (isActive) _pauseCutsceneInputs[i].action.performed += HandlePauseInput;
+				else _pauseCutsceneInputs[i].action.performed -= HandlePauseInput;
+			}
         }
 	}
 }

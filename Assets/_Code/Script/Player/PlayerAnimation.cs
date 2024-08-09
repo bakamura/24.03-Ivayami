@@ -52,7 +52,9 @@ namespace Ivayami.Player {
         }
 
         private void Interact(PlayerActions.InteractAnimation animation) {
-            _animator.SetTrigger(INTERACT_DICTIONARY[animation]);
+            if (INTERACT_DICTIONARY.ContainsKey(animation))
+                _animator.SetTrigger(INTERACT_DICTIONARY[animation]);            
+            else _animator.SetTrigger(INTERACT_DICTIONARY[PlayerActions.InteractAnimation.Default]);
         }
 
         private void InteractLong(bool isInteracting) {

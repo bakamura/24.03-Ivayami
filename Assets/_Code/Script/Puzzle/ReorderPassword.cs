@@ -1,7 +1,6 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 namespace Ivayami.Puzzle
 {
@@ -11,6 +10,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private Color _selectedButtonColor = Color.red;
 
         private Button _currentChosenBtn;
+        private Button _currentSelectedBtn;
 
         public override bool CheckPassword()
         {
@@ -24,29 +24,37 @@ namespace Ivayami.Puzzle
 
         public void UpdateSelectedBtn()
         {
-            Button btn = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-            Image btnImage = btn.GetComponent<Image>();
+            //Button btn = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
+            //Image btnImage = btn.GetComponent<Image>();
             _lock.LockSounds.PlaySound(Audio.LockPuzzleSounds.SoundTypes.ConfirmOption);
-            if (btn == _currentChosenBtn)
+            //selected same button as active
+            if (_currentSelectedBtn == _currentChosenBtn)
             {
-                btnImage.color = Color.white;
+                _currentSelectedBtn.GetComponent<Image>().color = Color.white;
                 _currentChosenBtn = null;
             }
+            //selected button to start the place change
             else if (_currentChosenBtn == null)
             {
-                btnImage.color = _selectedButtonColor;
-                _currentChosenBtn = btn;
+                _currentSelectedBtn.GetComponent<Image>().color = _selectedButtonColor;
+                _currentChosenBtn = _currentSelectedBtn;
             }
-            else if(btn != _currentChosenBtn && _currentChosenBtn != null)
+            //change button places
+            else if(_currentSelectedBtn != _currentChosenBtn && _currentChosenBtn != null)
             {
                 _currentChosenBtn.GetComponent<Image>().color = Color.white;
-                btnImage.color = Color.white;
+                _currentSelectedBtn.GetComponent<Image>().color = Color.white;
                 int currentChosenIndex = _currentChosenBtn.transform.GetSiblingIndex();
-                _currentChosenBtn.transform.SetSiblingIndex(btn.transform.GetSiblingIndex());
-                btn.transform.SetSiblingIndex(currentChosenIndex);
+                _currentChosenBtn.transform.SetSiblingIndex(_currentSelectedBtn.transform.GetSiblingIndex());
+                _currentSelectedBtn.transform.SetSiblingIndex(currentChosenIndex);
                 _currentChosenBtn = null;
                 OnCheckPassword?.Invoke();
             }
+        }
+
+        public void SetCurrentSelected(Button btn)
+        {
+            _currentSelectedBtn = btn;
         }
     }
 }
