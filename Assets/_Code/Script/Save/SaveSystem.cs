@@ -103,5 +103,10 @@ namespace Ivayami.Save {
             Logger.Log(LogType.Save, $"Wrote Save of type '{type.Name}' in {savePath}");
         }
 
+        public void DeleteProgress(byte saveId) {
+            string path = $"{_progressPath}/Save_{saveId}";
+            if (File.Exists(path)) File.Delete(path);
+        }
+
     }
 }

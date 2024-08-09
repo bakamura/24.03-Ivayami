@@ -35,7 +35,10 @@ namespace Ivayami.Player {
 
         public enum InteractAnimation {
             Default,
-            EnterLocker
+            EnterLocker,
+            PullRope,
+            PullLever,
+            PushButton
         }
 
         [Header("Hand Item")]
@@ -83,6 +86,7 @@ namespace Ivayami.Player {
                 if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
                     InteractAnimation animation = InteractableTarget.Interact();
                     if (InteractableTarget is IInteractableLong) {
+                        PlayerMovement.Instance.ToggleMovement(false);
                         onInteractLong?.Invoke(true);
 
                         Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
@@ -96,7 +100,8 @@ namespace Ivayami.Player {
                 else Logger.Log(LogType.Player, $"Interact: No Target");
             }
             else if (input.phase == InputActionPhase.Canceled && Interacting) {
-                (InteractableTarget as IInteractableLong).InteractStop();
+                if (InteractableTarget is IInteractableLong) PlayerMovement.Instance.ToggleMovement(true);
+                (InteractableTarget as IInteractableLong).InteractStop();                
                 onInteractLong?.Invoke(false);
 
                 Logger.Log(LogType.Player, $"Stop Interact Long with: {InteractableTarget.gameObject.name}");
@@ -201,13 +206,6 @@ namespace Ivayami.Player {
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable(); // Change to memory current
             if (mapId != null) _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId).Enable();
             Cursor.lockState = mapId != "Player" ? CursorLockMode.None : CursorLockMode.Locked;
-        }
-
-        public void AllowPausing(bool doAllow) {
-            foreach (InputActionReference actionRef in _pauseInputs) {
-                if (doAllow) actionRef.action.Enable();
-                else actionRef.action.Disable();
-            }
         }
 
     }

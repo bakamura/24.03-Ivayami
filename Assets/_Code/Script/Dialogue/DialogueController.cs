@@ -6,6 +6,8 @@ using TMPro;
 using System;
 using Ivayami.Player;
 using Ivayami.Audio;
+using Ivayami.UI;
+using UnityEngine.UI;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
 
@@ -21,7 +23,10 @@ namespace Ivayami.Dialogue
         [SerializeField] private InputActionReference _continueInput;
         [SerializeField] private TMP_Text _speechTextComponent;
         [SerializeField] private TMP_Text _announcerNameTextComponent;
+        [SerializeField] private Image _dialogueBackground;
+        [SerializeField] private RectTransform _dialogueContainer;
         [SerializeField] private GameObject _continueDialogueIcon;
+        [SerializeField] private DialogueLayout[] _dialogueVariations;
         [SerializeField] private bool _debugLogs;
 
         private Dialogue[] _dialogues;
@@ -38,6 +43,12 @@ namespace Ivayami.Dialogue
         private char[] _currentDialogueCharArray;
         private int _currentCharIndex;
         private float _currentDelay;
+        [System.Serializable]
+        private struct DialogueLayout
+        {
+            public Sprite Background;
+            public Vector2 Dimensions;
+        }
 
         public bool IsPaused { get; private set; }
         public Dialogue CurrentDialogue => _currentDialogue;
@@ -50,11 +61,16 @@ namespace Ivayami.Dialogue
         {
             base.Awake();
 
-            ChangeLanguage(LanguageTypes.ENUS);//TEMPORARY            
+            //ChangeLanguage(LanguageTypes.ENUS);//TEMPORARY            
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
             //_autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
             _canvasGroup = GetComponent<CanvasGroup>();
             _dialogueSounds = GetComponent<DialogueSounds>();
+        }
+
+        private void Start()
+        {
+            Options.OnChangeLanguage.AddListener(ChangeLanguage);
         }
 
         private void HandleContinueDialogue(InputAction.CallbackContext context)
@@ -100,6 +116,18 @@ namespace Ivayami.Dialogue
                 _currentCharIndex = 0;
                 _currentDelay = 0;
                 _currentDialogueCharArray = _currentDialogue.dialogue[_currentSpeechIndex].content.ToCharArray();
+                if (CutsceneController.IsPlaying || !LockInput)
+                {
+                    _dialogueBackground.sprite = _dialogueVariations[1].Background;
+                    _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _dialogueVariations[1].Dimensions.x);
+                    _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _dialogueVariations[1].Dimensions.y);
+                }
+                else
+                {
+                    _dialogueBackground.sprite = _dialogueVariations[0].Background;
+                    _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _dialogueVariations[0].Dimensions.x);
+                    _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _dialogueVariations[0].Dimensions.y);
+                }
                 ActivateDialogueEvents(_currentDialogue.dialogue[_currentSpeechIndex].eventId);
             }
 
@@ -148,7 +176,7 @@ namespace Ivayami.Dialogue
             StopCoroutine(_writtingCoroutine);
             _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].content;
             _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].announcerName;
-            _continueDialogueIcon.SetActive(true);
+            if (LockInput) _continueDialogueIcon.SetActive(true);
             //_readyForNextSpeech = true;
             OnSkipSpeech?.Invoke();
             _writtingCoroutine = null;

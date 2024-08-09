@@ -34,7 +34,7 @@ namespace Ivayami.Puzzle
         {
             get
             {
-                if(!m_interactableFeedbacks) m_interactableFeedbacks = GetComponent<InteractableFeedbacks>();
+                if (!m_interactableFeedbacks) m_interactableFeedbacks = GetComponent<InteractableFeedbacks>();
                 return m_interactableFeedbacks;
             }
         }
@@ -98,7 +98,7 @@ namespace Ivayami.Puzzle
                 _currentClickAmount++;
                 _interactableFeedbacks.PlayInteractionAnimation();
                 _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
-                if (_currentClickAmount > _amountOfTimesToClick)
+                if (_currentClickAmount >= _amountOfTimesToClick)
                 {
                     _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
                     SetAllSpeeds(true);
@@ -111,7 +111,7 @@ namespace Ivayami.Puzzle
                     for (int i = 0; i < _animations.Length; i++)
                     {
                         temp = _animations[i].Animator.GetCurrentAnimatorClipInfo(0)[0].clip;
-                        _animations[i].Animator.Play(_animations[i].StateHash, 0, _currentClickAmount * (_framesAdvancePerClick / (temp.length * temp.frameRate)));                        
+                        _animations[i].Animator.Play(_animations[i].StateHash, 0, _currentClickAmount * (_framesAdvancePerClick / (temp.length * temp.frameRate)));
                     }
                 }
             }
