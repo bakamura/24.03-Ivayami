@@ -1,4 +1,5 @@
 using UnityEngine;
+using Ivayami.Player;
 
 namespace Ivayami.Dialogue
 {
@@ -7,11 +8,17 @@ namespace Ivayami.Dialogue
         [SerializeField] private Dialogue _dialogue;
         [SerializeField] private bool _activateOnce;
         [SerializeField] private bool _lockPlayerInput;
+        [SerializeField] private bool _hidePlayerModel;
         private bool _activated;
         public void StartDialogue()
         {
             if (!_activateOnce || (_activateOnce && !_activated))
             {
+                if (_hidePlayerModel)
+                {
+                    DialogueController.Instance.OnDialogueEnd += HandleDialogueEnd;
+                    PlayerMovement.Instance.UpdateVisualsVisibility(false);
+                }
                 DialogueController.Instance.StartDialogue(_dialogue.id, _lockPlayerInput);
                 _activated = true;
             }
@@ -35,6 +42,12 @@ namespace Ivayami.Dialogue
         public void ChangeDialogue(Dialogue dialogue)
         {
             _dialogue = dialogue;
+        }
+
+        private void HandleDialogueEnd()
+        {
+            if (_hidePlayerModel) PlayerMovement.Instance.UpdateVisualsVisibility(true);
+            DialogueController.Instance.OnDialogueEnd -= HandleDialogueEnd;
         }
 
         private void OnTriggerEnter(Collider other)
