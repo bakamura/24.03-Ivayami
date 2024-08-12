@@ -21,7 +21,7 @@ namespace Ivayami.UI {
         private IEnumerator OpenRoutine() {
             float currentDuration = 0f;
             while (currentDuration < 1f) {
-                currentDuration += Time.deltaTime / _transitionDuration;
+                currentDuration += Time.deltaTime / TransitionDuration;
                 _canvasGroup.alpha = _transitionCurve.Evaluate(currentDuration);
 
                 yield return null;
@@ -37,7 +37,7 @@ namespace Ivayami.UI {
             _canvasGroup.blocksRaycasts = false;
             float currentDuration = 1f;
             while (currentDuration > 0f) {
-                currentDuration -= Time.deltaTime / _transitionDuration;
+                currentDuration -= Time.deltaTime / TransitionDuration;
                 _canvasGroup.alpha = _transitionCurve.Evaluate(currentDuration);
 
                 yield return null;
