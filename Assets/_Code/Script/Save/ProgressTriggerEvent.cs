@@ -7,6 +7,7 @@ namespace Ivayami.Save {
     //[RequireComponent(typeof(BoxCollider))]
     public class ProgressTriggerEvent : MonoBehaviour {
 
+        [SerializeField] private bool _triggerOnStart;
         [Serializable]
         public struct ProgressConditionInfo
         {
@@ -23,6 +24,11 @@ namespace Ivayami.Save {
         }
         [SerializeField, ProgressStepAttribute] private ProgressConditionInfo[] _progressConditions;
         [SerializeField] private UnityEvent _onTrigger;
+
+        private void Start()
+        {
+            if (_triggerOnStart) TryTrigger();
+        }
 
         private void OnTriggerEnter(Collider other) {
             TryTrigger();

@@ -16,7 +16,7 @@ namespace Ivayami.UI {
 
         private void Start() {
             _noneNav.mode = Navigation.Mode.None;
-            if (_setMenuBtnSelectedOnStart) EventSystem.current.SetSelectedGameObject(_currentMenu.GetComponentInChildren<Selectable>().gameObject);
+            if (_setMenuBtnSelectedOnStart) EventSystem.current.SetSelectedGameObject(_currentMenu.InitialSelected.gameObject);
         }
 
         public void CloseCurrentThenOpen(Menu menuToOpen) {
