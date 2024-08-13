@@ -1,3 +1,6 @@
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace Ivayami.UI {
@@ -10,6 +13,9 @@ namespace Ivayami.UI {
         public void QuitGame() {
             Logger.Log(LogType.UI, $"Quitting Game");
             Application.Quit();
+#if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+#endif
         }
 
     }
