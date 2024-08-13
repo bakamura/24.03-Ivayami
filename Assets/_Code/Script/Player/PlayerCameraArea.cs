@@ -8,7 +8,7 @@ namespace Ivayami.Player
     {
         [SerializeField, Min(0f)] private float _cameraDistance = .25f;
         [SerializeField] private bool _changeCameraRadius;
-        [SerializeField] private float[] _camerasRadius;
+        [SerializeField] private float[] _camerasRadius = new float[3];
         [SerializeField] private float _radiusLerpDuration = .5f;
         private bool _targetInside;
         private float[] _defaultRadius = new float[3];
@@ -75,7 +75,7 @@ namespace Ivayami.Player
         {
             float[] temp = _camerasRadius;
             Array.Resize(ref _camerasRadius, 3);
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < temp.Length && i < _camerasRadius.Length; i++)
             {
                 _camerasRadius[i] = temp[i];
             }
