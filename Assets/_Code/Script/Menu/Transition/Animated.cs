@@ -14,7 +14,7 @@ namespace Ivayami.UI {
             base.Awake();
 
             _animator = GetComponent<Animator>();
-            _transitionDuration = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(x => x.name == "JournalOpen").length;
+            TransitionDuration = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(x => x.name == "JournalOpen").length;
         }
 
         public override void Open() {
