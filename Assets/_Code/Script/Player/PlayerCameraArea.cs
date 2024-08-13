@@ -7,7 +7,8 @@ namespace Ivayami.Player
     public class PlayerCameraArea : MonoBehaviour
     {
         [SerializeField, Min(0f)] private float _cameraDistance = .25f;
-        [SerializeField] private float[] _camerasRadius;
+        [SerializeField] private bool _changeCameraRadius;
+        [SerializeField] private float[] _camerasRadius = new float[3];
         [SerializeField] private float _radiusLerpDuration = .5f;
         private bool _targetInside;
         private float[] _defaultRadius = new float[3];
@@ -15,11 +16,14 @@ namespace Ivayami.Player
         private void OnTriggerEnter(Collider other)
         {
             CameraAimReposition.Instance.SetMaxDistance(_cameraDistance);
-            for(int i = 0; i < PlayerCamera.Instance.FreeLookCam.m_Orbits.Length; i++)
+            if (_changeCameraRadius)
             {
-                _defaultRadius[i] = PlayerCamera.Instance.FreeLookCam.m_Orbits[i].m_Radius;                
+                for (int i = 0; i < PlayerCamera.Instance.FreeLookCam.m_Orbits.Length; i++)
+                {
+                    _defaultRadius[i] = PlayerCamera.Instance.FreeLookCam.m_Orbits[i].m_Radius;
+                }
+                UpdateCameraRadius(_camerasRadius);
             }
-            UpdateCameraRadius(_camerasRadius);
             _targetInside = true;
         }
 
@@ -36,23 +40,23 @@ namespace Ivayami.Player
 
         private void UpdateCameraRadius(float[] radius)
         {
-            if(_interpolationCoroutine != null)
+            if (_interpolationCoroutine != null)
             {
                 StopCoroutine(_interpolationCoroutine);
                 _interpolationCoroutine = null;
             }
-           _interpolationCoroutine = StartCoroutine(InterpolateRadiusCoroutine(radius));
+            _interpolationCoroutine = StartCoroutine(InterpolateRadiusCoroutine(radius));
         }
 
         private IEnumerator InterpolateRadiusCoroutine(float[] radius)
         {
             float count = 0;
-            while(count < 1)
+            while (count < 1)
             {
                 count += Time.deltaTime / _radiusLerpDuration;
                 for (int i = 0; i < PlayerCamera.Instance.FreeLookCam.m_Orbits.Length; i++)
                 {
-                    PlayerCamera.Instance.FreeLookCam.m_Orbits[i].m_Radius = 
+                    PlayerCamera.Instance.FreeLookCam.m_Orbits[i].m_Radius =
                         Mathf.MoveTowards(PlayerCamera.Instance.FreeLookCam.m_Orbits[i].m_Radius, radius[i], Time.deltaTime / _radiusLerpDuration);
                 }
                 yield return null;
@@ -63,7 +67,7 @@ namespace Ivayami.Player
         private void ResetToDefault()
         {
             CameraAimReposition.Instance.SetMaxDistance(-1);
-            UpdateCameraRadius(_defaultRadius);
+            if (_changeCameraRadius) UpdateCameraRadius(_defaultRadius);
         }
 
 #if UNITY_EDITOR
@@ -71,7 +75,7 @@ namespace Ivayami.Player
         {
             float[] temp = _camerasRadius;
             Array.Resize(ref _camerasRadius, 3);
-            for(int i = 0; i < 3; i++)
+            for (int i = 0; i < temp.Length && i < _camerasRadius.Length; i++)
             {
                 _camerasRadius[i] = temp[i];
             }
