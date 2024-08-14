@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Ivayami.Puzzle
 {
@@ -78,21 +77,15 @@ namespace Ivayami.Puzzle
                 if (_icon)
                 {
                     _interactionAnimation = _icon.GetComponent<Animator>();
-                    UpdateVisualIcon(InputCallbacks.Instance.CurrentControlScheme);
-                    InputCallbacks.Instance.AddEventToOnChangeControls(HandleDeviceUpdate);
+                    InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisualIcon);
                 }                
                 _interactionIconSetupDone = true;
             }
         }
 
-        private void HandleDeviceUpdate(PlayerInput script)
+        private void UpdateVisualIcon(bool isGamepad)
         {
-            UpdateVisualIcon(script.currentControlScheme);
-        }
-
-        private void UpdateVisualIcon(string currentControlSchemeName)
-        {
-            _icon.sprite = currentControlSchemeName.Equals("Gamepad") ? _controllerInteractionIcon : _keyboardInteractionIcon;
+            _icon.sprite = isGamepad ? _controllerInteractionIcon : _keyboardInteractionIcon;
         }
 
         private void Update()
@@ -103,7 +96,7 @@ namespace Ivayami.Puzzle
 
         private void OnDestroy()
         {
-            if (_icon && InputCallbacks.Instance) InputCallbacks.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
+            if (_icon && InputCallbacks.Instance) InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisualIcon);
         }
 
         //private void OnValidate()

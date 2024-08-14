@@ -44,20 +44,10 @@ namespace Ivayami.UI {
         }
 
         public void DisplaySaveInfo(int saveId) {
-            SaveSystem.Instance.LoadProgress((byte)saveId, DisplaySaveInfoCallback);
+            _previewImage.sprite = _saveSelectBtns[saveId].PlaceImage;
+            _previewText.text = _saveSelectBtns[saveId].PlaceName;
 
-            Logger.Log(LogType.UI, $"Try Display Save {saveId}");
+            Logger.Log(LogType.UI, $"Display Save {saveId}");
         }
-
-        private void DisplaySaveInfoCallback() {
-            ChapterDescription chapterDescription = Resources.Load<ChapterDescription>(string.IsNullOrEmpty(SaveSystem.Instance.Progress.lastProgressType) ?
-                  $"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_New"
-                : $"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]}");
-            _previewImage.sprite = chapterDescription.Image;
-            _previewText.text = chapterDescription.Text;
-
-            Logger.Log(LogType.UI, $"Displayed Save {SaveSystem.Instance.Progress.id} {(string.IsNullOrEmpty(SaveSystem.Instance.Progress.lastProgressType) ? "(New)": $"(Progress: {SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]}")})");
-        }
-
     }
 }

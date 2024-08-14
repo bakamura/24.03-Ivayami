@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using Ivayami.Save;
 
@@ -8,22 +7,22 @@ namespace Ivayami.UI {
 
         [Header("UI")]
 
-        [SerializeField] private Image _chapterPreviewImage;
-        [SerializeField] private TextMeshProUGUI _chapterNumberText;
-        [SerializeField] private TextMeshProUGUI _saveDateText;
+        [SerializeField] private TextMeshProUGUI _statusText;
+        [SerializeField] private TextMeshProUGUI _dateText;
         [SerializeField] private UiText _uiText;
         private bool _isFirstTime;
+        public Sprite PlaceImage { get; private set; }
+        public string PlaceName { get; private set; }
 
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
 
         public void Setup(SaveProgress progress) {
             _isFirstTime = progress == null;
-            LanguageTypes language = (LanguageTypes) SaveSystem.Instance.Options.language;
-            UiText uiText = language == LanguageTypes.ENUS ? _uiText : Resources.Load<UiText>($"UiText/{(language)}/{_uiText.name}");
-            _chapterNumberText.text = _isFirstTime ? uiText.GetText("NewGame") : $"{uiText.GetText("Save")} {progress.id}";
-            _saveDateText.text = _isFirstTime ? "" : progress.lastPlayedDate;
-            if (!_isFirstTime)_chapterPreviewImage.sprite = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]}").Image;
-            else _chapterPreviewImage.enabled = false;
+            _statusText.text = _uiText.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language).GetText(_isFirstTime ? "NewGame" : "Continue");
+            _dateText.text = _isFirstTime ? "" : progress.lastPlayedDate;
+            // Show Playtime
+            PlaceImage = null;
+            PlaceName = "Ohio";
         }
 
         public void EnterSave() {

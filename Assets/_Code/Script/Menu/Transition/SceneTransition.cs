@@ -32,7 +32,7 @@ namespace Ivayami.UI {
         }
 
         public void SetDuration(float durationSeconds) {
-            _transitionDuration = durationSeconds;
+            TransitionDuration = durationSeconds;
         }
 
         public void SetAnimationCurve(AnimationCurve animCurve)
