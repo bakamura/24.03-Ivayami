@@ -13,6 +13,7 @@ namespace Ivayami.Save {
 
         private string _progressPath;
         private string _optionsPath;
+        private HashSet<SaveObject> _saveObjects = new HashSet<SaveObject>();
 
         protected override void Awake() {
             base.Awake();
@@ -97,6 +98,11 @@ namespace Ivayami.Save {
         }
 
         private IEnumerator WriteSaveRoutine(string savePath, Type type) {
+            foreach(SaveObject saveObject in _saveObjects)
+            {
+                if (saveObject) saveObject.SaveData();                
+            }
+
             if (type == typeof(SaveProgress)) yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Progress)));
             else yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Options)));
 
@@ -106,6 +112,18 @@ namespace Ivayami.Save {
         public void DeleteProgress(byte saveId) {
             string path = $"{_progressPath}/Save_{saveId}";
             if (File.Exists(path)) File.Delete(path);
+        }
+
+        public void RegisterSaveObject(SaveObject saveObject)
+        {
+            if (!_saveObjects.Contains(saveObject)) _saveObjects.Add(saveObject);
+            else Debug.LogWarning($"The object {saveObject.name} is already registered");
+        }
+
+        public void UnregisterSaveObject(SaveObject saveObject)
+        {
+            if (_saveObjects.Contains(saveObject)) _saveObjects.Remove(saveObject);
+            else Debug.LogWarning($"The object {saveObject.name} is already unregistered");
         }
 
     }
