@@ -6,7 +6,7 @@ namespace Ivayami.Player
 {
     public class PlayerCameraArea : MonoBehaviour
     {
-        [SerializeField, Min(0f)] private float _cameraDistance = .25f;
+        [SerializeField, Min(0f)] private float _cameraDistance = .3f;
         [SerializeField] private bool _changeCameraRadius;
         [SerializeField] private float[] _camerasRadius = new float[3];
         [SerializeField] private float _radiusLerpDuration = .5f;
