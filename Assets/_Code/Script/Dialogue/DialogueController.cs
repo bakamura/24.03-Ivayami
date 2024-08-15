@@ -268,6 +268,7 @@ namespace Ivayami.Dialogue
 
         public void ChangeLanguage(LanguageTypes languageType)
         {
+            IsPaused = true;
             _dialogues = Resources.LoadAll<Dialogue>($"Dialogues/{languageType}");
             _dialogueDictionary.Clear();
             for (int i = 0; i < _dialogues.Length; i++)
@@ -284,6 +285,8 @@ namespace Ivayami.Dialogue
                     }
                 }
             }
+            AsyncOperation operation = Resources.UnloadUnusedAssets();
+            operation.completed += (AsyncOperation op) => IsPaused = false;
         }
 
         public void PauseDialogue(bool isPaused)
