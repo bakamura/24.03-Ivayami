@@ -40,7 +40,7 @@ namespace Ivayami.UI {
         }
 
         private void SaveSelectBtnUpdate(SaveProgress[] progressSaves) {
-            for (int i = 0; i < _saveSelectBtns.Length; i++) _saveSelectBtns[i].Setup(i < progressSaves.Length ? progressSaves[i] : null);
+            for (int i = 0; i < _saveSelectBtns.Length; i++) _saveSelectBtns[i].Setup(i < progressSaves.Length ? progressSaves[i] : null, (byte)i);
         }
 
         public void DisplaySaveInfo(int saveId) {
