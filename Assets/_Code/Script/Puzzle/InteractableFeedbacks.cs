@@ -12,38 +12,36 @@ namespace Ivayami.Puzzle
 
         private List<Material> _materials;
         private List<Color> _baseColors;
-        private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
         private SpriteRenderer _icon;
         private Animator _interactionAnimation;
-        private Transform _cameraTransform;
-        private bool _interactionIconSetupDone;
+        private Sprite _defaultIcon;
+        //private bool _interactionIconSetupDone;
+        private bool _showingInputIcon;
+        private static Transform _cameraTransform;
+        private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
         private static int PULSE = Animator.StringToHash("pulse");
 
-        public void UpdateFeedbacks(bool isActive)
+        private void Awake()
         {
             Setup();
-            for (int i = 0; i < _materials.Count; i++)
-            {
-                _materials[i].SetColor(_colorVarName, isActive ? _highlightedColor : _baseColors[i]);
-            }
-            if (_icon) _icon.enabled = isActive;
         }
 
-        public void UpdateInteractionIcon(bool isActive)
+        private void Update()
         {
-            if (_icon) _icon.enabled = isActive;
+            if (_icon && _icon.enabled)
+                _icon.transform.rotation = Quaternion.LookRotation(_cameraTransform.forward);
         }
 
-        public void PlayInteractionAnimation()
+        private void OnDestroy()
         {
-            _interactionAnimation.Play(PULSE, 0);
+            if (InputCallbacks.Instance && _icon && _showingInputIcon) InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisualIcon);
         }
 
         private void Setup()
         {
             //setup materials
-            if (_materials == null)
-            {
+            //if (_materials == null)
+            //{
                 _materials = new List<Material>();
                 _baseColors = new List<Color>();
                 if (_applyToChildrens)
@@ -68,36 +66,53 @@ namespace Ivayami.Puzzle
                     _materials.Add(renderer.material);
                     _baseColors.Add(renderer.material.GetColor(_colorVarName));
                 }
-            }
+            //}
             //setup popup
-            if (!_interactionIconSetupDone)
-            {
+            //if (!_interactionIconSetupDone)
+            //{
                 _icon = GetComponentInChildren<SpriteRenderer>();
-                _cameraTransform = Camera.main.transform;
+                if (!_cameraTransform && Camera.main) _cameraTransform = Camera.main.transform;
                 if (_icon)
                 {
+                    _defaultIcon = _icon.sprite;
                     _interactionAnimation = _icon.GetComponent<Animator>();
+                }
+                //_interactionIconSetupDone = true;
+            //}
+        }
+
+        public void UpdateFeedbacks(bool isActive, bool forcePopupIconActivationUpdate = false)
+        {
+            //Setup();
+            for (int i = 0; i < _materials.Count; i++)
+            {
+                _materials[i].SetColor(_colorVarName, isActive ? _highlightedColor : _baseColors[i]);
+            }
+            if (_icon)
+            {
+                _showingInputIcon = isActive;
+                if(forcePopupIconActivationUpdate)_icon.enabled = isActive;
+                if (isActive)
+                {
                     InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisualIcon);
-                }                
-                _interactionIconSetupDone = true;
+                }
+                else
+                {
+                    InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisualIcon);
+                    _icon.sprite = _defaultIcon;
+                }
             }
         }
+
+        public void PlayInteractionAnimation()
+        {
+            _interactionAnimation.Play(PULSE, 0);
+        }        
 
         private void UpdateVisualIcon(bool isGamepad)
         {
             _icon.sprite = isGamepad ? _controllerInteractionIcon : _keyboardInteractionIcon;
-        }
-
-        private void Update()
-        {
-            if (_icon && _icon.enabled)
-                _icon.transform.rotation = Quaternion.LookRotation(_cameraTransform.forward);
-        }
-
-        private void OnDestroy()
-        {
-            if (_icon && InputCallbacks.Instance) InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisualIcon);
-        }
+        }        
 
         //private void OnValidate()
         //{
