@@ -1,8 +1,6 @@
 using UnityEngine;
 using System;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
-using Ivayami.Save;
 
 namespace Ivayami.Puzzle
 {
@@ -28,11 +26,6 @@ namespace Ivayami.Puzzle
         //}
         //private UiLanguage m_uiLanguage;
 
-        private void HandleDeviceUpdate(PlayerInput script)
-        {
-            UpdateVisuals(script.currentControlScheme.Equals("Gamepad"));
-        }
-
         private void UpdateVisuals(bool isGamepad)
         {
             for (int i = 0; i < _displays.Length; i++)
@@ -43,17 +36,13 @@ namespace Ivayami.Puzzle
 
         private void OnEnable()
         {
-            if (InputCallbacks.Instance)
-            {
-                InputCallbacks.Instance.AddEventToOnChangeControls(HandleDeviceUpdate);
-                UpdateVisuals(InputCallbacks.Instance.CurrentControlScheme.Equals("Gamepad"));
-            }
+            if (InputCallbacks.Instance) InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisuals);
             //if (SaveSystem.Instance && SaveSystem.Instance.Options != null) _uiLanguage.UpdateLanguage((LanguageTypes)SaveSystem.Instance.Options.language);
         }
 
         private void OnDisable()
         {
-            if (InputCallbacks.Instance) InputCallbacks.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
+            if (InputCallbacks.Instance) InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisuals);
         }
     }
 }

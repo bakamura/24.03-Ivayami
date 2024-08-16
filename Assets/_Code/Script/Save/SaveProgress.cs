@@ -12,6 +12,7 @@ namespace Ivayami.Save {
         public int pointId;
         public string lastProgressType;
         public SerializableDictionary<string, int> progress = new SerializableDictionary<string, int>();
+        public SerializableDictionary<string, string> saveObjects = new SerializableDictionary<string, string>();
 
         public SaveProgress(byte id) {
             this.id = id;
@@ -30,5 +31,29 @@ namespace Ivayami.Save {
             else return 0;
         }
 
+        public void RecordSaveObject(string id, object data)
+        {
+            if (saveObjects.ContainsKey(id))
+                saveObjects[id] = JsonUtility.ToJson(data);
+            else saveObjects.Add(id, JsonUtility.ToJson(data));
+        }
+
+        public bool GetSaveObjectOfType<T>(string id, out T data)
+        {
+            if (saveObjects.ContainsKey(id))
+            {
+                data = JsonUtility.FromJson<T>(saveObjects[id]);
+                return true;
+            }
+            //return JsonUtility.FromJson<T>(saveObjects[id]);
+            else
+            {
+                Debug.LogWarning($"The object {id} has not been saved yet");
+                data = default(T);
+                return false;
+                //data = null;
+                //return data;
+            }
+        }
     }
 }

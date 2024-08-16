@@ -8,7 +8,8 @@ namespace Ivayami.Save {
         public float musicVol = 0.5f;
         public float sfxVol = 0.5f;
 
-        public float cameraSensitivity = 0.5f;
+        public float cameraSensitivityX = 0.5f;
+        public float cameraSensitivityY = 0.5f;
 
         public Int32 language;
 
