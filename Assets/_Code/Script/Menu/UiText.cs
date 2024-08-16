@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Ivayami.UI {
@@ -31,7 +32,14 @@ namespace Ivayami.UI {
         }
 
         public UiText GetTranslation(LanguageTypes language) {
-            return language == LanguageTypes.ENUS? this : Resources.Load<UiText>($"UiText/{language}/{name}");
+            if (language == LanguageTypes.ENUS) return this;
+            UiText uiText = Resources.LoadAll<UiText>($"UiText/{language}").First(text => text.name == name);
+            Resources.UnloadUnusedAssets();
+            if (uiText != null) return uiText;
+            else {
+                Debug.LogError($"No translation {language} found of '{name}' (UiText)");
+                return this;
+            }
         }
 
     }
