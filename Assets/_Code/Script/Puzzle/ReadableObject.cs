@@ -28,15 +28,20 @@ namespace Ivayami.Puzzle {
         }
 
         public PlayerActions.InteractAnimation Interact() {
-            if(SaveSystem.Instance.Options.language != 0) _readable = Resources.Load<Readable>($"Readable/{(LanguageTypes)SaveSystem.Instance.Options.language}/{_readable.name}");
-
             PlayerActions.Instance.ChangeInputMap("Menu");
             Pause.Instance.canPause = false;
             DialogueCamera.Instance.MoveRotate(_focusCamera);
-            ReadableUI.Instance.ShowReadable(_readable.Title, _readable.Content);
+
+            Readable readable = _readable.GetTranslation((LanguageTypes) SaveSystem.Instance.Options.language);
+            ReadableUI.Instance.ShowReadable(readable.Title, readable.Content);
+            
             ReadableUI.Instance.CloseBtn.onClick.AddListener(StopReading);
             ReturnAction.Instance.Set(StopReading);
-            if (_goesToInventory) { }
+            
+            if (_goesToInventory) {
+                // TO DO
+            }
+
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             return PlayerActions.InteractAnimation.Default;
         }
