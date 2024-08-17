@@ -19,13 +19,13 @@ namespace Ivayami.Player {
 
         [Header("Movement")]
 
-        [SerializeField] private float _movementSpeedRun;
-        [SerializeField] private float _movementSpeedWalk;
+        [SerializeField, Min(0)] private float _movementSpeedRun;
+        [SerializeField, Min(0)] private float _movementSpeedWalk;
         private float _movementSpeedMax;
         private float _speedCurrent = 0;
-        [SerializeField] private float _accelerationDuration;
+        [SerializeField, Min(0)] private float _accelerationDuration;
         private float _acceleration;
-        [SerializeField] private float _deccelerationDuration;
+        [SerializeField, Min(0)] private float _deccelerationDuration;
         private float _decceleration;
         private bool _canMove;
 
@@ -34,19 +34,23 @@ namespace Ivayami.Player {
         [SerializeField] private Transform _visualTransform;
         [SerializeField, Range(0f, 0.99f)] private float _turnSmoothFactor;
 
+        [Header("Collider")]
+
+        [SerializeField] private float _walkColliderHeight;
+        [SerializeField, Min(0)] private float _colliderGroundOffset;
+
         [Header("Crouch")]
 
-        [SerializeField] private float _crouchSpeedMax;
+        [SerializeField, Min(0)] private float _crouchSpeedMax;
         public bool Crouching { get; private set; } = false;
-        [SerializeField] private float _walkColliderHeight;
-        [SerializeField] private float _walkCameraHeight;
-        [SerializeField] private float _crouchColliderHeight;
-        [SerializeField] private float _crouchCameraHeight;
+        [SerializeField, Min(0)] private float _walkCameraHeight;
+        [SerializeField, Min(0)] private float _crouchColliderHeight;
+        [SerializeField, Min(0)] private float _crouchCameraHeight;
         [SerializeField] private LayerMask _terrain;
 
         [Space(24)]
 
-        [SerializeField] private float _crouchHeightChangeDuration;
+        [SerializeField, Min(0)] private float _crouchHeightChangeDuration;
         private Coroutine _crouchRoutine;
 
         [Header("Hiding")]
@@ -135,11 +139,15 @@ namespace Ivayami.Player {
             onMovement?.Invoke(_speedCurrent * _inputCache);
         }
 
+        private void SetColliderHeight(float height) {
+                _collider.height = height - _colliderGroundOffset;
+                _collider.center = 0.5f * (height + _colliderGroundOffset) * Vector3.up;
+        }
+
         private void Crouch(InputAction.CallbackContext input) {
             if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) {
                 Crouching = !Crouching;
-                _collider.height = Crouching ? _crouchColliderHeight : _walkColliderHeight;
-                _collider.center = 0.5f * (Crouching ? _crouchColliderHeight : _walkColliderHeight) * Vector3.up;
+                SetColliderHeight(Crouching ? _crouchColliderHeight : _walkColliderHeight);
 
                 if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
                 _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
@@ -217,5 +225,12 @@ namespace Ivayami.Player {
         {
             _visualTransform.gameObject.SetActive(isVisible);
         }
+
+#if UNITY_EDITOR
+        private void OnValidate() {
+            _collider = GetComponent<CapsuleCollider>();
+            SetColliderHeight(_walkColliderHeight);
+        }
+#endif
     }
 }
