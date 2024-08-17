@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -38,6 +39,7 @@ namespace Ivayami.Player {
 
         [SerializeField] private float _walkColliderHeight;
         [SerializeField, Min(0)] private float _colliderGroundOffset;
+        private Vector3 _colliderCenter;
 
         [Header("Crouch")]
 
@@ -107,8 +109,7 @@ namespace Ivayami.Player {
 
         private void Update() {
             if (_canMove) Rotate();
-            //if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, Mathf.Infinity, _terrain)) transform.position = hit.point + (0.1f * Vector3.up);
-            //else Debug.LogWarning("Player not above ground");
+            ApplyGroundOffset();
         }
 
         private void FixedUpdate() {
@@ -140,8 +141,17 @@ namespace Ivayami.Player {
         }
 
         private void SetColliderHeight(float height) {
-                _collider.height = height - _colliderGroundOffset;
-                _collider.center = 0.5f * (height + _colliderGroundOffset) * Vector3.up;
+            _collider.height = height - _colliderGroundOffset;
+            _collider.center = 0.5f * (height + _colliderGroundOffset) * Vector3.up;
+            _colliderCenter = _collider.center.y * Vector3.up;
+        }
+
+        private void ApplyGroundOffset() {
+            if (Physics.Raycast(new Ray(transform.position + _colliderCenter, Vector3.down), out RaycastHit hit)) {
+                _velocityCache = _rigidbody.velocity;
+                if(hit.point.y - transform.position.y > 0) _velocityCache[1] = 1f;
+                _rigidbody.velocity = _velocityCache;
+            }
         }
 
         private void Crouch(InputAction.CallbackContext input) {
@@ -189,8 +199,7 @@ namespace Ivayami.Player {
 
         public void ToggleMovement(bool canMove) {
             _canMove = canMove;
-            if (!_canMove)
-            {
+            if (!_canMove) {
                 _speedCurrent = 0f;
                 onMovement?.Invoke(Vector2.zero);
             }
@@ -215,14 +224,13 @@ namespace Ivayami.Player {
             _rigidbody.position = position;
         }
 
-        public void SetTargetAngle(float angle){
+        public void SetTargetAngle(float angle) {
             _targetAngle = Quaternion.Euler(0f, angle, 0f);
             _visualTransform.rotation = _targetAngle;
             // cinemachine freelook
-        }        
+        }
 
-        public void UpdateVisualsVisibility(bool isVisible)
-        {
+        public void UpdateVisualsVisibility(bool isVisible) {
             _visualTransform.gameObject.SetActive(isVisible);
         }
 
