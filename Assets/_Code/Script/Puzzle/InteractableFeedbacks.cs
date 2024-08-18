@@ -42,42 +42,46 @@ namespace Ivayami.Puzzle
             //setup materials
             //if (_materials == null)
             //{
-                _materials = new List<Material>();
-                _baseColors = new List<Color>();
-                if (_applyToChildrens)
+            _materials = new List<Material>();
+            _baseColors = new List<Color>();
+            if (_applyToChildrens)
+            {
+                Color emissiveColor;
+                foreach (Renderer render in GetComponentsInChildren<Renderer>())
                 {
-                    Color emissiveColor;
-                    foreach (Renderer render in GetComponentsInChildren<Renderer>())
+                    if (render.material.HasColor(_colorVarName))
                     {
-                        if (render.material.HasColor(_colorVarName))
+                        emissiveColor = render.material.GetColor(_colorVarName);
+                        if (emissiveColor == Color.black)
                         {
-                            emissiveColor = render.material.GetColor(_colorVarName);
-                            if (emissiveColor == Color.black)
-                            {
-                                _materials.Add(render.material);
-                                _baseColors.Add(emissiveColor);
-                            }
+                            _materials.Add(render.material);
+                            _baseColors.Add(emissiveColor);
                         }
                     }
                 }
-                else
+            }
+            else
+            {
+                Renderer renderer = GetComponentInChildren<Renderer>();
+                if (renderer.material.HasColor(_colorVarName))
                 {
-                    Renderer renderer = GetComponentInChildren<Renderer>();
                     _materials.Add(renderer.material);
                     _baseColors.Add(renderer.material.GetColor(_colorVarName));
+
                 }
+            }
             //}
             //setup popup
             //if (!_interactionIconSetupDone)
             //{
-                _icon = GetComponentInChildren<SpriteRenderer>();
-                if (!_cameraTransform && Camera.main) _cameraTransform = Camera.main.transform;
-                if (_icon)
-                {
-                    _defaultIcon = _icon.sprite;
-                    _interactionAnimation = _icon.GetComponent<Animator>();
-                }
-                //_interactionIconSetupDone = true;
+            _icon = GetComponentInChildren<SpriteRenderer>();
+            if (!_cameraTransform && Camera.main) _cameraTransform = Camera.main.transform;
+            if (_icon)
+            {
+                _defaultIcon = _icon.sprite;
+                _interactionAnimation = _icon.GetComponent<Animator>();
+            }
+            //_interactionIconSetupDone = true;
             //}
         }
 
@@ -91,7 +95,7 @@ namespace Ivayami.Puzzle
             if (_icon)
             {
                 _showingInputIcon = isActive;
-                if(forcePopupIconActivationUpdate)_icon.enabled = isActive;
+                if (forcePopupIconActivationUpdate) _icon.enabled = isActive;
                 if (isActive)
                 {
                     InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisualIcon);
@@ -107,12 +111,12 @@ namespace Ivayami.Puzzle
         public void PlayInteractionAnimation()
         {
             _interactionAnimation.Play(PULSE, 0);
-        }        
+        }
 
         private void UpdateVisualIcon(bool isGamepad)
         {
             _icon.sprite = isGamepad ? _controllerInteractionIcon : _keyboardInteractionIcon;
-        }        
+        }
 
         //private void OnValidate()
         //{
