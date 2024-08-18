@@ -73,7 +73,7 @@ namespace Ivayami.Puzzle
         {
             _onInteract?.Invoke();
             UpdateInputs(true);
-            _interatctableFeedbacks.UpdateFeedbacks(false);
+            _interatctableFeedbacks.UpdateFeedbacks(false, true);
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             if (_interactionType == InteractionTypes.RequirePassword)
             {
@@ -112,8 +112,8 @@ namespace Ivayami.Puzzle
             UpdateDeliverItemUI(false);
             UpdateInputs(false);
             IsActive = !IsActive;
-            onActivate?.Invoke();
             _unlockCoroutine = null;
+            onActivate?.Invoke();
         }
 
         private void UpdateInputs(bool isActive)
@@ -147,7 +147,7 @@ namespace Ivayami.Puzzle
             _passwordUI.UpdateActiveState(false);
             UpdateDeliverItemUI(false);
             UpdateInputs(false);
-            _interatctableFeedbacks.UpdateFeedbacks(true);
+            _interatctableFeedbacks.UpdateFeedbacks(true, true);
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.InteractReturn);
             _onCancelInteraction?.Invoke();
         }
