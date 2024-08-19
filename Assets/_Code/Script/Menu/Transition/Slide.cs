@@ -41,7 +41,7 @@ namespace Ivayami.UI {
             Vector2 finalPos = isOpening ? _openAnchoredPos : _closedAnchoredPos;
             float currentDuration = 0f;
             while (currentDuration < 1f) {
-                currentDuration += Time.deltaTime / _transitionDuration;
+                currentDuration += Time.deltaTime / TransitionDuration;
                 _rectTransform.anchoredPosition = Vector2.Lerp(initialPos, finalPos, currentDuration);
 
                 yield return null;

@@ -70,7 +70,11 @@ namespace Ivayami.Puzzle
                     _animations[i].Record();
                     _animations[i].Animator.Play(_animations[i].StateHash, 0);
                 }
-                _waitAnimationCoroutine = StartCoroutine(WaitAnimationEndCoroutine(true, () => SetAllSpeeds(false)));
+                _interactableFeedbacks.UpdateFeedbacks(false, true);
+                _waitAnimationCoroutine = StartCoroutine(WaitAnimationEndCoroutine(true, () => {
+                    SetAllSpeeds(false);
+                    _interactableFeedbacks.UpdateFeedbacks(true, true);
+                }));
             }
         }
 
@@ -102,7 +106,7 @@ namespace Ivayami.Puzzle
                 {
                     _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
                     SetAllSpeeds(true);
-                    _interactableFeedbacks.UpdateInteractionIcon(false);
+                    _interactableFeedbacks.UpdateFeedbacks(false, true);
                     StartCoroutine(WaitAnimationEndCoroutine(false, EndEvent));
                 }
                 else
@@ -136,7 +140,6 @@ namespace Ivayami.Puzzle
                 }
                 yield return null;
             }
-            _interactableFeedbacks.UpdateInteractionIcon(waitToEnterState);
             onWaitEnd?.Invoke();
             _waitAnimationCoroutine = null;
         }
