@@ -11,17 +11,17 @@ namespace Ivayami.Save {
         public SaveProgress Progress { get; private set; }
         public SaveOptions Options { get; private set; }
 
-        private string _progressPath;
-        private string _optionsPath;
+        public static string SaveProgressFileName => "Save";
+        public static string SaveOptionsFileName => "Configs";
+
+        public static string ProgressSavePath => $"{Application.persistentDataPath}/Progress";
+        public static string OptionsSavePath => $"{Application.persistentDataPath}/{SaveOptionsFileName}";
         private HashSet<SaveObject> _saveObjects = new HashSet<SaveObject>();
 
         protected override void Awake() {
             base.Awake();
 
-            _progressPath = $"{Application.persistentDataPath}/Progress";
-            _optionsPath = $"{Application.persistentDataPath}/Configs";
-
-            if (!Directory.Exists(_progressPath)) Directory.CreateDirectory(_progressPath);
+            if (!Directory.Exists(ProgressSavePath)) Directory.CreateDirectory(ProgressSavePath);
             LoadOptions();
         }
 
@@ -30,13 +30,13 @@ namespace Ivayami.Save {
         }
 
         public void LoadProgress(byte saveId, Action loadSaveCallback) {
-            StartCoroutine(LoadSaveRoutine($"{_progressPath}/Save_{saveId}", typeof(SaveProgress), loadSaveCallback));
+            StartCoroutine(LoadSaveRoutine($"{ProgressSavePath}/{SaveProgressFileName}_{saveId}", typeof(SaveProgress), loadSaveCallback));
 
             Logger.Log(LogType.Save, $"Loading Progress for save {saveId}");
         }
 
         private void LoadOptions() {
-            StartCoroutine(LoadSaveRoutine(_optionsPath, typeof(SaveOptions)));
+            StartCoroutine(LoadSaveRoutine(OptionsSavePath, typeof(SaveOptions)));
 
             Logger.Log(LogType.Save, $"Loading Options Save");
         }
@@ -70,8 +70,8 @@ namespace Ivayami.Save {
             List<SaveProgress> progressSaves = new List<SaveProgress>();
             int saveId = 0;
             while (true) {
-                if (File.Exists($"{_progressPath}/Save_{saveId}")) {
-                    Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/Save_{saveId}");
+                if (File.Exists($"{ProgressSavePath}/{SaveProgressFileName}_{saveId}")) {
+                    Task<string> readTask = File.ReadAllTextAsync($"{ProgressSavePath}/Save_{saveId}");
 
                     yield return readTask;
 
@@ -86,13 +86,13 @@ namespace Ivayami.Save {
 
         private void SaveProgress() {
             Progress.lastPlayedDate = DateTime.Now.ToString("dd/MM/yy [HH:mm]");
-            StartCoroutine(WriteSaveRoutine($"{_progressPath}/Save_{Progress.id}", typeof(SaveProgress)));
+            StartCoroutine(WriteSaveRoutine($"{ProgressSavePath}/{SaveProgressFileName}_{Progress.id}.sav", typeof(SaveProgress)));
 
             Logger.Log(LogType.Save, $"Writing Progress for save {Progress.id}");
         }
 
         public void SaveOptions() {
-            StartCoroutine(WriteSaveRoutine(_optionsPath, typeof(SaveOptions)));
+            StartCoroutine(WriteSaveRoutine($"{OptionsSavePath}", typeof(SaveOptions)));
 
             Logger.Log(LogType.Save, $"Writing Options Save");
         }
@@ -110,7 +110,7 @@ namespace Ivayami.Save {
         }
 
         public void DeleteProgress(byte saveId) {
-            string path = $"{_progressPath}/Save_{saveId}";
+            string path = $"{ProgressSavePath}/{SaveProgressFileName}_{saveId}";
             if (File.Exists(path)) File.Delete(path);
         }
 
