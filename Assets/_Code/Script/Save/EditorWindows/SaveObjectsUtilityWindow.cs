@@ -5,7 +5,7 @@ using UnityEditor.SceneManagement;
 
 namespace Ivayami.Save
 {
-    public static class SaveObjectsUtilityWindow
+    internal static class SaveObjectsUtilityWindow
     {
         [MenuItem("Ivayami/Save/Assign Unique Keys...", false, 0)]
         public static void AssignUniqueKeysDialog()
