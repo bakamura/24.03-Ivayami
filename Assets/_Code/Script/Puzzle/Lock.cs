@@ -25,7 +25,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private CanvasGroup _deliverItemsUI;
         [SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
         [SerializeField] private Selectable _deliverBtn;
-        [SerializeField] private UnityEvent _onItemDeliverFailed;
+        //[SerializeField] private UnityEvent _onItemDeliverFailed;
 
         [SerializeField] private PasswordUI _passwordUI;
 
@@ -241,10 +241,11 @@ namespace Ivayami.Puzzle
                 _currentRequests.Remove(_currentRequests[_currentRequestIndex]);
                 ConstrainValueToArraySize(ref _currentRequestIndex, _currentRequests.Count);
                 if (_currentRequests.Count > 0) UpdateDeliverIcons((byte)_currentRequestIndex);
-                TryUnlock();
-                return;
+                //TryUnlock();
+                //return;
             }
-            _onItemDeliverFailed?.Invoke();
+            TryUnlock();
+            //_onItemDeliverFailed?.Invoke();
         }
 
         private void LoopValueByArraySize(ref sbyte valueToConstrain, int arraySize)
