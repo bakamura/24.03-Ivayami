@@ -87,6 +87,7 @@ namespace Ivayami.Dialogue
 		private void HandleOnCutsceneEnd()
         {
 			PlayerActions.Instance.ChangeInputMap(null);
+			PlayerMovement.Instance.UpdateVisualsVisibility(true);
 			Pause.Instance.canPause = true;
 			DialogueController.Instance.StopDialogue();
 			RuntimeManager.PauseAllEvents(false);
@@ -97,6 +98,7 @@ namespace Ivayami.Dialogue
 		private void HandleOnCutsceneStart()
         {
 			PlayerMovement.Instance.ToggleMovement(false);
+			PlayerMovement.Instance.UpdateVisualsVisibility(false);
             Pause.Instance.canPause = false;
             PlayerActions.Instance.ChangeInputMap("Menu");
 			UpdateInputs(true);
