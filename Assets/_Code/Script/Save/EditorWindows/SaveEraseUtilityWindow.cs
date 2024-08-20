@@ -7,13 +7,12 @@ namespace Ivayami.Save
 {
     internal static class SaveEraseUtilityWindow
     {
-        [MenuItem("Ivayami/Save/Erase Progress", false, 0)]
+        [MenuItem("Ivayami/Save/Erase Progress Files", false, 0)]
         public static void EraseProgressSave()
         {
-            if (EditorUtility.DisplayDialog("Erase Save Progress Files", "Erase ALL Save Progress Files", "OK", "Cancel"))
+            if (EditorUtility.DisplayDialog("Erase All Progress Files", "This will erase all progress in all slots, continue?", "Continue", "Cancel"))
             {
-                string[] filesCache = Directory.GetFiles(SaveSystem.ProgressSavePath,
-                        $"{SaveSystem.SaveProgressFileName}*", SearchOption.TopDirectoryOnly);
+                string[] filesCache = Directory.GetFiles($"{Application.persistentDataPath}/{SaveSystem.ProgressFolderName}", $"{SaveSystem.ProgressFolderName}*", SearchOption.TopDirectoryOnly);
                 for(int i = 0; i < filesCache.Length; i++)
                 {
                     if (File.Exists(filesCache[i]))
@@ -26,12 +25,12 @@ namespace Ivayami.Save
             }
         }
 
-        [MenuItem("Ivayami/Save/Erase Options Preferences", false, 0)]
+        [MenuItem("Ivayami/Save/Erase Options File", false, 0)]
         public static void EraseOptionsSave()
         {
-            if (EditorUtility.DisplayDialog("Erase Save Options File", "Erase Save Options", "OK", "Cancel"))
+            if (EditorUtility.DisplayDialog("Erase Save Options", "This will erase all options saved, continue?", "Continue", "Cancel"))
             {
-                string[] filesCache = Directory.GetFiles(Application.persistentDataPath, $"{SaveSystem.SaveOptionsFileName}*");
+                string[] filesCache = Directory.GetFiles(Application.persistentDataPath, $"{SaveSystem.OptionsFileName}*");
                 for (int i = 0; i < filesCache.Length; i++)
                 {
                     if (File.Exists(filesCache[i]))
