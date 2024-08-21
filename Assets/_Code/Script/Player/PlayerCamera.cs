@@ -1,22 +1,22 @@
-using UnityEngine;
 using Cinemachine;
 
 namespace Ivayami.Player {
     public class PlayerCamera : MonoSingleton<PlayerCamera> {
 
-        [SerializeField] private float _sensitivityMultiplierX;
-        [SerializeField] private float _sensitivityMultiplierY;
-        private CinemachineFreeLook _freeLookCam;
+        public CinemachineFreeLook FreeLookCam { get; private set; }
 
         protected override void Awake() {
             base.Awake();
             
-            _freeLookCam = GetComponent<CinemachineFreeLook>();
+            FreeLookCam = GetComponent<CinemachineFreeLook>();
         }
 
-        public void SetCameraSensitivity(float sensitivity) {
-            _freeLookCam.m_XAxis.m_MaxSpeed = sensitivity * _sensitivityMultiplierX;
-            _freeLookCam.m_YAxis.m_MaxSpeed = sensitivity * _sensitivityMultiplierY;
+        public void SetSensitivityX(float sensitivityX) {
+            FreeLookCam.m_XAxis.m_MaxSpeed = sensitivityX;
+        }
+
+        public void SetSensitivityY(float sensitivityY) {
+            FreeLookCam.m_YAxis.m_MaxSpeed = sensitivityY;
         }
 
     }

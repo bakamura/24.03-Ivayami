@@ -1,4 +1,5 @@
 using UnityEngine;
+using Ivayami.Player;
 
 namespace Ivayami.Dialogue
 {
@@ -19,6 +20,16 @@ namespace Ivayami.Dialogue
 
         public void ContinueDialogue()
         {
+            if(!DialogueController.Instance.CurrentDialogue)
+            {
+                Debug.LogWarning("There is No CurrentDialogue to continue, check if you called StartDialogue first");
+                return;
+            }
+            if(DialogueController.Instance.CurrentDialogue.id != _dialogue.id)
+            {
+                Debug.LogWarning($"The current dialogue: {DialogueController.Instance.CurrentDialogue.id} is different from the {_dialogue.id} that the object {name} wants to continue, the command ContinueDialogue will not activate");
+                return;
+            }
             if (DialogueController.Instance.CurrentDialogue.id == _dialogue.id) DialogueController.Instance.UpdateDialogue();
         }
 

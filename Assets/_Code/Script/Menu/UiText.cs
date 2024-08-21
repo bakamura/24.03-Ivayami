@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Ivayami.UI {
@@ -20,11 +21,24 @@ namespace Ivayami.UI {
             if (_keys != null && _keys.Length > 0) {
                 _dictionary = new Dictionary<string, string>();
                 for (int i = 0; i < _keys.Length; i++) _dictionary.Add(_keys[i], _values[i]);
+#if !UNITY_EDITOR
                 _keys = null;
                 _values = null;
+#endif
             }
             else {
                 Debug.LogError($"Could not initialize UiText with null Key/Values '{name}'");
+            }
+        }
+
+        public UiText GetTranslation(LanguageTypes language) {
+            if (language == LanguageTypes.ENUS) return this;
+            UiText uiText = Resources.LoadAll<UiText>($"UiText/{language}").First(text => text.name == name);
+            Resources.UnloadUnusedAssets();
+            if (uiText != null) return uiText;
+            else {
+                Debug.LogError($"No translation {language} found of '{name}' (UiText)");
+                return this;
             }
         }
 

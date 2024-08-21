@@ -1,4 +1,6 @@
 
+using System;
+
 namespace Ivayami.Save {
     [System.Serializable]
     public class SaveOptions {
@@ -6,9 +8,10 @@ namespace Ivayami.Save {
         public float musicVol = 0.5f;
         public float sfxVol = 0.5f;
 
-        public float cameraSensitivity = 0.5f;
+        public float cameraSensitivityX = 0.5f;
+        public float cameraSensitivityY = 0.5f;
 
-        public int language;
+        public Int32 language;
 
     }
 }

@@ -201,7 +201,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5135159172994365600}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 29ee1490f6686184b882ed8b1bfb3f74, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -213,7 +213,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.25
+  m_Radius: 0.35
   m_Height: 1.75
   m_Direction: 1
   m_Center: {x: 0, y: 0.875, z: 0}
@@ -238,17 +238,17 @@ MonoBehaviour:
   onCrouch:
     m_PersistentCalls:
       m_Calls: []
-  _movementSpeedRun: 5
-  _movementSpeedWalk: 3
+  _movementSpeedRun: 4.5
+  _movementSpeedWalk: 2
   _accelerationDuration: 0.125
   _deccelerationDuration: 0.0625
   _visualTransform: {fileID: 2181725685440365708}
   _turnSmoothFactor: 0.175
-  _crouchSpeedMax: 2.5
+  _crouchSpeedMax: 1.5
   _walkColliderHeight: 1.75
   _walkCameraHeight: 1.25
   _crouchColliderHeight: 1
-  _crouchCameraHeight: 0.5
+  _crouchCameraHeight: 1.05
   _terrain:
     serializedVersion: 2
     m_Bits: 8
@@ -318,7 +318,6 @@ MonoBehaviour:
       m_Calls: []
   _stressMax: 100
   _stressRelieveDelay: 7
-  _stressRelieveRate: 5
   _restartDelay: 2
 --- !u!114 &448502037161999707
 MonoBehaviour:
@@ -387,10 +386,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _aimPoint: {fileID: 5114778192365935469}
-  _distanceFactor: 0.8
+  _distanceFactor: 0.5
+  _lerpDuration: 0.3
   _obstaclesLayer:
     serializedVersion: 2
     m_Bits: 72
+  _gizmoSize: 0.1
 --- !u!1001 &1859338547899245415
 PrefabInstance:
   m_ObjectHideFlags: 0

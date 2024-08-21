@@ -2,21 +2,18 @@ using System.Collections;
 using UnityEngine;
 using System;
 using UnityEngine.InputSystem;
-using UnityEngine.EventSystems;
 
 namespace Ivayami.Puzzle
 {
     public class RotateLock : PasswordUI
     {
-        [SerializeField] private InputActionReference _navegationUIInput;
         [SerializeField, Min(.02f)] private float _animationDuration;
         [SerializeField, Range(0f, 360f)] private float _rotationAngle = 60;
         [SerializeField] private Transform _lockBtnContainer;
 
         private RotateLockButton[] _buttons;
-        private sbyte _currentBtnSelectedIndex;
         private Coroutine _animateCoroutine;
-        private RotateLockButton _previousBtn;
+        private RotateLockButton _currentBtn;
 
         protected override void Awake()
         {
@@ -34,17 +31,16 @@ namespace Ivayami.Puzzle
             if (isActive)
             {
                 Cursor.lockState = CursorLockMode.Locked;
-                _navegationUIInput.action.performed += HandleNavigateUI;
-                _lock.InteratctableHighlight.UpdateFeedbacks(false);
-                _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateFeedbacks(true);
-                _previousBtn = _buttons[_currentBtnSelectedIndex];
+                navegationUIInput.action.performed += HandleNavigateUI;
+                _lock.InteratctableHighlight.UpdateFeedbacks(false, true);
+                _currentBtn.InteratctableHighlight.UpdateFeedbacks(true);
             }
             else
             {
                 Cursor.lockState = CursorLockMode.None;
-                _navegationUIInput.action.performed -= HandleNavigateUI;
-                _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateFeedbacks(false);
-            }            
+                navegationUIInput.action.performed -= HandleNavigateUI;
+                _currentBtn.InteratctableHighlight.UpdateFeedbacks(false);
+            }
         }
 
         public override bool CheckPassword()
@@ -57,37 +53,20 @@ namespace Ivayami.Puzzle
             return string.Equals(currentPassword, password);
         }
 
-        private void HandleNavigateUI(InputAction.CallbackContext context)
+        protected override void HandleNavigateUI(InputAction.CallbackContext obj)
         {
-            //update index
-            Vector2 input = context.ReadValue<Vector2>();
-            if (EventSystem.current.currentSelectedGameObject != null)
-            {
-                _currentBtnSelectedIndex += (sbyte)input.x;
-                if (_currentBtnSelectedIndex >= _buttons.Length) _currentBtnSelectedIndex = 0;
-                else if (_currentBtnSelectedIndex < 0) _currentBtnSelectedIndex = (sbyte)(_buttons.Length - 1);
-            }
-            else
-            {
-                EventSystem.current.SetSelectedGameObject(FallbackButton);
-                _currentBtnSelectedIndex = 0;
-            }
-            //update selected visual
-            if (_previousBtn) _previousBtn.InteratctableHighlight.UpdateFeedbacks(false);
-            _buttons[_currentBtnSelectedIndex].InteratctableHighlight.UpdateFeedbacks(true);
-            _previousBtn = _buttons[_currentBtnSelectedIndex];
-
+            base.HandleNavigateUI(obj);
+            Vector2 input = obj.ReadValue<Vector2>();
             if (input.y != 0 && _animateCoroutine == null)
             {
                 _lock.LockSounds.PlaySound(Audio.LockPuzzleSounds.SoundTypes.ConfirmOption);
-                _buttons[_currentBtnSelectedIndex].UpdateButtonDisplay((sbyte)Mathf.Sign(input.y));
-                _animateCoroutine = StartCoroutine(AnimateButtonCoroutine((sbyte)Mathf.Sign(input.y), _buttons[_currentBtnSelectedIndex].transform));
+                _currentBtn.UpdateButtonDisplay((sbyte)Mathf.Sign(input.y));
+                _animateCoroutine = StartCoroutine(AnimateButtonCoroutine((sbyte)Mathf.Sign(input.y), _currentBtn.transform));
             }
         }
 
         private IEnumerator AnimateButtonCoroutine(sbyte direction, Transform rotateObject)
         {
-            _navegationUIInput.action.Disable();
             float count = 0;
             Quaternion initialRotation = rotateObject.localRotation;
             Quaternion finalRotation = Quaternion.Euler(initialRotation.eulerAngles.x + _rotationAngle * direction, 0, 0);
@@ -97,11 +76,17 @@ namespace Ivayami.Puzzle
                 rotateObject.localRotation = Quaternion.Lerp(initialRotation, finalRotation, count);
                 yield return null;
             }
-            _buttons[_currentBtnSelectedIndex].UpdateButtonDisplay(0);
+            _currentBtn.UpdateButtonDisplay(0);
             rotateObject.localRotation = initialRotation;
             _animateCoroutine = null;
-            _navegationUIInput.action.Enable();
             //_onCheckPassword?.Invoke();
+        }
+
+        public void SetCurrentSelected(RotateLockButton btn)
+        {
+            if (_currentBtn) _currentBtn.InteratctableHighlight.UpdateFeedbacks(false);
+            _currentBtn = btn;
+            _currentBtn.InteratctableHighlight.UpdateFeedbacks(true);
         }
 
         //private void OnValidate()

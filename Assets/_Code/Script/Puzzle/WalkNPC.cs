@@ -33,7 +33,7 @@ namespace Ivayami.Puzzle
         private Vector3 _currentVelocity;
         private Vector3 _initialPosition;
         private EnemyAnimator _animator;
-        private const float _tick = .05f;
+        private const float _tick = .02f;
         private Coroutine _walkCoroutine;
         private byte _currentPointIndex;
 
@@ -45,12 +45,13 @@ namespace Ivayami.Puzzle
             public UnityEvent OnPathEnd;
         }
 
-        private void Awake()
+        private void Start()
         {
             _rigidbody = GetComponent<Rigidbody>();
             _animator = GetComponentInChildren<EnemyAnimator>();
             _initialPosition = transform.position;
-            TryLookAtPlayer();
+            if (PlayerMovement.Instance)
+                TryLookAtPlayer();
         }
 
         private void FixedUpdate()
@@ -95,7 +96,7 @@ namespace Ivayami.Puzzle
                 if (Vector3.Distance(transform.position, finalPosition) <= _minDistanceFromPathPoint)
                 {
                     _currentPointIndex++;
-                    _currentVelocity = Vector3.zero;
+                    //_currentVelocity = Vector3.zero;
                     _rigidbody.velocity = _currentVelocity;
                 }
 

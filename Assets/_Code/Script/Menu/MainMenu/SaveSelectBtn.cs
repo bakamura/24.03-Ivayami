@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using Ivayami.Save;
 
@@ -8,17 +7,32 @@ namespace Ivayami.UI {
 
         [Header("UI")]
 
-        [SerializeField] private Image _chapterPreviewImage;
-        [SerializeField] private TextMeshProUGUI _chapterNumberText;
-        [SerializeField] private TextMeshProUGUI _saveDateText;
+        [SerializeField] private TextMeshProUGUI _statusText;
+        [SerializeField] private TextMeshProUGUI _dateText;
+        [SerializeField] private UiText _uiText;
+        private byte _id;
+        private bool _isFirstTime;
+        public Sprite PlaceImage { get; private set; }
+        public string PlaceName { get; private set; }
 
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
 
-        public void Setup(SaveProgress progress) {
-            _chapterNumberText.text = progress != null ? $"Save {progress.id}" : "New Game";
-            _saveDateText.text = progress != null ? progress.lastPlayedDate : "";
-            if (progress != null)_chapterPreviewImage.sprite = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]}").Image;
-            else _chapterPreviewImage.enabled = false;
+        public void Setup(SaveProgress progress, byte id) {
+            _id = id;
+            _isFirstTime = progress == null;
+            _statusText.text = _uiText.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language).GetText(_isFirstTime ? "NewGame" : "Continue");
+            _dateText.text = _isFirstTime ? "" : progress.lastPlayedDate;
+            // Show Playtime
+            PlaceImage = null;
+            PlaceName = "Ohio";
+        }
+
+        public void EnterSave() {
+            // Probably should fade in before start loading, then decide what to do
+            SaveSystem.Instance.LoadProgress(_id, () => {
+                if (_isFirstTime) SaveSelector.Instance.FirstTimeFade.FadeIn();
+                else SaveSelector.Instance.NormalFade.FadeIn();
+            });
         }
 
     }

@@ -1,10 +1,10 @@
 using UnityEngine;
 using System;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;
 
 namespace Ivayami.Puzzle
 {
+    //[RequireComponent(typeof(UiLanguage))]
     public class PuzzleInputDisplayUI : MonoBehaviour
     {
         [SerializeField] private DisplayInfo[] _displays;
@@ -16,10 +16,15 @@ namespace Ivayami.Puzzle
             public Sprite GamepadIcon;
         }
 
-        private void HandleDeviceUpdate(PlayerInput script)
-        {
-            UpdateVisuals(script.currentControlScheme.Equals("Gamepad"));
-        }
+        //private UiLanguage _uiLanguage
+        //{
+        //    get
+        //    {
+        //        if (!m_uiLanguage) m_uiLanguage = GetComponent<UiLanguage>();
+        //        return m_uiLanguage;
+        //    }
+        //}
+        //private UiLanguage m_uiLanguage;
 
         private void UpdateVisuals(bool isGamepad)
         {
@@ -31,16 +36,13 @@ namespace Ivayami.Puzzle
 
         private void OnEnable()
         {
-            if (InputCallbacks.Instance)
-            {
-                InputCallbacks.Instance.AddEventToOnChangeControls(HandleDeviceUpdate);
-                UpdateVisuals(InputCallbacks.Instance.CurrentControlScheme.Equals("Gamepad"));
-            }
+            if (InputCallbacks.Instance) InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisuals);
+            //if (SaveSystem.Instance && SaveSystem.Instance.Options != null) _uiLanguage.UpdateLanguage((LanguageTypes)SaveSystem.Instance.Options.language);
         }
 
         private void OnDisable()
         {
-            if (InputCallbacks.Instance) InputCallbacks.Instance.RemoveEventToOnChangeControls(HandleDeviceUpdate);
+            if (InputCallbacks.Instance) InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisuals);
         }
     }
 }

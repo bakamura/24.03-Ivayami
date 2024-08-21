@@ -3,11 +3,14 @@ using Ivayami.Player;
 using Ivayami.UI;
 using Ivayami.Dialogue;
 using Ivayami.Save;
+using Ivayami.Audio;
 
 namespace Ivayami.Puzzle {
+    [RequireComponent(typeof(InteractableSounds))]
     public class ReadableObject : MonoBehaviour, IInteractable {
 
         public InteractableFeedbacks InteratctableHighlight { get; private set; }
+        private InteractableSounds _interactableSounds;
 
         [Header("Reading")]
 
@@ -21,24 +24,31 @@ namespace Ivayami.Puzzle {
         private void Awake() {
             InteratctableHighlight = GetComponent<InteractableFeedbacks>();
             _focusCamera = GetComponentInChildren<CameraAnimationInfo>();
+            _interactableSounds = GetComponent<InteractableSounds>();
         }
 
         public PlayerActions.InteractAnimation Interact() {
-            if(SaveSystem.Instance.Options.language != 0) _readable = Resources.Load<Readable>($"Readable/{(LanguageTypes)SaveSystem.Instance.Options.language}/{_readable.name}");
-
             PlayerActions.Instance.ChangeInputMap("Menu");
-            PlayerActions.Instance.AllowPausing(false);
+            Pause.Instance.canPause = false;
             DialogueCamera.Instance.MoveRotate(_focusCamera);
-            ReadableUI.Instance.ShowReadable(_readable.Title, _readable.Content);
+
+            Readable readable = _readable.GetTranslation((LanguageTypes) SaveSystem.Instance.Options.language);
+            ReadableUI.Instance.ShowReadable(readable.Title, readable.Content);
+            
             ReadableUI.Instance.CloseBtn.onClick.AddListener(StopReading);
             ReturnAction.Instance.Set(StopReading);
-            if (_goesToInventory) { }
+            
+            if (_goesToInventory) {
+                // TO DO
+            }
+
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             return PlayerActions.InteractAnimation.Default;
         }
 
         public void StopReading() {
             PlayerActions.Instance.ChangeInputMap("Player");
-            PlayerActions.Instance.AllowPausing(true);
+            Pause.Instance.canPause = true;
             DialogueCamera.Instance.ExitDialogeCamera();
             ReadableUI.Instance.Menu.Close();
             ReadableUI.Instance.CloseBtn.onClick.RemoveAllListeners();
