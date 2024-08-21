@@ -116,6 +116,7 @@ namespace Ivayami.Audio {
         public void VolumeUpdate(float volume) {
             _musicInstanceCurrent.getVolume(out float currentVolume);
             _musicInstanceCurrent.setVolume(currentVolume * volume / SaveSystem.Instance.Options.musicVol);
+            SaveSystem.Instance.Options.musicVol = volume;
         }
 
     }
