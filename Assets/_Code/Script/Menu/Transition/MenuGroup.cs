@@ -44,7 +44,7 @@ namespace Ivayami.UI {
         }
 
         public void SetSelected(GameObject selectedObject) {
-            EventSystem.current.SetSelectedGameObject(selectedObject);
+            PreventSelectPointer.Instance.ExecuteIfNotClick(() => EventSystem.current.SetSelectedGameObject(selectedObject));
         }
 
     }

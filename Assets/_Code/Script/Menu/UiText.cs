@@ -25,7 +25,6 @@ namespace Ivayami.UI {
 
         private void InitDict() {
             if (_keys != null && _keys.Length > 0) {
-                Debug.Log(GetPath());
                 _dictionary = new Dictionary<string, string>();
                 for (int i = 0; i < _keys.Length; i++) _dictionary.Add(_keys[i], _values[i]);
 #if !UNITY_EDITOR
@@ -48,9 +47,11 @@ namespace Ivayami.UI {
             }
         }
 
+#if UNITY_EDITOR
         public string GetPath() {
             return AssetDatabase.GetAssetPath(this);
         }
+#endif
 
     }
 }
