@@ -24,7 +24,8 @@ namespace Ivayami.Save
 
         public override void LoadData()
         {
-            if(SaveSystem.Instance.Progress.GetSaveObjectOfType<Data>(ID, out Data data))
+            if (!SaveSystem.Instance || SaveSystem.Instance.Progress == null) return;
+            if (SaveSystem.Instance.Progress.GetSaveObjectOfType<Data>(ID, out Data data))
             {
                 _data = data;
                 for (int i = 0; i < _data.ObjectStates.Length; i++)

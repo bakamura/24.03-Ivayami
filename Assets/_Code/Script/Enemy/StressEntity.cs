@@ -13,6 +13,7 @@ namespace Ivayami.Enemy
         [SerializeField, Min(0f)] private float _stressIncreaseTickFrequency = .2f;
         [SerializeField, Tooltip("The smaller radius allways has the priority")] private StressAreaInfo[] _stressAreas;
         [Header("Debug")]
+        [SerializeField] private bool _debugLogs;
 #if UNITY_EDITOR
         [SerializeField] private bool _drawGizmos;
         private SphereCollider _sphereCollider;
@@ -74,6 +75,7 @@ namespace Ivayami.Enemy
                 {
                     if (Vector3.Distance(transform.position, PlayerMovement.Instance.transform.position) <= _stressAreasInOrder[i].Range)
                     {
+                        if (_debugLogs) Debug.Log($"Adding stress {_stressAreasInOrder[i].StressIncrease} with a max of {_stressAreasInOrder[i].MaxStress}");
                         PlayerStress.Instance.AddStress(_stressAreasInOrder[i].StressIncrease, _stressAreasInOrder[i].MaxStress);
                         break;
                     }
