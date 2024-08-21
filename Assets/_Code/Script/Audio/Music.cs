@@ -44,6 +44,7 @@ namespace Ivayami.Audio {
                     _fadeOutRoutine = null;
                 }
                 _musicInstanceCurrent.getParameterByName("Stress", out float stress);
+                _musicInstanceCurrent.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
                 _musicInstanceCurrent.release();
                 _musicInstanceCurrent.setParameterByName("Stress", stress); //
 
@@ -72,6 +73,7 @@ namespace Ivayami.Audio {
         }
 
         public void ForceStop() {
+            _musicInstanceCurrent.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
             _musicInstanceCurrent.release();
         }
 

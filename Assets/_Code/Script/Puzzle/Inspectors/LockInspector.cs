@@ -8,7 +8,7 @@ namespace Ivayami.Puzzle
     public class LockInspector : Editor
     {
         SerializedProperty cancelInteractionInput, interactionType, confirmInput, unlockDelay,
-            itemsRequired, requestAmountToComplete, deliverItemsUI, deliverOptionsContainer, navigateUIInput, deliverBtn, onItemDeliverFailed,
+            itemsRequired, requestAmountToComplete, deliverItemsUI, deliverOptionsContainer, navigateUIInput, deliverBtn, /*onItemDeliverFailed,*/
             passwordUI,
             onInteract, onCancelInteraction, onActivate, onInteractionFailed;
         public override void OnInspectorGUI()
@@ -33,7 +33,7 @@ namespace Ivayami.Puzzle
                     EditorGUILayout.PropertyField(deliverItemsUI, new GUIContent("Deliver Item UI"));
                     EditorGUILayout.PropertyField(deliverOptionsContainer, new GUIContent("Items Icons Container"));
                     EditorGUILayout.PropertyField(deliverBtn, new GUIContent("Deliver Button"));
-                    EditorGUILayout.PropertyField(onItemDeliverFailed, new GUIContent("On Item Deliver Failed"));
+                    //EditorGUILayout.PropertyField(onItemDeliverFailed, new GUIContent("On Item Deliver Failed"));
                     break;
                 case Lock.InteractionTypes.RequirePassword:
                     EditorGUILayout.PropertyField(passwordUI, new GUIContent("PasswordUI"));
@@ -64,7 +64,7 @@ namespace Ivayami.Puzzle
             deliverOptionsContainer = serializedObject.FindProperty("_deliverOptionsContainer");
             navigateUIInput = serializedObject.FindProperty("_navigateUIInput");
             deliverBtn = serializedObject.FindProperty("_deliverBtn");
-            onItemDeliverFailed = serializedObject.FindProperty("_onItemDeliverFailed");
+            //onItemDeliverFailed = serializedObject.FindProperty("_onItemDeliverFailed");
             passwordUI = serializedObject.FindProperty("_passwordUI");
             onInteract = serializedObject.FindProperty("_onInteract");
             onCancelInteraction = serializedObject.FindProperty("_onCancelInteraction");
