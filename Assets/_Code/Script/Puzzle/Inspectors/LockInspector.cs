@@ -8,7 +8,7 @@ namespace Ivayami.Puzzle
     public class LockInspector : Editor
     {
         SerializedProperty cancelInteractionInput, interactionType, confirmInput, unlockDelay,
-            itemsRequired, deliverItemsUI, deliverOptionsContainer, navigateUIInput, deliverBtn, onItemDeliverFailed,
+            itemsRequired, requestAmountToComplete, deliverItemsUI, deliverOptionsContainer, navigateUIInput, deliverBtn, /*onItemDeliverFailed,*/
             passwordUI,
             onInteract, onCancelInteraction, onActivate, onInteractionFailed;
         public override void OnInspectorGUI()
@@ -28,11 +28,12 @@ namespace Ivayami.Puzzle
             {
                 case Lock.InteractionTypes.RequireItems:
                     EditorGUI.indentLevel++;
+                    EditorGUILayout.PropertyField(requestAmountToComplete, new GUIContent("Requests Required To Complete"));
                     EditorGUILayout.PropertyField(itemsRequired, new GUIContent("Items Required To Unlock"));
                     EditorGUILayout.PropertyField(deliverItemsUI, new GUIContent("Deliver Item UI"));
                     EditorGUILayout.PropertyField(deliverOptionsContainer, new GUIContent("Items Icons Container"));
                     EditorGUILayout.PropertyField(deliverBtn, new GUIContent("Deliver Button"));
-                    EditorGUILayout.PropertyField(onItemDeliverFailed, new GUIContent("On Item Deliver Failed"));
+                    //EditorGUILayout.PropertyField(onItemDeliverFailed, new GUIContent("On Item Deliver Failed"));
                     break;
                 case Lock.InteractionTypes.RequirePassword:
                     EditorGUILayout.PropertyField(passwordUI, new GUIContent("PasswordUI"));
@@ -46,7 +47,7 @@ namespace Ivayami.Puzzle
             EditorGUILayout.PropertyField(onInteract, new GUIContent("On Interact"));
             EditorGUILayout.PropertyField(onCancelInteraction, new GUIContent("On Cancel Interaction"));
             EditorGUILayout.PropertyField(onActivate, new GUIContent("On Interaction Complete"));
-            EditorGUILayout.PropertyField(onInteractionFailed, new GUIContent("On Interaction Faield"));
+            EditorGUILayout.PropertyField(onInteractionFailed, new GUIContent("On Interaction Failed"));
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -55,6 +56,7 @@ namespace Ivayami.Puzzle
         {
             cancelInteractionInput = serializedObject.FindProperty("_cancelInteractionInput");
             interactionType = serializedObject.FindProperty("_interactionType");
+            requestAmountToComplete = serializedObject.FindProperty("_requestAmountToComplete");
             unlockDelay = serializedObject.FindProperty("_unlockDelay");
             confirmInput = serializedObject.FindProperty("_confirmInput");
             itemsRequired = serializedObject.FindProperty("_itemsRequired");
@@ -62,7 +64,7 @@ namespace Ivayami.Puzzle
             deliverOptionsContainer = serializedObject.FindProperty("_deliverOptionsContainer");
             navigateUIInput = serializedObject.FindProperty("_navigateUIInput");
             deliverBtn = serializedObject.FindProperty("_deliverBtn");
-            onItemDeliverFailed = serializedObject.FindProperty("_onItemDeliverFailed");
+            //onItemDeliverFailed = serializedObject.FindProperty("_onItemDeliverFailed");
             passwordUI = serializedObject.FindProperty("_passwordUI");
             onInteract = serializedObject.FindProperty("_onInteract");
             onCancelInteraction = serializedObject.FindProperty("_onCancelInteraction");

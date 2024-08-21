@@ -9,7 +9,7 @@ namespace Ivayami.Puzzle
         [SerializeField, Min(0f)] private float _duration;
         [SerializeField, Range(1e-5f, .2f)] private float _finalValue = 0.03333f;
 
-        private Material _fogMaterial;
+        private static Material _fogMaterial;
         private Coroutine _interpolationCoroutine;
         private Vector4 _initialValue;
         private static readonly int PARAMETER = Shader.PropertyToID("_SoftParticleFadeParams");
@@ -41,12 +41,19 @@ namespace Ivayami.Puzzle
         private IEnumerator InterpolateCoroutine()
         {
             float count = 0;
-            while (count < _duration)
+            if(_duration > 0)
             {
-                count += Time.deltaTime;
-                _fogMaterial.SetVector(PARAMETER, Vector4.Lerp(_initialValue,
-                    new Vector4(_initialValue.x, _finalValue, _initialValue.z, _initialValue.w), _interpolationCurve.Evaluate(count / _duration)));
-                yield return null;
+                while (count < _duration)
+                {
+                    count += Time.deltaTime;
+                    _fogMaterial.SetVector(PARAMETER, Vector4.Lerp(_initialValue,
+                        new Vector4(_initialValue.x, _finalValue, _initialValue.z, _initialValue.w), _interpolationCurve.Evaluate(count / _duration)));
+                    yield return null;
+                }                
+            }
+            else
+            {
+                _fogMaterial.SetVector(PARAMETER, new Vector4(_initialValue.x, _finalValue, _initialValue.z, _initialValue.w));
             }
             _interpolationCoroutine = null;
         }

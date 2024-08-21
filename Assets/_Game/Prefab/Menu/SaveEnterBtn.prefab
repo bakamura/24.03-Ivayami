@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4285976607529600415}
   - component: {fileID: 7856751499959534221}
   - component: {fileID: 3369907496214620729}
+  - component: {fileID: 7940798034023820955}
   m_Layer: 5
   m_Name: DateText (TMP)
   m_TagString: Untagged
@@ -134,6 +135,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7940798034023820955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5171187738080551691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e3929b86144ceb4291571a630870cd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalFontAsset: {fileID: 11400000, guid: 731456dfa0e264945b7265f926db1faf, type: 2}
+  _highlightFontAsset: {fileID: 11400000, guid: 3a1b91aaf04789c4da206fd3e2716984, type: 2}
 --- !u!1 &6968831403497824868
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,6 +160,7 @@ GameObject:
   - component: {fileID: 4220634798056004275}
   - component: {fileID: 8807575485515224604}
   - component: {fileID: 9009659851899204278}
+  - component: {fileID: 167667731651574490}
   m_Layer: 5
   m_Name: ChapterText (TMP)
   m_TagString: Untagged
@@ -268,6 +284,20 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &167667731651574490
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6968831403497824868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e3929b86144ceb4291571a630870cd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _normalFontAsset: {fileID: 11400000, guid: 731456dfa0e264945b7265f926db1faf, type: 2}
+  _highlightFontAsset: {fileID: 11400000, guid: 3a1b91aaf04789c4da206fd3e2716984, type: 2}
 --- !u!1 &8498683284500544037
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,6 +312,7 @@ GameObject:
   - component: {fileID: 4223591283112892311}
   - component: {fileID: 8445026321582405958}
   - component: {fileID: 8313392711704131251}
+  - component: {fileID: 7160020079212654608}
   m_Layer: 5
   m_Name: SaveEnterBtn
   m_TagString: Untagged
@@ -361,13 +392,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 2
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 0.8000001, g: 0.8000001, b: 0.8000001, a: 1}
     m_HighlightedColor: {r: 0.8000001, g: 0.8000001, b: 0.8000001, a: 1}
@@ -468,12 +499,12 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: SelectedIndicator, Assembly-CSharp
-        m_MethodName: Reposition
+        m_TargetAssemblyTypeName: HighlightGroup, Assembly-CSharp
+        m_MethodName: SetHighlightTo
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 2461098882729441420}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.RectTransform, UnityEngine
+          m_ObjectArgument: {fileID: 7160020079212654608}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Highlightable, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -509,3 +540,18 @@ MonoBehaviour:
   _statusText: {fileID: 9009659851899204278}
   _dateText: {fileID: 3369907496214620729}
   _uiText: {fileID: 11400000, guid: 26143b4e7cbaca542b29e76b4a5092a6, type: 2}
+--- !u!114 &7160020079212654608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8498683284500544037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28b98f3dcaa1ba5498ad6cc28b7837c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _highlightables:
+  - {fileID: 167667731651574490}
+  - {fileID: 7940798034023820955}
