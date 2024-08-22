@@ -32,7 +32,7 @@ namespace Ivayami.Puzzle
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 navegationUIInput.action.performed += HandleNavigateUI;
-                _lock.InteratctableHighlight.UpdateFeedbacks(false);
+                _lock.InteratctableHighlight.UpdateFeedbacks(false, true);
                 _currentBtn.InteratctableHighlight.UpdateFeedbacks(true);
             }
             else

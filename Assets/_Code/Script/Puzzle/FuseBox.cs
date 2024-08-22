@@ -73,7 +73,7 @@ namespace Ivayami.Puzzle
         {
             if (!_isActive)
             {
-                _interatctableHighlight.UpdateFeedbacks(false);
+                _interatctableHighlight.UpdateFeedbacks(false, true);
                 _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
                 Setup();
             }
@@ -158,7 +158,7 @@ namespace Ivayami.Puzzle
             {
                 _isActive = false;
                 _currentSelected.material.SetColor(_colorEmissionVarName, _baseFuseColor);
-                _interatctableHighlight.UpdateFeedbacks(true);
+                _interatctableHighlight.UpdateFeedbacks(true, true);
                 UpdateInputsAndUI(_isActive);
                 _onInteractionCancelled?.Invoke();
             }
