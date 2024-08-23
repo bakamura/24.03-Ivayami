@@ -116,7 +116,7 @@ namespace Ivayami.Enemy
                 StopCoroutine(BehaviourCoroutine());
                 IsActive = false;
                 _isChasing = false;
-                StopMovement();
+                StopMovement(true);
             }
         }
 
@@ -137,7 +137,7 @@ namespace Ivayami.Enemy
                         if (!_isChasing)
                         {
                             if (_debugLog) Debug.Log("Target Detected");
-                            StopMovement();
+                            StopMovement(true);
                             _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                             _enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);
@@ -147,7 +147,7 @@ namespace Ivayami.Enemy
                         if (_debugLog) Debug.Log("Chase Target");
                         if (_attackTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance + _currentTargetColliderSizeFactor)
                         {
-                            StopMovement();
+                            StopMovement(true);
                             PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
                             //_isChasing = false;
                             _enemyAnimator.Attack(HandleAttackAnimationEnd);
@@ -165,7 +165,7 @@ namespace Ivayami.Enemy
                                 if (Vector3.Distance(transform.position, _lastTargetPosition) <= _navMeshAgent.stoppingDistance)
                                 {
                                     _goToLastTargetPointPatience += _behaviourTickFrequency;
-                                    _navMeshAgent.velocity = Vector3.zero;
+                                    StopMovement(false);
                                     if (_debugLog) Debug.Log("Last target point reached");
                                     if(_goToLastTargetPointPatience >= _delayBetweenPatrolPoints)
                                     {
@@ -186,6 +186,7 @@ namespace Ivayami.Enemy
                                 {
                                     if (_patrolPoints.Length > 1)
                                     {
+                                        StopMovement(false);
                                         yield return _betweenPatrolPointsDelay;
                                         currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
                                         if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
@@ -200,16 +201,17 @@ namespace Ivayami.Enemy
                             }
                         }
                     }
-                    _enemyAnimator.Walking(_navMeshAgent.velocity.sqrMagnitude > 0);
+                    _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude);
                 }
                 yield return _behaviourTickDelay;
             }
         }
 
-        private void StopMovement()
+        private void StopMovement(bool stopNavMeshAgent)
         {
-            _navMeshAgent.isStopped = true;
+            if(stopNavMeshAgent) _navMeshAgent.isStopped = true;
             _navMeshAgent.velocity = Vector3.zero;
+            _enemyAnimator.Walking(0);
         }
 
         private bool CheckForTarget(float halfVisionAngle)
