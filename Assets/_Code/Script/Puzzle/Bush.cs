@@ -6,21 +6,34 @@ namespace Ivayami.Puzzle
     [RequireComponent(typeof(Collider))]
     public class Bush : MonoBehaviour
     {
-        //public static bool IsPlayerHidden { get; private set; }
+        private static ushort _bushesActive;
         private bool _isPlayerInside;
 
         private void OnTriggerEnter(Collider other)
         {
             PlayerMovement.Instance.onCrouch.AddListener(HandleOnCrouch);
+            _bushesActive++;
             _isPlayerInside = true;
             UpdateHiddenState();
         }
 
         private void OnTriggerExit(Collider other)
         {
+            PlayerLeave();
+        }
+
+        private void OnDisable()
+        {
+            if (_isPlayerInside)
+            {
+                PlayerLeave();
+            }
+        }
+
+        private void PlayerLeave()
+        {
             _isPlayerInside = false;
-            PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
-            //IsPlayerHidden = false;
+            _bushesActive--;
             PlayerMovement.Instance.onCrouch.RemoveListener(HandleOnCrouch);
             UpdateHiddenState();
         }
@@ -33,7 +46,7 @@ namespace Ivayami.Puzzle
         private void UpdateHiddenState()
         {
             if (PlayerMovement.Instance.Crouching && _isPlayerInside) PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.Bush;
-            else PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
+            else if(_bushesActive == 0) PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
         }
     }
 

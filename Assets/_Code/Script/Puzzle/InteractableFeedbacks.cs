@@ -79,7 +79,7 @@ namespace Ivayami.Puzzle
             if (_icon)
             {
                 _defaultIcon = _icon.sprite;
-                _interactionAnimation = _icon.GetComponent<Animator>();
+                _interactionAnimation = _icon.GetComponentInParent<Animator>();
             }
             //_interactionIconSetupDone = true;
             //}
