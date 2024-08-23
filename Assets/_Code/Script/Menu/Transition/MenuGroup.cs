@@ -19,6 +19,13 @@ namespace Ivayami.UI {
             if (_setMenuBtnSelectedOnStart) EventSystem.current.SetSelectedGameObject(_currentMenu.InitialSelected.gameObject);
         }
 
+        public void CloseCurrent() {
+            if (_currentMenu != null) {
+                _currentMenu.Close();
+                _currentMenu = null;
+            }
+        }
+
         public void CloseCurrentThenOpen(Menu menuToOpen) {
             if (menuToOpen != _currentMenu) {
                 if (_transitionCoroutine != null) StopCoroutine(_transitionCoroutine);

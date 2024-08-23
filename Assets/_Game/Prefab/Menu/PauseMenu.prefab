@@ -1018,8 +1018,9 @@ GameObject:
   - component: {fileID: 6978090946932009215}
   - component: {fileID: 8705704947540370478}
   - component: {fileID: 4344393610425856542}
-  - component: {fileID: 7405014503169924567}
   - component: {fileID: 2224817242165158936}
+  - component: {fileID: 7405014503169924567}
+  - component: {fileID: 155189501506110813}
   m_Layer: 5
   m_Name: MapContainer
   m_TagString: Untagged
@@ -1115,6 +1116,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!225 &2224817242165158936
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 796002071886118358}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &7405014503169924567
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1155,18 +1168,25 @@ MonoBehaviour:
   <InitialSelected>k__BackingField: {fileID: 0}
   _openAnchoredPos: {x: 0, y: -96}
   _closedAnchoredPos: {x: 0, y: -1595}
---- !u!225 &2224817242165158936
-CanvasGroup:
+--- !u!114 &155189501506110813
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 796002071886118358}
   m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4780225e3c70c9c44bd10ca3c354bf0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _mapRectTranform: {fileID: 4758659097884719887}
+  _playerPointer: {fileID: 606543630031772293}
+  _goalPointers:
+  - {fileID: 3210774154713965455}
+  _placesInMap:
+  - {fileID: 7907869618065317263}
+  _mapWorldSize: {x: 500, y: 300}
 --- !u!1 &850535227358827606
 GameObject:
   m_ObjectHideFlags: 0
@@ -2088,6 +2108,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3564108349134042508}
+  - component: {fileID: 5256779242893170269}
+  - component: {fileID: 3561373631828177653}
+  - component: {fileID: 7915192131669283939}
   m_Layer: 5
   m_Name: BottomSection
   m_TagString: Untagged
@@ -2116,6 +2139,72 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 270}
   m_Pivot: {x: 0.5, y: 0}
+--- !u!225 &5256779242893170269
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759238767024030009}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
+--- !u!114 &3561373631828177653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759238767024030009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  <TransitionDuration>k__BackingField: 0.25
+  <InitialSelected>k__BackingField: {fileID: 0}
+  _interactable: 0
+--- !u!114 &7915192131669283939
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1759238767024030009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6e871dd239ff0846b96b9e497f3a39e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentMenu: {fileID: 0}
+  _delayToOpen: -1
+  _setMenuBtnSelectedOnStart: 0
 --- !u!1 &1795346022022950044
 GameObject:
   m_ObjectHideFlags: 0
@@ -2621,7 +2710,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -432, y: -1}
+  m_AnchoredPosition: {x: -432, y: 0}
   m_SizeDelta: {x: 288, y: 192}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4867916146435907300
@@ -2680,9 +2769,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
-        m_MethodName: GoForth
+      - m_Target: {fileID: 7915192131669283939}
+        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: CloseCurrent
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2699,6 +2788,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 1251421807333858741}
           m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
+        m_MethodName: GoForth
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -3080,7 +3181,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 432, y: -1}
+  m_AnchoredPosition: {x: 432, y: 0}
   m_SizeDelta: {x: 288, y: 192}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4829596913452118036
@@ -3133,6 +3234,18 @@ MonoBehaviour:
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 3488448312017406862}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7915192131669283939}
+        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: CloseCurrentThenOpen
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3561373631828177653}
           m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -3752,7 +3865,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -144, y: -1}
+  m_AnchoredPosition: {x: -144, y: 0}
   m_SizeDelta: {x: 288, y: 192}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &3854628556734785787
@@ -3806,6 +3919,18 @@ MonoBehaviour:
         m_Arguments:
           m_ObjectArgument: {fileID: 7405014503169924567}
           m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7915192131669283939}
+        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: CloseCurrent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4400,7 +4525,6 @@ GameObject:
   - component: {fileID: 7586750127775121}
   - component: {fileID: 6834328820109517557}
   - component: {fileID: 2309103510032901628}
-  - component: {fileID: 9049128398640078238}
   - component: {fileID: 4152660130186558476}
   - component: {fileID: 6166297821463834700}
   - component: {fileID: 2378089741971512425}
@@ -4424,12 +4548,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2585839451164894507}
-  - {fileID: 7905035138507295282}
-  - {fileID: 3564108349134042508}
   - {fileID: 847848699365539936}
   - {fileID: 3467149817719107381}
   - {fileID: 2149759717665675383}
   - {fileID: 7449895508773428350}
+  - {fileID: 7905035138507295282}
+  - {fileID: 3564108349134042508}
   - {fileID: 6865657739245338727}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4509,7 +4633,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4534754915513794605}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -4567,7 +4691,7 @@ MonoBehaviour:
   onPause:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 9049128398640078238}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Paranapiacaba.UI.Map, Assembly-CSharp
         m_MethodName: PointersUpdate
         m_Mode: 1
@@ -4660,25 +4784,6 @@ MonoBehaviour:
   _currentMenu: {fileID: 3382621261388525809}
   _delayToOpen: -1
   _setMenuBtnSelectedOnStart: 0
---- !u!114 &9049128398640078238
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4534754915513794605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4780225e3c70c9c44bd10ca3c354bf0b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _mapRectTranform: {fileID: 4758659097884719887}
-  _playerPointer: {fileID: 606543630031772293}
-  _goalPointers:
-  - {fileID: 3210774154713965455}
-  _placesInMap:
-  - {fileID: 7907869618065317263}
-  _mapWorldSize: {x: 500, y: 300}
 --- !u!114 &4152660130186558476
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4847,21 +4952,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5322106914464512150}
-        m_TargetAssemblyTypeName: Paranapiacaba.UI.Journal, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 7146052878032928959}
+      - m_Target: {fileID: 7282375717703895526}
         m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: CloseCurrentThenOpen
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4871,8 +4964,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Paranapiacaba.UI.Journal, Assembly-CSharp
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
+        m_MethodName: ChangeAnimation
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
         m_MethodName: FocusAberration
         m_Mode: 3
         m_Arguments:
@@ -5115,9 +5220,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5322106914464512150}
-        m_TargetAssemblyTypeName: Paranapiacaba.UI.Journal, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 7282375717703895526}
+        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: CloseCurrentThenOpen
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
+        m_MethodName: ChangeAnimation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5127,20 +5244,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 7282375717703895526}
-        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
-        m_MethodName: CloseCurrentThenOpen
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 7937267857318442604}
-          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Paranapiacaba.UI.Journal, Assembly-CSharp
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
         m_MethodName: FocusDocument
         m_Mode: 3
         m_Arguments:
@@ -5564,9 +5669,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5322106914464512150}
-        m_TargetAssemblyTypeName: Paranapiacaba.UI.Journal, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 7282375717703895526}
+        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: CloseCurrentThenOpen
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
+        m_MethodName: ChangeAnimation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5576,20 +5693,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 7282375717703895526}
-        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
-        m_MethodName: CloseCurrentThenOpen
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 2646869856921575199}
-          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Paranapiacaba.UI.Journal, Assembly-CSharp
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
         m_MethodName: FocusCharacter
         m_Mode: 3
         m_Arguments:
@@ -6633,6 +6738,7 @@ GameObject:
   - component: {fileID: 2902611079737467794}
   - component: {fileID: 6342158692306046892}
   - component: {fileID: 511347197135927485}
+  - component: {fileID: 3023373777191972657}
   m_Layer: 5
   m_Name: SectionBtnContainer
   m_TagString: Untagged
@@ -6713,6 +6819,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e96307b5d1aaf484f86a8c43a4c5cc4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3023373777191972657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6153957721326667512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdf9bf7827f2b9e4dbcc65d594ca7deb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tabChangeAction: {fileID: -5520482386448787551, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
+  _tabBtns:
+  - {fileID: 4867916146435907300}
+  - {fileID: 3854628556734785787}
+  - {fileID: 8951730464423860693}
+  - {fileID: 4829596913452118036}
 --- !u!1 &6219662636044067515
 GameObject:
   m_ObjectHideFlags: 0
@@ -8494,9 +8618,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5322106914464512150}
-        m_TargetAssemblyTypeName: Paranapiacaba.UI.Journal, Assembly-CSharp
-        m_MethodName: 
+      - m_Target: {fileID: 7282375717703895526}
+        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: CloseCurrentThenOpen
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
+        m_MethodName: ChangeAnimation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8506,20 +8642,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 7282375717703895526}
-        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
-        m_MethodName: CloseCurrentThenOpen
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 1251421807333858741}
-          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Paranapiacaba.UI.Journal, Assembly-CSharp
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
         m_MethodName: FocusChapter
         m_Mode: 3
         m_Arguments:
@@ -9027,7 +9151,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 144, y: -1}
+  m_AnchoredPosition: {x: 144, y: 0}
   m_SizeDelta: {x: 288, y: 192}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &8951730464423860693
@@ -9080,6 +9204,18 @@ MonoBehaviour:
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 7163392351517035179}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7915192131669283939}
+        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: CloseCurrentThenOpen
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3561373631828177653}
           m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
