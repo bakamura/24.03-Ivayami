@@ -106,7 +106,7 @@ namespace Ivayami.Enemy
                 //PlayerStress.Instance.SetStressMin(0);
                 //_navMeshAgent.isStopped = true;
                 _navMeshAgent.velocity = Vector3.zero;
-                _enemyAnimator.Walking(false);
+                _enemyAnimator.Walking(0);
                 isStressAreaActive = true;
             }
         }
@@ -124,6 +124,7 @@ namespace Ivayami.Enemy
                     {
                         _navMeshAgent.isStopped = true;
                         _navMeshAgent.velocity = Vector3.zero;
+                        _enemyAnimator.Walking(0);
                         _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
                         //PlayerStress.Instance.SetStressMin(98);
                         _enemyAnimator.TargetDetected(HandleTargetDetected);
@@ -177,7 +178,7 @@ namespace Ivayami.Enemy
                     }
                     _enemyAnimator.Chasing(_isChasing);
                 }
-                _enemyAnimator.Walking(_navMeshAgent.velocity.sqrMagnitude > 0);
+                _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude);
                 yield return _behaviourTickDelay;
             }
         }
@@ -225,7 +226,7 @@ namespace Ivayami.Enemy
             _navMeshAgent.SetDestination(finalPos);
             while (Vector3.Distance(new Vector3(transform.position.x, _navMeshAgent.destination.y, transform.position.z), _navMeshAgent.destination) > _navMeshAgent.stoppingDistance)
             {
-                _enemyAnimator.Walking(true);
+                _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude);
                 if (!stayInPath && CheckForTarget(_halfVisionAngle))
                 {
                     targetDetected = true;
@@ -234,9 +235,9 @@ namespace Ivayami.Enemy
                 _navMeshAgent.SetDestination(finalPos);
                 yield return delay;
             }
-            _enemyAnimator.Walking(false);
-            if (!targetDetected) yield return stayInPointDelay;
             _navMeshAgent.velocity = Vector3.zero;
+            _enemyAnimator.Walking(0);
+            if (!targetDetected) yield return stayInPointDelay;
             if (_speedMultiplier > 0) ChangeSpeedMultiplier(0);
             _detectTargetPointOffBehaviourReachedCoroutine = null;
             if (autoStartBehaviour) StartBehaviour();
