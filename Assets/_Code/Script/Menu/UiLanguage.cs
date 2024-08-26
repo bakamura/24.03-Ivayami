@@ -5,6 +5,7 @@ using Ivayami.Save;
 
 namespace Ivayami.UI {
     public class UiLanguage : MonoBehaviour {
+
         [Serializable]
         public class LanguageComponent {
             [field: SerializeField] public TextMeshProUGUI Tmp { get; private set; }

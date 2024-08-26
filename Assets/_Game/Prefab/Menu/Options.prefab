@@ -1210,6 +1210,7 @@ GameObject:
   - component: {fileID: 4909466019376505197}
   - component: {fileID: 160204745902293545}
   - component: {fileID: 5861029624016838381}
+  - component: {fileID: 7511099034931470103}
   m_Layer: 5
   m_Name: Description
   m_TagString: Untagged
@@ -1333,6 +1334,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &7511099034931470103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2191768887095475308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdf7197235b411e43a352f43f7a82db9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _uiText: {fileID: 11400000, guid: 687ea5fe1436f284ba525ebb135f27cb, type: 2}
 --- !u!1 &2536144901752942305
 GameObject:
   m_ObjectHideFlags: 0
@@ -1710,16 +1724,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5861029624016838381}
-        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-        m_MethodName: set_text
+      - m_Target: {fileID: 7511099034931470103}
+        m_TargetAssemblyTypeName: Ivayami.UI.UiLanguageDynamic, Assembly-CSharp
+        m_MethodName: DisplayText
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: How Loud the Game's Sound Effects are
+          m_StringArgument: SfxVol
           m_BoolArgument: 0
         m_CallState: 2
   _onPointerEnter:
@@ -2579,16 +2593,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5861029624016838381}
-        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-        m_MethodName: set_text
+      - m_Target: {fileID: 7511099034931470103}
+        m_TargetAssemblyTypeName: Ivayami.UI.UiLanguageDynamic, Assembly-CSharp
+        m_MethodName: DisplayText
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: How Fast the Camera's Horizontal Movement is
+          m_StringArgument: CameraSensitivityX
           m_BoolArgument: 0
         m_CallState: 2
   _onPointerEnter:
@@ -3026,16 +3040,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5861029624016838381}
-        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-        m_MethodName: set_text
+      - m_Target: {fileID: 7511099034931470103}
+        m_TargetAssemblyTypeName: Ivayami.UI.UiLanguageDynamic, Assembly-CSharp
+        m_MethodName: DisplayText
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: How Loud the Game's Music is
+          m_StringArgument: MusicVol
           m_BoolArgument: 0
         m_CallState: 2
   _onPointerEnter:
@@ -4588,16 +4602,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5861029624016838381}
-        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-        m_MethodName: set_text
+      - m_Target: {fileID: 7511099034931470103}
+        m_TargetAssemblyTypeName: Ivayami.UI.UiLanguageDynamic, Assembly-CSharp
+        m_MethodName: DisplayText
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: How Fast the Camera's Vertical Movement is
+          m_StringArgument: CameraSensitivityY
           m_BoolArgument: 0
         m_CallState: 2
   _onPointerEnter:
@@ -5135,16 +5149,16 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 5861029624016838381}
-        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-        m_MethodName: set_text
+      - m_Target: {fileID: 7511099034931470103}
+        m_TargetAssemblyTypeName: Ivayami.UI.UiLanguageDynamic, Assembly-CSharp
+        m_MethodName: DisplayText
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: What Language Texts in the Game are Displayed
+          m_StringArgument: Language
           m_BoolArgument: 0
         m_CallState: 2
   _onPointerEnter:
