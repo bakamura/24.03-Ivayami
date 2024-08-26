@@ -8,11 +8,18 @@ namespace Ivayami.Dialogue
         [SerializeField] private bool _activateOnce;
         [SerializeField] private bool _lockPlayerInput;
         private bool _activated;
+        private string _dialogueId;
+
+        private void Awake()
+        {
+            _dialogueId = _dialogue.id;
+        }
+
         public void StartDialogue()
         {
             if (!_activateOnce || (_activateOnce && !_activated))
             {
-                DialogueController.Instance.StartDialogue(_dialogue.id, _lockPlayerInput);
+                DialogueController.Instance.StartDialogue(_dialogueId, _lockPlayerInput);
                 _activated = true;
             }
         }
@@ -24,12 +31,12 @@ namespace Ivayami.Dialogue
                 Debug.LogWarning("There is No CurrentDialogue to continue, check if you called StartDialogue first");
                 return;
             }
-            if(DialogueController.Instance.CurrentDialogue.id != _dialogue.id)
+            if(DialogueController.Instance.CurrentDialogue.id != _dialogueId)
             {
                 Debug.LogWarning($"The current dialogue: {DialogueController.Instance.CurrentDialogue.id} is different from the {_dialogue.id} that the object {name} wants to continue, the command ContinueDialogue will not activate");
                 return;
             }
-            if (DialogueController.Instance.CurrentDialogue.id == _dialogue.id) DialogueController.Instance.UpdateDialogue();
+            if (DialogueController.Instance.CurrentDialogue.id == _dialogueId) DialogueController.Instance.UpdateDialogue();
         }
 
         public void ChangeDialogue(Dialogue dialogue)
