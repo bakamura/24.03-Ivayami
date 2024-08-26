@@ -1,5 +1,4 @@
 using UnityEngine;
-using Ivayami.Player;
 
 namespace Ivayami.Dialogue
 {
