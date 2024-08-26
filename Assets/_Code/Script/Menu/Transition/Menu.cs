@@ -1,12 +1,14 @@
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace Ivayami.UI {
     [RequireComponent(typeof(CanvasGroup))]
     public abstract class Menu : MonoBehaviour {
 
         [SerializeField] protected AnimationCurve _transitionCurve;
-        [SerializeField] protected float _transitionDuration;
-        public float TransitionDuration { get { return _transitionDuration; } }
+        [field: SerializeField, FormerlySerializedAs("_transitionDuration")] public float TransitionDuration { get; protected set; }
+        [field: SerializeField] public Selectable InitialSelected { get; protected set; }
 
         protected CanvasGroup _canvasGroup;
 

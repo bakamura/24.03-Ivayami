@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 using Ivayami.Save;
 
@@ -8,27 +7,32 @@ namespace Ivayami.UI {
 
         [Header("UI")]
 
-        [SerializeField] private Image _chapterPreviewImage;
-        [SerializeField] private TextMeshProUGUI _chapterNumberText;
-        [SerializeField] private TextMeshProUGUI _saveDateText;
+        [SerializeField] private TextMeshProUGUI _statusText;
+        [SerializeField] private TextMeshProUGUI _dateText;
         [SerializeField] private UiText _uiText;
+        private byte _id;
         private bool _isFirstTime;
+        public Sprite PlaceImage { get; private set; }
+        public string PlaceName { get; private set; }
 
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
 
-        public void Setup(SaveProgress progress) {
+        public void Setup(SaveProgress progress, byte id) {
+            _id = id;
             _isFirstTime = progress == null;
-            LanguageTypes language = (LanguageTypes) SaveSystem.Instance.Options.language;
-            UiText uiText = language == LanguageTypes.ENUS ? _uiText : Resources.Load<UiText>($"UiText/{(language)}/{_uiText.name}");
-            _chapterNumberText.text = _isFirstTime ? uiText.GetText("NewGame") : $"{uiText.GetText("Save")} {progress.id}";
-            _saveDateText.text = _isFirstTime ? "" : progress.lastPlayedDate;
-            if (!_isFirstTime)_chapterPreviewImage.sprite = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{SaveSystem.Instance.Progress.lastProgressType}-{SaveSystem.Instance.Progress.progress[SaveSystem.Instance.Progress.lastProgressType]}").Image;
-            else _chapterPreviewImage.enabled = false;
+            _statusText.text = _uiText.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language).GetText(_isFirstTime ? "NewGame" : "Continue");
+            _dateText.text = _isFirstTime ? "" : progress.lastPlayedDate;
+            // Show Playtime
+            PlaceImage = null;
+            PlaceName = "Ohio";
         }
 
         public void EnterSave() {
-            if (_isFirstTime) SaveSelector.Instance.FirstTimeFade.FadeIn();
-            else SaveSelector.Instance.NormalFade.FadeIn();
+            // Probably should fade in before start loading, then decide what to do
+            SaveSystem.Instance.LoadProgress(_id, () => {
+                if (_isFirstTime) SaveSelector.Instance.FirstTimeFade.FadeIn();
+                else SaveSelector.Instance.NormalFade.FadeIn();
+            });
         }
 
     }

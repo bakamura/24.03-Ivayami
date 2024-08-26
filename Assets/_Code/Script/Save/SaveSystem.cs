@@ -11,15 +11,18 @@ namespace Ivayami.Save {
         public SaveProgress Progress { get; private set; }
         public SaveOptions Options { get; private set; }
 
-        private string _progressPath;
-        private string _optionsPath;
+        public static string ProgressFolderName { get; private set; } = "Save";
+        public static string OptionsFileName { get; private set; } = "Configs";
+
+        private static string _progressPath;
+        private static string _optionsPath;
+        private HashSet<SaveObject> _saveObjects = new HashSet<SaveObject>();
 
         protected override void Awake() {
             base.Awake();
 
-            _progressPath = $"{Application.persistentDataPath}/Progress";
-            _optionsPath = $"{Application.persistentDataPath}/Configs";
-
+            _progressPath = $"{Application.persistentDataPath}/{ProgressFolderName}";
+            _optionsPath = $"{Application.persistentDataPath}/{OptionsFileName}";
             if (!Directory.Exists(_progressPath)) Directory.CreateDirectory(_progressPath);
             LoadOptions();
         }
@@ -29,7 +32,7 @@ namespace Ivayami.Save {
         }
 
         public void LoadProgress(byte saveId, Action loadSaveCallback) {
-            StartCoroutine(LoadSaveRoutine($"{_progressPath}/Save_{saveId}", typeof(SaveProgress), loadSaveCallback));
+            StartCoroutine(LoadSaveRoutine($"{_progressPath}/{ProgressFolderName}_{saveId}", typeof(SaveProgress), loadSaveCallback));
 
             Logger.Log(LogType.Save, $"Loading Progress for save {saveId}");
         }
@@ -69,7 +72,7 @@ namespace Ivayami.Save {
             List<SaveProgress> progressSaves = new List<SaveProgress>();
             int saveId = 0;
             while (true) {
-                if (File.Exists($"{_progressPath}/Save_{saveId}")) {
+                if (File.Exists($"{_progressPath}/{ProgressFolderName}_{saveId}")) {
                     Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/Save_{saveId}");
 
                     yield return readTask;
@@ -85,18 +88,22 @@ namespace Ivayami.Save {
 
         private void SaveProgress() {
             Progress.lastPlayedDate = DateTime.Now.ToString("dd/MM/yy [HH:mm]");
-            StartCoroutine(WriteSaveRoutine($"{_progressPath}/Save_{Progress.id}", typeof(SaveProgress)));
+            StartCoroutine(WriteSaveRoutine($"{_progressPath}/{ProgressFolderName}_{Progress.id}.sav", typeof(SaveProgress)));
 
             Logger.Log(LogType.Save, $"Writing Progress for save {Progress.id}");
         }
 
         public void SaveOptions() {
-            StartCoroutine(WriteSaveRoutine(_optionsPath, typeof(SaveOptions)));
+            StartCoroutine(WriteSaveRoutine($"{_optionsPath}", typeof(SaveOptions)));
 
             Logger.Log(LogType.Save, $"Writing Options Save");
         }
 
         private IEnumerator WriteSaveRoutine(string savePath, Type type) {
+            foreach (SaveObject saveObject in _saveObjects) {
+                if (saveObject) saveObject.SaveData();
+            }
+
             if (type == typeof(SaveProgress)) yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Progress)));
             else yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Options)));
 
@@ -104,8 +111,18 @@ namespace Ivayami.Save {
         }
 
         public void DeleteProgress(byte saveId) {
-            string path = $"{_progressPath}/Save_{saveId}";
+            string path = $"{_progressPath}/{ProgressFolderName}_{saveId}";
             if (File.Exists(path)) File.Delete(path);
+        }
+
+        public void RegisterSaveObject(SaveObject saveObject) {
+            if (!_saveObjects.Contains(saveObject)) _saveObjects.Add(saveObject);
+            else Debug.LogWarning($"The object {saveObject.name} is already registered");
+        }
+
+        public void UnregisterSaveObject(SaveObject saveObject) {
+            if (_saveObjects.Contains(saveObject)) _saveObjects.Remove(saveObject);
+            else Debug.LogWarning($"The object {saveObject.name} is already unregistered");
         }
 
     }
