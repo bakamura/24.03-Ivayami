@@ -38,6 +38,7 @@ namespace Ivayami.Save
             var savers = t.GetComponentsInChildren<SaveObject>();
             for (int i = 0; i < savers.Length; i++)
             {
+                Undo.RecordObject(savers[i], "Key");
                 savers[i].ID = $"{savers[i].gameObject.name}_{sceneName}_{Mathf.Abs(savers[i].GetInstanceID())}";
             }
         }

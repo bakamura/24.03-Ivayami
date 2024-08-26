@@ -8,7 +8,7 @@ using System;
 using UnityEditor;
 #endif
 
-namespace Ivayami.Puzzle
+namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(Rigidbody))]
     public class WalkNPC : MonoBehaviour
@@ -18,6 +18,7 @@ namespace Ivayami.Puzzle
         [SerializeField, Min(0f)] private float _aceleration;
         [SerializeField, Min(0f)] private float _rotationSpeed;
         [SerializeField, Min(0f)] private float _minDistanceFromPathPoint;
+        [SerializeField] private bool _scaleAnimationWithSpeed;
         [SerializeField] private Path[] _paths;
 
 #if UNITY_EDITOR
@@ -73,7 +74,7 @@ namespace Ivayami.Puzzle
             {
                 StopCoroutine(_walkCoroutine);
                 _walkCoroutine = null;
-                _animator.Walking(false);
+                _animator.Walking(0);
                 _currentVelocity = Vector3.zero;
             }
         }
@@ -81,8 +82,7 @@ namespace Ivayami.Puzzle
         private IEnumerator WalkCoroutine()
         {
             Vector3 direction;
-            Vector3 finalPosition;
-            _animator.Walking(true);
+            Vector3 finalPosition;            
             while (_currentPointIndex < _paths[_currentPathIndex].Points.Length)
             {
                 finalPosition = _paths[_currentPathIndex].Points[_currentPointIndex] + _initialPosition;
@@ -91,6 +91,7 @@ namespace Ivayami.Puzzle
                 direction = new Vector3(direction.x, 0, direction.z);
                 _currentVelocity = Vector3.MoveTowards(_currentVelocity, direction.normalized * _maxSpeed, _aceleration * _tick);
                 _currentVelocity = new Vector3(_currentVelocity.x, _rigidbody.velocity.y, _currentVelocity.z);
+                _animator.Walking(_scaleAnimationWithSpeed ? _currentVelocity.magnitude : 1);
 
                 transform.rotation = Quaternion.Euler(0, Mathf.MoveTowardsAngle(transform.rotation.eulerAngles.y, Quaternion.LookRotation(direction.normalized).eulerAngles.y, _rotationSpeed * _tick), 0);
                 if (Vector3.Distance(transform.position, finalPosition) <= _minDistanceFromPathPoint)
@@ -103,7 +104,7 @@ namespace Ivayami.Puzzle
                 yield return _delay;
             }
             _currentVelocity = Vector3.zero;
-            _animator.Walking(false);
+            _animator.Walking(0);
             if (_currentPathIndex + 1 < _paths.Length)
             {
                 _paths[_currentPathIndex].OnPathEnd?.Invoke();
