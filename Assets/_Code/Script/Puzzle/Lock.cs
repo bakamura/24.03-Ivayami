@@ -105,8 +105,8 @@ namespace Ivayami.Puzzle
                 }
                 else
                 {
-                    _onInteractionFailed?.Invoke();
                     _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
+                    _onInteractionFailed?.Invoke();
                 }
             }
         }
@@ -240,24 +240,20 @@ namespace Ivayami.Puzzle
         {
             if (_skipDeliverUI)
             {
-                byte count = 0;
-                for (int i = 0; i < _itemsRequired.Length; i++)
+                for (int i = 0; i < _currentRequests.Count; i++)
                 {
-                    if (PlayerInventory.Instance.CheckInventoryFor(_itemsRequired[i].Item.name))
+                    if (PlayerInventory.Instance.CheckInventoryFor(_currentRequests[i].Item.name))
                     {
-                        count++;
+                        RemoveItemFromRequestList(i);
                     }
                 }
-                if (count == _itemsRequired.Length) _currentRequests.Clear();
             }
             else
             {
                 _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ConfirmOption);
                 if (PlayerInventory.Instance.CheckInventoryFor(_currentRequests[_currentRequestIndex].Item.name))
                 {
-                    _currentRequests[_currentRequestIndex].OnItemDelivered?.Invoke();
-                    if (_currentRequests[_currentRequestIndex].UseItem) PlayerInventory.Instance.RemoveFromInventory(_currentRequests[_currentRequestIndex].Item);
-                    _currentRequests.Remove(_currentRequests[_currentRequestIndex]);
+                    RemoveItemFromRequestList(_currentRequestIndex);
                     ConstrainValueToArraySize(ref _currentRequestIndex, _currentRequests.Count);
                     if (_currentRequests.Count > 0) UpdateDeliverIcons((byte)_currentRequestIndex);
                     //TryUnlock();
@@ -266,6 +262,13 @@ namespace Ivayami.Puzzle
                 //_onItemDeliverFailed?.Invoke();
             }
             TryUnlock();
+        }
+
+        private void RemoveItemFromRequestList(int index)
+        {
+            _currentRequests[index].OnItemDelivered?.Invoke();
+            if (_currentRequests[index].UseItem) PlayerInventory.Instance.RemoveFromInventory(_currentRequests[index].Item);
+            _currentRequests.RemoveAt(index);
         }
 
         private void LoopValueByArraySize(ref sbyte valueToConstrain, int arraySize)
