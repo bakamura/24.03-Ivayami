@@ -101,10 +101,10 @@ namespace Ivayami.Dialogue
             operation.completed += (AsyncOperation op) => IsPaused = false;
         }
 
-        private void Start()
-        {
-            Options.OnChangeLanguage.AddListener(ChangeLanguage);
-        }
+        //private void Start()
+        //{
+        //    Options.OnChangeLanguage.AddListener(ChangeLanguage);
+        //}
 
         #region BaseStructure
         public void StartDialogue(string dialogueId, bool lockInput)
@@ -284,8 +284,8 @@ namespace Ivayami.Dialogue
                     //_continueInput.action.Disable();
                 }
                 LockInput = false;
-                PauseDialogue(false);
             }
+            PauseDialogue(false);
         }
 
         public void UpdateDialogueEventsList(DialogueEvents dialogueEvents)
