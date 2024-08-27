@@ -39,29 +39,19 @@ namespace Ivayami.Save
         {
             value.AreaProgress = (AreaProgress)EditorGUILayout.ObjectField(value.AreaProgress, typeof(AreaProgress), false);
             property.FindPropertyRelative("AreaProgress").objectReferenceValue = value.AreaProgress;
-            //rect = GUILayoutUtility.GetLastRect();
-            //float baseWidith = rect.width;
             if(_steps != null)
             {
                 EditorGUI.BeginChangeCheck();
 
                 EditorGUILayout.BeginHorizontal();
-                //rect.y += rect.height * 1.5f;
-                //rect.width *= .1f;
-                EditorGUILayout.LabelField("Min Progress");
-                //rect.x += rect.width;
-                //rect.width = baseWidith * .9f; 
-                value.ProgressStepMin = EditorGUILayout.Popup(value.ProgressStepMin, _steps.ToArray());
+
+                EditorGUILayout.LabelField(/*rect,*/ "Min Progress", GUILayout.MaxWidth(100));
+                value.ProgressStepMin = EditorGUILayout.Popup(/*rect,*/ value.ProgressStepMin, _steps.ToArray());
                 EditorGUILayout.EndHorizontal();
 
                 EditorGUILayout.BeginHorizontal();
-                //rect.y += rect.height * 1.5f;
-                //rect.width = baseWidith;
-                //rect.width *= .1f;
-                EditorGUILayout.LabelField("Max Progress");
-                //rect.x += rect.width;
-                //rect.width = baseWidith * .9f;
-                value.ProgressStepMax = EditorGUILayout.Popup(value.ProgressStepMax, _steps.ToArray());
+                EditorGUILayout.LabelField(/*rect,*/ "Max Progress", GUILayout.MaxWidth(100));
+                value.ProgressStepMax = EditorGUILayout.Popup(/*rect,*/ value.ProgressStepMax, _steps.ToArray());
                 EditorGUILayout.EndHorizontal();
 
                 if (EditorGUI.EndChangeCheck())
