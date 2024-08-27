@@ -1,6 +1,7 @@
 using UnityEngine;
 using Cinemachine;
 using System.Collections;
+using System;
 
 namespace Ivayami.Dialogue
 {
@@ -48,9 +49,7 @@ namespace Ivayami.Dialogue
         private IEnumerator BlendAnimationCoroutine()
         {
             float count = 0;
-            Vector3 initialPosition = _dialogueCamera.transform.position;
-            Quaternion initialRotation = _dialogueCamera.transform.rotation;
-
+            _dialogueCamera.transform.GetPositionAndRotation(out Vector3 initialPosition, out Quaternion initialRotation);
             if (_currentDuration == 0)
             {
                 _dialogueCamera.transform.SetPositionAndRotation(_finalPlacement.position, _finalPlacement.rotation);
