@@ -1,4 +1,5 @@
 using Ivayami.Player;
+using Ivayami.Puzzle;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -21,6 +22,7 @@ namespace Ivayami.UI {
         private void Start() {
             _pauseInput.action.started += (callBackContext) => PauseGame(true);
             _unpauseInput.action.started += (callBackContext) => PauseGame(false);
+            onPause.AddListener(() => ReturnAction.Instance.Set(UnpauseOnBack));
         }
 
         public void PauseGame(bool isPausing) {
@@ -31,6 +33,11 @@ namespace Ivayami.UI {
                 Logger.Log(LogType.UI, $"Game Pause: {isPausing}");
             }
             else Logger.Log(LogType.UI, "Game Cannot Pause");
+        }
+
+        private void UnpauseOnBack() {
+            if (InputCallbacks.Instance.IsGamepad) PauseGame(false);
+
         }
 
     }

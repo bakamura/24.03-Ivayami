@@ -25,7 +25,7 @@ namespace Ivayami.UI {
             _dateText.text = _isFirstTime ? "" : progress.lastPlayedDate;
             // Show Playtime
             PlaceName = uiText.GetText(_isFirstTime ? "NewGameMessage" : progress.lastSavePlace);
-            PlaceImage = Resources.Load<Sprite>($"PlacePreview/{progress.lastSavePlace}");
+            PlaceImage = _isFirstTime ? null : Resources.Load<Sprite>($"PlacePreview/{progress.lastSavePlace}");
         }
 
         public void EnterSave() {
