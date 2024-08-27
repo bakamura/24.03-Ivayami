@@ -35,7 +35,7 @@ namespace Ivayami.UI {
             else Logger.Log(LogType.UI, "Game Cannot Pause");
         }
 
-        private void UnpauseOnBack() {
+        public void UnpauseOnBack() {
             if (InputCallbacks.Instance.IsGamepad) PauseGame(false);
 
         }
