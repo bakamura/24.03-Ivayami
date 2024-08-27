@@ -8,16 +8,28 @@ namespace Ivayami.Dialogue
     [CustomEditor(typeof(CameraAnimationInfo))]
     public class CameraAnimationInfoInspector : Editor
     {
-        SerializedProperty duration, hidePlayerModel, positionCurve, rotationCurve;
+        SerializedProperty duration, hidePlayerModel, positionCurve, rotationCurve,
+            changeCameraFocus, lookAtPlayer, followPlayer, lookAtTarget, followTarget;
         private Transform _dialogueCameraTransform;
         public override void OnInspectorGUI()
         {
-            EditorGUILayout.PropertyField(duration, new GUIContent("Duration"));
+            EditorGUILayout.PropertyField(duration, new GUIContent("Interpolation Duration"));
             EditorGUILayout.PropertyField(hidePlayerModel, new GUIContent("Hide Player Model", "Hide Player Model when this camera activates"));
-            EditorGUILayout.PropertyField(positionCurve, new GUIContent("Position Animation Blend"));
-            EditorGUILayout.PropertyField(rotationCurve, new GUIContent("Rotation Animation Blend"));
+            EditorGUILayout.PropertyField(changeCameraFocus, new GUIContent("Change Camera Focus"));
+            if (changeCameraFocus.boolValue)
+            {
+                EditorGUILayout.PropertyField(lookAtPlayer, new GUIContent("Look At Player"));
+                if (!lookAtPlayer.boolValue) EditorGUILayout.PropertyField(lookAtTarget, new GUIContent("Look At Target Transform"));
+                EditorGUILayout.PropertyField(followPlayer, new GUIContent("Follow Player"));
+                if (!followPlayer.boolValue) EditorGUILayout.PropertyField(followTarget, new GUIContent("Follow Target Transform"));
+            }
+            else
+            {
+                EditorGUILayout.PropertyField(positionCurve, new GUIContent("Position Animation Blend"));
+                EditorGUILayout.PropertyField(rotationCurve, new GUIContent("Rotation Animation Blend"));
+            }
 
-            if (GUILayout.Button("CameraPreview"))
+            if (!changeCameraFocus.boolValue && GUILayout.Button("CameraPreview"))
             {
                 if (!_dialogueCameraTransform) _dialogueCameraTransform = FindObjectOfType<DialogueCamera>().GetComponentInChildren<CinemachineVirtualCamera>().transform;
                 CameraAnimationInfo instance = (CameraAnimationInfo)target;
@@ -33,6 +45,11 @@ namespace Ivayami.Dialogue
             positionCurve = serializedObject.FindProperty("PositionCurve");
             rotationCurve = serializedObject.FindProperty("RotationCurve");
             hidePlayerModel = serializedObject.FindProperty("_hidePlayerModel");
+            changeCameraFocus = serializedObject.FindProperty("_changeCameraFocus");
+            lookAtPlayer = serializedObject.FindProperty("_lookAtPlayer");
+            followPlayer = serializedObject.FindProperty("_followPlayer");
+            lookAtTarget = serializedObject.FindProperty("_lookAtTarget");
+            followTarget = serializedObject.FindProperty("_followTarget");
         }
     }
 }
