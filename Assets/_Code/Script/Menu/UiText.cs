@@ -18,7 +18,7 @@ namespace Ivayami.UI {
             if (_dictionary == null) InitDict();
             if (_dictionary.ContainsKey(key)) return _dictionary[key];
             else {
-                Debug.Log($"UiText '{name}' doesn't have key '{key}'");
+                Debug.LogWarning($"UiText '{name}' doesn't have key '{key}'");
                 return "<ERROR>";
             }
         }

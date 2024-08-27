@@ -9,6 +9,8 @@ namespace Ivayami.UI {
 
         [SerializeField] private InputActionReference _tabChangeAction;
         [SerializeField] private Button[] _tabBtns;
+        [SerializeField] private Highlightable[] _tabHighlightables;
+        [SerializeField] private HighlightGroup _highlightGroup;
 
         private int _tabCurrent;
 
@@ -18,15 +20,16 @@ namespace Ivayami.UI {
         }
 
         private void Change(InputAction.CallbackContext context) {
-            Debug.Log(_tabCurrent);
-            Debug.Log(context.ReadValue<int>());
-            _tabCurrent += context.ReadValue<int>();
+            _tabCurrent += (int)context.ReadValue<float>();
             if (_tabCurrent < 0) _tabCurrent += _tabBtns.Length;
             else if (_tabCurrent >= _tabBtns.Length) _tabCurrent -= _tabBtns.Length;
-            Debug.Log(_tabCurrent);
 
             _tabBtns[_tabCurrent].Select();
             _tabBtns[_tabCurrent].onClick.Invoke();
+        }
+
+        public void HighlightCurrentTab() {
+            _highlightGroup.SetHighlightTo(_tabHighlightables[_tabCurrent]);
         }
 
     }

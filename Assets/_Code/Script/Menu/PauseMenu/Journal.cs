@@ -22,6 +22,10 @@ namespace Ivayami.UI {
 
         public void FocusChapter(int chapterId) {
             ChapterDescription description = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{chapterId}");
+            if(description == null) {
+                Debug.LogWarning("Description Not Found");
+                return;
+            }
             _entryImage.sprite = description.Image;
             _entryNotes.text = description.Text;
 
@@ -30,6 +34,10 @@ namespace Ivayami.UI {
 
         public void FocusCharacter(int characterId) {
             ChapterDescription description = Resources.Load<ChapterDescription>($"{CHARACTER_DESCRIPTION_FOLDER}/CharacterDescription_{(true ? characterId : "null")}");
+            if (description == null) {
+                Debug.LogWarning("Description Not Found");
+                return;
+            }
             _entryImage.sprite = description.Image;
             _entryNotes.text = description.Text;
 
@@ -38,6 +46,10 @@ namespace Ivayami.UI {
 
         public void FocusDocument(int documentId) {
             ChapterDescription description = Resources.Load<ChapterDescription>($"{DOCUMENT_FOLDER}/Document_{(true ? documentId : "null")}");
+            if (description == null) {
+                Debug.LogWarning("Description Not Found");
+                return;
+            }
             _entryImage.sprite = description.Image;
             _entryNotes.text = description.Text;
 
@@ -46,6 +58,10 @@ namespace Ivayami.UI {
 
         public void FocusAberration(int aberrationId) {
             ChapterDescription description = Resources.Load<ChapterDescription>($"{ABERRATION_DESCRIPTION_FOLDER}/AberrationDescription_{(true ? aberrationId : "null")}");
+            if (description == null) {
+                Debug.LogWarning("Description Not Found");
+                return;
+            }
             _entryImage.sprite = description.Image;
             _entryNotes.text = description.Text;
 
