@@ -19,12 +19,14 @@ namespace Ivayami.Puzzle
 
         [SerializeField, Min(0f)] private float _unlockDelay;
         [SerializeField] private InteractionTypes _interactionType;
+        [SerializeField] private byte _requestAmountToComplete = 1;
+        [SerializeField] private bool _skipDeliverUI;
 
         [SerializeField] private ItemRequestData[] _itemsRequired;
         [SerializeField] private CanvasGroup _deliverItemsUI;
         [SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
         [SerializeField] private Selectable _deliverBtn;
-        [SerializeField] private UnityEvent _onItemDeliverFailed;
+        //[SerializeField] private UnityEvent _onItemDeliverFailed;
 
         [SerializeField] private PasswordUI _passwordUI;
 
@@ -66,40 +68,45 @@ namespace Ivayami.Puzzle
             _interactableSounds = GetComponent<InteractableSounds>();
             _lockSounds = GetComponent<LockPuzzleSounds>();
             _unlockWait = new WaitForSeconds(_unlockDelay);
+            if (_itemsRequired != null && _currentRequests.Count == 0)
+            {
+                for (int i = 0; i < _itemsRequired.Length; i++)
+                {
+                    _currentRequests.Add(_itemsRequired[i]);
+                }
+            }
         }
 
         [ContextMenu("Interact")]
         public PlayerActions.InteractAnimation Interact()
         {
             _onInteract?.Invoke();
+            if (_interactionType == InteractionTypes.RequireItems && _skipDeliverUI)
+            {
+                DeliverItem();
+                return PlayerActions.InteractAnimation.Default;
+            }
             UpdateInputs(true);
-            _interatctableFeedbacks.UpdateFeedbacks(false);
+            _interatctableFeedbacks.UpdateFeedbacks(false, true);
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
-            if (_interactionType == InteractionTypes.RequirePassword)
-            {
-                _passwordUI.UpdateActiveState(true);
-            }
-            else
-            {
-                UpdateDeliverItemUI(true);
-            }
+            UpdateUIs(true);
             return PlayerActions.InteractAnimation.Default;
         }
 
         public void TryUnlock()
         {
-            if(_unlockCoroutine == null)
+            if (_unlockCoroutine == null)
             {
                 bool isPasswordCorrect = _interactionType == InteractionTypes.RequirePassword && _passwordUI.CheckPassword();
-                bool hasDeliveredAllItems = _interactionType == InteractionTypes.RequireItems && _currentRequests.Count == 0/*_itemsRequired.Length == _currentItemsDelivered*/;
+                bool hasDeliveredAllItems = _interactionType == InteractionTypes.RequireItems && _itemsRequired.Length - _currentRequests.Count >= _requestAmountToComplete;
                 if (hasDeliveredAllItems || isPasswordCorrect)
                 {
                     _unlockCoroutine = StartCoroutine(UnlockFeedbackCoroutine());
                 }
                 else
                 {
-                    _onInteractionFailed?.Invoke();
                     _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
+                    _onInteractionFailed?.Invoke();
                 }
             }
         }
@@ -108,12 +115,11 @@ namespace Ivayami.Puzzle
         {
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
             yield return _unlockWait;
-            _passwordUI.UpdateActiveState(false);
-            UpdateDeliverItemUI(false);
+            UpdateUIs(false);
             UpdateInputs(false);
             IsActive = !IsActive;
-            onActivate?.Invoke();
             _unlockCoroutine = null;
+            onActivate?.Invoke();
         }
 
         private void UpdateInputs(bool isActive)
@@ -122,7 +128,7 @@ namespace Ivayami.Puzzle
             {
                 _cancelInteractionInput.action.performed += HandleExitInteraction;
                 _navigateUIInput.action.performed += HandleNavigateUI;
-                if (_passwordUI)
+                if (_interactionType == InteractionTypes.RequirePassword)
                 {
                     _passwordUI.OnCheckPassword += TryUnlock;
                     if (_passwordUI is RotateLock) _confirmInput.action.performed += HandleConfirmUI;
@@ -133,7 +139,7 @@ namespace Ivayami.Puzzle
             {
                 _cancelInteractionInput.action.performed -= HandleExitInteraction;
                 _navigateUIInput.action.performed -= HandleNavigateUI;
-                if (_passwordUI)
+                if (_interactionType == InteractionTypes.RequirePassword)
                 {
                     _passwordUI.OnCheckPassword -= TryUnlock;
                     if (_passwordUI is RotateLock) _confirmInput.action.performed -= HandleConfirmUI;
@@ -141,13 +147,17 @@ namespace Ivayami.Puzzle
                 PlayerActions.Instance.ChangeInputMap("Player");
             }
         }
+        private void UpdateUIs(bool isActive)
+        {
+            if (_interactionType == InteractionTypes.RequirePassword) _passwordUI.UpdateActiveState(isActive);
+            else UpdateDeliverItemUI(isActive);
+        }
 
         public void CancelInteraction()
         {
-            _passwordUI.UpdateActiveState(false);
-            UpdateDeliverItemUI(false);
+            UpdateUIs(false);
             UpdateInputs(false);
-            _interatctableFeedbacks.UpdateFeedbacks(true);
+            _interatctableFeedbacks.UpdateFeedbacks(true, true);
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.InteractReturn);
             _onCancelInteraction?.Invoke();
         }
@@ -168,15 +178,9 @@ namespace Ivayami.Puzzle
                 _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ChangeOption);
                 switch (_interactionType)
                 {
-                    //case InteractionTypes.RequirePassword:
-                    //    if (EventSystem.current.currentSelectedGameObject == null)
-                    //        _passwordUI.FallbackButton.Select();
-                    //        //EventSystem.current.SetSelectedGameObject(_passwordUI.FallbackButton);
-                    //    break;
                     case InteractionTypes.RequireItems:
                         if (EventSystem.current.currentSelectedGameObject == null)
                             _deliverBtn.Select();
-                            //EventSystem.current.SetSelectedGameObject(_deliverBtn);
                         else if (input.x != 0)
                         {
                             int temp = input.x > 0 ? 1 : -1;
@@ -204,18 +208,9 @@ namespace Ivayami.Puzzle
 
             if (isActive)
             {
-                _currentRequestIndex = 0;
-
-                if (_currentRequests.Count == 0)
-                {
-                    for (int i = 0; i < _itemsRequired.Length; i++)
-                    {
-                        _currentRequests.Add(_itemsRequired[i]);
-                    }
-                }
+                _currentRequestIndex = 0;                
                 UpdateDeliverIcons(0);
                 _deliverBtn.Select();
-                //EventSystem.current.SetSelectedGameObject(_deliverBtn);
             }
         }
 
@@ -228,7 +223,7 @@ namespace Ivayami.Puzzle
             byte iconsIndex = (byte)Mathf.FloorToInt(_deliverOptions.Length / 2);
             byte iconsFilled = 0;
             byte requestIndex = startIndex;
-            while(iconsFilled < _currentRequests.Count && iconsFilled < _deliverOptions.Length)
+            while (iconsFilled < _currentRequests.Count && iconsFilled < _deliverOptions.Length)
             {
                 _deliverOptions[iconsIndex].enabled = true;
                 _deliverOptions[iconsIndex].sprite = _currentRequests[requestIndex].Item.Sprite;
@@ -243,18 +238,37 @@ namespace Ivayami.Puzzle
         //called by interface Btn
         public void DeliverItem()
         {
-            _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ConfirmOption);
-            if (PlayerInventory.Instance.CheckInventoryFor(_currentRequests[_currentRequestIndex].Item.name))
+            if (_skipDeliverUI)
             {
-                _currentRequests[_currentRequestIndex].OnItemDelivered?.Invoke();
-                if (_currentRequests[_currentRequestIndex].UseItem) PlayerInventory.Instance.RemoveFromInventory(_currentRequests[_currentRequestIndex].Item);
-                _currentRequests.Remove(_currentRequests[_currentRequestIndex]);
-                ConstrainValueToArraySize(ref _currentRequestIndex, _currentRequests.Count);
-                if(_currentRequests.Count > 0)UpdateDeliverIcons((byte)_currentRequestIndex);
-                TryUnlock();
-                return;
+                for (int i = 0; i < _currentRequests.Count; i++)
+                {
+                    if (PlayerInventory.Instance.CheckInventoryFor(_currentRequests[i].Item.name))
+                    {
+                        RemoveItemFromRequestList(i);
+                    }
+                }
             }
-            _onItemDeliverFailed?.Invoke();
+            else
+            {
+                _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ConfirmOption);
+                if (PlayerInventory.Instance.CheckInventoryFor(_currentRequests[_currentRequestIndex].Item.name))
+                {
+                    RemoveItemFromRequestList(_currentRequestIndex);
+                    ConstrainValueToArraySize(ref _currentRequestIndex, _currentRequests.Count);
+                    if (_currentRequests.Count > 0) UpdateDeliverIcons((byte)_currentRequestIndex);
+                    //TryUnlock();
+                    //return;
+                }
+                //_onItemDeliverFailed?.Invoke();
+            }
+            TryUnlock();
+        }
+
+        private void RemoveItemFromRequestList(int index)
+        {
+            _currentRequests[index].OnItemDelivered?.Invoke();
+            if (_currentRequests[index].UseItem) PlayerInventory.Instance.RemoveFromInventory(_currentRequests[index].Item);
+            _currentRequests.RemoveAt(index);
         }
 
         private void LoopValueByArraySize(ref sbyte valueToConstrain, int arraySize)
@@ -269,5 +283,12 @@ namespace Ivayami.Puzzle
             else if (valueToConstrain >= arraySize) valueToConstrain = (sbyte)(arraySize - 1);
         }
         #endregion
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (_requestAmountToComplete > _itemsRequired.Length) _requestAmountToComplete = (byte)_itemsRequired.Length;
+        }
+#endif
     }
 }

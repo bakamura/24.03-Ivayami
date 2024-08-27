@@ -29,21 +29,41 @@ namespace Ivayami.Save
                 //if (!_isInitialized)
                 Initialize(value);
 
-                DrawStepsDropdown(/*position,*/ property, value, label);
+                DrawStepsDropdown(/*position,*/ property, value);
             }
             else
                 DrawStepsWithWarning(position, property, label);
         }
 
-        private void DrawStepsDropdown(/*Rect position, */SerializedProperty property, ProgressTriggerEvent.ProgressConditionInfo value, GUIContent label)
+        private void DrawStepsDropdown(/*Rect rect,*/ SerializedProperty property, ProgressTriggerEvent.ProgressConditionInfo value)
         {
             value.AreaProgress = (AreaProgress)EditorGUILayout.ObjectField(value.AreaProgress, typeof(AreaProgress), false);
             property.FindPropertyRelative("AreaProgress").objectReferenceValue = value.AreaProgress;
+            //rect = GUILayoutUtility.GetLastRect();
+            //float baseWidith = rect.width;
             if(_steps != null)
             {
                 EditorGUI.BeginChangeCheck();
+
+                EditorGUILayout.BeginHorizontal();
+                //rect.y += rect.height * 1.5f;
+                //rect.width *= .1f;
+                EditorGUILayout.LabelField("Min Progress");
+                //rect.x += rect.width;
+                //rect.width = baseWidith * .9f; 
                 value.ProgressStepMin = EditorGUILayout.Popup(value.ProgressStepMin, _steps.ToArray());
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.BeginHorizontal();
+                //rect.y += rect.height * 1.5f;
+                //rect.width = baseWidith;
+                //rect.width *= .1f;
+                EditorGUILayout.LabelField("Max Progress");
+                //rect.x += rect.width;
+                //rect.width = baseWidith * .9f;
                 value.ProgressStepMax = EditorGUILayout.Popup(value.ProgressStepMax, _steps.ToArray());
+                EditorGUILayout.EndHorizontal();
+
                 if (EditorGUI.EndChangeCheck())
                 {                
                     property.FindPropertyRelative("ProgressStepMin").intValue = value.ProgressStepMin;

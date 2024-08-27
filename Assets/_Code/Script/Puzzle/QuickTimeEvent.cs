@@ -70,7 +70,11 @@ namespace Ivayami.Puzzle
                     _animations[i].Record();
                     _animations[i].Animator.Play(_animations[i].StateHash, 0);
                 }
-                _waitAnimationCoroutine = StartCoroutine(WaitAnimationEndCoroutine(true, () => SetAllSpeeds(false)));
+                _interactableFeedbacks.UpdateFeedbacks(false, true);
+                _waitAnimationCoroutine = StartCoroutine(WaitAnimationEndCoroutine(true, () => {
+                    SetAllSpeeds(false);
+                    _interactableFeedbacks.UpdateFeedbacks(true, true);
+                }));
             }
         }
 
@@ -79,8 +83,8 @@ namespace Ivayami.Puzzle
             _quickTimeButton.action.started -= HandleOnClick;
             PlayerMovement.Instance.ToggleMovement(true);
             _currentClickAmount = 0;
-            _onEnd?.Invoke();
             SetAllSpeeds(true);
+            _onEnd?.Invoke();
         }
 
         private void SetAllSpeeds(bool setRecorderSpeed)
@@ -102,7 +106,7 @@ namespace Ivayami.Puzzle
                 {
                     _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
                     SetAllSpeeds(true);
-                    _interactableFeedbacks.UpdateInteractionIcon(false);
+                    _interactableFeedbacks.UpdateFeedbacks(false, true);
                     StartCoroutine(WaitAnimationEndCoroutine(false, EndEvent));
                 }
                 else
@@ -136,15 +140,16 @@ namespace Ivayami.Puzzle
                 }
                 yield return null;
             }
-            _interactableFeedbacks.UpdateInteractionIcon(waitToEnterState);
-            onWaitEnd?.Invoke();
             _waitAnimationCoroutine = null;
+            onWaitEnd?.Invoke();
         }
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
             _amountOfTimesToClick = System.Math.Clamp(_amountOfTimesToClick, byte.MinValue, byte.MaxValue);
             _framesAdvancePerClick = System.Math.Clamp(_framesAdvancePerClick, byte.MinValue, byte.MaxValue);
         }
+#endif
     }
 }
