@@ -83,8 +83,8 @@ namespace Ivayami.Puzzle
             _quickTimeButton.action.started -= HandleOnClick;
             PlayerMovement.Instance.ToggleMovement(true);
             _currentClickAmount = 0;
-            _onEnd?.Invoke();
             SetAllSpeeds(true);
+            _onEnd?.Invoke();
         }
 
         private void SetAllSpeeds(bool setRecorderSpeed)
@@ -140,14 +140,16 @@ namespace Ivayami.Puzzle
                 }
                 yield return null;
             }
-            onWaitEnd?.Invoke();
             _waitAnimationCoroutine = null;
+            onWaitEnd?.Invoke();
         }
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
             _amountOfTimesToClick = System.Math.Clamp(_amountOfTimesToClick, byte.MinValue, byte.MaxValue);
             _framesAdvancePerClick = System.Math.Clamp(_framesAdvancePerClick, byte.MinValue, byte.MaxValue);
         }
+#endif
     }
 }
