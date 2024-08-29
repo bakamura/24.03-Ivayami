@@ -19,6 +19,16 @@ namespace Ivayami.Audio
             }
         }
 
+        public void Pause()
+        {
+            _soundInstance.getPlaybackState(out PLAYBACK_STATE state);
+            if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STOPPED)
+            {
+                _soundInstance.getPaused(out bool paused);
+                _soundInstance.setPaused(!paused);
+            }
+        }
+
         private bool Setup()
         {
             if (!_audioToPlay.IsNull)
