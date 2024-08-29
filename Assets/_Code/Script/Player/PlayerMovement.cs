@@ -107,12 +107,15 @@ namespace Ivayami.Player {
         }
 
         private void Update() {
-            if (_movementBlock <= 0) Rotate();
+            if (_movementBlock <= 0) {
+                Move();
+                Rotate();
+            }
         }
 
-        private void FixedUpdate() {
-            if (_movementBlock <= 0) Move();
-        }
+        //private void FixedUpdate() {
+        //    if (_movementBlock <= 0) Move();
+        //}
 
         private void MoveDirection(InputAction.CallbackContext input) {
             _inputCache = input.ReadValue<Vector2>();
@@ -182,7 +185,9 @@ namespace Ivayami.Player {
         }
 
         public void SetPosition(Vector3 position) {
+            _characterController.enabled = false;
             transform.position = position;
+            _characterController.enabled = true;
         }
 
         public void SetTargetAngle(float angle) {
