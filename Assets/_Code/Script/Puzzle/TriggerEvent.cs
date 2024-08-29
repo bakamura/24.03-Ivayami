@@ -4,12 +4,14 @@ using System.Collections;
 
 namespace Ivayami.Puzzle
 {
+    [RequireComponent(typeof(Collider))]
     public class TriggerEvent : MonoBehaviour
     {
         [SerializeField] private TriggerTypes _triggerType;
+        [SerializeField] private bool _targetNeedToStayInside;
         [SerializeField, Min(0f)] private float _delayToActivateEvent;
-        [SerializeField] private UnityEvent _onExecute;
         [SerializeField] private string _optionalTag;
+        [SerializeField] private UnityEvent _onExecute;
         private enum TriggerTypes
         {
             OnTriggerEnter,
@@ -19,14 +21,16 @@ namespace Ivayami.Puzzle
         }
         private Coroutine _eventDelayCoroutine;
         private bool _validTag;
+        private bool _isTargetInside;
 
         private void OnTriggerEnter(Collider other)
         {
+            _isTargetInside = true;
             if (_triggerType == TriggerTypes.OnTriggerEnter && _eventDelayCoroutine == null)
             {
                 _validTag = string.IsNullOrEmpty(_optionalTag) || other.CompareTag(_optionalTag);
                 if (_validTag)
-                {
+                {                    
                     if (_delayToActivateEvent > 0) _eventDelayCoroutine = StartCoroutine(EventDelayCoroutine());
                     else _onExecute?.Invoke();
                 }
@@ -35,6 +39,12 @@ namespace Ivayami.Puzzle
 
         private void OnTriggerExit(Collider other)
         {
+            if(_isTargetInside && _targetNeedToStayInside && _eventDelayCoroutine != null)
+            {
+                StopCoroutine(_eventDelayCoroutine);
+                _eventDelayCoroutine = null;
+            }
+            _isTargetInside = false;
             if (_triggerType == TriggerTypes.OnTriggerExit && _eventDelayCoroutine == null)
             {
                 _validTag = string.IsNullOrEmpty(_optionalTag) || other.CompareTag(_optionalTag);
