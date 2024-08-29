@@ -9,7 +9,7 @@ namespace Ivayami.UI {
         [SerializeField] private TextMeshProUGUI _entryNotes;
         [SerializeField] private Animator _containerAnimator;
 
-        private static int _containerChange = Animator.StringToHash("Change");
+        private static int _containerChange = Animator.StringToHash("Forward");
 
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
         private const string CHARACTER_DESCRIPTION_FOLDER = "CharacterDescription";
