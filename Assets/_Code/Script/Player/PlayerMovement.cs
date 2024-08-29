@@ -22,13 +22,14 @@ namespace Ivayami.Player {
 
         [SerializeField, Min(0)] private float _movementSpeedRun;
         [SerializeField, Min(0)] private float _movementSpeedWalk;
+        private bool _running;
         private float _movementSpeedMax;
         private float _speedCurrent = 0;
         [SerializeField, Min(0)] private float _accelerationDuration;
         private float _acceleration;
         [SerializeField, Min(0)] private float _deccelerationDuration;
         private float _decceleration;
-        private bool _canMove;
+        private int _movementBlock;
 
         [Header("Rotation")]
 
@@ -38,7 +39,6 @@ namespace Ivayami.Player {
         [Header("Collider")]
 
         [SerializeField] private float _walkColliderHeight;
-        [SerializeField, Min(0)] private float _colliderGroundOffset;
         private Vector3 _colliderCenter;
 
         [Header("Crouch")]
@@ -79,13 +79,11 @@ namespace Ivayami.Player {
         private Vector3 _velocityCache;
         private float _movementSpeedMaxCurrent;
         private Quaternion _targetAngle;
-        //private float _directionDifferenceToInputAngleCache;
 
-        private Rigidbody _rigidbody;
-        private CapsuleCollider _collider;
+        private CharacterController _characterController;
         private Transform _cameraTransform;
 
-        public Vector3 VisualForward => _visualTransform.forward;
+        public Vector3 VisualForward { get { return _visualTransform.forward; } }
 
         protected override void Awake() {
             base.Awake();
@@ -99,8 +97,9 @@ namespace Ivayami.Player {
             _decceleration = Time.fixedDeltaTime / _deccelerationDuration;
             _movementSpeedMax = _movementSpeedRun;
 
-            _rigidbody = GetComponent<Rigidbody>();
-            _collider = GetComponent<CapsuleCollider>();
+            //_rigidbody = GetComponent<Rigidbody>();
+            //_collider = GetComponent<CapsuleCollider>();
+            _characterController = GetComponent<CharacterController>();
             _cameraTransform = Camera.main.transform; //
             _overTheShoulderMaxDistance = _overTheShoulderTarget.localPosition.x;
 
@@ -108,12 +107,11 @@ namespace Ivayami.Player {
         }
 
         private void Update() {
-            if (_canMove) Rotate();
-            ApplyGroundOffset();
+            if (_movementBlock <= 0) Rotate();
         }
 
         private void FixedUpdate() {
-            if (_canMove) Move();
+            if (_movementBlock <= 0) Move();
         }
 
         private void MoveDirection(InputAction.CallbackContext input) {
@@ -123,40 +121,22 @@ namespace Ivayami.Player {
         }
 
         private void Move() {
-            if (_inputCache.sqrMagnitude > 0) {
-                _movementDirectionCache[0] = _inputCache[0];
-                _movementDirectionCache[2] = _inputCache[1];
-                _targetAngle = Quaternion.Euler(0, Mathf.Atan2(_movementDirectionCache.x, _movementDirectionCache.z) * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y, 0);
-                _movementSpeedMaxCurrent = _movementDirectionCache.magnitude * (Crouching ? _crouchSpeedMax : _movementSpeedMax);
-            }
-            _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMaxCurrent); // Could use _decceleration when above max speed
-
-            _velocityCache = _rigidbody.velocity;
-            _rigidbody.velocity = (_targetAngle * Vector3.forward).normalized * _speedCurrent;
-            _velocityCache[0] = _rigidbody.velocity.x;
-            _velocityCache[2] = _rigidbody.velocity.z;
-            _rigidbody.velocity = _velocityCache;
+            if (_inputCache.sqrMagnitude > 0) _targetAngle = Quaternion.Euler(0, Mathf.Atan2(_inputCache[0], _inputCache[1]) * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y, 0);
+            _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMax); // Could use _decceleration when above max speed
+            _characterController.SimpleMove((_targetAngle * Vector3.forward).normalized * _speedCurrent);
 
             onMovement?.Invoke(_speedCurrent * _inputCache);
         }
 
         private void SetColliderHeight(float height) {
-            _collider.height = height - _colliderGroundOffset;
-            _collider.center = 0.5f * (height + _colliderGroundOffset) * Vector3.up;
-            _colliderCenter = _collider.center.y * Vector3.up;
-        }
-
-        private void ApplyGroundOffset() {
-            if (Physics.Raycast(new Ray(transform.position + _colliderCenter, Vector3.down), out RaycastHit hit)) {
-                _velocityCache = _rigidbody.velocity;
-                if(hit.point.y - transform.position.y > 0) _velocityCache[1] = 1f;
-                _rigidbody.velocity = _velocityCache;
-            }
+            _characterController.height = height;
+            _characterController.center = (height / 2f) * Vector3.up;
         }
 
         private void Crouch(InputAction.CallbackContext input) {
             if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) {
                 Crouching = !Crouching;
+                _movementSpeedMax = Crouching ? _crouchSpeedMax : (_running ? _movementSpeedRun : _movementSpeedWalk);
                 SetColliderHeight(Crouching ? _crouchColliderHeight : _walkColliderHeight);
 
                 if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
@@ -187,41 +167,22 @@ namespace Ivayami.Player {
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
-        //private void OverTheShoulderSpring() {
-        //    _overTheShoulderTarget.localPosition = Vector3.right *
-        //       (Physics.Raycast(_overTheShoulderTarget.position, _overTheShoulderTarget.right, out RaycastHit hit, _overTheShoulderMaxDistance, _overTheShoulderSpringCollisions) ?
-        //        hit.distance : _overTheShoulderMaxDistance);
-        //}
-
         private void ToggleWalk(InputAction.CallbackContext input) {
-            _movementSpeedMax = _movementSpeedMax != _movementSpeedRun ? _movementSpeedRun : _movementSpeedWalk;
+            _running = !_running;
+            if(!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
         }
 
         public void ToggleMovement(bool canMove) {
-            _canMove = canMove;
-            if (!_canMove) {
+            _movementBlock += canMove ? -1 : 1;
+            if (_movementBlock > 0) {
                 _speedCurrent = 0f;
                 onMovement?.Invoke(Vector2.zero);
             }
-            _rigidbody.constraints = canMove ? RigidbodyConstraints.FreezeRotation : RigidbodyConstraints.FreezeAll;
-
-            Logger.Log(LogType.Player, $"Movement Toggle: {_canMove}");
-        }
-
-        public void DisableMovement(float duration) {
-            StartCoroutine(DisableMovementRoutine(duration));
-        }
-
-        private IEnumerator DisableMovementRoutine(float duration) {
-            _canMove = false;
-
-            yield return new WaitForSeconds(duration);
-
-            _canMove = true;
+            Logger.Log(LogType.Player, $"Movement Blockers {(canMove ? "Increase" : "Decrease")} to: {_movementBlock}");
         }
 
         public void SetPosition(Vector3 position) {
-            _rigidbody.position = position;
+            transform.position = position;
         }
 
         public void SetTargetAngle(float angle) {
@@ -236,7 +197,7 @@ namespace Ivayami.Player {
 
 #if UNITY_EDITOR
         private void OnValidate() {
-            _collider = GetComponent<CapsuleCollider>();
+            _characterController = GetComponent<CharacterController>();
             SetColliderHeight(_walkColliderHeight);
         }
 #endif
