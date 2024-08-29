@@ -44,7 +44,6 @@ namespace Ivayami.UI {
         }
 
         public void ChangeMusicVolume(float newVolume) {
-            SaveSystem.Instance.Options.musicVol = newVolume;
             Music.Instance.VolumeUpdate(newVolume);
         }
 
