@@ -39,7 +39,6 @@ namespace Ivayami.Player {
         [Header("Collider")]
 
         [SerializeField] private float _walkColliderHeight;
-        private Vector3 _colliderCenter;
 
         [Header("Crouch")]
 
@@ -69,15 +68,13 @@ namespace Ivayami.Player {
 
         [SerializeField] private Transform _cameraAimTargetRotator;
         [SerializeField] private Transform _overTheShoulderTarget;
-        private float _overTheShoulderMaxDistance;
         [SerializeField] private LayerMask _overTheShoulderSpringCollisions;
 
         [Header("Cache")]
 
         private Vector2 _inputCache = Vector3.zero;
-        private Vector3 _movementDirectionCache = Vector3.zero;
-        private Vector3 _velocityCache;
-        private float _movementSpeedMaxCurrent;
+        private Vector3 _directionCache;
+        private Vector3 _movementCache;
         private Quaternion _targetAngle;
 
         private CharacterController _characterController;
@@ -96,12 +93,10 @@ namespace Ivayami.Player {
             _acceleration = Time.fixedDeltaTime / _accelerationDuration;
             _decceleration = Time.fixedDeltaTime / _deccelerationDuration;
             _movementSpeedMax = _movementSpeedRun;
+            _movementCache = Physics.gravity;
 
-            //_rigidbody = GetComponent<Rigidbody>();
-            //_collider = GetComponent<CapsuleCollider>();
             _characterController = GetComponent<CharacterController>();
             _cameraTransform = Camera.main.transform; //
-            _overTheShoulderMaxDistance = _overTheShoulderTarget.localPosition.x;
 
             Logger.Log(LogType.Player, $"{typeof(PlayerMovement).Name} Initialized");
         }
@@ -113,10 +108,6 @@ namespace Ivayami.Player {
             }
         }
 
-        //private void FixedUpdate() {
-        //    if (_movementBlock <= 0) Move();
-        //}
-
         private void MoveDirection(InputAction.CallbackContext input) {
             _inputCache = input.ReadValue<Vector2>();
 
@@ -126,7 +117,11 @@ namespace Ivayami.Player {
         private void Move() {
             if (_inputCache.sqrMagnitude > 0) _targetAngle = Quaternion.Euler(0, Mathf.Atan2(_inputCache[0], _inputCache[1]) * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y, 0);
             _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMax); // Could use _decceleration when above max speed
-            _characterController.SimpleMove((_targetAngle * Vector3.forward).normalized * _speedCurrent);
+            _directionCache = (_targetAngle * Vector3.forward).normalized * _speedCurrent;
+            _movementCache[0] = _directionCache[0];
+            _movementCache[1] = _characterController.isGrounded ? (Physics.gravity.y / 10f) : Mathf.Clamp(_movementCache[1] + (Physics.gravity.y * Time.deltaTime), -50f, (Physics.gravity.y / 10f));
+            _movementCache[2] = _directionCache[2];
+            _characterController.Move(_movementCache * Time.deltaTime);
 
             onMovement?.Invoke(_speedCurrent * _inputCache);
         }
