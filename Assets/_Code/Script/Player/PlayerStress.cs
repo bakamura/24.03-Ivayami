@@ -1,9 +1,9 @@
-using Ivayami.Save;
-using Ivayami.Scene;
-using Ivayami.UI;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using Ivayami.Save;
+using Ivayami.Scene;
+using Ivayami.UI;
 
 namespace Ivayami.Player {
     public class PlayerStress : MonoSingleton<PlayerStress> {
@@ -19,6 +19,7 @@ namespace Ivayami.Player {
         private float _stressCurrent;
         [SerializeField] private float _stressRelieveDelay;
         private float _stressRelieveDelayTimer;
+        private bool _pauseStressRelieve = false;
 
         [Header("Fail")]
 
@@ -26,11 +27,9 @@ namespace Ivayami.Player {
         private WaitForSeconds _restartWait;
         private bool _failState = false;
 
-        [Header("Cache")]
-
-        private Coroutine _stressRelieveRoutine;
-
         private void Start() {
+            Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
+            Pause.Instance.onUnpause.AddListener(() => _pauseStressRelieve = false);
             onStressChange.AddListener(FailStateCheck);
             onFailState.AddListener(() => StartCoroutine(DelayToRespawn()));
             _restartWait = new WaitForSeconds(_restartDelay);
@@ -39,20 +38,26 @@ namespace Ivayami.Player {
         }
 
         private void Update() {
-            if (_stressCurrent > 20f) RelieveStressAuto();
-        }
-
-        public void AddStress(float amount, float capValue = -1) {
-            if (!_failState) {
-                _stressCurrent = Mathf.Clamp(_stressCurrent + amount, 0, capValue >= 0 ? capValue : _stressMax);
-                onStressChange.Invoke(_stressCurrent);
-
-                Logger.Log(LogType.Player, $"Stress Meter: {_stressCurrent}/{_stressMax}");
+            if (!_pauseStressRelieve) {
+                if (_stressRelieveDelayTimer > 0) _stressRelieveDelayTimer -= Time.deltaTime;
+                else if (_stressCurrent > 20f) RelieveStressAuto();
             }
         }
 
+        public void AddStress(float amount, float capValue = -1) {
+            if (!_failState && _stressCurrent < capValue) {
+                _stressCurrent = Mathf.Clamp(_stressCurrent + amount, 0, capValue >= 0 ? capValue : _stressMax);
+                onStressChange.Invoke(_stressCurrent);
+                _stressRelieveDelayTimer = _stressRelieveDelay;
+
+                Logger.Log(LogType.Player, $"Stress Meter: {_stressCurrent}/{_stressMax}");
+            }
+            else if(_stressCurrent == capValue) _stressRelieveDelayTimer = _stressRelieveDelay;
+        }
+
         private void RelieveStressAuto() {
-            _stressCurrent += StressRelieveFormula(_stressCurrent);
+            Debug.Log("RelieveStress");
+            _stressCurrent += StressRelieveFormula(_stressCurrent) * Time.deltaTime;
             onStressChange.Invoke(_stressCurrent);
         }
 
