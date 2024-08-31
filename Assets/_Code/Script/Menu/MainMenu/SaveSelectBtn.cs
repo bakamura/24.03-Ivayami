@@ -19,12 +19,13 @@ namespace Ivayami.UI {
 
         public void Setup(SaveProgress progress, byte id) {
             _id = id;
+            UiText uiText = _uiText.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
             _isFirstTime = progress == null;
-            _statusText.text = _uiText.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language).GetText(_isFirstTime ? "NewGame" : "Continue");
+            _statusText.text = uiText.GetText(_isFirstTime ? "NewGame" : "Continue");
             _dateText.text = _isFirstTime ? "" : progress.lastPlayedDate;
             // Show Playtime
-            PlaceImage = null;
-            PlaceName = "Ohio";
+            PlaceName = uiText.GetText(_isFirstTime ? "NewGameMessage" : progress.lastSavePlace);
+            PlaceImage = _isFirstTime ? null : Resources.Load<Sprite>($"PlacePreview/{progress.lastSavePlace}");
         }
 
         public void EnterSave() {

@@ -45,6 +45,7 @@ namespace Ivayami.UI {
 
         public void DisplaySaveInfo(int saveId) {
             _previewImage.sprite = _saveSelectBtns[saveId].PlaceImage;
+            _previewImage.color = _previewImage.sprite != null ? Color.white : new Color(0, 0, 0, 0);
             _previewText.text = _saveSelectBtns[saveId].PlaceName;
 
             Logger.Log(LogType.UI, $"Display Save {saveId}");

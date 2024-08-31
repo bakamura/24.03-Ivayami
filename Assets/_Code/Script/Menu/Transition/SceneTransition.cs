@@ -1,9 +1,11 @@
 
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Ivayami.UI {
     public class SceneTransition : Fade {
 
+        [SerializeField] private GameObject _loadingIcon;
         public static SceneTransition Instance { get; private set; }
 
         private MenuGroup _menuGroup;
@@ -29,6 +31,7 @@ namespace Ivayami.UI {
         public void Transition() {
             Logger.Log(LogType.UI, $"Scene Transition Fade");
             _menuGroup.CloseCurrentThenOpen(Menu);
+            //_loadingIcon.enabled = !_loadingIcon.enabled;
         }
 
         public void SetDuration(float durationSeconds) {
@@ -38,6 +41,7 @@ namespace Ivayami.UI {
         public void SetAnimationCurve(AnimationCurve animCurve)
         {
             _transitionCurve = animCurve;
+            _loadingIcon.SetActive(!_loadingIcon.activeSelf);
         }
 
     }

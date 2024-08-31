@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Linq;
 using Ivayami.Scene;
 using Ivayami.Player;
 
@@ -10,7 +9,6 @@ namespace Ivayami.UI {
         [SerializeField] private RectTransform _playerPointer;
         [SerializeField, Tooltip("Every pointer should be named Pointer_{ProgressNameCaseSensitive}")] private RectTransform[] _goalPointers;
 
-        [SerializeField] private RectTransform[] _placesInMap;
         [SerializeField] private Vector2 _mapWorldSize;
 
         private Transform _cam;
@@ -23,9 +21,9 @@ namespace Ivayami.UI {
             Vector2 playerPosInMap = Vector2.zero;
             playerPosInMap[0] = PlayerMovement.Instance.transform.position.x / _mapWorldSize.x;
             playerPosInMap[1] = PlayerMovement.Instance.transform.position.z / _mapWorldSize.y;
-            playerPosInMap *= _mapRectTranform.anchoredPosition;
+            playerPosInMap *= _mapRectTranform.sizeDelta;
 
-            _playerPointer.anchoredPosition = _placesInMap.OrderBy(rect => Vector2.Distance(rect.anchoredPosition, playerPosInMap)).FirstOrDefault().anchoredPosition;
+            _playerPointer.anchoredPosition = playerPosInMap;
             _playerPointer.rotation = Quaternion.Euler(0f, 0f, _cam.transform.eulerAngles.y); //
 
             foreach (RectTransform goalPointer in _goalPointers) {
