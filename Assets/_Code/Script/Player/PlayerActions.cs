@@ -205,7 +205,7 @@ namespace Ivayami.Player {
         public void ChangeInputMap(string mapId) {
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable(); // Change to memory current
             if (mapId != null) _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId).Enable();
-            Cursor.lockState = mapId != "Player" ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId != "Player" ? CursorLockMode.Locked : CursorLockMode.None;
         }
 
     }

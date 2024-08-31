@@ -30,6 +30,7 @@ namespace Ivayami.Player {
         [SerializeField, Min(0)] private float _deccelerationDuration;
         private float _decceleration;
         private int _movementBlock;
+        private bool _canRun;
 
         [Header("Rotation")]
 
@@ -166,8 +167,16 @@ namespace Ivayami.Player {
         }
 
         private void ToggleWalk(InputAction.CallbackContext input) {
-            _running = !_running;
-            if(!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
+            if (_canRun) {
+                _running = !_running;
+                if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
+            }
+        }
+
+        public void AllowRun(bool allow) {
+            _canRun = allow;
+            if (!_canRun && _running) ToggleWalk(new InputAction.CallbackContext());
+            _running = allow;
         }
 
         public void ToggleMovement(bool canMove) {
