@@ -76,7 +76,7 @@ namespace Ivayami.Enemy
                     if (Vector3.Distance(transform.position, PlayerMovement.Instance.transform.position) <= _stressAreasInOrder[i].Range)
                     {
                         if (_debugLogs) Debug.Log($"Adding stress {_stressAreasInOrder[i].StressIncrease} with a max of {_stressAreasInOrder[i].MaxStress}");
-                        PlayerStress.Instance.AddStress(_stressAreasInOrder[i].StressIncrease, _stressAreasInOrder[i].MaxStress);
+                        PlayerStress.Instance.AddStress(_stressAreasInOrder[i].StressIncrease * _stressIncreaseTickFrequency, _stressAreasInOrder[i].MaxStress);
                         break;
                     }
                 }

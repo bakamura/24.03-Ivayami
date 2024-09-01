@@ -8,8 +8,9 @@ namespace Ivayami.Player.Ability
     [RequireComponent(typeof(NavMeshAgent), typeof(FriendAnimator))]
     public class Friend : MonoSingleton<Friend>
     {
+        [SerializeField] private bool _autoStartAndStopBehaviour = true;
         [SerializeField, Min(.01f)] private float _rotationSpeed = 1;
-        [SerializeField, Range(0f,359f)] private float _angle;
+        [SerializeField, Range(0f, 359f)] private float _angle;
         [SerializeField, Tooltip("Force a specific direction to look when in match animation type relative to the object")] private AnimationOrientation[] _animationsOrientation;
         private NavMeshAgent _navMeshAgent
         {
@@ -55,12 +56,12 @@ namespace Ivayami.Player.Ability
 
         private void OnEnable()
         {
-            ActivateBehaviour();
+            if (_autoStartAndStopBehaviour) ActivateBehaviour();
         }
 
         private void OnDisable()
         {
-            DeactivateBehaviour();
+            if (_autoStartAndStopBehaviour) DeactivateBehaviour();
         }
 
         [ContextMenu("Activate")]
@@ -222,5 +223,5 @@ namespace Ivayami.Player.Ability
             }
         }
 #endif
-    }    
+    }
 }

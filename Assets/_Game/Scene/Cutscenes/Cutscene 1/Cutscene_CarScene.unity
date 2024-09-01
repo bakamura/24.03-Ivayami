@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.040639684, g: 0.047823314, b: 0.06296477, a: 1}
+  m_IndirectSpecularColor: {r: 0.040684536, g: 0.04780908, b: 0.0629266, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -323,6 +323,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onPause.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onUnpause.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onCutsceneEnd.m_PersistentCalls.m_Calls.Array.size
       value: 2
       objectReference: {fileID: 0}
@@ -331,12 +339,40 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onPause.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onPause.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 347357190}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onUnpause.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onUnpause.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 347357190}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onPause.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onCutsceneEnd.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onCutsceneEnd.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onPause.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: Pause
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onUnpause.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onCutsceneEnd.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -349,6 +385,10 @@ PrefabInstance:
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onCutsceneStart.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onUnpause.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: Pause
       objectReference: {fileID: 0}
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onCutsceneStart.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -387,6 +427,18 @@ PrefabInstance:
       value: FadeOut
       objectReference: {fileID: 0}
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onPause.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onUnpause.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onPause.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onCutsceneEnd.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: Ivayami.Puzzle.InterpolateFogShader, Assembly-CSharp
       objectReference: {fileID: 0}
@@ -395,12 +447,24 @@ PrefabInstance:
       value: Ivayami.UI.ScreenFade, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onUnpause.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onCutsceneStart.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: Ivayami.UI.ScreenFade, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onCutsceneStart.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
       value: Ivayami.UI.ScreenFade, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onPause.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _onUnpause.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onCutsceneEnd.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
@@ -436,7 +500,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: ea4fc596a116ab94696c77748056da85, type: 2}
     - target: {fileID: 5721016753906124718, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: m_SceneBindings.Array.size
-      value: 27
+      value: 28
       objectReference: {fileID: 0}
     - target: {fileID: 5721016753906124718, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: m_SceneBindings.Array.data[0].key
@@ -547,6 +611,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -3906097893275554671, guid: ea4fc596a116ab94696c77748056da85, type: 2}
     - target: {fileID: 5721016753906124718, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_SceneBindings.Array.data[27].key
+      value: 
+      objectReference: {fileID: -5682905189580503436, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    - target: {fileID: 5721016753906124718, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: m_SceneBindings.Array.data[0].value
       value: 
       objectReference: {fileID: 1326679447}
@@ -654,6 +722,10 @@ PrefabInstance:
       propertyPath: m_SceneBindings.Array.data[26].value
       value: 
       objectReference: {fileID: 466647634}
+    - target: {fileID: 5721016753906124718, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_SceneBindings.Array.data[27].value
+      value: 
+      objectReference: {fileID: 1326679447}
     - target: {fileID: 8293107566635876111, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3433,6 +3505,57 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 40b53ff32895b0549b0f5e8096dfb954, type: 3}
   m_PrefabInstance: {fileID: 341120570}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &347357189
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 347357191}
+  - component: {fileID: 347357190}
+  m_Layer: 0
+  m_Name: CutsceneAudio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &347357190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 347357189}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3ebbfea1ed71774c94f30b6a77477ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioToPlay:
+    Guid:
+      Data1: 1178235443
+      Data2: 1291072864
+      Data3: 586567307
+      Data4: -1973759607
+    Path: event:/CutScene_Audio
+--- !u!4 &347357191
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 347357189}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &369415853
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19492,6 +19615,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 53c6c2c1cca5e1742be70c7045807f47, type: 2}
     - {fileID: 11400000, guid: 8a368d23f2b3af9498d69c763a986041, type: 2}
     - {fileID: 11400000, guid: 4d346e53ca7f2844989741d8a4f7e31d, type: 2}
+    - {fileID: 11400000, guid: 06dd2f698684b0f488628ddaba942d54, type: 2}
     m_Events:
     - m_PersistentCalls:
         m_Calls:
@@ -19568,6 +19692,20 @@ MonoBehaviour:
         - m_Target: {fileID: 1330366403}
           m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
           m_MethodName: FadeOut
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    - m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 347357190}
+          m_TargetAssemblyTypeName: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
+          m_MethodName: Play
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -35536,6 +35674,7 @@ SceneRoots:
   - {fileID: 1149702289}
   - {fileID: 1878428560}
   - {fileID: 1215426730}
+  - {fileID: 347357191}
   - {fileID: 1326679448}
   - {fileID: 1943769597}
   - {fileID: 1565682992}
