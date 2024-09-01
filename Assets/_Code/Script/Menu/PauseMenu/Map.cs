@@ -1,9 +1,13 @@
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using Ivayami.Scene;
 using Ivayami.Player;
 
 namespace Ivayami.UI {
     public class Map : MonoBehaviour {
+
+        [Header("Parameters")]
 
         [SerializeField] private RectTransform _mapRectTranform;
         [SerializeField] private RectTransform _playerPointer;
@@ -11,9 +15,18 @@ namespace Ivayami.UI {
 
         [SerializeField] private Vector2 _mapWorldSize;
 
+        [Header("Open Map")]
+
+        [SerializeField] private InputActionReference _openMapInput;
+        [SerializeField] private Button _openMapBtn;
+
+        [Header("Cache")]
+
         private Transform _cam;
 
         private void Awake() {
+            _openMapInput.action.performed += OpenMap;
+
             _cam = Camera.main.transform;
         }
 
@@ -30,6 +43,13 @@ namespace Ivayami.UI {
                 Vector2 goalPosInMap = SceneController.Instance.PointerInChapter(goalPointer.name.Split('_')[1]);
                 goalPointer.gameObject.SetActive(goalPosInMap != Vector2.zero);
                 if (goalPosInMap != Vector2.zero) goalPointer.anchoredPosition = goalPosInMap;
+            }
+        }
+
+        private void OpenMap(InputAction.CallbackContext context) {
+            if (!Pause.Instance.Paused) {
+                Pause.Instance.PauseGame(true);
+                _openMapBtn.onClick.Invoke();
             }
         }
 

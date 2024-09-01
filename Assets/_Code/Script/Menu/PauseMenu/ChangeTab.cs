@@ -12,24 +12,25 @@ namespace Ivayami.UI {
         [SerializeField] private Highlightable[] _tabHighlightables;
         [SerializeField] private HighlightGroup _highlightGroup;
 
-        private int _tabCurrent;
+        public int tabCurrent { private get; set; }
 
         private void Start() {
             Pause.Instance.onPause.AddListener(() => _tabChangeAction.action.performed += Change);
             Pause.Instance.onUnpause.AddListener(() => _tabChangeAction.action.performed -= Change);
+            HighlightCurrentTab();
         }
 
         private void Change(InputAction.CallbackContext context) {
-            _tabCurrent += (int)context.ReadValue<float>();
-            if (_tabCurrent < 0) _tabCurrent += _tabBtns.Length;
-            else if (_tabCurrent >= _tabBtns.Length) _tabCurrent -= _tabBtns.Length;
+            tabCurrent += (int)context.ReadValue<float>();
+            if (tabCurrent < 0) tabCurrent += _tabBtns.Length;
+            else if (tabCurrent >= _tabBtns.Length) tabCurrent -= _tabBtns.Length;
 
-            _tabBtns[_tabCurrent].Select();
-            _tabBtns[_tabCurrent].onClick.Invoke();
+            _tabBtns[tabCurrent].Select();
+            _tabBtns[tabCurrent].onClick.Invoke();
         }
 
         public void HighlightCurrentTab() {
-            _highlightGroup.SetHighlightTo(_tabHighlightables[_tabCurrent]);
+            _highlightGroup.SetHighlightTo(_tabHighlightables[tabCurrent]);
         }
 
     }
