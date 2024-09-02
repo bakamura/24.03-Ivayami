@@ -4,7 +4,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using UnityEngine.EventSystems;
 using Ivayami.Audio;
 using System.Collections;
 
@@ -179,9 +178,9 @@ namespace Ivayami.Puzzle
                 switch (_interactionType)
                 {
                     case InteractionTypes.RequireItems:
-                        if (EventSystem.current.currentSelectedGameObject == null)
-                            _deliverBtn.Select();
-                        else if (input.x != 0)
+                        //if (EventSystem.current.currentSelectedGameObject == null)
+                        //    _deliverBtn.Select();
+                        if (input.x != 0)
                         {
                             int temp = input.x > 0 ? 1 : -1;
                             _currentRequestIndex += (sbyte)temp;

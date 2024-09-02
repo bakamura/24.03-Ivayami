@@ -7,7 +7,7 @@ namespace Ivayami.Puzzle
     [CustomEditor(typeof(FuseBox))]
     public class FuseBoxInspector : Editor
     {
-        SerializedProperty matrixDimensions, distanceBetweenLeds, fusesParent, fuseUIParent, changeFuseInput, activateFuseInput, 
+        SerializedProperty matrixDimensions, distanceBetweenLeds, fusesParent, fuseUIParent, 
             fuseLayer, onInteract, onInteractionCancelled, onActivate, selectedColor, activatedColor, cancelInteractionInput, fusePrefab,
             ledsParent, fusesOffset, ledPrefab, elementsOffset, deactivatedColor;
 
@@ -15,8 +15,6 @@ namespace Ivayami.Puzzle
         {
             GUILayout.Label("INPUTS", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
-            EditorGUILayout.PropertyField(changeFuseInput, new GUIContent("Select Fuse Input Reference"));
-            EditorGUILayout.PropertyField(activateFuseInput, new GUIContent("Activate Fuse Input Reference"));
             EditorGUILayout.PropertyField(cancelInteractionInput, new GUIContent("Exit Puzzle Input Reference"));
             EditorGUILayout.Space(10);
 
@@ -34,8 +32,8 @@ namespace Ivayami.Puzzle
 
             GUILayout.Label("COMPONENTS", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
-            EditorGUILayout.PropertyField(fusesParent, new GUIContent("Fuse Container"));
             EditorGUILayout.PropertyField(fuseUIParent, new GUIContent("Fuse UI Container"));
+            EditorGUILayout.PropertyField(fusesParent, new GUIContent("Fuse Container"));
             EditorGUILayout.PropertyField(fusePrefab, new GUIContent("Fuse Prefab"));
             EditorGUILayout.PropertyField(ledsParent, new GUIContent("Led Container"));
             EditorGUILayout.PropertyField(ledPrefab, new GUIContent("Led Prefab"));
@@ -54,7 +52,7 @@ namespace Ivayami.Puzzle
                 instance.CreateFuses();
                 instance.RepositionFuses();
                 instance.UpdateFusesActiveState();
-                instance.RenameObjects();
+                //instance.RenameObjects();
             }
 
             serializedObject.ApplyModifiedProperties();
@@ -66,8 +64,6 @@ namespace Ivayami.Puzzle
             distanceBetweenLeds = serializedObject.FindProperty("_distanceBetweenLeds");
             fusesParent = serializedObject.FindProperty("_fusesParent");
             fuseUIParent = serializedObject.FindProperty("_fuseUIParent");
-            changeFuseInput = serializedObject.FindProperty("_changeFuseInput");
-            activateFuseInput = serializedObject.FindProperty("_activateFuseInput");
             fuseLayer = serializedObject.FindProperty("_fuseLayer");
             onInteract = serializedObject.FindProperty("_onInteract");
             onInteractionCancelled = serializedObject.FindProperty("_onInteractionCancelled");
