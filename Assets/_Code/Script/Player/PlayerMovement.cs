@@ -57,7 +57,7 @@ namespace Ivayami.Player {
 
         [Header("Hiding")]
 
-        public HidingState hidingState;
+        [HideInInspector] public HidingState hidingState;
         public enum HidingState {
             None,
             Wardrobe,

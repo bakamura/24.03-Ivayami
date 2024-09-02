@@ -15,6 +15,7 @@ namespace Ivayami.Player {
         [SerializeField] private InputActionReference _abilityInput;
         [SerializeField] private InputActionReference _changeAbilityInput;
         [SerializeField] private InputActionReference[] _pauseInputs;
+        private InputActionMap _actionMapCurrent;
 
         [Header("Events")]
 
@@ -203,9 +204,10 @@ namespace Ivayami.Player {
         }
 
         public void ChangeInputMap(string mapId) {
-            foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable(); // Change to memory current
-            if (mapId != null) _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId).Enable();
-            Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId != "Player" ? CursorLockMode.Locked : CursorLockMode.None;
+            _actionMapCurrent?.Disable();
+            if (mapId != null) _actionMapCurrent = _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId);
+            _actionMapCurrent?.Enable();
+            Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId.Equals("Player") ? CursorLockMode.Locked : CursorLockMode.None;
         }
 
     }
