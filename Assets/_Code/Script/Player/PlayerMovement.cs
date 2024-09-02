@@ -30,7 +30,7 @@ namespace Ivayami.Player {
         [SerializeField, Min(0)] private float _deccelerationDuration;
         private float _decceleration;
         private int _movementBlock;
-        private bool _canRun;
+        private bool _canRun = true;
 
         [Header("Rotation")]
 
@@ -105,6 +105,7 @@ namespace Ivayami.Player {
         private void Update() {
             if (_movementBlock <= 0) {
                 Move();
+                Debug.Log(_speedCurrent);
                 Rotate();
             }
         }
