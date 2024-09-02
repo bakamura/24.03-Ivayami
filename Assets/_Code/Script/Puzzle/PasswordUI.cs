@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using System;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
@@ -32,31 +31,23 @@ namespace Ivayami.Puzzle
 
         public virtual void UpdateActiveState(bool isActive)
         {
-            //if (_canvasGroup)
-            //{
             _canvasGroup.alpha = isActive ? 1 : 0;
             _canvasGroup.interactable = isActive;
             _canvasGroup.blocksRaycasts = isActive;
-            //_container.gameObject.SetActive(isActive);
-            //}
-            //else
-            //{
-            //    _container.gameObject.SetActive(isActive);
-            //}
             if (isActive)
             {
-                _initialSelected.Select();//EventSystem.current.SetSelectedGameObject(_initialSelected);
-                navegationUIInput.action.performed += HandleNavigateUI;
+                _initialSelected.Select();
+                //navegationUIInput.action.performed += HandleNavigateUI;
             }
-            else
-            {
-                navegationUIInput.action.performed -= HandleNavigateUI;
-            }
+            //else
+            //{
+            //    navegationUIInput.action.performed -= HandleNavigateUI;
+            //}
         }
 
         protected virtual void HandleNavigateUI(InputAction.CallbackContext obj)
         {
-            if(obj.ReadValue<Vector2>() != Vector2.zero && !EventSystem.current.currentSelectedGameObject) _initialSelected.Select();
+            //if(obj.ReadValue<Vector2>() != Vector2.zero && !EventSystem.current.currentSelectedGameObject) _initialSelected.Select();
         }
     }
 }
