@@ -10,7 +10,8 @@ namespace Ivayami.Player.Ability
     {
         [SerializeField] private bool _autoStartAndStopBehaviour = true;
         [SerializeField, Min(.01f)] private float _rotationSpeed = 1;
-        [SerializeField, Range(0f, 359f)] private float _angle;
+        [SerializeField, Range(0f, 359f)] private float _angleAroundTarget;
+        [SerializeField] private LayerMask _obstaclesLayer;
         [SerializeField, Tooltip("Force a specific direction to look when in match animation type relative to the object")] private AnimationOrientation[] _animationsOrientation;
         private NavMeshAgent _navMeshAgent
         {
@@ -31,6 +32,7 @@ namespace Ivayami.Player.Ability
         private Coroutine _rotateCoroutine;
         private Coroutine _behaviourCoroutine;
         private PlayerActions.InteractAnimation _currentInteractionType;
+        private RaycastHit[] _hit = new RaycastHit[1];
         [System.Serializable]
         private struct AnimationOrientation
         {
@@ -103,6 +105,7 @@ namespace Ivayami.Player.Ability
         public void GoToPosition(Transform transform)
         {
             DeactivateBehaviour();
+            _friendAnimator.UpdateWalking(1);
             _navMeshAgent.SetDestination(transform.position);
         }
 
@@ -114,6 +117,7 @@ namespace Ivayami.Player.Ability
 
         private IEnumerator BehaviourCoroutine()
         {
+            Vector3 vec;
             while (true)
             {
                 if (_navMeshAgent.enabled)
@@ -128,7 +132,24 @@ namespace Ivayami.Player.Ability
                         //    _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + _navMeshAgent.stoppingDistance * _distanceExtrapolateFactor * -PlayerMovement.Instance.transform.forward);
                         //}
                         //else 
-                        Vector3 vec = Quaternion.AngleAxis(_angle, Vector3.up) * PlayerMovement.Instance.VisualForward * _navMeshAgent.stoppingDistance;
+                        //check if desired point can be reached
+                        if (Physics.RaycastNonAlloc(PlayerMovement.Instance.transform.position + new Vector3(0, _navMeshAgent.height / 2, 0), 
+                            Quaternion.AngleAxis(_angleAroundTarget, Vector3.up) * PlayerMovement.Instance.VisualForward, _hit, _navMeshAgent.stoppingDistance, _obstaclesLayer) > 0)
+                        {
+                            //try get point behind player
+                            if(Physics.RaycastNonAlloc(PlayerMovement.Instance.transform.position + new Vector3(0, _navMeshAgent.height / 2, 0),
+                            -PlayerMovement.Instance.VisualForward, _hit, _navMeshAgent.stoppingDistance, _obstaclesLayer) > 0)
+                            {
+                                //will be in front of player
+                                vec = PlayerMovement.Instance.VisualForward * _navMeshAgent.stoppingDistance;
+                            }
+                            //will stay in the back of player
+                            else vec = -PlayerMovement.Instance.VisualForward * _navMeshAgent.stoppingDistance;
+                        }
+                        else
+                        {
+                            vec = Quaternion.AngleAxis(_angleAroundTarget, Vector3.up) * PlayerMovement.Instance.VisualForward * _navMeshAgent.stoppingDistance;
+                        }
                         _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position + vec);
                         //_friendAnimator.UpdateInteracting(false);
                     }
@@ -211,13 +232,13 @@ namespace Ivayami.Player.Ability
             Vector3 vec;
             if (Application.isPlaying)
             {
-                vec = Quaternion.AngleAxis(_angle, Vector3.up) * PlayerMovement.Instance.VisualForward * _navMeshAgent.stoppingDistance;
+                vec = Quaternion.AngleAxis(_angleAroundTarget, Vector3.up) * PlayerMovement.Instance.VisualForward * _navMeshAgent.stoppingDistance;
                 Gizmos.DrawLine(PlayerMovement.Instance.transform.position, PlayerMovement.Instance.transform.position + vec);
                 Gizmos.DrawSphere(PlayerMovement.Instance.transform.position + vec, .1f);
             }
             else
             {
-                vec = Quaternion.AngleAxis(_angle, Vector3.up) * transform.forward * _navMeshAgent.stoppingDistance;
+                vec = Quaternion.AngleAxis(_angleAroundTarget, Vector3.up) * transform.forward * _navMeshAgent.stoppingDistance;
                 Gizmos.DrawLine(transform.position, transform.position + vec);
                 Gizmos.DrawSphere(transform.position + vec, .1f);
             }
