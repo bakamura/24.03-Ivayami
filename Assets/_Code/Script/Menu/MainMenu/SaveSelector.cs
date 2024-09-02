@@ -21,16 +21,11 @@ namespace Ivayami.UI {
 
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
 
-        protected override void Awake() {
-            base.Awake();
-
+        private void Start() {
             StartCoroutine(WaitForSaveOptions());
 
-            PlayerActions.Instance.ChangeInputMap("Menu");
-        }
-
-        private void Start() {
             Options.OnChangeLanguage.AddListener((language) => SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate));
+            PlayerActions.Instance.ChangeInputMap("Menu");
         }
 
         private IEnumerator WaitForSaveOptions() {
