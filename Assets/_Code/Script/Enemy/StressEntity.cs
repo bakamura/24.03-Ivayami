@@ -54,7 +54,7 @@ namespace Ivayami.Enemy
         protected virtual void OnTriggerEnter(Collider other)
         {
             _targetInsideArea = true;
-            if (isStressAreaActive) _stressIncreaseCoroutine ??= StartCoroutine(StressIncreaseCoroutine());
+            if (isStressAreaActive && PlayerMovement.Instance) _stressIncreaseCoroutine ??= StartCoroutine(StressIncreaseCoroutine());
         }
 
         protected virtual void OnTriggerExit(Collider other)
@@ -76,7 +76,7 @@ namespace Ivayami.Enemy
                     if (Vector3.Distance(transform.position, PlayerMovement.Instance.transform.position) <= _stressAreasInOrder[i].Range)
                     {
                         if (_debugLogs) Debug.Log($"Adding stress {_stressAreasInOrder[i].StressIncrease} with a max of {_stressAreasInOrder[i].MaxStress}");
-                        PlayerStress.Instance.AddStress(_stressAreasInOrder[i].StressIncrease, _stressAreasInOrder[i].MaxStress);
+                        PlayerStress.Instance.AddStress(_stressAreasInOrder[i].StressIncrease * _stressIncreaseTickFrequency, _stressAreasInOrder[i].MaxStress);
                         break;
                     }
                 }

@@ -22,7 +22,7 @@ namespace Ivayami.Enemy
         [SerializeField] private Color _debugColor = Color.red;
 #endif
 
-        private Dictionary<int, EnemyData> _enemiesCurrentPathPointDic;
+        private Dictionary<int, EnemyData> _enemiesCurrentPathPointDic = new Dictionary<int, EnemyData>();
         private BoxCollider m_boxCollider;
         private BoxCollider _boxCollider
         {
@@ -146,9 +146,8 @@ namespace Ivayami.Enemy
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent<IEnemyWalkArea>(out IEnemyWalkArea temp))
+            if (other.TryGetComponent<IEnemyWalkArea>(out IEnemyWalkArea temp) && !_enemiesCurrentPathPointDic.ContainsKey(other.gameObject.GetInstanceID()))
             {
-                if (_enemiesCurrentPathPointDic == null) _enemiesCurrentPathPointDic = new Dictionary<int, EnemyData>();
                 temp.SetMovementData(_movementData);
                 temp.SetWalkArea(this);
                 EnemyData data = new EnemyData(_points.Length > 0 ? new Point(_points[0].Position + transform.position, _points[0].DelayToNextPoint) : GenerateRandomPointInsideArea(), 0);
@@ -161,9 +160,8 @@ namespace Ivayami.Enemy
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.TryGetComponent<IEnemyWalkArea>(out IEnemyWalkArea temp))
+            if (other.TryGetComponent<IEnemyWalkArea>(out IEnemyWalkArea temp) && _enemiesCurrentPathPointDic.ContainsKey(other.gameObject.GetInstanceID()))
             {
-                if (_enemiesCurrentPathPointDic == null) _enemiesCurrentPathPointDic = new Dictionary<int, EnemyData>();
                 temp.SetWalkArea(null);
                 _enemiesCurrentPathPointDic.Remove(other.gameObject.GetInstanceID());
             }

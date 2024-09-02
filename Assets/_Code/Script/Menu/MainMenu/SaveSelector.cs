@@ -21,16 +21,11 @@ namespace Ivayami.UI {
 
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
 
-        protected override void Awake() {
-            base.Awake();
-
+        private void Start() {
             StartCoroutine(WaitForSaveOptions());
 
-            PlayerActions.Instance.ChangeInputMap("Menu");
-        }
-
-        private void Start() {
             Options.OnChangeLanguage.AddListener((language) => SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate));
+            PlayerActions.Instance.ChangeInputMap("Menu");
         }
 
         private IEnumerator WaitForSaveOptions() {
@@ -45,6 +40,7 @@ namespace Ivayami.UI {
 
         public void DisplaySaveInfo(int saveId) {
             _previewImage.sprite = _saveSelectBtns[saveId].PlaceImage;
+            _previewImage.color = _previewImage.sprite != null ? Color.white : new Color(0, 0, 0, 0);
             _previewText.text = _saveSelectBtns[saveId].PlaceName;
 
             Logger.Log(LogType.UI, $"Display Save {saveId}");
