@@ -18,6 +18,7 @@ namespace Ivayami.UI {
         [SerializeField] private InputActionReference _unpauseInput;
 
         [HideInInspector] public bool canPause = false;
+        public bool Paused { get; private set; } = false;
 
         private void Start() {
             _pauseInput.action.started += (callBackContext) => PauseGame(true);
@@ -27,10 +28,11 @@ namespace Ivayami.UI {
 
         public void PauseGame(bool isPausing) {
             if (canPause) {
-                (isPausing ? onPause : onUnpause)?.Invoke();
-                PlayerActions.Instance.ChangeInputMap(isPausing ? "Menu" : "Player");
+                Paused = isPausing;
+                (Paused ? onPause : onUnpause)?.Invoke();
+                PlayerActions.Instance.ChangeInputMap(Paused ? "Menu" : "Player");
 
-                Logger.Log(LogType.UI, $"Game Pause: {isPausing}");
+                Logger.Log(LogType.UI, $"Game Pause: {Paused}");
             }
             else Logger.Log(LogType.UI, "Game Cannot Pause");
         }

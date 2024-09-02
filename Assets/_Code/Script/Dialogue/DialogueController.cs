@@ -141,24 +141,26 @@ namespace Ivayami.Dialogue
 
         private bool TryGetDialogueInstanceID(string dialogueId, out int instanceId)
         {
+            instanceId = 0;
             if (_dialoguesIDs.ContainsKey(dialogueId))
             {
+                LanguageTypes languageType = LanguageTypes.ENUS;
                 for (int i = 0; i < _dialoguesIDs[dialogueId].Count; i++)
                 {
+                    instanceId = _dialoguesIDs[dialogueId][i].InstanceID;
+                    languageType = _dialoguesIDs[dialogueId][i].LanguageType;
                     if (_dialoguesIDs[dialogueId][i].LanguageType == (LanguageTypes)SaveSystem.Instance.Options.language)
                     {
-                        instanceId = _dialoguesIDs[dialogueId][i].InstanceID;
-                        return true;
+                        //instanceId = _dialoguesIDs[dialogueId][i].InstanceID;
+                        break;
                     }
                 }
-                if (_debugLogs) Debug.LogError($"the dialogue {dialogueId} has not an asset for the language {Enum.GetName(typeof(LanguageTypes), SaveSystem.Instance.Options.language)}");
-                instanceId = 0;
-                return false;
+                if (languageType != (LanguageTypes)SaveSystem.Instance.Options.language) Debug.LogWarning($"the dialogue {dialogueId} has not an asset for the language {Enum.GetName(typeof(LanguageTypes), SaveSystem.Instance.Options.language)}, using fallback language");
+                return true;
             }
             else
             {
-                if (_debugLogs) Debug.LogError($"the dialogue {dialogueId} is not present in the dictionary");
-                instanceId = 0;
+                Debug.LogError($"the dialogue {dialogueId} is not present in the dictionary");
                 return false;
             }
         }
