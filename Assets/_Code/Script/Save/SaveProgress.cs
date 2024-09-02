@@ -10,7 +10,7 @@ namespace Ivayami.Save {
         
         public string[] inventory;
         public int pointId;
-        public string lastProgressType;
+        public string lastSavePlace;
         public SerializableDictionary<string, int> progress = new SerializableDictionary<string, int>();
         public SerializableDictionary<string, string> saveObjects = new SerializableDictionary<string, string>();
 

@@ -146,7 +146,7 @@ namespace Ivayami.Enemy
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent<IEnemyWalkArea>(out IEnemyWalkArea temp))
+            if (other.TryGetComponent<IEnemyWalkArea>(out IEnemyWalkArea temp) && !_enemiesCurrentPathPointDic.ContainsKey(other.gameObject.GetInstanceID()))
             {
                 if (_enemiesCurrentPathPointDic == null) _enemiesCurrentPathPointDic = new Dictionary<int, EnemyData>();
                 temp.SetMovementData(_movementData);
@@ -161,7 +161,7 @@ namespace Ivayami.Enemy
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.TryGetComponent<IEnemyWalkArea>(out IEnemyWalkArea temp))
+            if (other.TryGetComponent<IEnemyWalkArea>(out IEnemyWalkArea temp) && _enemiesCurrentPathPointDic.ContainsKey(other.gameObject.GetInstanceID()))
             {
                 if (_enemiesCurrentPathPointDic == null) _enemiesCurrentPathPointDic = new Dictionary<int, EnemyData>();
                 temp.SetWalkArea(null);
