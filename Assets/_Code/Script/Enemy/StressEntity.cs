@@ -54,7 +54,7 @@ namespace Ivayami.Enemy
         protected virtual void OnTriggerEnter(Collider other)
         {
             _targetInsideArea = true;
-            if (isStressAreaActive) _stressIncreaseCoroutine ??= StartCoroutine(StressIncreaseCoroutine());
+            if (isStressAreaActive && PlayerMovement.Instance) _stressIncreaseCoroutine ??= StartCoroutine(StressIncreaseCoroutine());
         }
 
         protected virtual void OnTriggerExit(Collider other)
