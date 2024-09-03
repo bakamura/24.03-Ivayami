@@ -27,7 +27,7 @@ namespace Ivayami.Player {
         [SerializeField] private float _restartDelay;
         private WaitForSeconds _restartWait;
         private bool _failState = false;
-        private bool _overrideFailLoad;
+        private bool _overrideFailLoad = false;
 
         private void Start() {
             Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
