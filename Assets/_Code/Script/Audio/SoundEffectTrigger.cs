@@ -29,6 +29,12 @@ namespace Ivayami.Audio
             }
         }
 
+        public void Stop()
+        {
+            _soundInstance.getPlaybackState(out PLAYBACK_STATE state);
+            if (state == PLAYBACK_STATE.PLAYING) _soundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        }
+
         private bool Setup()
         {
             if (!_audioToPlay.IsNull)

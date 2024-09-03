@@ -34,7 +34,7 @@ namespace Ivayami.Player {
         private void Start() {
             PlayerMovement.Instance.onMovement.AddListener(MoveAnimation);
             PlayerMovement.Instance.onCrouch.AddListener(Crouch);
-            PlayerStress.Instance.onFailState.AddListener(Fail);
+            PlayerStress.Instance.onFail.AddListener(Fail);
             PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
             PlayerActions.Instance.onAbility.AddListener(Trigger);

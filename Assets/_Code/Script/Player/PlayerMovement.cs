@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
@@ -19,39 +20,44 @@ namespace Ivayami.Player {
 
         [Header("Movement")]
 
-        [SerializeField] private float _movementSpeedRun;
-        [SerializeField] private float _movementSpeedWalk;
+        [SerializeField, Min(0)] private float _movementSpeedRun;
+        [SerializeField, Min(0)] private float _movementSpeedWalk;
+        private bool _running;
         private float _movementSpeedMax;
         private float _speedCurrent = 0;
-        [SerializeField] private float _accelerationDuration;
+        [SerializeField, Min(0)] private float _accelerationDuration;
         private float _acceleration;
-        [SerializeField] private float _deccelerationDuration;
+        [SerializeField, Min(0)] private float _deccelerationDuration;
         private float _decceleration;
-        private bool _canMove;
+        private int _movementBlock = 1;
+        private bool _canRun = true;
 
         [Header("Rotation")]
 
         [SerializeField] private Transform _visualTransform;
         [SerializeField, Range(0f, 0.99f)] private float _turnSmoothFactor;
 
+        [Header("Collider")]
+
+        [SerializeField] private float _walkColliderHeight;
+
         [Header("Crouch")]
 
-        [SerializeField] private float _crouchSpeedMax;
+        [SerializeField, Min(0)] private float _crouchSpeedMax;
         public bool Crouching { get; private set; } = false;
-        [SerializeField] private float _walkColliderHeight;
-        [SerializeField] private float _walkCameraHeight;
-        [SerializeField] private float _crouchColliderHeight;
-        [SerializeField] private float _crouchCameraHeight;
+        [SerializeField, Min(0)] private float _walkCameraHeight;
+        [SerializeField, Min(0)] private float _crouchColliderHeight;
+        [SerializeField, Min(0)] private float _crouchCameraHeight;
         [SerializeField] private LayerMask _terrain;
 
         [Space(24)]
 
-        [SerializeField] private float _crouchHeightChangeDuration;
+        [SerializeField, Min(0)] private float _crouchHeightChangeDuration;
         private Coroutine _crouchRoutine;
 
         [Header("Hiding")]
 
-        public HidingState hidingState;
+        [HideInInspector] public HidingState hidingState;
         public enum HidingState {
             None,
             Wardrobe,
@@ -63,23 +69,19 @@ namespace Ivayami.Player {
 
         [SerializeField] private Transform _cameraAimTargetRotator;
         [SerializeField] private Transform _overTheShoulderTarget;
-        private float _overTheShoulderMaxDistance;
         [SerializeField] private LayerMask _overTheShoulderSpringCollisions;
 
         [Header("Cache")]
 
         private Vector2 _inputCache = Vector3.zero;
-        private Vector3 _movementDirectionCache = Vector3.zero;
-        private Vector3 _velocityCache;
-        private float _movementSpeedMaxCurrent;
+        private Vector3 _directionCache;
+        private Vector3 _movementCache;
         private Quaternion _targetAngle;
-        //private float _directionDifferenceToInputAngleCache;
 
-        private Rigidbody _rigidbody;
-        private CapsuleCollider _collider;
+        private CharacterController _characterController;
         private Transform _cameraTransform;
 
-        public Vector3 VisualForward => _visualTransform.forward;
+        public Vector3 VisualForward { get { return _visualTransform.forward; } }
 
         protected override void Awake() {
             base.Awake();
@@ -92,23 +94,19 @@ namespace Ivayami.Player {
             _acceleration = Time.fixedDeltaTime / _accelerationDuration;
             _decceleration = Time.fixedDeltaTime / _deccelerationDuration;
             _movementSpeedMax = _movementSpeedRun;
+            _movementCache = Physics.gravity;
 
-            _rigidbody = GetComponent<Rigidbody>();
-            _collider = GetComponent<CapsuleCollider>();
+            _characterController = GetComponent<CharacterController>();
             _cameraTransform = Camera.main.transform; //
-            _overTheShoulderMaxDistance = _overTheShoulderTarget.localPosition.x;
 
             Logger.Log(LogType.Player, $"{typeof(PlayerMovement).Name} Initialized");
         }
 
         private void Update() {
-            if (_canMove) Rotate();
-            //if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out RaycastHit hit, Mathf.Infinity, _terrain)) transform.position = hit.point + (0.1f * Vector3.up);
-            //else Debug.LogWarning("Player not above ground");
-        }
-
-        private void FixedUpdate() {
-            if (_canMove) Move();
+            if (_movementBlock <= 0) {
+                Move();
+                Rotate();
+            }
         }
 
         private void MoveDirection(InputAction.CallbackContext input) {
@@ -118,28 +116,27 @@ namespace Ivayami.Player {
         }
 
         private void Move() {
-            if (_inputCache.sqrMagnitude > 0) {
-                _movementDirectionCache[0] = _inputCache[0];
-                _movementDirectionCache[2] = _inputCache[1];
-                _targetAngle = Quaternion.Euler(0, Mathf.Atan2(_movementDirectionCache.x, _movementDirectionCache.z) * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y, 0);
-                _movementSpeedMaxCurrent = _movementDirectionCache.magnitude * (Crouching ? _crouchSpeedMax : _movementSpeedMax);
-            }
-            _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMaxCurrent); // Could use _decceleration when above max speed
-
-            _velocityCache = _rigidbody.velocity;
-            _rigidbody.velocity = (_targetAngle * Vector3.forward).normalized * _speedCurrent;
-            _velocityCache[0] = _rigidbody.velocity.x;
-            _velocityCache[2] = _rigidbody.velocity.z;
-            _rigidbody.velocity = _velocityCache;
+            if (_inputCache.sqrMagnitude > 0) _targetAngle = Quaternion.Euler(0, Mathf.Atan2(_inputCache[0], _inputCache[1]) * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y, 0);
+            _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMax); // Could use _decceleration when above max speed
+            _directionCache = (_targetAngle * Vector3.forward).normalized * _speedCurrent;
+            _movementCache[0] = _directionCache[0];
+            _movementCache[1] = _characterController.isGrounded ? (Physics.gravity.y / 10f) : Mathf.Clamp(_movementCache[1] + (Physics.gravity.y * Time.deltaTime), -50f, (Physics.gravity.y / 10f));
+            _movementCache[2] = _directionCache[2];
+            _characterController.Move(_movementCache * Time.deltaTime);
 
             onMovement?.Invoke(_speedCurrent * _inputCache);
+        }
+
+        private void SetColliderHeight(float height) {
+            _characterController.height = height;
+            _characterController.center = (height / 2f) * Vector3.up;
         }
 
         private void Crouch(InputAction.CallbackContext input) {
             if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) {
                 Crouching = !Crouching;
-                _collider.height = Crouching ? _crouchColliderHeight : _walkColliderHeight;
-                _collider.center = 0.5f * (Crouching ? _crouchColliderHeight : _walkColliderHeight) * Vector3.up;
+                _movementSpeedMax = Crouching ? _crouchSpeedMax : (_running ? _movementSpeedRun : _movementSpeedWalk);
+                SetColliderHeight(Crouching ? _crouchColliderHeight : _walkColliderHeight);
 
                 if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
                 _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
@@ -169,53 +166,47 @@ namespace Ivayami.Player {
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
-        //private void OverTheShoulderSpring() {
-        //    _overTheShoulderTarget.localPosition = Vector3.right *
-        //       (Physics.Raycast(_overTheShoulderTarget.position, _overTheShoulderTarget.right, out RaycastHit hit, _overTheShoulderMaxDistance, _overTheShoulderSpringCollisions) ?
-        //        hit.distance : _overTheShoulderMaxDistance);
-        //}
-
         private void ToggleWalk(InputAction.CallbackContext input) {
-            _movementSpeedMax = _movementSpeedMax != _movementSpeedRun ? _movementSpeedRun : _movementSpeedWalk;
+            if (_canRun) {
+                _running = !_running;
+                if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
+            }
+        }
+
+        public void AllowRun(bool allow) {
+            _canRun = allow;
+            if (!_canRun && _running) ToggleWalk(new InputAction.CallbackContext());
+            _running = allow;
         }
 
         public void ToggleMovement(bool canMove) {
-            _canMove = canMove;
-            if (!_canMove)
-            {
+            _movementBlock += canMove ? -1 : 1;
+            if (_movementBlock > 0) {
                 _speedCurrent = 0f;
                 onMovement?.Invoke(Vector2.zero);
             }
-            _rigidbody.constraints = canMove ? RigidbodyConstraints.FreezeRotation : RigidbodyConstraints.FreezeAll;
-
-            Logger.Log(LogType.Player, $"Movement Toggle: {_canMove}");
-        }
-
-        public void DisableMovement(float duration) {
-            StartCoroutine(DisableMovementRoutine(duration));
-        }
-
-        private IEnumerator DisableMovementRoutine(float duration) {
-            _canMove = false;
-
-            yield return new WaitForSeconds(duration);
-
-            _canMove = true;
+            Logger.Log(LogType.Player, $"Movement Blockers {(canMove ? "Increase" : "Decrease")} to: {_movementBlock}");
         }
 
         public void SetPosition(Vector3 position) {
-            _rigidbody.position = position;
+            transform.position = position;
         }
 
-        public void SetTargetAngle(float angle){
+        public void SetTargetAngle(float angle) {
             _targetAngle = Quaternion.Euler(0f, angle, 0f);
             _visualTransform.rotation = _targetAngle;
             // cinemachine freelook
-        }        
+        }
 
-        public void UpdateVisualsVisibility(bool isVisible)
-        {
+        public void UpdateVisualsVisibility(bool isVisible) {
             _visualTransform.gameObject.SetActive(isVisible);
         }
+
+#if UNITY_EDITOR
+        private void OnValidate() {
+            _characterController = GetComponent<CharacterController>();
+            SetColliderHeight(_walkColliderHeight);
+        }
+#endif
     }
 }
