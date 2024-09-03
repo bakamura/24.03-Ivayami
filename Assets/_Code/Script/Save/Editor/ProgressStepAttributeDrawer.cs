@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Ivayami.Save
 {
     [CustomPropertyDrawer(typeof(ProgressStepAttribute))]
-    public class ProgressStepAttributeDrawer : PropertyDrawer
+    internal sealed class ProgressStepAttributeDrawer : PropertyDrawer
     {
         //private bool _isInitialized;
         private string[] _steps;
