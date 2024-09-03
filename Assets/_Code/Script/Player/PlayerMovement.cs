@@ -29,7 +29,7 @@ namespace Ivayami.Player {
         private float _acceleration;
         [SerializeField, Min(0)] private float _deccelerationDuration;
         private float _decceleration;
-        private int _movementBlock;
+        private int _movementBlock = 1;
         private bool _canRun = true;
 
         [Header("Rotation")]
