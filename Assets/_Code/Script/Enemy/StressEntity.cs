@@ -37,7 +37,7 @@ namespace Ivayami.Enemy
                 SetActiveState(value);
             }
         }
-        private bool _isStressAreaActive;
+        private bool _isStressAreaActive = true;
         private StressAreaInfo[] _stressAreasInOrder;
         private Coroutine _stressIncreaseCoroutine;
         private WaitForSeconds _delay;
@@ -95,6 +95,10 @@ namespace Ivayami.Enemy
         private void SetActiveState(bool isActive)
         {
             _isStressAreaActive = isActive;
+            if (_targetInsideArea && _isStressAreaActive)
+            {
+                EnterArea();
+            }
         }
 
 #if UNITY_EDITOR
