@@ -1,9 +1,9 @@
-using Ivayami.Save;
-using Ivayami.Scene;
-using Ivayami.UI;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using Ivayami.Save;
+using Ivayami.Scene;
+using Ivayami.UI;
 
 namespace Ivayami.Player {
     public class PlayerStress : MonoSingleton<PlayerStress> {
@@ -11,7 +11,8 @@ namespace Ivayami.Player {
         [Header("Events")]
 
         public UnityEvent<float> onStressChange = new UnityEvent<float>();
-        public UnityEvent onFailState = new UnityEvent();
+        public UnityEvent onFail = new UnityEvent();
+        public UnityEvent onFailFade = new UnityEvent();
 
         [Header("Stress")]
 
@@ -19,40 +20,46 @@ namespace Ivayami.Player {
         private float _stressCurrent;
         [SerializeField] private float _stressRelieveDelay;
         private float _stressRelieveDelayTimer;
+        private bool _pauseStressRelieve = false;
 
         [Header("Fail")]
 
         [SerializeField] private float _restartDelay;
         private WaitForSeconds _restartWait;
         private bool _failState = false;
-
-        [Header("Cache")]
-
-        private Coroutine _stressRelieveRoutine;
+        private bool _overrideFailLoad = false;
 
         private void Start() {
+            Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
+            Pause.Instance.onUnpause.AddListener(() => _pauseStressRelieve = false);
             onStressChange.AddListener(FailStateCheck);
-            onFailState.AddListener(() => StartCoroutine(DelayToRespawn()));
+            onFail.AddListener(() => StartCoroutine(DelayToRespawn()));
             _restartWait = new WaitForSeconds(_restartDelay);
 
             Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");
         }
 
         private void Update() {
-            if (_stressCurrent > 20f) RelieveStressAuto();
-        }
-
-        public void AddStress(float amount, float capValue = -1) {
-            if (!_failState) {
-                _stressCurrent = Mathf.Clamp(_stressCurrent + amount, 0, capValue >= 0 ? capValue : _stressMax);
-                onStressChange.Invoke(_stressCurrent);
-
-                Logger.Log(LogType.Player, $"Stress Meter: {_stressCurrent}/{_stressMax}");
+            if (!_pauseStressRelieve) {
+                if (_stressRelieveDelayTimer > 0) _stressRelieveDelayTimer -= Time.deltaTime;
+                else if (_stressCurrent > 20f) RelieveStressAuto();
             }
         }
 
+        public void AddStress(float amount, float capValue = -1) {
+            if (!_failState && _stressCurrent < capValue) {
+                _stressCurrent = Mathf.Clamp(_stressCurrent + amount, 0, capValue >= 0 ? capValue : _stressMax);
+                onStressChange.Invoke(_stressCurrent);
+                _stressRelieveDelayTimer = _stressRelieveDelay;
+
+                Logger.Log(LogType.Player, $"Stress Meter: {_stressCurrent}/{_stressMax}");
+            }
+            else if (_stressCurrent == capValue) _stressRelieveDelayTimer = _stressRelieveDelay;
+        }
+
         private void RelieveStressAuto() {
-            _stressCurrent += StressRelieveFormula(_stressCurrent);
+            Debug.Log("RelieveStress");
+            _stressCurrent += StressRelieveFormula(_stressCurrent) * Time.deltaTime;
             onStressChange.Invoke(_stressCurrent);
         }
 
@@ -64,10 +71,14 @@ namespace Ivayami.Player {
         private void FailStateCheck(float stressCurrent) {
             if (!_failState && stressCurrent >= _stressMax) {
                 _failState = true;
-                onFailState.Invoke();
+                onFail.Invoke();
 
                 Logger.Log(LogType.Player, $"Player Fail State");
             }
+        }
+
+        public void OverrideFailLoad() {
+            _overrideFailLoad = true;
         }
 
         private IEnumerator DelayToRespawn() {
@@ -79,7 +90,11 @@ namespace Ivayami.Player {
 
             yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
 
-            SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes);
+            onFailFade.Invoke();
+            if (!_overrideFailLoad) {
+                SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes);
+                _overrideFailLoad = false;
+            }
         }
 
         private void HandleUnloadAllScenes() {
@@ -91,11 +106,10 @@ namespace Ivayami.Player {
 
         private void UnlockPlayer() {
             PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].transform.position);
-            //PlayerMovement.Instance.ToggleMovement(true);
             PlayerAnimation.Instance.GoToIdle();
             _stressCurrent = 0;
-            _failState = false;
             onStressChange?.Invoke(_stressCurrent);
+            _failState = false;
         }
 
     }
