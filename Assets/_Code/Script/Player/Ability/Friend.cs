@@ -2,6 +2,7 @@ using Ivayami.Puzzle;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using Ivayami.Enemy;
 
 namespace Ivayami.Player.Ability
 {
@@ -33,6 +34,7 @@ namespace Ivayami.Player.Ability
         private Coroutine _behaviourCoroutine;
         private PlayerActions.InteractAnimation _currentInteractionType;
         private RaycastHit[] _hit = new RaycastHit[1];
+        private Coroutine _detectTargetPointOffBehaviourReachedCoroutine;
         [System.Serializable]
         private struct AnimationOrientation
         {
@@ -105,8 +107,26 @@ namespace Ivayami.Player.Ability
         public void GoToPosition(Transform transform)
         {
             DeactivateBehaviour();
-            _friendAnimator.UpdateWalking(1);
-            _navMeshAgent.SetDestination(transform.position);
+            if(_detectTargetPointOffBehaviourReachedCoroutine != null)
+            {
+                StopCoroutine(_detectTargetPointOffBehaviourReachedCoroutine);
+                _detectTargetPointOffBehaviourReachedCoroutine = null;
+            }
+            _detectTargetPointOffBehaviourReachedCoroutine = StartCoroutine(DetectTargetPointOffBehaviourReachedCoroutine(transform));
+        }
+
+        private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine(Transform finalPos)
+        {
+            _navMeshAgent.SetDestination(finalPos.position);
+            while (Vector3.Distance(new Vector3(transform.position.x, _navMeshAgent.destination.y, transform.position.z), _navMeshAgent.destination) > _navMeshAgent.stoppingDistance)
+            {
+                _friendAnimator.UpdateWalking(_navMeshAgent.velocity.sqrMagnitude / (_navMeshAgent.speed * _navMeshAgent.speed));
+                _navMeshAgent.SetDestination(finalPos.position);
+                yield return _delay;
+            }
+            _navMeshAgent.velocity = Vector3.zero;
+            _friendAnimator.UpdateWalking(0);
+            _detectTargetPointOffBehaviourReachedCoroutine = null;
         }
 
         public void ChangeSpeed(float speed)
