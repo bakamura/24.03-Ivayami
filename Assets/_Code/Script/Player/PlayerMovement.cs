@@ -189,9 +189,7 @@ namespace Ivayami.Player {
         }
 
         public void SetPosition(Vector3 position) {
-            _characterController.enabled = false;
             transform.position = position;
-            _characterController.enabled = true;
         }
 
         public void SetTargetAngle(float angle) {
