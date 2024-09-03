@@ -105,7 +105,6 @@ namespace Ivayami.Player {
         private void Update() {
             if (_movementBlock <= 0) {
                 Move();
-                Debug.Log(_speedCurrent);
                 Rotate();
             }
         }
