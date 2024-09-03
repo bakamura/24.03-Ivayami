@@ -40,6 +40,7 @@ namespace Ivayami.debug
             PlayerMovement.Instance.SetPosition(Ivayami.debug.CustomSettingsHandler.CameraPosition);
             controller.enabled = true;
             PlayerActions.Instance.ChangeInputMap("Player");
+            PlayerMovement.Instance.ToggleMovement(true);
             SceneController.Instance.OnAllSceneRequestEndDebug -= OnSceneLoad;
         }
 
