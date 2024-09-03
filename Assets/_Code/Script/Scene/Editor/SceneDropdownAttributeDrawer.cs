@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 namespace Ivayami.Scene
 {
     [CustomPropertyDrawer(typeof(SceneDropdownAttribute))]	
-    public sealed class SceneDropdownAttributeDrawer : PropertyDrawer
+    internal sealed class SceneDropdownAttributeDrawer : PropertyDrawer
     {
 		private bool _isInitialized;
 		private readonly List<string> _sceneNames = new();
