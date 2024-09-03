@@ -25,13 +25,13 @@ namespace Ivayami.UI {
             StartCoroutine(WaitForSaveOptions());
 
             Options.OnChangeLanguage.AddListener((language) => SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate));
-            PlayerActions.Instance.ChangeInputMap("Menu");
         }
 
         private IEnumerator WaitForSaveOptions() {
             while(SaveSystem.Instance.Options == null) yield return null;
 
             SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate);
+            PlayerActions.Instance.ChangeInputMap("Menu");
         }
 
         private void SaveSelectBtnUpdate(SaveProgress[] progressSaves) {
