@@ -45,5 +45,11 @@ namespace Ivayami.Audio
                 _hasDoneSetup = true;
             }
         }
+
+        private void OnDestroy()
+        {
+            if (_changeOptionSoundInstance.isValid()) _changeOptionSoundInstance.release();
+            if (_confirmOptionSoundInstance.isValid()) _confirmOptionSoundInstance.release();
+        }
     }
 }

@@ -32,7 +32,7 @@ namespace Ivayami.Audio
             Activate,
             Deactivate,
             //Collect,
-            ActionFailed, 
+            ActionFailed,
             ActionSuccess
         }
 
@@ -70,7 +70,7 @@ namespace Ivayami.Audio
         {
             if (!_hasDoneSetup)
             {
-                if(!_interactSoundReference.IsNull)_interactSoundInstance = InstantiateEvent(_interactSoundReference);
+                if (!_interactSoundReference.IsNull) _interactSoundInstance = InstantiateEvent(_interactSoundReference);
                 if (!_interactReturnSoundReference.IsNull) _interactReturnSoundInstance = InstantiateEvent(_interactReturnSoundReference);
                 if (!_activateSoundReference.IsNull) _activateSoundInstance = InstantiateEvent(_activateSoundReference);
                 if (!_deactivateSoundReference.IsNull) _deactivateSoundInstance = InstantiateEvent(_deactivateSoundReference);
@@ -79,6 +79,16 @@ namespace Ivayami.Audio
                 if (!_actionSuccessSoundReference.IsNull) _actionSuccessSoundInstance = InstantiateEvent(_actionSuccessSoundReference);
                 _hasDoneSetup = true;
             }
+        }
+
+        private void OnDestroy()
+        {
+            if (_interactSoundInstance.isValid()) _interactSoundInstance.release();
+            if (_interactReturnSoundInstance.isValid()) _interactReturnSoundInstance.release();
+            if (_activateSoundInstance.isValid()) _activateSoundInstance.release();
+            if (_deactivateSoundInstance.isValid()) _deactivateSoundInstance.release();
+            if (_actionFailedSoundInstance.isValid()) _actionFailedSoundInstance.release();
+            if (_actionSuccessSoundInstance.isValid()) _actionSuccessSoundInstance.release();
         }
     }
 }
