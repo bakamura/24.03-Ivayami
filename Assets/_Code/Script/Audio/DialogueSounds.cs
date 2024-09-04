@@ -30,5 +30,10 @@ namespace Ivayami.Audio
                     break;
             }
         }
+
+        private void OnDestroy()
+        {
+            if (_continueDialogueSoundInstance.isValid()) _continueDialogueSoundInstance.release();
+        }
     }
 }
