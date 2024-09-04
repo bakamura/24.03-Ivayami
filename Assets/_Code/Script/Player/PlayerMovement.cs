@@ -102,6 +102,10 @@ namespace Ivayami.Player {
             Logger.Log(LogType.Player, $"{typeof(PlayerMovement).Name} Initialized");
         }
 
+        private void Start() {
+            PlayerActions.Instance.onInteract.AddListener((animation) => BlockMovementFor(PlayerAnimation.Instance.GetIdleAnimationDuration(animation)));
+        }
+
         private void Update() {
             if (_movementBlock <= 0) {
                 Move();
@@ -186,6 +190,18 @@ namespace Ivayami.Player {
                 onMovement?.Invoke(Vector2.zero);
             }
             Logger.Log(LogType.Player, $"Movement Blockers {(canMove ? "Increase" : "Decrease")} to: {_movementBlock}");
+        }
+
+        public void BlockMovementFor(float seconds) {
+            StartCoroutine(BlockMovementRoutine(seconds));
+        }
+
+        private IEnumerator BlockMovementRoutine(float seconds) {
+            ToggleMovement(false);
+
+            yield return new WaitForSeconds(seconds);
+
+            ToggleMovement(true);
         }
 
         public void SetPosition(Vector3 position) {
