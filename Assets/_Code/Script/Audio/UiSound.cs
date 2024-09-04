@@ -49,5 +49,11 @@ namespace Ivayami.Audio {
             Logger.Log(LogType.UI, $"Play Sound 'GoBack'");
         }
 
+        private void OnDestroy()
+        {
+            if (_changeSelectedInstance.isValid()) _changeSelectedInstance.release();
+            if (_goBackInstance.isValid()) _goBackInstance.release();
+            if (_goForthInstance.isValid()) _goForthInstance.release();
+        }
     }
 }

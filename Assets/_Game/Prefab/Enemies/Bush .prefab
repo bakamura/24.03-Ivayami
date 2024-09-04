@@ -78,6 +78,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8559428ec5775144db9671f7430c97d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2842999891178053880}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8559428ec5775144db9671f7430c97d5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5329073387762007088}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8559428ec5775144db9671f7430c97d5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5772931047561681823}
   m_SourcePrefab: {fileID: 100100000, guid: 8559428ec5775144db9671f7430c97d5, type: 3}
 --- !u!1 &493642501342089134 stripped
 GameObject:
@@ -117,3 +123,53 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da0473f2a038c1948897cbf39e760b57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5329073387762007088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493642501342089134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3ebbfea1ed71774c94f30b6a77477ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audioToPlay:
+    Guid:
+      Data1: -605080198
+      Data2: 1220973125
+      Data3: -1587700037
+      Data4: 1343551409
+    Path: event:/Environment_SFX/Arbustos
+--- !u!114 &5772931047561681823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493642501342089134}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerType: 0
+  _targetNeedToStayInside: 0
+  _delayToActivateEvent: 0
+  _optionalTag: 
+  _onExecute:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5329073387762007088}
+        m_TargetAssemblyTypeName: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

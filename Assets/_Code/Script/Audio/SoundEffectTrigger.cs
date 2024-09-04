@@ -7,10 +7,16 @@ namespace Ivayami.Audio
     public class SoundEffectTrigger : EntitySound
     {
         [SerializeField] private EventReference _audioToPlay;
+        [SerializeField] private bool _playOnStart;
 
         private EventInstance _soundInstance;
 
-        [ContextMenu("PlayAudio")]
+        private void Start()
+        {
+            if (_playOnStart) Play();
+        }
+
+        [ContextMenu("Play")]
         public void Play()
         {
             if (Setup())
@@ -18,7 +24,7 @@ namespace Ivayami.Audio
                 PlayOneShot(_soundInstance);
             }
         }
-
+        [ContextMenu("Pause")]
         public void Pause()
         {
             _soundInstance.getPlaybackState(out PLAYBACK_STATE state);
@@ -28,7 +34,7 @@ namespace Ivayami.Audio
                 _soundInstance.setPaused(!paused);
             }
         }
-
+        [ContextMenu("Stop")]
         public void Stop()
         {
             _soundInstance.getPlaybackState(out PLAYBACK_STATE state);
@@ -37,12 +43,18 @@ namespace Ivayami.Audio
 
         private bool Setup()
         {
-            if (!_audioToPlay.IsNull)
+            if (!_audioToPlay.IsNull && !_soundInstance.isValid())
             {
                 _soundInstance = InstantiateEvent(_audioToPlay);
                 return true;
             }
             return false;
+        }
+
+        private void OnDestroy()
+        {
+            if (_soundInstance.isValid()) 
+                _soundInstance.release();
         }
     }
 }

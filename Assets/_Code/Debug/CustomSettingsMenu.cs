@@ -34,10 +34,13 @@ namespace Ivayami.debug
         }
 
         public static void OnSceneLoad()
-        {                        
-            PlayerMovement.Instance.ToggleMovement(true);
-            PlayerActions.Instance.ChangeInputMap("Player");
+        {
+            CharacterController controller = PlayerMovement.Instance.GetComponent<CharacterController>();
+            controller.enabled = false;
             PlayerMovement.Instance.SetPosition(Ivayami.debug.CustomSettingsHandler.CameraPosition);
+            controller.enabled = true;
+            PlayerActions.Instance.ChangeInputMap("Player");
+            PlayerMovement.Instance.ToggleMovement(true);
             SceneController.Instance.OnAllSceneRequestEndDebug -= OnSceneLoad;
         }
 
