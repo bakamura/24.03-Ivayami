@@ -30,7 +30,7 @@ namespace Ivayami.Puzzle {
         }
 
         private void Start() {
-            _delayChangeCamera = new WaitForSeconds(PlayerAnimation.Instance.EnterLockerDuration - Camera.main.GetComponent<CinemachineBrain>().m_DefaultBlend.BlendTime);
+            _delayChangeCamera = new WaitForSeconds(PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.EnterLocker) - Camera.main.GetComponent<CinemachineBrain>().m_DefaultBlend.BlendTime);
         }
 
         public PlayerActions.InteractAnimation Interact() {

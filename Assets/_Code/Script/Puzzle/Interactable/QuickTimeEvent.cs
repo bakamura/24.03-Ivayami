@@ -58,12 +58,14 @@ namespace Ivayami.Puzzle
             }
         }
 
+        private const string BLOCK_KEY = "QuickTimeEvent";
+
         public void BeginEvent()
         {
             if (_waitAnimationCoroutine == null)
             {
                 _quickTimeButton.action.started += HandleOnClick;
-                PlayerMovement.Instance.ToggleMovement(false);
+                PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
                 _onStart?.Invoke();
                 for (int i = 0; i < _animations.Length; i++)
                 {
@@ -81,7 +83,7 @@ namespace Ivayami.Puzzle
         public void EndEvent()
         {
             _quickTimeButton.action.started -= HandleOnClick;
-            PlayerMovement.Instance.ToggleMovement(true);
+            PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true);
             _currentClickAmount = 0;
             SetAllSpeeds(true);
             _onEnd?.Invoke();

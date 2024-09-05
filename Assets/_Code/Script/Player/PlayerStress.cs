@@ -29,6 +29,10 @@ namespace Ivayami.Player {
         private bool _failState = false;
         private bool _overrideFailLoad = false;
 
+        [Header("Cache")]
+
+        private const string FAIL_BLOCK_KEY = "FailState";
+
         private void Start() {
             Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
             Pause.Instance.onUnpause.AddListener(() => _pauseStressRelieve = false);
@@ -82,7 +86,7 @@ namespace Ivayami.Player {
         }
 
         private IEnumerator DelayToRespawn() {
-            PlayerMovement.Instance.ToggleMovement(false);
+            PlayerMovement.Instance.ToggleMovement(FAIL_BLOCK_KEY, false);
 
             yield return _restartWait;
 
@@ -91,6 +95,7 @@ namespace Ivayami.Player {
             yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
 
             onFailFade.Invoke();
+            PlayerMovement.Instance.ToggleMovement(FAIL_BLOCK_KEY, true);
             if (!_overrideFailLoad) {
                 SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes);
                 _overrideFailLoad = false;

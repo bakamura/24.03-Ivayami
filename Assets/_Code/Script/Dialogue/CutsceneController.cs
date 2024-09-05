@@ -27,6 +27,8 @@ namespace Ivayami.Dialogue
 		private bool _isPaused;
 		public static bool IsPlaying { get; private set; }
 
+		private const string BLOCK_KEY = "Cutscene";
+
         void Start()
         {
             _playableDirector = GetComponent<PlayableDirector>();			
@@ -59,6 +61,7 @@ namespace Ivayami.Dialogue
 
 		public void SkipCutscene()
 		{
+			Debug.Log("SkipCutscene()");
 			if (!IsPlaying)
 				return;
 
@@ -68,7 +71,7 @@ namespace Ivayami.Dialogue
 				_onUnpause?.Invoke();
 			}			
 			if (_debug) Debug.Log("Cutscene Skip");
-			_onCutsceneEnd?.Invoke();
+			//_onCutsceneEnd?.Invoke();
 		}
 
 		public void ResumeCutscene()
@@ -86,7 +89,8 @@ namespace Ivayami.Dialogue
 
 		private void HandleOnCutsceneEnd()
         {
-			PlayerActions.Instance.ChangeInputMap(null);
+			PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true);
+			PlayerActions.Instance.ChangeInputMap("Player");
 			PlayerMovement.Instance.UpdateVisualsVisibility(true);
 			Pause.Instance.canPause = true;
 			DialogueController.Instance.StopDialogue();
@@ -97,7 +101,7 @@ namespace Ivayami.Dialogue
 
 		private void HandleOnCutsceneStart()
         {
-			PlayerMovement.Instance.ToggleMovement(false);
+			PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
 			PlayerMovement.Instance.UpdateVisualsVisibility(false);
             Pause.Instance.canPause = false;
             PlayerActions.Instance.ChangeInputMap("Menu");
