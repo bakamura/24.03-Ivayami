@@ -126,7 +126,7 @@ CapsuleCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -177,13 +177,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3ebbfea1ed71774c94f30b6a77477ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioToPlay:
-    Guid:
+  _audioReferences:
+  - Guid:
       Data1: -605080198
       Data2: 1220973125
       Data3: -1587700037
       Data4: 1343551409
     Path: event:/Environment_SFX/Arbustos
+  _playOnStart: 0
+  _replayAudioOnEnd: 0
+  _replayIntervalRange:
+    Min: 0
+    Max: 0
 --- !u!1001 &4322521247397458259
 PrefabInstance:
   m_ObjectHideFlags: 0
