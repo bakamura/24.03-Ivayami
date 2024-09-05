@@ -188,9 +188,14 @@ namespace Ivayami.Player {
 
         public void ToggleMovement(string key, bool canMove) {
             if (canMove) {
-                if (_movementBlock.Remove(key)) Debug.LogWarning($"'{key}' tried to unlock movement but key isn't blocking");
+                if (!_movementBlock.Remove(key)) Debug.LogWarning($"'{key}' tried to unlock movement but key isn't blocking");
             }
             else if (!_movementBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock movement but key is already blocking");
+            //
+            string str = "";
+            foreach (string strIt in _movementBlock) str += $"{strIt}\n";
+            Debug.Log(str);
+            //
 
             if (_movementBlock.Count > 0) {
                 _speedCurrent = 0f;
@@ -226,6 +231,10 @@ namespace Ivayami.Player {
         }
 
 #if UNITY_EDITOR
+        public void RemoveAllBlockers() {
+            _movementBlock.Clear();
+        }
+
         private void OnValidate() {
             _characterController = GetComponent<CharacterController>();
             SetColliderHeight(_walkColliderHeight);
