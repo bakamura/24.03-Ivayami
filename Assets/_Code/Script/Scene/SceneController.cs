@@ -12,11 +12,13 @@ namespace Ivayami.Scene
         [SceneDropdown, SerializeField] private string _mainMenuSceneName;
         [SerializeField] private bool _debugLogs;
 
-        private Dictionary<string, ChapterPointers> _chapterPointers;
+        private Dictionary<string, int> _chapterPointers;
         private List<SceneData> _sceneList = new List<SceneData>();
         private Queue<SceneUpdateRequestData> _sceneUpdateRequests = new Queue<SceneUpdateRequestData>();
 
         public Action OnAllSceneRequestEnd;
+        public Action<string> OnLoadScene;
+        public Action<string> OnUnloadScene;
 #if UNITY_EDITOR
         public Action OnAllSceneRequestEndDebug;
 #endif
@@ -53,12 +55,16 @@ namespace Ivayami.Scene
         {
             base.Awake();
 
-            _chapterPointers = new Dictionary<string, ChapterPointers>();
+            _chapterPointers = new Dictionary<string, int>();
             foreach (ChapterPointers chapterPointer in Resources.LoadAll<ChapterPointers>("ChapterPointers"))
             {
-                _chapterPointers.Add(chapterPointer.name, chapterPointer);
+                _chapterPointers.Add(chapterPointer.name, chapterPointer.GetInstanceID());
             }
+            Resources.UnloadUnusedAssets();            
+        }
 
+        private void Start()
+        {
             LoadMainMenuScene();
         }
 
@@ -126,7 +132,10 @@ namespace Ivayami.Scene
 
         public Vector2 PointerInChapter(string chapterId)
         {
-            return _chapterPointers[chapterId].SubChapterPointer((byte)SaveSystem.Instance.Progress.GetProgressOfType(chapterId));
+            ChapterPointers chapterPointer = (ChapterPointers)Resources.InstanceIDToObject(_chapterPointers[chapterId]);
+            Vector2 pointer = chapterPointer.SubChapterPointer((byte)SaveSystem.Instance.Progress.GetProgressOfType(chapterId));
+            Resources.UnloadAsset(chapterPointer);
+            return pointer;
         }
 
         private void HandleOnSceneUpdate(AsyncOperation operation)
@@ -134,15 +143,24 @@ namespace Ivayami.Scene
             SceneUpdateRequestData requestData = _sceneUpdateRequests.Dequeue();
             requestData.SceneData.IsLoaded = !requestData.SceneData.IsLoaded;
             requestData.SceneData.IsBeingLoaded = false;
-            if (_debugLogs)
+
+            if (requestData.SceneData.IsLoaded)
             {
-                if (requestData.SceneData.IsLoaded) Debug.Log($"Scene Loaded {requestData.SceneData.SceneName}");
-                else Debug.Log($"Scene Unloaded {requestData.SceneData.SceneName}");
+                OnLoadScene?.Invoke(requestData.SceneData.SceneName);
+                if (_debugLogs) Debug.Log($"Scene Loaded {requestData.SceneData.SceneName}");
             }
+            else
+            {
+                OnUnloadScene?.Invoke(requestData.SceneData.SceneName);
+                if (_debugLogs) Debug.Log($"Scene Unloaded {requestData.SceneData.SceneName}");
+            }
+
             requestData.OnSceneUpdate?.Invoke();
+
             if (_sceneUpdateRequests.Count > 0) UpdateScene(_sceneUpdateRequests.Peek().SceneData);
             else
             {
+                if(_debugLogs) Debug.Log("AllSceneRequestEnd Callback");
                 OnAllSceneRequestEnd?.Invoke();
 #if UNITY_EDITOR
                 StartCoroutine(WaitEndOfFrameCoroutine());

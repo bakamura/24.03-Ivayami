@@ -3,9 +3,11 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Ivayami.Save {
+namespace Ivayami.Save
+{
     //[RequireComponent(typeof(BoxCollider))]
-    public class ProgressTriggerEvent : MonoBehaviour {
+    public class ProgressTriggerEvent : MonoBehaviour
+    {
 
         [SerializeField] private bool _triggerOnStart;
         [Serializable]
@@ -30,17 +32,19 @@ namespace Ivayami.Save {
             if (_triggerOnStart) TryTrigger();
         }
 
-        private void OnTriggerEnter(Collider other) {
+        private void OnTriggerEnter(Collider other)
+        {
             TryTrigger();
         }
 
         public void TryTrigger()
         {
-            for(int i = 0; i < _progressConditions.Length; i++)
+            for (int i = 0; i < _progressConditions.Length; i++)
             {
-                if (SaveSystem.Instance.Progress.progress.ContainsKey(_progressConditions[i].AreaProgress.Id) && 
+                if (!SaveSystem.Instance.Progress.progress.ContainsKey(_progressConditions[i].AreaProgress.Id) ||
+                    (SaveSystem.Instance.Progress.progress.ContainsKey(_progressConditions[i].AreaProgress.Id) &&
                     (SaveSystem.Instance.Progress.progress[_progressConditions[i].AreaProgress.Id] < _progressConditions[i].ProgressStepMin ||
-                    SaveSystem.Instance.Progress.progress[_progressConditions[i].AreaProgress.Id] > _progressConditions[i].ProgressStepMax))
+                    SaveSystem.Instance.Progress.progress[_progressConditions[i].AreaProgress.Id] > _progressConditions[i].ProgressStepMax)))
                 {
                     return;
                 }
