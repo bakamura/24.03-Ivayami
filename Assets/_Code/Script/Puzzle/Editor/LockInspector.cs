@@ -8,7 +8,7 @@ namespace Ivayami.Puzzle
     public class LockInspector : Editor
     {
         SerializedProperty cancelInteractionInput, interactionType, confirmInput, unlockDelay,
-            itemsRequired, requestAmountToComplete, skipDeliverUI, deliverItemsUI, deliverOptionsContainer, navigateUIInput, deliverBtn, /*onItemDeliverFailed,*/
+            itemsRequired, requestAmountToComplete, skipDeliverUI, deliverItemsUI, deliverOptions,/*deliverOptionsContainer,*/ navigateUIInput, deliverBtn, /*onItemDeliverFailed,*/
             passwordUI,
             onInteract, onCancelInteraction, onActivate, onInteractionFailed;
         public override void OnInspectorGUI()
@@ -32,7 +32,8 @@ namespace Ivayami.Puzzle
                     EditorGUILayout.PropertyField(skipDeliverUI, new GUIContent("Skip Deliver UI"));
                     EditorGUILayout.PropertyField(itemsRequired, new GUIContent("Items Required To Unlock"));
                     EditorGUILayout.PropertyField(deliverItemsUI, new GUIContent("Deliver Item UI"));
-                    EditorGUILayout.PropertyField(deliverOptionsContainer, new GUIContent("Items Icons Container"));
+                    //EditorGUILayout.PropertyField(deliverOptionsContainer, new GUIContent("Items Icons Container"));
+                    EditorGUILayout.PropertyField(deliverOptions, new GUIContent("Deliver Item Icons"));
                     EditorGUILayout.PropertyField(deliverBtn, new GUIContent("Deliver Button"));
                     //EditorGUILayout.PropertyField(onItemDeliverFailed, new GUIContent("On Item Deliver Failed"));
                     break;
@@ -64,7 +65,8 @@ namespace Ivayami.Puzzle
             confirmInput = serializedObject.FindProperty("_confirmInput");
             itemsRequired = serializedObject.FindProperty("_itemsRequired");
             deliverItemsUI = serializedObject.FindProperty("_deliverItemsUI");
-            deliverOptionsContainer = serializedObject.FindProperty("_deliverOptionsContainer");
+            //deliverOptionsContainer = serializedObject.FindProperty("_deliverOptionsContainer");
+            deliverOptions = serializedObject.FindProperty("_deliverOptions");
             navigateUIInput = serializedObject.FindProperty("_navigateUIInput");
             deliverBtn = serializedObject.FindProperty("_deliverBtn");
             //onItemDeliverFailed = serializedObject.FindProperty("_onItemDeliverFailed");
