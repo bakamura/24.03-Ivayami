@@ -23,7 +23,8 @@ namespace Ivayami.Puzzle
 
         [SerializeField] private ItemRequestData[] _itemsRequired;
         [SerializeField] private CanvasGroup _deliverItemsUI;
-        [SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
+        //[SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
+        [SerializeField] private Image[] _deliverOptions;
         [SerializeField] private Selectable _deliverBtn;
         //[SerializeField] private UnityEvent _onItemDeliverFailed;
 
@@ -34,7 +35,6 @@ namespace Ivayami.Puzzle
         [SerializeField] private UnityEvent _onInteractionFailed;
 
 
-        private Image[] _deliverOptions;
         private sbyte _currentRequestIndex = 0;
         private List<ItemRequestData> _currentRequests = new List<ItemRequestData>();
         private InteractableFeedbacks _interatctableFeedbacks;
@@ -62,7 +62,7 @@ namespace Ivayami.Puzzle
 
         private void Awake()
         {
-            _deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
+            //_deliverOptions = _deliverOptionsContainer.GetComponentsInChildren<Image>();
             _interatctableFeedbacks = GetComponent<InteractableFeedbacks>();
             _interactableSounds = GetComponent<InteractableSounds>();
             _lockSounds = GetComponent<LockPuzzleSounds>();
