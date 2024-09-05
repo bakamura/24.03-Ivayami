@@ -5,12 +5,13 @@ using FMOD;
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace Ivayami.Audio
 {
     public class SoundEffectTrigger : EntitySound
     {
-        [SerializeField] private EventReference _audioToPlay;
+        [SerializeField, Tooltip("if is greater than 1 will randomize sounds")] private EventReference[] _audioReferences;
         [SerializeField] private bool _playOnStart;
         [SerializeField] private bool _replayAudioOnEnd;
         [SerializeField] private Range _replayIntervalRange;
@@ -22,7 +23,8 @@ namespace Ivayami.Audio
             [Min(0f)] public float Max;
         }
 
-        private EventInstance _soundInstance;
+        private EventInstance[] _soundInstances;
+        private EventInstance _currentSounInstance;
         private GCHandle _timelineHandle;
         private TimelineInfo _timelineInfo = new TimelineInfo();
         private EVENT_CALLBACK _audioEndCallback;
@@ -54,38 +56,43 @@ namespace Ivayami.Audio
         public void Play()
         {
             Setup();
+            _currentSounInstance = _soundInstances[UnityEngine.Random.Range(0, _soundInstances.Length - 1)];
             if (_replayAudioOnEnd)
             {
                 _audioEndCallback = new EVENT_CALLBACK(HandleOnAudioEnd);
                 _timelineHandle = GCHandle.Alloc(_timelineInfo);
-                _soundInstance.setUserData(GCHandle.ToIntPtr(_timelineHandle));
-                PlayOneShot(_soundInstance, _audioEndCallback);
+                _currentSounInstance.setUserData(GCHandle.ToIntPtr(_timelineHandle));
+                PlayOneShot(_currentSounInstance, _audioEndCallback);
             }
-            else PlayOneShot(_soundInstance);
+            else PlayOneShot(_currentSounInstance);
         }
 
         [ContextMenu("Pause")]
         public void Pause()
         {
-            _soundInstance.getPlaybackState(out PLAYBACK_STATE state);
+            _currentSounInstance.getPlaybackState(out PLAYBACK_STATE state);
             if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STOPPED)
             {
-                _soundInstance.getPaused(out bool paused);
-                _soundInstance.setPaused(!paused);
+                _currentSounInstance.getPaused(out bool paused);
+                _currentSounInstance.setPaused(!paused);
             }
         }
         [ContextMenu("Stop")]
         public void Stop()
         {
-            _soundInstance.getPlaybackState(out PLAYBACK_STATE state);
-            if (state == PLAYBACK_STATE.PLAYING) _soundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            _currentSounInstance.getPlaybackState(out PLAYBACK_STATE state);
+            if (state == PLAYBACK_STATE.PLAYING) _currentSounInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
         }
 
         private void Setup()
         {
             if (!_hasDoneSetup)
             {
-                _soundInstance = InstantiateEvent(_audioToPlay);
+                _soundInstances = new EventInstance[_audioReferences.Length];
+                for (int i = 0; i < _audioReferences.Length; i++)
+                {
+                    _soundInstances[i] = InstantiateEvent(_audioReferences[i]);
+                }
                 _hasDoneSetup = true;
             }
         }
@@ -135,8 +142,10 @@ namespace Ivayami.Audio
 
         private void OnDestroy()
         {
-            if (_soundInstance.isValid())
-                _soundInstance.release();
+            for(int i =0; i < _soundInstances.Length; i++) 
+            {
+                if (_soundInstances[i].isValid()) _soundInstances[i].release();
+            }
         }
     }
 }
