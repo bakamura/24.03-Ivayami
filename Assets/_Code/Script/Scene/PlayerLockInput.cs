@@ -4,18 +4,20 @@ using Ivayami.UI;
 
 namespace Ivayami.Scene
 {
-    public class PlayerLockInput : MonoBehaviour
-    {       
+    public class PlayerLockInput : MonoBehaviour 
+    {
+        [SerializeField] private string _blockKey;
+
         public void LockInput()
         {
-            PlayerMovement.Instance.ToggleMovement(false);
+            PlayerMovement.Instance.ToggleMovement(_blockKey, false);
             Pause.Instance.canPause = false;
             PlayerActions.Instance.ChangeInputMap(null);
         }
 
         public void UnlockInput()
         {
-            PlayerMovement.Instance.ToggleMovement(true);
+            PlayerMovement.Instance.ToggleMovement(_blockKey, true);
             Pause.Instance.canPause = true;
             PlayerActions.Instance.ChangeInputMap("Player");
         }        

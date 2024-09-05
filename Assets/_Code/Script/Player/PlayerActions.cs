@@ -61,6 +61,8 @@ namespace Ivayami.Player {
         private float _interactableClosestDistanceCache;
         private float _interactableDistanceIterator;
 
+        private const string INTERACT_LONG_BLOCK_KEY = "InteractLong";
+
         protected override void Awake() {
             base.Awake();
 
@@ -87,7 +89,7 @@ namespace Ivayami.Player {
                 if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
                     InteractAnimation animation = InteractableTarget.Interact();
                     if (InteractableTarget is IInteractableLong) {
-                        PlayerMovement.Instance.ToggleMovement(false);
+                        PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
                         onInteractLong?.Invoke(true);
 
                         Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
@@ -101,7 +103,7 @@ namespace Ivayami.Player {
                 else Logger.Log(LogType.Player, $"Interact: No Target");
             }
             else if (input.phase == InputActionPhase.Canceled && Interacting) {
-                if (InteractableTarget is IInteractableLong) PlayerMovement.Instance.ToggleMovement(true);
+                if (InteractableTarget is IInteractableLong) PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, true);
                 (InteractableTarget as IInteractableLong).InteractStop();                
                 onInteractLong?.Invoke(false);
 
