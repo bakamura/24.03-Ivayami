@@ -21,24 +21,27 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Bush Purple Flower_mat
-  m_Shader: {fileID: 4800000, guid: ebb84453ebe98e446850ba756ea3f03f, type: 3}
+  m_Shader: {fileID: 4800000, guid: 8f3d5abc0abe34592987b6e1c1f6ee2f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
-  - _ALPHATEST_ON
   - _ENVIRONMENTREFLECTIONS_OFF
-  - _GBUFFERLIGHTING_SIMPLE
+  - _GBUFFERLIGHTING_TRANSMISSION
   - _RECEIVE_SHADOWS_OFF
   - _SPECULARHIGHLIGHTS_OFF
   - _SPECULAR_SETUP
+  - _WINDFROMSCRIPT
   m_InvalidKeywords:
+  - _ALPHATEST_ON
+  - _BENDINGMODE_BLUE
+  - _GBUFFERLIGHTING_SIMPLE
+  - _VISUALIZE_COMBINED_WIND
   - _WIND_TEXTURE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 2450
-  stringTagMap:
-    RenderType: TransparentCutout
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses: []
   m_LockedProperties: 
   m_SavedProperties:
@@ -96,6 +99,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SpecMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _TranslucencyMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -119,13 +126,16 @@ Material:
     - _ApplyCookiesForTransmission: 0
     - _ApplyNormal: 0
     - _ApplyNormalDepthNormal: 0
+    - _BendingMode: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
+    - _BlinnPhong: 0
     - _BumpScale: 1
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Coverage: 0
     - _Cull: 0
+    - _Culling: 0
     - _Cutoff: 0.5
     - _Debug: 0
     - _DebugBrightness: 1
@@ -140,16 +150,23 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnableDither: 0
-    - _EnableWindFromScript: 0
+    - _EnableNormal: 0
+    - _EnableNormalVS: 0
+    - _EnableSpecMask: 0
+    - _EnableWindFromScript: 1
     - _EnvironmentReflections: 0
     - _GbufferLighting: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _HelpA: 0
+    - _Jitter: 0.1
+    - _LightMapBoost: 1
     - _MaskByShadowStrength: 0
     - _Metallic: 0
     - _NormalDisplacement: 1
+    - _Occlusion: 1
+    - _OcclusionFromSpecMask: 1
     - _OcclusionStrength: 1
     - _OverrideTransmission: 0
     - _Parallax: 0.005
@@ -183,12 +200,13 @@ Material:
     - _UseMetallicMap: 0
     - _UseNormalMap: 1
     - _UseRoughnessMap: 1
+    - _Visualize: 0
     - _Wind: 0
     - _WorkflowMode: 0
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 0}
     - _DistanceFade: {r: 2500, g: 0.001, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
