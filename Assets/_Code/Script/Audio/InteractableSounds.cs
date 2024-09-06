@@ -89,6 +89,7 @@ namespace Ivayami.Audio
             if (_deactivateSoundInstance.isValid()) _deactivateSoundInstance.release();
             if (_actionFailedSoundInstance.isValid()) _actionFailedSoundInstance.release();
             if (_actionSuccessSoundInstance.isValid()) _actionSuccessSoundInstance.release();
+            _hasDoneSetup = false;
         }
     }
 }

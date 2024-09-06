@@ -10,26 +10,36 @@ namespace Ivayami.Audio
 {
     public class SoundEffectTrigger : EntitySound
     {
-        [SerializeField, Tooltip("if is greater than 1 will randomize sounds")] private EventData[] _audiosData;
+        [SerializeField] private SoundEventData[] _audiosData;
         [SerializeField] private bool _playOnStart;
         [SerializeField] private bool _replayAudioOnEnd;
         [SerializeField] private Range _replayIntervalRange;
 
         [Serializable]
-        private struct EventData
+        private struct SoundEventData
         {
             public EventReference AudioReference;
             public bool AllowFadeOut;
             public Range AttenuationRange;
             [HideInInspector] public EventInstance AudioInstance;
 #if UNITY_EDITOR
-            public bool DrawGizmos;
+            [Tooltip("Will only show if the audio is 3D")] public bool DrawGizmos;
             public Color MinRangGizmoColor;
             public Color MaxRangGizmoColor;
+            public SoundEventData(EventReference reference, bool allowFadeOut, Range attenuation, EventInstance instance, bool drawGizmos, Color minRange, Color maxRange)
+            {
+                AudioReference = reference;
+                AllowFadeOut = allowFadeOut;
+                AttenuationRange = attenuation;
+                AudioInstance = instance;
+                DrawGizmos = drawGizmos;
+                MinRangGizmoColor = minRange;
+                MaxRangGizmoColor = maxRange;
+            }
 #endif
         }
 
-        private EventData _currentSounData;
+        private SoundEventData _currentSounData;
         private GCHandle _timelineHandle;
         private TimelineInfo _timelineInfo = new TimelineInfo();
         private EVENT_CALLBACK _audioEndCallback;
@@ -148,7 +158,9 @@ namespace Ivayami.Audio
             {
                 if (_audiosData[i].AudioInstance.isValid()) _audiosData[i].AudioInstance.release();
             }
+            _hasDoneSetup = false;
         }
+
 
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
@@ -159,14 +171,17 @@ namespace Ivayami.Audio
             int i;
             for (i = 0; i < _audiosData.Length; i++)
             {
-                if(!_audiosData[i].AudioReference.IsNull) EditorUtils.System.getEventByID(_audiosData[i].AudioReference.Guid, out descriptions[i]);
+                if (!_audiosData[i].AudioReference.IsNull) EditorUtils.System.getEventByID(_audiosData[i].AudioReference.Guid, out descriptions[i]);
             }
             float min;
             float max;
+            bool is3D;
             for (i = 0; i < descriptions.Length; i++)
             {
                 if (descriptions[i].isValid() && _audiosData[i].DrawGizmos)
                 {
+                    descriptions[i].is3D(out is3D);
+                    if (!is3D) return;
                     descriptions[i].getMinMaxDistance(out min, out max);
                     Gizmos.color = _audiosData[i].MinRangGizmoColor;
                     Gizmos.DrawWireSphere(transform.position, _audiosData[i].AttenuationRange.Min > 0 ? _audiosData[i].AttenuationRange.Min : min);

@@ -14,7 +14,6 @@ namespace Ivayami.Audio
             EditorGUILayout.PropertyField(replayAudioOnEnd, new GUIContent("Replay Audio On End"));
             if (replayAudioOnEnd.boolValue)
                 EditorGUILayout.PropertyField(replayIntervalRange, new GUIContent("Interval Random Range"));
-
             serializedObject.ApplyModifiedProperties();
         }
 

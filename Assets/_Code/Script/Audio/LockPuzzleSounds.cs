@@ -50,6 +50,7 @@ namespace Ivayami.Audio
         {
             if (_changeOptionSoundInstance.isValid()) _changeOptionSoundInstance.release();
             if (_confirmOptionSoundInstance.isValid()) _confirmOptionSoundInstance.release();
+            _hasDoneSetup = false;
         }
     }
 }

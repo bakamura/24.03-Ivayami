@@ -59,6 +59,18 @@ namespace Ivayami.Audio
             {
                 if (_audiosData[i].AudioInstance.isValid()) _audiosData[i].AudioInstance.release();
             }
+            _hasDoneSetup = false;
         }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            int lenght = System.Enum.GetNames(typeof(SoundTypes)).Length;
+            if (_audiosData != null && _audiosData.Length > lenght)
+            {
+                System.Array.Resize(ref _audiosData, lenght);
+            }
+        }
+#endif
     }
 }
