@@ -43,25 +43,25 @@ namespace Ivayami.Audio
             switch (soundType)
             {
                 case SoundTypes.Interact:
-                    PlayOneShot(_interactSoundInstance);
+                    PlayOneShot(_interactSoundInstance, false, Range.Empty);
                     break;
                 case SoundTypes.InteractReturn:
-                    PlayOneShot(_interactReturnSoundInstance);
+                    PlayOneShot(_interactReturnSoundInstance, false, Range.Empty);
                     break;
                 case SoundTypes.Activate:
-                    PlayOneShot(_activateSoundInstance);
+                    PlayOneShot(_activateSoundInstance, false, Range.Empty);
                     break;
                 case SoundTypes.Deactivate:
-                    PlayOneShot(_deactivateSoundInstance);
+                    PlayOneShot(_deactivateSoundInstance, false, Range.Empty);
                     break;
                 //case SoundTypes.Collect:
                 //    PlayOneShot(_collectSoundInstance);
                 //    break;
                 case SoundTypes.ActionFailed:
-                    PlayOneShot(_actionFailedSoundInstance);
+                    PlayOneShot(_actionFailedSoundInstance, false, Range.Empty);
                     break;
                 case SoundTypes.ActionSuccess:
-                    PlayOneShot(_actionSuccessSoundInstance);
+                    PlayOneShot(_actionSuccessSoundInstance, false, Range.Empty);
                     break;
             }
         }
@@ -81,7 +81,7 @@ namespace Ivayami.Audio
             }
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             if (_interactSoundInstance.isValid()) _interactSoundInstance.release();
             if (_interactReturnSoundInstance.isValid()) _interactReturnSoundInstance.release();
@@ -89,6 +89,7 @@ namespace Ivayami.Audio
             if (_deactivateSoundInstance.isValid()) _deactivateSoundInstance.release();
             if (_actionFailedSoundInstance.isValid()) _actionFailedSoundInstance.release();
             if (_actionSuccessSoundInstance.isValid()) _actionSuccessSoundInstance.release();
+            _hasDoneSetup = false;
         }
     }
 }
