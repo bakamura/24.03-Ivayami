@@ -29,6 +29,10 @@ namespace Ivayami.Player {
         private bool _failState = false;
         private bool _overrideFailLoad = false;
 
+        [Header("Cache")]
+
+        private const string FAIL_BLOCK_KEY = "FailState";
+
         private void Start() {
             Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
             Pause.Instance.onUnpause.AddListener(() => _pauseStressRelieve = false);
@@ -47,7 +51,7 @@ namespace Ivayami.Player {
         }
 
         public void AddStress(float amount, float capValue = -1) {
-            if (!_failState && _stressCurrent < capValue) {
+            if (!_failState && _stressCurrent < (capValue >= 0 ? capValue : _stressMax)) {
                 _stressCurrent = Mathf.Clamp(_stressCurrent + amount, 0, capValue >= 0 ? capValue : _stressMax);
                 onStressChange.Invoke(_stressCurrent);
                 _stressRelieveDelayTimer = _stressRelieveDelay;
@@ -58,7 +62,6 @@ namespace Ivayami.Player {
         }
 
         private void RelieveStressAuto() {
-            Debug.Log("RelieveStress");
             _stressCurrent += StressRelieveFormula(_stressCurrent) * Time.deltaTime;
             onStressChange.Invoke(_stressCurrent);
         }
@@ -82,7 +85,7 @@ namespace Ivayami.Player {
         }
 
         private IEnumerator DelayToRespawn() {
-            PlayerMovement.Instance.ToggleMovement(false);
+            PlayerMovement.Instance.ToggleMovement(FAIL_BLOCK_KEY, false);
 
             yield return _restartWait;
 
@@ -91,6 +94,7 @@ namespace Ivayami.Player {
             yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
 
             onFailFade.Invoke();
+            PlayerMovement.Instance.ToggleMovement(FAIL_BLOCK_KEY, true);
             if (!_overrideFailLoad) {
                 SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes);
                 _overrideFailLoad = false;

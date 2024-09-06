@@ -142,6 +142,7 @@ namespace Ivayami.Audio
 
         private void OnDestroy()
         {
+            if (_soundInstances == null) return;
             for(int i =0; i < _soundInstances.Length; i++) 
             {
                 if (_soundInstances[i].isValid()) _soundInstances[i].release();

@@ -7,8 +7,6 @@ namespace Ivayami.Player {
 
         [SerializeField] private AnimationClip[] _interactAnimations;
         private Dictionary<PlayerActions.InteractAnimation, float> _interactAnimationDuration = new Dictionary<PlayerActions.InteractAnimation, float>();
-        [SerializeField] private AnimationClip _enterLockerAnimation;
-        public float EnterLockerDuration { get { return _enterLockerAnimation.length; } }
 
         [Header("Cache")]
 
@@ -45,7 +43,7 @@ namespace Ivayami.Player {
             SavePoint.onSaveGame.AddListener(() => Trigger("Seat"));
         }
 
-        public float GetIdleAnimationDuration(PlayerActions.InteractAnimation animation) {
+        public float GetInteractAnimationDuration(PlayerActions.InteractAnimation animation) {
             return _interactAnimationDuration[animation];
         }
 
