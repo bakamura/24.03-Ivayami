@@ -51,7 +51,7 @@ namespace Ivayami.Player {
         }
 
         public void AddStress(float amount, float capValue = -1) {
-            if (!_failState && _stressCurrent < capValue) {
+            if (!_failState && _stressCurrent < (capValue >= 0 ? capValue : _stressMax)) {
                 _stressCurrent = Mathf.Clamp(_stressCurrent + amount, 0, capValue >= 0 ? capValue : _stressMax);
                 onStressChange.Invoke(_stressCurrent);
                 _stressRelieveDelayTimer = _stressRelieveDelay;
@@ -62,7 +62,6 @@ namespace Ivayami.Player {
         }
 
         private void RelieveStressAuto() {
-            Debug.Log("RelieveStress");
             _stressCurrent += StressRelieveFormula(_stressCurrent) * Time.deltaTime;
             onStressChange.Invoke(_stressCurrent);
         }
