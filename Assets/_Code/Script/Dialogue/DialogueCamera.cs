@@ -1,14 +1,13 @@
 using UnityEngine;
 using Cinemachine;
 using System.Collections;
-using System;
+using Ivayami.Player;
 
 namespace Ivayami.Dialogue
 {
     public class DialogueCamera : MonoSingleton<DialogueCamera>
     {
         private CinemachineVirtualCamera _dialogueCamera;
-        private Camera _gameplayCamera;
 
         private int _gameplayCameraPriority;
         private Coroutine _animationCoroutine;
@@ -21,9 +20,8 @@ namespace Ivayami.Dialogue
         private void Start()
         {
             _dialogueCamera = GetComponentInChildren<CinemachineVirtualCamera>();
-            _gameplayCamera = Camera.main;
 
-            _gameplayCameraPriority = FindObjectOfType<CinemachineFreeLook>().Priority;
+            _gameplayCameraPriority = PlayerCamera.Instance.FreeLookCam.Priority;
 
             //DialogueController.Instance.OnDialogeStart += HandleOnDialogeStart;           
             DialogueController.Instance.OnSkipSpeech += HandleOnSkipSpeech;
@@ -37,7 +35,7 @@ namespace Ivayami.Dialogue
                 _animationCoroutine = null;
                 _dialogueCamera.transform.SetPositionAndRotation(_finalPlacement.position, _finalPlacement.rotation);
             }
-            else _dialogueCamera.transform.SetPositionAndRotation(_gameplayCamera.transform.position, _gameplayCamera.transform.rotation);
+            else _dialogueCamera.transform.SetPositionAndRotation(PlayerCamera.Instance.MainCamera.transform.position, PlayerCamera.Instance.MainCamera.transform.rotation);
             _currentPositionCurve = cameraTransitionInfo.PositionCurve;
             _currentRotationCurve = cameraTransitionInfo.RotationCurve;
             _finalPlacement = cameraTransitionInfo.transform;
