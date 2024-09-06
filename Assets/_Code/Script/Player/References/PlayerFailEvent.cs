@@ -16,12 +16,14 @@ namespace Ivayami.Player {
         }
 
         public void SubscribeFail() {
-            PlayerStress.Instance.onFail.AddListener(_onFail.Invoke);
+            if (_onFail.GetPersistentEventCount() > 0) PlayerStress.Instance.onFail.AddListener(_onFail.Invoke);
         }
 
         public void SubscribeFailFade() {
-            PlayerStress.Instance.onFailFade.AddListener(_onFailFade.Invoke);
-            PlayerStress.Instance.OverrideFailLoad();
+            if (_onFail.GetPersistentEventCount() > 0) {
+                PlayerStress.Instance.onFailFade.AddListener(_onFailFade.Invoke);
+                PlayerStress.Instance.OverrideFailLoad();
+            }
         }
 
         public void UnsubscribeFail() {
