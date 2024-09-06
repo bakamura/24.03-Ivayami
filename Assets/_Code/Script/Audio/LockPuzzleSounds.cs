@@ -28,10 +28,10 @@ namespace Ivayami.Audio
             switch (soundType)
             {
                 case SoundTypes.ChangeOption:
-                    PlayOneShot(_changeOptionSoundInstance);
+                    PlayOneShot(_changeOptionSoundInstance, false, Range.Empty);
                     break;
                 case SoundTypes.ConfirmOption:
-                    PlayOneShot(_confirmOptionSoundInstance);
+                    PlayOneShot(_confirmOptionSoundInstance, false, Range.Empty);
                     break;
             }
         }
@@ -46,7 +46,7 @@ namespace Ivayami.Audio
             }
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             if (_changeOptionSoundInstance.isValid()) _changeOptionSoundInstance.release();
             if (_confirmOptionSoundInstance.isValid()) _confirmOptionSoundInstance.release();

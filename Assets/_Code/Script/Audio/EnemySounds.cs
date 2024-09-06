@@ -6,13 +6,24 @@ namespace Ivayami.Audio
 {
     public class EnemySounds : EntitySound
     {
-        [SerializeField] private EventReference _targetDetectedSound;
-        [SerializeField] private EventReference _takeDamageSound;
+        [SerializeField] private EventData[] _audiosData;
         [SerializeField] private bool _debugLog;
 
-        private EventInstance _targetDetectedSoundInstance;
-        private EventInstance _takeDamageSoundInstance;
         private bool _hasDoneSetup;
+
+        [System.Serializable]
+        private struct EventData
+        {
+            public SoundTypes SoundType;
+            public EventReference AudioReference;
+            public Range AttenuationRange;
+            [HideInInspector] public EventInstance AudioInstance;
+#if UNITY_EDITOR
+            public bool DrawGizmos;
+            public Color MinRangGizmoColor;
+            public Color MaxRangGizmoColor;
+#endif
+        }
 
         public enum SoundTypes
         {
@@ -24,30 +35,30 @@ namespace Ivayami.Audio
         {
             Setup();
             if (_debugLog) Debug.Log($"PlaySound {soundType}");
-            switch (soundType)
+            for(int i = 0; i < _audiosData.Length; i++)
             {
-                case SoundTypes.TargetDetected:
-                    PlayOneShot(_targetDetectedSoundInstance);
-                    break;
-                case SoundTypes.TakeDamage:
-                    PlayOneShot(_takeDamageSoundInstance);
-                    break;
+                if (soundType == _audiosData[i].SoundType) PlayOneShot(_audiosData[i].AudioInstance, false, _audiosData[i].AttenuationRange);
             }
         }
+
         private void Setup()
         {
             if (!_hasDoneSetup)
             {
-                if (!_targetDetectedSound.IsNull) _targetDetectedSoundInstance = InstantiateEvent(_targetDetectedSound);
-                if (!_takeDamageSound.IsNull) _takeDamageSoundInstance = InstantiateEvent(_takeDamageSound);
+                for(int i =0; i < _audiosData.Length; i++)
+                {
+                    if(!_audiosData[i].AudioReference.IsNull) _audiosData[i].AudioInstance = InstantiateEvent(_audiosData[i].AudioReference);
+                }
                 _hasDoneSetup = true;
             }
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            if (_targetDetectedSoundInstance.isValid()) _targetDetectedSoundInstance.release();
-            if (_takeDamageSoundInstance.isValid()) _takeDamageSoundInstance.release();
+            for (int i = 0; i < _audiosData.Length; i++)
+            {
+                if (_audiosData[i].AudioInstance.isValid()) _audiosData[i].AudioInstance.release();
+            }
         }
     }
 }
