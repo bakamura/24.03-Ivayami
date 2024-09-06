@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -29,7 +30,7 @@ namespace Ivayami.Player {
         private float _acceleration;
         [SerializeField, Min(0)] private float _deccelerationDuration;
         private float _decceleration;
-        private int _movementBlock = 1;
+        private HashSet<string> _movementBlock = new HashSet<string>(); // Should start with 1
         private bool _canRun = true;
 
         [Header("Rotation")]
@@ -81,6 +82,8 @@ namespace Ivayami.Player {
         private CharacterController _characterController;
         private Transform _cameraTransform;
 
+        private const string INTERACT_BLOCK_KEY = "Interact";
+
         public Vector3 VisualForward { get { return _visualTransform.forward; } }
 
         protected override void Awake() {
@@ -102,8 +105,12 @@ namespace Ivayami.Player {
             Logger.Log(LogType.Player, $"{typeof(PlayerMovement).Name} Initialized");
         }
 
+        private void Start() {
+            PlayerActions.Instance.onInteract.AddListener((animation) => BlockMovementFor(INTERACT_BLOCK_KEY, PlayerAnimation.Instance.GetInteractAnimationDuration(animation)));
+        }
+
         private void Update() {
-            if (_movementBlock <= 0) {
+            if (_movementBlock.Count <= 0) {
                 Move();
                 Rotate();
             }
@@ -179,13 +186,34 @@ namespace Ivayami.Player {
             _running = allow;
         }
 
-        public void ToggleMovement(bool canMove) {
-            _movementBlock += canMove ? -1 : 1;
-            if (_movementBlock > 0) {
+        public void ToggleMovement(string key, bool canMove) {
+            if (canMove) {
+                if (!_movementBlock.Remove(key)) Debug.LogWarning($"'{key}' tried to unlock movement but key isn't blocking");
+            }
+            else if (!_movementBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock movement but key is already blocking");
+            //
+            string str = "";
+            foreach (string strIt in _movementBlock) str += $"{strIt}\n";
+            Debug.Log(str);
+            //
+
+            if (_movementBlock.Count > 0) {
                 _speedCurrent = 0f;
                 onMovement?.Invoke(Vector2.zero);
             }
-            Logger.Log(LogType.Player, $"Movement Blockers {(canMove ? "Increase" : "Decrease")} to: {_movementBlock}");
+            Logger.Log(LogType.Player, $"Movement Blockers {(canMove ? "Increase" : "Decrease")} to: {_movementBlock.Count}");
+        }
+
+        public void BlockMovementFor(string key, float seconds) {
+            StartCoroutine(BlockMovementRoutine(key, seconds));
+        }
+
+        private IEnumerator BlockMovementRoutine(string key, float seconds) {
+            ToggleMovement(key, false);
+
+            yield return new WaitForSeconds(seconds);
+
+            ToggleMovement(key, true);
         }
 
         public void SetPosition(Vector3 position) {
@@ -203,6 +231,10 @@ namespace Ivayami.Player {
         }
 
 #if UNITY_EDITOR
+        public void RemoveAllBlockers() {
+            _movementBlock.Clear();
+        }
+
         private void OnValidate() {
             _characterController = GetComponent<CharacterController>();
             SetColliderHeight(_walkColliderHeight);

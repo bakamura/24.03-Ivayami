@@ -5,8 +5,8 @@ using Ivayami.Save;
 namespace Ivayami.Player {
     public class PlayerAnimation : MonoSingleton<PlayerAnimation> {
 
-        [SerializeField] private AnimationClip _enterLockerAnimation;
-        public float EnterLockerDuration { get { return _enterLockerAnimation.length; } }
+        [SerializeField] private AnimationClip[] _interactAnimations;
+        private Dictionary<PlayerActions.InteractAnimation, float> _interactAnimationDuration = new Dictionary<PlayerActions.InteractAnimation, float>();
 
         [Header("Cache")]
 
@@ -22,6 +22,7 @@ namespace Ivayami.Player {
         };
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
         private static int HOLDING = Animator.StringToHash("Holding");
+        private static int GETUP = Animator.StringToHash("GetUp");
 
         private Animator _animator;
 
@@ -29,6 +30,7 @@ namespace Ivayami.Player {
             base.Awake();
 
             _animator = GetComponent<Animator>();
+            for (int i = 0; i < _interactAnimations.Length; i++) _interactAnimationDuration.Add((PlayerActions.InteractAnimation) i, _interactAnimations[i].length);
         }
 
         private void Start() {
@@ -39,6 +41,10 @@ namespace Ivayami.Player {
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
             PlayerActions.Instance.onAbility.AddListener(Trigger);
             SavePoint.onSaveGame.AddListener(() => Trigger("Seat"));
+        }
+
+        public float GetInteractAnimationDuration(PlayerActions.InteractAnimation animation) {
+            return _interactAnimationDuration[animation];
         }
 
         private void MoveAnimation(Vector2 direction) {
@@ -71,6 +77,10 @@ namespace Ivayami.Player {
 
         public void GoToIdle() {
             _animator.SetTrigger(IDLE);
+        }
+
+        public void GetUp() {
+            _animator.SetTrigger(GETUP);
         }
 
         private void Fail() {
