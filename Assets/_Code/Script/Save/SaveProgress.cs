@@ -48,7 +48,7 @@ namespace Ivayami.Save {
             //return JsonUtility.FromJson<T>(saveObjects[id]);
             else
             {
-                Debug.LogWarning($"The object {id} has not been saved yet");
+                Logger.Log(LogType.Save, $"The object {id} has not been saved yet");
                 data = default(T);
                 return false;
                 //data = null;
