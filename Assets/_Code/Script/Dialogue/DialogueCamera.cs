@@ -2,6 +2,7 @@ using UnityEngine;
 using Cinemachine;
 using System.Collections;
 using Ivayami.Player;
+using Ivayami.Audio;
 
 namespace Ivayami.Dialogue
 {
@@ -41,6 +42,7 @@ namespace Ivayami.Dialogue
             _finalPlacement = cameraTransitionInfo.transform;
             _currentDuration = cameraTransitionInfo.Duration;
             CameraPriotitySetup();
+            if (DialogueController.Instance.CurrentDialogue) PlayerAudioListener.Instance.UpdateAudioSource(false);
             _animationCoroutine = StartCoroutine(BlendAnimationCoroutine());
         }
 
@@ -69,7 +71,7 @@ namespace Ivayami.Dialogue
         private void CameraPriotitySetup()
         {
             _dialogueCamera.Priority = _gameplayCameraPriority + 1;
-            if (DialogueController.Instance.LockInput && !_dialogueSetupEventTriggered)
+            if (DialogueController.Instance.CurrentDialogue && !_dialogueSetupEventTriggered)
             {
                 DialogueController.Instance.OnDialogueEnd += HandleOnDialogueEnd;
                 _dialogueSetupEventTriggered = true;
@@ -79,8 +81,9 @@ namespace Ivayami.Dialogue
         private void HandleOnDialogueEnd()
         {
             _dialogueCamera.Priority = -999;
-            if (DialogueController.Instance.LockInput && _dialogueSetupEventTriggered) DialogueController.Instance.OnDialogueEnd -= HandleOnDialogueEnd;
+            if (_dialogueSetupEventTriggered) DialogueController.Instance.OnDialogueEnd -= HandleOnDialogueEnd;
             _dialogueSetupEventTriggered = false;
+            PlayerAudioListener.Instance.UpdateAudioSource(true);
         }
 
         public void ExitDialogeCamera()
