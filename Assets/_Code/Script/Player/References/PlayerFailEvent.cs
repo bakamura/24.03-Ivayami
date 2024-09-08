@@ -22,7 +22,7 @@ namespace Ivayami.Player {
         public void SubscribeFailFade() {
             if (_onFail.GetPersistentEventCount() > 0) {
                 PlayerStress.Instance.onFailFade.AddListener(_onFailFade.Invoke);
-                PlayerStress.Instance.OverrideFailLoad();
+                if (_overrideFailLoad) PlayerStress.Instance.OverrideFailLoad();
             }
         }
 
