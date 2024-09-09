@@ -23,7 +23,7 @@ namespace Ivayami.Player {
 
         [SerializeField, Min(0)] private float _movementSpeedRun;
         [SerializeField, Min(0)] private float _movementSpeedWalk;
-        private bool _running;
+        private bool _running = true;
         private float _movementSpeedMax;
         private float _speedCurrent = 0;
         [SerializeField, Min(0)] private float _accelerationDuration;
@@ -173,7 +173,7 @@ namespace Ivayami.Player {
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
-        private void ToggleWalk(InputAction.CallbackContext input) {
+        private void ToggleWalk(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
             if (_canRun) {
                 _running = !_running;
                 if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
@@ -181,9 +181,8 @@ namespace Ivayami.Player {
         }
 
         public void AllowRun(bool allow) {
+            if (!allow && _running) ToggleWalk();
             _canRun = allow;
-            if (!_canRun && _running) ToggleWalk(new InputAction.CallbackContext());
-            _running = allow;
         }
 
         public void ToggleMovement(string key, bool canMove) {
@@ -191,11 +190,6 @@ namespace Ivayami.Player {
                 if (!_movementBlock.Remove(key)) Debug.LogWarning($"'{key}' tried to unlock movement but key isn't blocking");
             }
             else if (!_movementBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock movement but key is already blocking");
-            //
-            string str = "";
-            foreach (string strIt in _movementBlock) str += $"{strIt}\n";
-            Debug.Log(str);
-            //
 
             if (_movementBlock.Count > 0) {
                 _speedCurrent = 0f;
