@@ -10,20 +10,18 @@ namespace Ivayami.Player {
         [SerializeField] private bool _overrideFailLoad;
         [SerializeField] private UnityEvent _onFailFade;
 
-        private void Awake() {
+        private void Start() {
             if (_uniqueEventOnFail) _onFail.AddListener(UnsubscribeFail);
             if (_uniqueEventOnFailFade) _onFailFade.AddListener(UnsubscribeFailFade);
         }
 
         public void SubscribeFail() {
-            if (_onFail.GetPersistentEventCount() > 0) PlayerStress.Instance.onFail.AddListener(_onFail.Invoke);
+            PlayerStress.Instance.onFail.AddListener(_onFail.Invoke);
         }
 
         public void SubscribeFailFade() {
-            if (_onFail.GetPersistentEventCount() > 0) {
-                PlayerStress.Instance.onFailFade.AddListener(_onFailFade.Invoke);
-                PlayerStress.Instance.OverrideFailLoad();
-            }
+            PlayerStress.Instance.onFailFade.AddListener(_onFailFade.Invoke);
+            if (_overrideFailLoad) PlayerStress.Instance.OverrideFailLoad();
         }
 
         public void UnsubscribeFail() {

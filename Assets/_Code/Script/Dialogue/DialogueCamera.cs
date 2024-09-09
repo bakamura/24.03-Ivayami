@@ -1,14 +1,14 @@
 using UnityEngine;
 using Cinemachine;
 using System.Collections;
-using System;
+using Ivayami.Player;
+using Ivayami.Audio;
 
 namespace Ivayami.Dialogue
 {
     public class DialogueCamera : MonoSingleton<DialogueCamera>
     {
         private CinemachineVirtualCamera _dialogueCamera;
-        private Camera _gameplayCamera;
 
         private int _gameplayCameraPriority;
         private Coroutine _animationCoroutine;
@@ -21,9 +21,8 @@ namespace Ivayami.Dialogue
         private void Start()
         {
             _dialogueCamera = GetComponentInChildren<CinemachineVirtualCamera>();
-            _gameplayCamera = Camera.main;
 
-            _gameplayCameraPriority = FindObjectOfType<CinemachineFreeLook>().Priority;
+            _gameplayCameraPriority = PlayerCamera.Instance.FreeLookCam.Priority;
 
             //DialogueController.Instance.OnDialogeStart += HandleOnDialogeStart;           
             DialogueController.Instance.OnSkipSpeech += HandleOnSkipSpeech;
@@ -37,12 +36,13 @@ namespace Ivayami.Dialogue
                 _animationCoroutine = null;
                 _dialogueCamera.transform.SetPositionAndRotation(_finalPlacement.position, _finalPlacement.rotation);
             }
-            else _dialogueCamera.transform.SetPositionAndRotation(_gameplayCamera.transform.position, _gameplayCamera.transform.rotation);
+            else _dialogueCamera.transform.SetPositionAndRotation(PlayerCamera.Instance.MainCamera.transform.position, PlayerCamera.Instance.MainCamera.transform.rotation);
             _currentPositionCurve = cameraTransitionInfo.PositionCurve;
             _currentRotationCurve = cameraTransitionInfo.RotationCurve;
             _finalPlacement = cameraTransitionInfo.transform;
             _currentDuration = cameraTransitionInfo.Duration;
             CameraPriotitySetup();
+            if (DialogueController.Instance.CurrentDialogue) PlayerAudioListener.Instance.UpdateAudioSource(false);
             _animationCoroutine = StartCoroutine(BlendAnimationCoroutine());
         }
 
@@ -71,7 +71,7 @@ namespace Ivayami.Dialogue
         private void CameraPriotitySetup()
         {
             _dialogueCamera.Priority = _gameplayCameraPriority + 1;
-            if (DialogueController.Instance.LockInput && !_dialogueSetupEventTriggered)
+            if (DialogueController.Instance.CurrentDialogue && !_dialogueSetupEventTriggered)
             {
                 DialogueController.Instance.OnDialogueEnd += HandleOnDialogueEnd;
                 _dialogueSetupEventTriggered = true;
@@ -81,8 +81,9 @@ namespace Ivayami.Dialogue
         private void HandleOnDialogueEnd()
         {
             _dialogueCamera.Priority = -999;
-            if (DialogueController.Instance.LockInput && _dialogueSetupEventTriggered) DialogueController.Instance.OnDialogueEnd -= HandleOnDialogueEnd;
+            if (_dialogueSetupEventTriggered) DialogueController.Instance.OnDialogueEnd -= HandleOnDialogueEnd;
             _dialogueSetupEventTriggered = false;
+            PlayerAudioListener.Instance.UpdateAudioSource(true);
         }
 
         public void ExitDialogeCamera()

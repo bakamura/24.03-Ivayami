@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.040639684, g: 0.047823314, b: 0.06296477, a: 1}
+  m_IndirectSpecularColor: {r: 0.040684536, g: 0.04780908, b: 0.0629266, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -324,11 +324,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onPause.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onUnpause.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2793149467296294870, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _onCutsceneEnd.m_PersistentCalls.m_Calls.Array.size
@@ -3558,13 +3558,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3ebbfea1ed71774c94f30b6a77477ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _audioReferences:
-  - Guid:
-      Data1: 1178235443
-      Data2: 1291072864
-      Data3: 586567307
-      Data4: -1973759607
-    Path: event:/CutScene_Audio
+  _audiosData:
+  - AudioReference:
+      Guid:
+        Data1: 1178235443
+        Data2: 1291072864
+        Data3: 586567307
+        Data4: -1973759607
+      Path: event:/CutScene_Audio
+    AllowFadeOut: 0
+    AttenuationRange:
+      Min: 0
+      Max: 0
+    DrawGizmos: 0
+    MinRangGizmoColor: {r: 0, g: 0, b: 0, a: 0}
+    MaxRangGizmoColor: {r: 0, g: 0, b: 0, a: 0}
   _playOnStart: 0
   _replayAudioOnEnd: 0
   _replayIntervalRange:
