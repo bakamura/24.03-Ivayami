@@ -97,10 +97,9 @@ namespace Ivayami.Player {
             onStressChange.Invoke(_stressCurrent);
             onFailFade.Invoke();
             PlayerMovement.Instance.ToggleMovement(FAIL_BLOCK_KEY, true);
-            if (!_overrideFailLoad) {
-                SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes);
-                _overrideFailLoad = false;
-            }
+
+            if (_overrideFailLoad) _overrideFailLoad = false;
+            else SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes);
         }
 
         private void HandleUnloadAllScenes() {
