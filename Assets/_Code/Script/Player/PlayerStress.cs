@@ -93,6 +93,7 @@ namespace Ivayami.Player {
 
             yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
 
+            _failState = false;
             _stressCurrent = 0;
             onStressChange.Invoke(_stressCurrent);
             onFailFade.Invoke();

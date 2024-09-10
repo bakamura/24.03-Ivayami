@@ -4,7 +4,6 @@ using FMODUnity;
 using FMOD.Studio;
 using Ivayami.Player;
 using Ivayami.Save;
-using Ivayami.UI;
 
 namespace Ivayami.Audio {
     public class Music : MonoSingleton<Music> {
@@ -49,7 +48,7 @@ namespace Ivayami.Audio {
                 _musicInstanceCurrent.setParameterByName("Stress", stress); //
 
                 _musicInstanceCurrent = RuntimeManager.CreateInstance(musicEventRef);
-                _musicInstanceCurrent.setVolume(SaveSystem.Instance.Options.musicVol);
+                //_musicInstanceCurrent.setVolume(SaveSystem.Instance.Options.musicVol);
 
                 _musicInstanceCurrent.start();
             }
@@ -113,11 +112,11 @@ namespace Ivayami.Audio {
             _shouldDelayToRepeat = should;
         }
 
-        public void VolumeUpdate(float volume) {
-            _musicInstanceCurrent.getVolume(out float currentVolume);
-            _musicInstanceCurrent.setVolume(currentVolume * volume / SaveSystem.Instance.Options.musicVol);
-            SaveSystem.Instance.Options.musicVol = volume;
-        }
+        //public void VolumeUpdate(float volume) {
+        //    //_musicInstanceCurrent.getVolume(out float currentVolume);
+        //    //_musicInstanceCurrent.setVolume(currentVolume * volume / SaveSystem.Instance.Options.musicVol);
+        //    //SaveSystem.Instance.Options.musicVol = volume;
+        //}
 
     }
 }

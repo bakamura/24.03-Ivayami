@@ -1,7 +1,6 @@
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
-using Ivayami.Save;
 
 namespace Ivayami.Audio
 {
@@ -27,7 +26,7 @@ namespace Ivayami.Audio
         {
             sound.getPlaybackState(out PLAYBACK_STATE state);
             if (state == PLAYBACK_STATE.PLAYING) sound.stop(fadeOut ? FMOD.Studio.STOP_MODE.ALLOWFADEOUT : FMOD.Studio.STOP_MODE.IMMEDIATE);
-            sound.setVolume(SaveSystem.Instance && SaveSystem.Instance.Options != null ? SaveSystem.Instance.Options.sfxVol : 1f);
+            //sound.setVolume(SaveSystem.Instance && SaveSystem.Instance.Options != null ? SaveSystem.Instance.Options.sfxVol : 1f);
 
             sound.getDescription(out EventDescription description);
             description.is3D(out bool is3d);
