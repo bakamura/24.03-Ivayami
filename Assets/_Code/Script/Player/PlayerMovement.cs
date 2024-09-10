@@ -140,19 +140,21 @@ namespace Ivayami.Player {
         }
 
         private void Crouch(InputAction.CallbackContext input) {
-            if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) {
-                Crouching = !Crouching;
-                _movementSpeedMax = Crouching ? _crouchSpeedMax : (_running ? _movementSpeedRun : _movementSpeedWalk);
-                SetColliderHeight(Crouching ? _crouchColliderHeight : _walkColliderHeight);
+            if (_movementBlock.Count <= 0) {
+                if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) {
+                    Crouching = !Crouching;
+                    _movementSpeedMax = Crouching ? _crouchSpeedMax : (_running ? _movementSpeedRun : _movementSpeedWalk);
+                    SetColliderHeight(Crouching ? _crouchColliderHeight : _walkColliderHeight);
 
-                if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
-                _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
+                    if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
+                    _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
 
-                onCrouch?.Invoke(Crouching);
+                    onCrouch?.Invoke(Crouching);
 
-                Logger.Log(LogType.Player, $"Crouch Toggle: {Crouching}");
+                    Logger.Log(LogType.Player, $"Crouch Toggle: {Crouching}");
+                }
+                else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
             }
-            else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
         }
 
         private IEnumerator CrouchSmoothHeightRoutine() {

@@ -70,6 +70,7 @@ namespace Ivayami.Player {
             _interactInput.action.canceled += Interact;
             _abilityInput.action.started += Ability;
             _changeAbilityInput.action.started += ChangeAbility;
+            foreach(InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable();
 
             onInteractLong.AddListener((interacting) => Interacting = interacting);
 
