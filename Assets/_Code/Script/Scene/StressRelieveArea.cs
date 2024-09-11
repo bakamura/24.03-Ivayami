@@ -9,7 +9,7 @@ namespace Ivayami.Scene {
 
         [SerializeField, Min(0f)] private float _stressRelieveRate;
         private Coroutine _stressRelieveRoutine;
-        [SerializeField, Min(0f] private float _routineTickRate;
+        [SerializeField, Min(0f)] private float _routineTickRate;
 
         private void OnTriggerEnter(Collider other) {
             _stressRelieveRoutine = StartCoroutine(RelieveRoutine());
