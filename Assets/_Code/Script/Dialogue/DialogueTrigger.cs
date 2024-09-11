@@ -15,6 +15,7 @@ namespace Ivayami.Dialogue
             _dialogueId = _dialogue.id;
         }
 
+        [ContextMenu("StartDialogue")]
         public void StartDialogue()
         {
             if (!_activateOnce || (_activateOnce && !_activated))
