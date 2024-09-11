@@ -12,11 +12,11 @@ namespace Ivayami.Scene {
         [SerializeField, Min(0f] private float _routineTickRate;
 
         private void OnTriggerEnter(Collider other) {
-            if(other.transform.name.Equals(PlayerMovement.Instance.name)) _stressRelieveRoutine = StartCoroutine(RelieveRoutine());
+            _stressRelieveRoutine = StartCoroutine(RelieveRoutine());
         }
 
         private void OnTriggerExit(Collider other) {
-            if (other.transform.name.Equals(PlayerMovement.Instance.name) && _stressRelieveRoutine != null) StopCoroutine(_stressRelieveRoutine);
+            if (_stressRelieveRoutine != null) StopCoroutine(_stressRelieveRoutine);
         }
 
         private void OnDestroy() {
