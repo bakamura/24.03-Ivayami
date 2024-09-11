@@ -15,7 +15,7 @@ namespace Ivayami.Dialogue
         {
             EditorGUILayout.PropertyField(duration, new GUIContent("Interpolation Duration"));
             EditorGUILayout.PropertyField(hidePlayerModel, new GUIContent("Hide Player Model", "Hide Player Model when this camera activates"));
-            EditorGUILayout.PropertyField(changeCameraFocus, new GUIContent("Change Camera Focus"));
+            EditorGUILayout.PropertyField(changeCameraFocus, new GUIContent("Change Camera Focus", "If true the rotation and position of this object is Not relevant"));
             if (changeCameraFocus.boolValue)
             {
                 EditorGUILayout.PropertyField(lookAtPlayer, new GUIContent("Look At Player"));
