@@ -23,11 +23,8 @@ namespace Ivayami.Dialogue
                 EditorGUILayout.PropertyField(followPlayer, new GUIContent("Follow Player"));
                 if (!followPlayer.boolValue) EditorGUILayout.PropertyField(followTarget, new GUIContent("Follow Target Transform"));
             }
-            else
-            {
-                EditorGUILayout.PropertyField(positionCurve, new GUIContent("Position Animation Blend"));
-                EditorGUILayout.PropertyField(rotationCurve, new GUIContent("Rotation Animation Blend"));
-            }
+            EditorGUILayout.PropertyField(positionCurve, new GUIContent("Position Animation Blend"));
+            EditorGUILayout.PropertyField(rotationCurve, new GUIContent("Rotation Animation Blend"));
 
             if (!changeCameraFocus.boolValue && GUILayout.Button("CameraPreview"))
             {

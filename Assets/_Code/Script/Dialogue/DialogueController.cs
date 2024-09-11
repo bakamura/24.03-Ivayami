@@ -115,6 +115,7 @@ namespace Ivayami.Dialogue
             }
             if (TryGetDialogueInstanceID(dialogueId, out int instanceID) /*&& _writtingCoroutine == null*/)
             {
+                if (_currentDialogue) StopDialogue();
                 Dialogue dialogue = (Dialogue)Resources.InstanceIDToObject(instanceID);
                 LockInput = lockInput;
                 if (LockInput)
@@ -129,11 +130,11 @@ namespace Ivayami.Dialogue
                 _currentSpeechIndex = 0;
                 _currentDialogue = dialogue;
                 OnDialogeStart?.Invoke();
-                if (_writtingCoroutine != null)
-                {
-                    StopCoroutine(_writtingCoroutine);
-                    _writtingCoroutine = null;
-                }
+                //if (_writtingCoroutine != null)
+                //{
+                //    StopCoroutine(_writtingCoroutine);
+                //    _writtingCoroutine = null;
+                //}
                 _writtingCoroutine = StartCoroutine(WrittingCoroutine(true));
             }
         }
@@ -286,8 +287,8 @@ namespace Ivayami.Dialogue
                     //_continueInput.action.Disable();
                 }
                 LockInput = false;
+                IsPaused = false;
             }
-            PauseDialogue(false);
         }
 
         public void UpdateDialogueEventsList(DialogueEvents dialogueEvents)
