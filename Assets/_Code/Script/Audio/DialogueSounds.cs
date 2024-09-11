@@ -26,12 +26,12 @@ namespace Ivayami.Audio
             switch (soundType)
             {
                 case SoundTypes.ContinueDialogue:
-                    PlayOneShot(_continueDialogueSoundInstance);
+                    PlayOneShot(_continueDialogueSoundInstance, false, Range.Empty);
                     break;
             }
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             if (_continueDialogueSoundInstance.isValid()) _continueDialogueSoundInstance.release();
         }

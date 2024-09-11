@@ -6,7 +6,7 @@ namespace Ivayami.Scene
 {
     public class PlayerLockInput : MonoBehaviour 
     {
-        [SerializeField] private string _blockKey;
+        //[SerializeField] private string _blockKey;
 
         public void LockInput()
         {
