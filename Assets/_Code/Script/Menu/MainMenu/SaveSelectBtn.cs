@@ -1,6 +1,8 @@
 using UnityEngine;
 using TMPro;
 using Ivayami.Save;
+using Ivayami.Scene;
+using Ivayami.Dialogue;
 
 namespace Ivayami.UI {
     public class SaveSelectBtn : MonoBehaviour {
@@ -33,7 +35,15 @@ namespace Ivayami.UI {
             SaveSystem.Instance.LoadProgress(_id, () => {
                 if (_isFirstTime) SaveSelector.Instance.FirstTimeFade.FadeIn();
                 else SaveSelector.Instance.NormalFade.FadeIn();
+                SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayerIfGame;
             });
+        }
+
+        private void TeleportPlayerIfGame() {
+            if (!CutsceneController.IsPlaying) {
+                SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
+                SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayerIfGame;
+            }
         }
 
     }
