@@ -65,6 +65,7 @@ namespace Ivayami.Enemy
         private Collider[] _hitsCache = new Collider[1];
         private bool _canChaseTarget = true;
         private bool _canWalkPath = true;
+        private bool _directContactWithTarget;
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
 
@@ -87,8 +88,11 @@ namespace Ivayami.Enemy
 
         private void Update()
         {
-            if (_isChasing && _stressIncreaseWhileChasing > 0)
+            if (_isChasing && _directContactWithTarget && _stressIncreaseWhileChasing > 0)
+            {
+                if (_debugLog) Debug.Log($"Chasing Stress added {_stressIncreaseWhileChasing * Time.deltaTime}");
                 PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * Time.deltaTime);
+            }
         }
 
         private void Start()
@@ -116,7 +120,7 @@ namespace Ivayami.Enemy
                 StopCoroutine(BehaviourCoroutine());
                 IsActive = false;
                 _isChasing = false;
-                StopMovement();
+                StopMovement(true);
             }
         }
 
@@ -137,8 +141,10 @@ namespace Ivayami.Enemy
                         if (!_isChasing)
                         {
                             if (_debugLog) Debug.Log("Target Detected");
-                            StopMovement();
-                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
+                            StopMovement(true);
+                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, false, () => {
+                                _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing, false);
+                                });
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                             _enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);
                         }
@@ -147,7 +153,7 @@ namespace Ivayami.Enemy
                         if (_debugLog) Debug.Log("Chase Target");
                         if (_attackTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance + _currentTargetColliderSizeFactor)
                         {
-                            StopMovement();
+                            StopMovement(true);
                             PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
                             //_isChasing = false;
                             _enemyAnimator.Attack(HandleAttackAnimationEnd);
@@ -159,15 +165,15 @@ namespace Ivayami.Enemy
                         if (_isChasing)
                         {
                             if (_goToLastTargetPosition)
-                            {                                
+                            {
                                 _navMeshAgent.SetDestination(_lastTargetPosition);
                                 if (_debugLog) Debug.Log($"Moving to last target position {_lastTargetPosition}");
                                 if (Vector3.Distance(transform.position, _lastTargetPosition) <= _navMeshAgent.stoppingDistance)
                                 {
                                     _goToLastTargetPointPatience += _behaviourTickFrequency;
-                                    _navMeshAgent.velocity = Vector3.zero;
+                                    StopMovement(false);
                                     if (_debugLog) Debug.Log("Last target point reached");
-                                    if(_goToLastTargetPointPatience >= _delayBetweenPatrolPoints)
+                                    if (_goToLastTargetPointPatience >= _delayBetweenPatrolPoints)
                                     {
                                         _isChasing = false;
                                         _goToLastTargetPointPatience = 0;
@@ -178,6 +184,7 @@ namespace Ivayami.Enemy
                         }
                         else
                         {
+                            _enemySounds.PlaySound(EnemySounds.SoundTypes.IdleScreams, false);
                             if (_canWalkPath)
                             {
                                 _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
@@ -186,6 +193,7 @@ namespace Ivayami.Enemy
                                 {
                                     if (_patrolPoints.Length > 1)
                                     {
+                                        StopMovement(false);
                                         yield return _betweenPatrolPointsDelay;
                                         currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
                                         if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
@@ -200,16 +208,17 @@ namespace Ivayami.Enemy
                             }
                         }
                     }
-                    _enemyAnimator.Walking(_navMeshAgent.velocity.sqrMagnitude > 0);
+                    _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude);
                 }
                 yield return _behaviourTickDelay;
             }
         }
 
-        private void StopMovement()
+        private void StopMovement(bool stopNavMeshAgent)
         {
-            _navMeshAgent.isStopped = true;
+            if (stopNavMeshAgent) _navMeshAgent.isStopped = true;
             _navMeshAgent.velocity = Vector3.zero;
+            _enemyAnimator.Walking(0);
         }
 
         private bool CheckForTarget(float halfVisionAngle)
@@ -229,7 +238,8 @@ namespace Ivayami.Enemy
 
             if (_debugLog)
                 Debug.Log($"is Hidden {isHidden}, blocking vision {blockingVision}, is in Min range {isInMinRange}, target Inside Radius {targetInsideRange}, is in Vision Angle {isInVisionAngle}");
-            return !isHidden && !blockingVision && (isInMinRange || (isInVisionAngle && targetInsideRange));
+            _directContactWithTarget = !isHidden && !blockingVision && (isInMinRange || (isInVisionAngle && targetInsideRange));
+            return _directContactWithTarget;
         }
 
         private void HandleAttackAnimationEnd()

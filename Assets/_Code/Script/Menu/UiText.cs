@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace Ivayami.UI {
@@ -8,12 +10,17 @@ namespace Ivayami.UI {
         [SerializeField] private string[] _keys;
         [SerializeField] private string[] _values;
         private Dictionary<string, string> _dictionary;
-        public int Size { get { return _keys.Length; } }
+#if UNITY_EDITOR
         public string[] Keys { get { return _keys; } }
+#endif
 
         public string GetText(string key) {
-            if(_dictionary == null) InitDict();
-            return _dictionary[key];
+            if (_dictionary == null) InitDict();
+            if (_dictionary.ContainsKey(key)) return _dictionary[key];
+            else {
+                Debug.LogWarning($"UiText '{name}' doesn't have key '{key}'");
+                return "<ERROR>";
+            }
         }
 
         private void InitDict() {
@@ -25,14 +32,26 @@ namespace Ivayami.UI {
                 _values = null;
 #endif
             }
-            else {
-                Debug.LogError($"Could not initialize UiText with null Key/Values '{name}'");
-            }
+            else Debug.LogError($"Could not initialize UiText with null Key/Values '{name}'");
+
         }
 
         public UiText GetTranslation(LanguageTypes language) {
-            return language == LanguageTypes.ENUS? this : Resources.Load<UiText>($"UiText/{language}/{name}");
+            if (language == LanguageTypes.ENUS) return this;
+            UiText uiText = Resources.LoadAll<UiText>($"UiText/{language}").First(text => text.name == name);
+            Resources.UnloadUnusedAssets();
+            if (uiText != null) return uiText;
+            else {
+                Debug.LogError($"No translation {language} found of '{name}' (UiText)");
+                return this;
+            }
         }
+
+#if UNITY_EDITOR
+        public string GetPath() {
+            return AssetDatabase.GetAssetPath(this);
+        }
+#endif
 
     }
 }
