@@ -1,8 +1,10 @@
-using Ivayami.Player;
-using Ivayami.Puzzle;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using Ivayami.Player;
+using Ivayami.Puzzle;
+using Ivayami.Scene;
+using Ivayami.Dialogue;
 
 namespace Ivayami.UI {
     public class Pause : MonoSingleton<Pause> {
@@ -23,7 +25,13 @@ namespace Ivayami.UI {
         private void Start() {
             _pauseInput.action.started += (callBackContext) => PauseGame(true);
             _unpauseInput.action.started += (callBackContext) => PauseGame(false);
+
             onPause.AddListener(() => ReturnAction.Instance.Set(UnpauseOnBack));
+            PlayerStress.Instance.onFail.AddListener(UnpauseIfPaused);
+            PlayerStress.Instance.onFail.AddListener(() => canPause = false);
+            PlayerStress.Instance.onFailFade.AddListener(() => canPause = true);
+            SceneController.Instance.OnAllSceneRequestEnd += UnpauseIfPaused;
+            DialogueController.Instance.OnDialogeStart += UnpauseIfPaused;
         }
 
         public void PauseGame(bool isPausing) {
@@ -40,6 +48,10 @@ namespace Ivayami.UI {
         public void UnpauseOnBack() {
             if (InputCallbacks.Instance.IsGamepad) PauseGame(false);
 
+        }
+
+        private void UnpauseIfPaused() {
+            if (Paused) PauseGame(false);
         }
 
     }
