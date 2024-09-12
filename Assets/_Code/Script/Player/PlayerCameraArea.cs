@@ -29,7 +29,8 @@ namespace Ivayami.Player
 
         private void OnTriggerExit(Collider other)
         {
-            ResetToDefault();
+            CameraAimReposition.Instance.SetMaxDistance(-1);
+            if (_changeCameraRadius) UpdateCameraRadius(_defaultRadius);            
             _targetInside = false;
         }
 
@@ -37,7 +38,8 @@ namespace Ivayami.Player
         {
             if (_targetInside)
             {
-                ResetToDefault();
+                CameraAimReposition.Instance.SetMaxDistance(-1);
+                ResetOrbitValuesInstant();
                 _targetInside = false;
             }
         }
@@ -68,10 +70,12 @@ namespace Ivayami.Player
             _interpolationCoroutine = null;
         }
 
-        private void ResetToDefault()
+        private void ResetOrbitValuesInstant()
         {
-            CameraAimReposition.Instance.SetMaxDistance(-1);
-            if (_changeCameraRadius) UpdateCameraRadius(_defaultRadius);
+            for (int i = 0; i < PlayerCamera.Instance.FreeLookCam.m_Orbits.Length; i++)
+            {
+                PlayerCamera.Instance.FreeLookCam.m_Orbits[i].m_Radius = _defaultRadius[i];
+            }
         }
 
 #if UNITY_EDITOR
