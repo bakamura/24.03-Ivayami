@@ -142,7 +142,9 @@ namespace Ivayami.Enemy
                         {
                             if (_debugLog) Debug.Log("Target Detected");
                             StopMovement(true);
-                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
+                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, false, () => {
+                                _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing, false);
+                                });
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                             _enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);
                         }
@@ -182,6 +184,7 @@ namespace Ivayami.Enemy
                         }
                         else
                         {
+                            _enemySounds.PlaySound(EnemySounds.SoundTypes.IdleScreams, false);
                             if (_canWalkPath)
                             {
                                 _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
