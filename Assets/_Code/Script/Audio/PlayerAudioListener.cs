@@ -9,8 +9,8 @@ namespace Ivayami.Audio
         private StudioListener _cameraAudioListener;
         private void Start()
         {
-            _playerAudioListener = PlayerMovement.Instance.GetComponent<StudioListener>();
-            _cameraAudioListener = PlayerCamera.Instance.MainCamera.GetComponent<StudioListener>();
+            _playerAudioListener = PlayerMovement.Instance.GetComponentInChildren<StudioListener>();
+            _cameraAudioListener = PlayerCamera.Instance.MainCamera.GetComponentInChildren<StudioListener>();
         }
 
         public void UpdateAudioSource(bool isPlayerSourceActive)
