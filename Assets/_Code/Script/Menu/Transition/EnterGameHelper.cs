@@ -11,7 +11,6 @@ namespace Ivayami.Scene {
 
         private void EnablePlayerInput() {
             PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].spawnPoint.position);
-            PlayerMovement.Instance.ToggleMovement(true);
 
             SceneController.Instance.OnAllSceneRequestEnd -= EnablePlayerInput;
             

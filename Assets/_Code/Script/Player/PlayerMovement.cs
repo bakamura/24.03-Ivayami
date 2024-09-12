@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -22,14 +23,14 @@ namespace Ivayami.Player {
 
         [SerializeField, Min(0)] private float _movementSpeedRun;
         [SerializeField, Min(0)] private float _movementSpeedWalk;
-        private bool _running;
+        private bool _running = true;
         private float _movementSpeedMax;
         private float _speedCurrent = 0;
         [SerializeField, Min(0)] private float _accelerationDuration;
         private float _acceleration;
         [SerializeField, Min(0)] private float _deccelerationDuration;
         private float _decceleration;
-        private int _movementBlock = 1;
+        private HashSet<string> _movementBlock = new HashSet<string>(); // Should start with 1
         private bool _canRun = true;
 
         [Header("Rotation")]
@@ -81,6 +82,8 @@ namespace Ivayami.Player {
         private CharacterController _characterController;
         private Transform _cameraTransform;
 
+        private const string INTERACT_BLOCK_KEY = "Interact";
+
         public Vector3 VisualForward { get { return _visualTransform.forward; } }
 
         protected override void Awake() {
@@ -102,8 +105,12 @@ namespace Ivayami.Player {
             Logger.Log(LogType.Player, $"{typeof(PlayerMovement).Name} Initialized");
         }
 
+        private void Start() {
+            PlayerActions.Instance.onInteract.AddListener((animation) => BlockMovementFor(INTERACT_BLOCK_KEY, PlayerAnimation.Instance.GetInteractAnimationDuration(animation)));
+        }
+
         private void Update() {
-            if (_movementBlock <= 0) {
+            if (_movementBlock.Count <= 0) {
                 Move();
                 Rotate();
             }
@@ -133,19 +140,21 @@ namespace Ivayami.Player {
         }
 
         private void Crouch(InputAction.CallbackContext input) {
-            if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) {
-                Crouching = !Crouching;
-                _movementSpeedMax = Crouching ? _crouchSpeedMax : (_running ? _movementSpeedRun : _movementSpeedWalk);
-                SetColliderHeight(Crouching ? _crouchColliderHeight : _walkColliderHeight);
+            if (_movementBlock.Count <= 0) {
+                if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) {
+                    Crouching = !Crouching;
+                    _movementSpeedMax = Crouching ? _crouchSpeedMax : (_running ? _movementSpeedRun : _movementSpeedWalk);
+                    SetColliderHeight(Crouching ? _crouchColliderHeight : _walkColliderHeight);
 
-                if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
-                _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
+                    if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
+                    _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
 
-                onCrouch?.Invoke(Crouching);
+                    onCrouch?.Invoke(Crouching);
 
-                Logger.Log(LogType.Player, $"Crouch Toggle: {Crouching}");
+                    Logger.Log(LogType.Player, $"Crouch Toggle: {Crouching}");
+                }
+                else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
             }
-            else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
         }
 
         private IEnumerator CrouchSmoothHeightRoutine() {
@@ -166,7 +175,7 @@ namespace Ivayami.Player {
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
-        private void ToggleWalk(InputAction.CallbackContext input) {
+        private void ToggleWalk(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
             if (_canRun) {
                 _running = !_running;
                 if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
@@ -174,18 +183,33 @@ namespace Ivayami.Player {
         }
 
         public void AllowRun(bool allow) {
+            if (!allow && _running) ToggleWalk();
             _canRun = allow;
-            if (!_canRun && _running) ToggleWalk(new InputAction.CallbackContext());
-            _running = allow;
         }
 
-        public void ToggleMovement(bool canMove) {
-            _movementBlock += canMove ? -1 : 1;
-            if (_movementBlock > 0) {
+        public void ToggleMovement(string key, bool canMove) {
+            if (canMove) {
+                if (!_movementBlock.Remove(key)) Debug.LogWarning($"'{key}' tried to unlock movement but key isn't blocking");
+            }
+            else if (!_movementBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock movement but key is already blocking");
+
+            if (_movementBlock.Count > 0) {
                 _speedCurrent = 0f;
                 onMovement?.Invoke(Vector2.zero);
             }
-            Logger.Log(LogType.Player, $"Movement Blockers {(canMove ? "Increase" : "Decrease")} to: {_movementBlock}");
+            Logger.Log(LogType.Player, $"Movement Blockers {(canMove ? "Increase" : "Decrease")} to: {_movementBlock.Count}");
+        }
+
+        public void BlockMovementFor(string key, float seconds) {
+            StartCoroutine(BlockMovementRoutine(key, seconds));
+        }
+
+        private IEnumerator BlockMovementRoutine(string key, float seconds) {
+            ToggleMovement(key, false);
+
+            yield return new WaitForSeconds(seconds);
+
+            ToggleMovement(key, true);
         }
 
         public void SetPosition(Vector3 position) {
@@ -203,6 +227,10 @@ namespace Ivayami.Player {
         }
 
 #if UNITY_EDITOR
+        public void RemoveAllBlockers() {
+            _movementBlock.Clear();
+        }
+
         private void OnValidate() {
             _characterController = GetComponent<CharacterController>();
             SetColliderHeight(_walkColliderHeight);

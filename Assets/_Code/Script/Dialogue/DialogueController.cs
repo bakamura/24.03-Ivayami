@@ -6,7 +6,6 @@ using TMPro;
 using System;
 using Ivayami.Player;
 using Ivayami.Audio;
-using Ivayami.UI;
 using UnityEngine.UI;
 using Ivayami.Save;
 
@@ -43,7 +42,7 @@ namespace Ivayami.Dialogue
         private DialogueSounds _dialogueSounds;
         private char[] _currentDialogueCharArray;
         private int _currentCharIndex;
-        private float _currentDelay;
+        //private float _currentDelay;
         [System.Serializable]
         private struct DialogueLayout
         {
@@ -116,6 +115,7 @@ namespace Ivayami.Dialogue
             }
             if (TryGetDialogueInstanceID(dialogueId, out int instanceID) /*&& _writtingCoroutine == null*/)
             {
+                if (_currentDialogue) StopDialogue();
                 Dialogue dialogue = (Dialogue)Resources.InstanceIDToObject(instanceID);
                 LockInput = lockInput;
                 if (LockInput)
@@ -130,11 +130,11 @@ namespace Ivayami.Dialogue
                 _currentSpeechIndex = 0;
                 _currentDialogue = dialogue;
                 OnDialogeStart?.Invoke();
-                if (_writtingCoroutine != null)
-                {
-                    StopCoroutine(_writtingCoroutine);
-                    _writtingCoroutine = null;
-                }
+                //if (_writtingCoroutine != null)
+                //{
+                //    StopCoroutine(_writtingCoroutine);
+                //    _writtingCoroutine = null;
+                //}
                 _writtingCoroutine = StartCoroutine(WrittingCoroutine(true));
             }
         }
@@ -197,7 +197,7 @@ namespace Ivayami.Dialogue
                 _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].announcerName;
                 _speechTextComponent.text = "";
                 _currentCharIndex = 0;
-                _currentDelay = 0;
+                //_currentDelay = 0;
                 _currentDialogueCharArray = _currentDialogue.dialogue[_currentSpeechIndex].content.ToCharArray();
                 if (CutsceneController.IsPlaying || !LockInput)
                 {
@@ -235,18 +235,19 @@ namespace Ivayami.Dialogue
                 }
             }
 
-            if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0 && _currentDelay < _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech)
-            {
-                while (_currentDelay < _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech)
-                {
-                    _currentDelay += Time.deltaTime;
-                    yield return null;
-                }
-            }
+            yield return new WaitForSeconds(_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech);
+            //if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0 && _currentDelay < _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech)
+            //{
+            //    while (_currentDelay < _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech)
+            //    {
+            //        _currentDelay += Time.deltaTime;
+            //        yield return null;
+            //    }
+            //}
             if (LockInput) _continueDialogueIcon.SetActive(true);
             //_readyForNextSpeech = true;
             _writtingCoroutine = null;
-            if (_currentDelay > 0)
+            if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0)
             {
                 if (CutsceneController.IsPlaying) _canvasGroup.alpha = 0;
                 else UpdateDialogue();
@@ -286,8 +287,8 @@ namespace Ivayami.Dialogue
                     //_continueInput.action.Disable();
                 }
                 LockInput = false;
+                IsPaused = false;
             }
-            PauseDialogue(false);
         }
 
         public void UpdateDialogueEventsList(DialogueEvents dialogueEvents)
@@ -311,33 +312,33 @@ namespace Ivayami.Dialogue
             }
         }
 
-        public void ChangeLanguage(LanguageTypes languageType)
-        {
-            //IsPaused = true;
+        //public void ChangeLanguage(LanguageTypes languageType)
+        //{
+        //IsPaused = true;
 
-            //for(int i = 0; i < Enum.GetNames(typeof(LanguageTypes)).Length; i++)
-            //{
-            //    _dialoguesIDs.Add((LanguageTypes)i, Resources.LoadAll<Dialogue>($"Dialogues/{languageType}").Select(x => x.GetInstanceID()).ToList());
-            //}
-            ////_dialoguesIDs = Resources.LoadAll<Dialogue>($"Dialogues/{languageType}").Select(x => x.GetInstanceID()).ToList();
-            ////_dialogueDictionary.Clear();
-            ////for (int i = 0; i < _dialogues.Length; i++)
-            ////{
-            ////    if (!_dialogueDictionary.ContainsKey(_dialogues[i].id))
-            ////    {
-            ////        _dialogueDictionary.Add(_dialogues[i].id, _dialogues[i]);
-            ////    }
-            ////    else
-            ////    {
-            ////        if (_debugLogs)
-            ////        {
-            ////            Debug.LogWarning($"the dialogue ID {_dialogues[i].id} is already in use");
-            ////        }
-            ////    }
-            ////}
-            //AsyncOperation operation = Resources.UnloadUnusedAssets();
-            //operation.completed += (AsyncOperation op) => IsPaused = false;
-        }
+        //for(int i = 0; i < Enum.GetNames(typeof(LanguageTypes)).Length; i++)
+        //{
+        //    _dialoguesIDs.Add((LanguageTypes)i, Resources.LoadAll<Dialogue>($"Dialogues/{languageType}").Select(x => x.GetInstanceID()).ToList());
+        //}
+        ////_dialoguesIDs = Resources.LoadAll<Dialogue>($"Dialogues/{languageType}").Select(x => x.GetInstanceID()).ToList();
+        ////_dialogueDictionary.Clear();
+        ////for (int i = 0; i < _dialogues.Length; i++)
+        ////{
+        ////    if (!_dialogueDictionary.ContainsKey(_dialogues[i].id))
+        ////    {
+        ////        _dialogueDictionary.Add(_dialogues[i].id, _dialogues[i]);
+        ////    }
+        ////    else
+        ////    {
+        ////        if (_debugLogs)
+        ////        {
+        ////            Debug.LogWarning($"the dialogue ID {_dialogues[i].id} is already in use");
+        ////        }
+        ////    }
+        ////}
+        //AsyncOperation operation = Resources.UnloadUnusedAssets();
+        //operation.completed += (AsyncOperation op) => IsPaused = false;
+        //}
 
         public void PauseDialogue(bool isPaused)
         {

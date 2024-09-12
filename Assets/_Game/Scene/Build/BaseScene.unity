@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0, g: 0, b: 0, a: 1}
+  m_AmbientSkyColor: {r: 0.4, g: 0.4, b: 0.4, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.040639684, g: 0.047823314, b: 0.06296477, a: 1}
+  m_IndirectSpecularColor: {r: 0.040684536, g: 0.04780908, b: 0.0629266, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1204,6 +1204,10 @@ PrefabInstance:
       propertyPath: _cameraAimPoint
       value: 
       objectReference: {fileID: 1102450842}
+    - target: {fileID: 4647079575193260746, guid: 1d207066b514e7e489e3107be06efaa1, type: 3}
+      propertyPath: _playerAudioListener
+      value: 
+      objectReference: {fileID: 1102450843}
     - target: {fileID: 5312495817665637329, guid: 1d207066b514e7e489e3107be06efaa1, type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
@@ -1292,6 +1296,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &988673747
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 988673749}
+  - component: {fileID: 988673748}
+  m_Layer: 0
+  m_Name: PlayerAudios
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!114 &988673748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988673747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d264edf8dbb2c744187d3709322b85f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &988673749
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988673747}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1102450841
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1362,6 +1410,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5114778192365935469, guid: b526430f55e233945ab90d8f2576c29b, type: 3}
   m_PrefabInstance: {fileID: 1102450841}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1102450843 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3367792201724308132, guid: b526430f55e233945ab90d8f2576c29b, type: 3}
+  m_PrefabInstance: {fileID: 1102450841}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1329919628
 GameObject:
   m_ObjectHideFlags: 0
@@ -2441,6 +2500,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: ReadableUI
       objectReference: {fileID: 0}
+    - target: {fileID: 5703605531966749537, guid: 4eec5bce19dad064ba0b2aef8a6430fc, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5703605531966749537, guid: 4eec5bce19dad064ba0b2aef8a6430fc, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5703605531966749537, guid: 4eec5bce19dad064ba0b2aef8a6430fc, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2661,3 +2732,4 @@ SceneRoots:
   - {fileID: 1102450841}
   - {fileID: 2022680819}
   - {fileID: 1329919630}
+  - {fileID: 988673749}

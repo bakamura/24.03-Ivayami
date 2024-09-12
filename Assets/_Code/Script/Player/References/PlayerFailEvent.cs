@@ -10,7 +10,7 @@ namespace Ivayami.Player {
         [SerializeField] private bool _overrideFailLoad;
         [SerializeField] private UnityEvent _onFailFade;
 
-        private void Awake() {
+        private void Start() {
             if (_uniqueEventOnFail) _onFail.AddListener(UnsubscribeFail);
             if (_uniqueEventOnFailFade) _onFailFade.AddListener(UnsubscribeFailFade);
         }
@@ -21,7 +21,7 @@ namespace Ivayami.Player {
 
         public void SubscribeFailFade() {
             PlayerStress.Instance.onFailFade.AddListener(_onFailFade.Invoke);
-            PlayerStress.Instance.OverrideFailLoad();
+            if (_overrideFailLoad) PlayerStress.Instance.OverrideFailLoad();
         }
 
         public void UnsubscribeFail() {

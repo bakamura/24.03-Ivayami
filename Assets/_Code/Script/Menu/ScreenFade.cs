@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using System;
+using Ivayami.Player;
 
 namespace Ivayami.UI
 {
@@ -20,6 +21,7 @@ namespace Ivayami.UI
         private Coroutine _waitEndCoroutine;
         private Coroutine _delayFadeStartCoroutine;
         private bool _isFadeIn;
+        private const string BLOCK_KEY = "ScreenFade";
         [ContextMenu("FadeIn")]
         public void FadeIn()
         {
@@ -29,6 +31,7 @@ namespace Ivayami.UI
                 _isFading = true;
                 _isFadeIn = true;
                 _delayFadeStartCoroutine = StartCoroutine(FadeStartDelayCoroutine());
+                PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
             }
         }
         [ContextMenu("FadeOut")]
@@ -40,6 +43,7 @@ namespace Ivayami.UI
                 _isFading = true;
                 _isFadeIn = false;
                 _delayFadeStartCoroutine = StartCoroutine(FadeStartDelayCoroutine());
+                PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true);
             }
         }
 

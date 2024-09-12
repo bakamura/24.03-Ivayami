@@ -61,6 +61,8 @@ namespace Ivayami.Player {
         private float _interactableClosestDistanceCache;
         private float _interactableDistanceIterator;
 
+        private const string INTERACT_LONG_BLOCK_KEY = "InteractLong";
+
         protected override void Awake() {
             base.Awake();
 
@@ -68,6 +70,7 @@ namespace Ivayami.Player {
             _interactInput.action.canceled += Interact;
             _abilityInput.action.started += Ability;
             _changeAbilityInput.action.started += ChangeAbility;
+            foreach(InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable();
 
             onInteractLong.AddListener((interacting) => Interacting = interacting);
 
@@ -87,7 +90,7 @@ namespace Ivayami.Player {
                 if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
                     InteractAnimation animation = InteractableTarget.Interact();
                     if (InteractableTarget is IInteractableLong) {
-                        PlayerMovement.Instance.ToggleMovement(false);
+                        PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
                         onInteractLong?.Invoke(true);
 
                         Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
@@ -101,7 +104,7 @@ namespace Ivayami.Player {
                 else Logger.Log(LogType.Player, $"Interact: No Target");
             }
             else if (input.phase == InputActionPhase.Canceled && Interacting) {
-                if (InteractableTarget is IInteractableLong) PlayerMovement.Instance.ToggleMovement(true);
+                if (InteractableTarget is IInteractableLong) PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, true);
                 (InteractableTarget as IInteractableLong).InteractStop();                
                 onInteractLong?.Invoke(false);
 
@@ -205,7 +208,7 @@ namespace Ivayami.Player {
 
         public void ChangeInputMap(string mapId) {
             _actionMapCurrent?.Disable();
-            if (mapId != null) _actionMapCurrent = _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId);
+            _actionMapCurrent = mapId != null ? _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId) : null;
             _actionMapCurrent?.Enable();
             Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId == "Player" ? CursorLockMode.Locked : CursorLockMode.None;
         }
