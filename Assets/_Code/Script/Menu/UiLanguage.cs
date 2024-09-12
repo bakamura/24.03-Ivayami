@@ -31,6 +31,7 @@ namespace Ivayami.UI {
             foreach (LanguageComponent languageComponent in _languageComponents) languageComponent.Tmp.text = uiText.GetText(languageComponent.Id);
         }
 
+#if UNITY_EDITOR
         [ContextMenu("Set To UI Text")]
         private void SetToUiText() {
             if (_uiText != null) {
@@ -42,6 +43,7 @@ namespace Ivayami.UI {
                 }
             }
         }
+#endif
 
     }
 }

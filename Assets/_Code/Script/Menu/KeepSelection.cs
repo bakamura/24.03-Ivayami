@@ -7,7 +7,7 @@ namespace Ivayami.UI {
 
         [Header("References")]
 
-        [SerializeField] private InputActionReference _clickInput;
+        [SerializeField] private InputActionReference[] _clickInputs;
 
         [Header("Cache")]
 
@@ -16,7 +16,7 @@ namespace Ivayami.UI {
 
         private void Awake() {
             _eventSystem = GetComponent<EventSystem>();
-            _clickInput.action.performed += PreventSelectNone;
+            foreach(InputActionReference actionRef in _clickInputs) actionRef.action.performed += PreventSelectNone;
         }
 
         private void PreventSelectNone(InputAction.CallbackContext context) {

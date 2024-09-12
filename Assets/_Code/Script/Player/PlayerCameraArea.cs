@@ -35,7 +35,11 @@ namespace Ivayami.Player
 
         private void OnDisable()
         {
-            if (_targetInside) ResetToDefault();
+            if (_targetInside)
+            {
+                ResetToDefault();
+                _targetInside = false;
+            }
         }
 
         private void UpdateCameraRadius(float[] radius)

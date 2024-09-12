@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Serialization;
 using Ivayami.Player;
-using System.Collections;
+//using System.Collections;
 
 namespace Ivayami.Dialogue
 {
@@ -18,12 +18,17 @@ namespace Ivayami.Dialogue
         [FormerlySerializedAs("positionCurve")] public AnimationCurve PositionCurve;
         [FormerlySerializedAs("rotationCurve")] public AnimationCurve RotationCurve;
 
-        private Coroutine _durationinFocusCoroutine;
+        //private Coroutine _durationinFocusCoroutine;
+
+        public Transform LookAtTarget { get; private set; }
+        public Transform FollowTarget { get; private set; }
+        public bool ChangeCameraFocus => _changeCameraFocus;
+        public bool FollowPlayer => _followPlayer;
 
         public void StartMovement()
         {
             if (_hidePlayerModel) PlayerMovement.Instance.UpdateVisualsVisibility(false);
-            if (_changeCameraFocus)
+            /**if (_changeCameraFocus)
             {
                 if (_lookAtPlayer) PlayerCamera.Instance.FreeLookCam.LookAt = PlayerCamera.Instance.CameraAimPoint;
                 else PlayerCamera.Instance.FreeLookCam.LookAt = _lookAtTarget;
@@ -31,34 +36,45 @@ namespace Ivayami.Dialogue
                 else PlayerCamera.Instance.FreeLookCam.Follow = _followTarget;
                 StartDurationFocusDelay();
             }
-            else DialogueCamera.Instance.MoveRotate(this);            
+            else DialogueCamera.Instance.MoveRotate(this);*/
+            LookAtTarget = transform;
+            FollowTarget = transform;
+            if (_changeCameraFocus)
+            {
+                if (_lookAtPlayer) LookAtTarget = PlayerCamera.Instance.CameraAimPoint;
+                else LookAtTarget = _lookAtTarget ? _lookAtTarget : transform;
+                if (_followPlayer) FollowTarget = PlayerCamera.Instance.CameraAimPoint;
+                else FollowTarget = _followTarget ? _followTarget : transform;
+                //StartDurationFocusDelay();
+            }
+            DialogueCamera.Instance.MoveRotate(this);
         }
 
         public void ExitDialogueCamera()
-        {            
+        {
             if (_hidePlayerModel) PlayerMovement.Instance.UpdateVisualsVisibility(true);
             DialogueCamera.Instance.ExitDialogeCamera();
         }
 
-        private void StartDurationFocusDelay()
-        {
-            PlayerCamera.Instance.UpdateCameraControls(false);
-            if (_durationinFocusCoroutine != null)
-            {
-                StopCoroutine(_durationinFocusCoroutine);
-                _durationinFocusCoroutine = null;
-            }
-            _durationinFocusCoroutine = StartCoroutine(DurationInFocusCoroutine());
-        }
+        //private void StartDurationFocusDelay()
+        //{
+        //    PlayerCamera.Instance.UpdateCameraControls(false);
+        //    if (_durationinFocusCoroutine != null)
+        //    {
+        //        StopCoroutine(_durationinFocusCoroutine);
+        //        _durationinFocusCoroutine = null;
+        //    }
+        //    _durationinFocusCoroutine = StartCoroutine(DurationInFocusCoroutine());
+        //}
 
-        private IEnumerator DurationInFocusCoroutine()
-        {
-            yield return new WaitForSeconds(Duration);
-            ExitDialogueCamera();
-            PlayerCamera.Instance.FreeLookCam.LookAt = PlayerCamera.Instance.CameraAimPoint;
-            PlayerCamera.Instance.FreeLookCam.Follow = PlayerCamera.Instance.CameraAimPoint;
-            PlayerCamera.Instance.UpdateCameraControls(true);
-            _durationinFocusCoroutine = null;
-        }
+        //private IEnumerator DurationInFocusCoroutine()
+        //{
+        //    yield return new WaitForSeconds(Duration);
+        //    ExitDialogueCamera();
+        //    PlayerCamera.Instance.FreeLookCam.LookAt = PlayerCamera.Instance.CameraAimPoint;
+        //    PlayerCamera.Instance.FreeLookCam.Follow = PlayerCamera.Instance.CameraAimPoint;
+        //    PlayerCamera.Instance.UpdateCameraControls(true);
+        //    _durationinFocusCoroutine = null;
+        //}
     }
 }

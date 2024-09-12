@@ -20,12 +20,14 @@ namespace Ivayami.UI {
         [field: SerializeField] public ScreenFade NormalFade { get; private set; }
 
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
+        private const string BLOCKER_KEY = "MainMenu";
 
         private void Start() {
             StartCoroutine(WaitForSaveOptions());
 
             Options.OnChangeLanguage.AddListener((language) => SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate));
             PlayerActions.Instance.ChangeInputMap("Menu");
+            PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, false);
         }
 
         private IEnumerator WaitForSaveOptions() {
@@ -45,5 +47,10 @@ namespace Ivayami.UI {
 
             Logger.Log(LogType.UI, $"Display Save {saveId}");
         }
+
+        public void RemovePlayerBlocker() {
+            PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, true);
+        }
+
     }
 }

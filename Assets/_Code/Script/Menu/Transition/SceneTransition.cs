@@ -1,6 +1,5 @@
-
 using UnityEngine;
-using UnityEngine.UI;
+using Ivayami.Scene;
 
 namespace Ivayami.UI {
     public class SceneTransition : Fade {
@@ -26,12 +25,19 @@ namespace Ivayami.UI {
             _menuGroup = GetComponent<MenuGroup>();
             Menu = GetComponent<Menu>();
             _menuGroup.CloseCurrentThenOpen(Menu);
+            SceneController.Instance.OnAllSceneRequestEnd += HandleOnAllScenesRequestEnd;
+            SceneController.Instance.OnLoadScene += (sceneName) => UpdateLoadingIcon(true);
+        }
+
+        public override void Close()
+        {
+            base.Close();
+            UpdateLoadingIcon(false);
         }
 
         public void Transition() {
             Logger.Log(LogType.UI, $"Scene Transition Fade");
             _menuGroup.CloseCurrentThenOpen(Menu);
-            //_loadingIcon.enabled = !_loadingIcon.enabled;
         }
 
         public void SetDuration(float durationSeconds) {
@@ -41,8 +47,17 @@ namespace Ivayami.UI {
         public void SetAnimationCurve(AnimationCurve animCurve)
         {
             _transitionCurve = animCurve;
-            _loadingIcon.SetActive(!_loadingIcon.activeSelf);
         }
 
+        public void UpdateLoadingIcon(bool isActive)
+        {
+            _loadingIcon.SetActive(isActive);
+        }
+
+        private void HandleOnAllScenesRequestEnd()
+        {
+            UpdateLoadingIcon(false);
+            SceneController.Instance.OnAllSceneRequestEnd -= HandleOnAllScenesRequestEnd;
+        }
     }
 }
