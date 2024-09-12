@@ -28,7 +28,7 @@ namespace Ivayami.Scene
                 PlayerMovement.Instance.SetTargetAngle(transform.rotation.eulerAngles.y);
                 PlayerCamera.Instance.FreeLookCam.PreviousStateIsValid = false;
                 PlayerCamera.Instance.FreeLookCam.m_YAxis.Value = .5f;
-                PlayerCamera.Instance.FreeLookCam.m_XAxis.Value = Vector3.SignedAngle(PlayerCamera.Instance.MainCamera.transform.forward, transform.forward, Vector3.up);
+                PlayerCamera.Instance.FreeLookCam.m_XAxis.Value = transform.rotation.eulerAngles.y;//Vector3.SignedAngle(PlayerCamera.Instance.MainCamera.transform.forward, transform.forward, Vector3.up);
             }
             else
             {
