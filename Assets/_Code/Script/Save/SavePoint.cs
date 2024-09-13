@@ -3,6 +3,7 @@ using Ivayami.Player;
 using Ivayami.Puzzle;
 using UnityEngine.Events;
 using System.Collections.Generic;
+using Ivayami.Scene;
 
 namespace Ivayami.Save {
     public class SavePoint : MonoBehaviour, IInteractable {
@@ -13,7 +14,7 @@ namespace Ivayami.Save {
 
         [SerializeField] private int _pointId;
         [SerializeField] private Transform _playerAnimationPoint;
-        public Transform spawnPoint;
+        [field: SerializeField] public ManualTeleporter SpawnPoint { get; private set; }
         public static Dictionary<int, SavePoint> Points { get; private set; } = new Dictionary<int, SavePoint>();
         public static UnityEvent onSaveGame = new UnityEvent();
         public static UnityEvent onCantSaveGame = new UnityEvent();

@@ -1,3 +1,4 @@
+using Ivayami.UI;
 using System.Collections.Generic;
 
 namespace Ivayami.Player {
@@ -16,8 +17,10 @@ namespace Ivayami.Player {
             return _checkInventoryIndexCache == -1 ? null : _itemList[_checkInventoryIndexCache];
         }
 
-        public void AddToInventory(InventoryItem item) {
+        public void AddToInventory(InventoryItem item, bool shouldEmphasize = false) {
             _itemList.Add(item);
+            if (shouldEmphasize) ;
+            else InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite);
 
             Logger.Log(LogType.Player, $"Inventory Add: {item.DisplayName} ({item.name}) / {item.Type}");
         }

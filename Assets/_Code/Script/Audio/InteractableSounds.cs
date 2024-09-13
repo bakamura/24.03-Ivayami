@@ -32,7 +32,7 @@ namespace Ivayami.Audio
             Activate,
             Deactivate,
             //Collect,
-            ActionFailed, 
+            ActionFailed,
             ActionSuccess
         }
 
@@ -43,25 +43,25 @@ namespace Ivayami.Audio
             switch (soundType)
             {
                 case SoundTypes.Interact:
-                    PlayOneShot(_interactSoundInstance);
+                    PlayOneShot(_interactSoundInstance, false, Range.Empty);
                     break;
                 case SoundTypes.InteractReturn:
-                    PlayOneShot(_interactReturnSoundInstance);
+                    PlayOneShot(_interactReturnSoundInstance, false, Range.Empty);
                     break;
                 case SoundTypes.Activate:
-                    PlayOneShot(_activateSoundInstance);
+                    PlayOneShot(_activateSoundInstance, false, Range.Empty);
                     break;
                 case SoundTypes.Deactivate:
-                    PlayOneShot(_deactivateSoundInstance);
+                    PlayOneShot(_deactivateSoundInstance, false, Range.Empty);
                     break;
                 //case SoundTypes.Collect:
                 //    PlayOneShot(_collectSoundInstance);
                 //    break;
                 case SoundTypes.ActionFailed:
-                    PlayOneShot(_actionFailedSoundInstance);
+                    PlayOneShot(_actionFailedSoundInstance, false, Range.Empty);
                     break;
                 case SoundTypes.ActionSuccess:
-                    PlayOneShot(_actionSuccessSoundInstance);
+                    PlayOneShot(_actionSuccessSoundInstance, false, Range.Empty);
                     break;
             }
         }
@@ -70,7 +70,7 @@ namespace Ivayami.Audio
         {
             if (!_hasDoneSetup)
             {
-                if(!_interactSoundReference.IsNull)_interactSoundInstance = InstantiateEvent(_interactSoundReference);
+                if (!_interactSoundReference.IsNull) _interactSoundInstance = InstantiateEvent(_interactSoundReference);
                 if (!_interactReturnSoundReference.IsNull) _interactReturnSoundInstance = InstantiateEvent(_interactReturnSoundReference);
                 if (!_activateSoundReference.IsNull) _activateSoundInstance = InstantiateEvent(_activateSoundReference);
                 if (!_deactivateSoundReference.IsNull) _deactivateSoundInstance = InstantiateEvent(_deactivateSoundReference);
@@ -79,6 +79,17 @@ namespace Ivayami.Audio
                 if (!_actionSuccessSoundReference.IsNull) _actionSuccessSoundInstance = InstantiateEvent(_actionSuccessSoundReference);
                 _hasDoneSetup = true;
             }
+        }
+
+        private void OnDisable()
+        {
+            if (_interactSoundInstance.isValid()) _interactSoundInstance.release();
+            if (_interactReturnSoundInstance.isValid()) _interactReturnSoundInstance.release();
+            if (_activateSoundInstance.isValid()) _activateSoundInstance.release();
+            if (_deactivateSoundInstance.isValid()) _deactivateSoundInstance.release();
+            if (_actionFailedSoundInstance.isValid()) _actionFailedSoundInstance.release();
+            if (_actionSuccessSoundInstance.isValid()) _actionSuccessSoundInstance.release();
+            _hasDoneSetup = false;
         }
     }
 }

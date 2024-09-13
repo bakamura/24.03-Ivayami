@@ -3,11 +3,12 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using Ivayami.Audio;
 using Ivayami.Save;
 using TMPro;
 using Ivayami.Player;
 using Ivayami.Puzzle;
+using FMOD.Studio;
+using FMODUnity;
 
 namespace Ivayami.UI {
     public class Options : MonoBehaviour {
@@ -32,6 +33,17 @@ namespace Ivayami.UI {
 
         [SerializeField] private TMP_Dropdown _languageDropdown;
 
+        private Bus _music;
+        private Bus _sfx;
+        private Bus _master;
+
+        private void Awake()
+        {
+            _master = RuntimeManager.GetBus("bus:/Master");
+            _music = RuntimeManager.GetBus("bus:/Master/Music");
+            _sfx = RuntimeManager.GetBus("bus:/Master/SFX");
+        }
+
         private void Start() {
             StartCoroutine(StartRoutine());
         }
@@ -44,11 +56,13 @@ namespace Ivayami.UI {
         }
 
         public void ChangeMusicVolume(float newVolume) {
+            _music.setVolume(newVolume);
             SaveSystem.Instance.Options.musicVol = newVolume;
-            Music.Instance.VolumeUpdate(newVolume);
+            //Music.Instance.VolumeUpdate(newVolume);
         }
 
         public void ChangeSfxVolume(float newVolume) {
+            _sfx.setVolume(newVolume);
             SaveSystem.Instance.Options.sfxVol = newVolume;
         }
 
@@ -69,7 +83,9 @@ namespace Ivayami.UI {
 
         public void ParametersUpdate() {
             _musicSlider.value = SaveSystem.Instance.Options.musicVol;
+            _music.setVolume(_musicSlider.value);
             _sfxSlider.value = SaveSystem.Instance.Options.sfxVol;
+            _sfx.setVolume(_sfxSlider.value);
             _cameraSensitivitySliderX.value = SaveSystem.Instance.Options.cameraSensitivityX;
             _cameraSensitivitySliderY.value = SaveSystem.Instance.Options.cameraSensitivityY;
             _languageDropdown.SetValueWithoutNotify(SaveSystem.Instance.Options.language);
@@ -77,7 +93,7 @@ namespace Ivayami.UI {
 
         public void ParametersApplySave() {
             ParametersUpdate();
-            Music.Instance.VolumeUpdate(_musicSlider.value);
+            //Music.Instance.VolumeUpdate(_musicSlider.value);
             PlayerCamera.Instance.SetSensitivityX(SaveSystem.Instance.Options.cameraSensitivityX * _mouseCameraSensitivityMultiplierX);
             PlayerCamera.Instance.SetSensitivityY(SaveSystem.Instance.Options.cameraSensitivityY * _mouseCameraSensitivityMultiplierY);
             ChangeLanguage(SaveSystem.Instance.Options.language);

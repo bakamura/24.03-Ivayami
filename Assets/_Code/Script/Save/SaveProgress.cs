@@ -10,7 +10,7 @@ namespace Ivayami.Save {
         
         public string[] inventory;
         public int pointId;
-        public string lastProgressType;
+        public string lastSavePlace;
         public SerializableDictionary<string, int> progress = new SerializableDictionary<string, int>();
         public SerializableDictionary<string, string> saveObjects = new SerializableDictionary<string, string>();
 
@@ -48,7 +48,7 @@ namespace Ivayami.Save {
             //return JsonUtility.FromJson<T>(saveObjects[id]);
             else
             {
-                Debug.LogWarning($"The object {id} has not been saved yet");
+                Logger.Log(LogType.Save, $"The object {id} has not been saved yet");
                 data = default(T);
                 return false;
                 //data = null;

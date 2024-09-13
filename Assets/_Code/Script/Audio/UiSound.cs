@@ -1,7 +1,6 @@
 using UnityEngine;
 using FMOD.Studio;
 using FMODUnity;
-using Ivayami.Save;
 
 namespace Ivayami.Audio {
     public class UiSound : MonoBehaviour {
@@ -22,7 +21,7 @@ namespace Ivayami.Audio {
         private void PlayOneShot(EventInstance sound) {
             sound.getPlaybackState(out PLAYBACK_STATE state);
             if (state == PLAYBACK_STATE.PLAYING) sound.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-            sound.setVolume(SaveSystem.Instance.Options != null ? SaveSystem.Instance.Options.sfxVol : 0f);
+            //sound.setVolume(SaveSystem.Instance.Options != null ? SaveSystem.Instance.Options.sfxVol : 0f);
             sound.start();
         }
 
@@ -49,5 +48,11 @@ namespace Ivayami.Audio {
             Logger.Log(LogType.UI, $"Play Sound 'GoBack'");
         }
 
+        private void OnDestroy()
+        {
+            if (_changeSelectedInstance.isValid()) _changeSelectedInstance.release();
+            if (_goBackInstance.isValid()) _goBackInstance.release();
+            if (_goForthInstance.isValid()) _goForthInstance.release();
+        }
     }
 }

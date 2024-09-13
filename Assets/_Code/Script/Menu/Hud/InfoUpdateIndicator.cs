@@ -36,8 +36,8 @@ namespace Ivayami.UI {
 
         public void DisplayUpdate(Sprite spriteToDisplay) {
             if (_currentDisplayRoutine != null) _displayQueue.Enqueue(spriteToDisplay);
-            Logger.Log(LogType.UI, $"Display Update {spriteToDisplay.name}");
-            _currentDisplayRoutine = StartCoroutine(DisplayUpdateRoutine(spriteToDisplay));
+            else _currentDisplayRoutine = StartCoroutine(DisplayUpdateRoutine(spriteToDisplay));
+            Logger.Log(LogType.UI, $"Display Update Enqueue {spriteToDisplay.name}");
         }
 
         private IEnumerator DisplayUpdateRoutine(Sprite spriteToDisplay) {

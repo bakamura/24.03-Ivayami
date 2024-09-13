@@ -4,7 +4,6 @@ using FMODUnity;
 using FMOD.Studio;
 using Ivayami.Player;
 using Ivayami.Save;
-using Ivayami.UI;
 
 namespace Ivayami.Audio {
     public class Music : MonoSingleton<Music> {
@@ -30,25 +29,31 @@ namespace Ivayami.Audio {
         [Header("Cache")]
 
         private EventInstance _musicInstanceCurrent;
+        private Coroutine _silenceRoutine;
         private Coroutine _fadeOutRoutine;
 
         private void Start() {
             PlayerStress.Instance.onStressChange.AddListener(UpdateMusicToStress);
-            StartCoroutine(RandomlyMuteMusic());
         }
 
-        public void SetMusic(EventReference musicEventRef) {
+        public void SetMusic(EventReference musicEventRef, bool shouldStopPeriodically) {
             if (!musicEventRef.IsNull) {
                 if (_fadeOutRoutine != null) {
                     StopCoroutine(_fadeOutRoutine);
                     _fadeOutRoutine = null;
                 }
+                if (_silenceRoutine != null) {
+                    StopCoroutine(_silenceRoutine);
+                    _silenceRoutine = null;
+                }
+                if (shouldStopPeriodically) _silenceRoutine = StartCoroutine(RandomlyMuteMusic());
+
                 _musicInstanceCurrent.getParameterByName("Stress", out float stress);
+                _musicInstanceCurrent.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
                 _musicInstanceCurrent.release();
                 _musicInstanceCurrent.setParameterByName("Stress", stress); //
 
                 _musicInstanceCurrent = RuntimeManager.CreateInstance(musicEventRef);
-                _musicInstanceCurrent.setVolume(SaveSystem.Instance.Options.musicVol);
 
                 _musicInstanceCurrent.start();
             }
@@ -72,6 +77,7 @@ namespace Ivayami.Audio {
         }
 
         public void ForceStop() {
+            _musicInstanceCurrent.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
             _musicInstanceCurrent.release();
         }
 
@@ -109,11 +115,6 @@ namespace Ivayami.Audio {
 
         public void ShouldDelayToRepeat(bool should) {
             _shouldDelayToRepeat = should;
-        }
-
-        public void VolumeUpdate(float volume) {
-            _musicInstanceCurrent.getVolume(out float currentVolume);
-            _musicInstanceCurrent.setVolume(currentVolume * volume / SaveSystem.Instance.Options.musicVol);
         }
 
     }

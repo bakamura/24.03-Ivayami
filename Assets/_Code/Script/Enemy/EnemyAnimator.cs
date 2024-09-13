@@ -7,13 +7,14 @@ namespace Ivayami.Enemy
     [RequireComponent(typeof(Animator))]
     public class EnemyAnimator : MonoBehaviour
     {
-        private static readonly int WALKING_BOOL = Animator.StringToHash("walking");
+        //private static readonly int WALKING_BOOL = Animator.StringToHash("walking");
         private static readonly int SPAWNING_TRIGGER = Animator.StringToHash("spawning");
         private static readonly int ATTACK_TRIGGER = Animator.StringToHash("attacking");
         private static readonly int TARGET_DETECTED_TRIGGER = Animator.StringToHash("targetDetected");
         private static readonly int INTERACT_TRIGGER = Animator.StringToHash("interacting");
         private static readonly int TAKE_DAMAGE_TRIGGER = Animator.StringToHash("takeDamage");
         private static readonly int CHASING_FLOAT = Animator.StringToHash("chasing");
+        private static readonly int MOVE_SPEED_FLOAT = Animator.StringToHash("moveSpeed");
 
         private static readonly int WALKING_STATE = Animator.StringToHash("walk");
         private static readonly int SPAWNING_STATE = Animator.StringToHash("spawn");
@@ -35,9 +36,10 @@ namespace Ivayami.Enemy
         /// <param name="onAnimationEnd">
         /// will only activate once
         /// </param>
-        public void Walking(bool walking, Action onAnimationEnd = null)
+        public void Walking(float speed, Action onAnimationEnd = null)
         {
-            _animator.SetBool(WALKING_BOOL, walking);
+            //_animator.SetBool(WALKING_BOOL, walking);
+            _animator.SetFloat(MOVE_SPEED_FLOAT, speed);
             StartAnimationEvent(WALKING_STATE, onAnimationEnd);
         }
         /// <param name="onAnimationEnd">
@@ -90,7 +92,7 @@ namespace Ivayami.Enemy
 
         private void StartAnimationEvent(int stateHash, Action onAnimationEnd)
         {
-            if(onAnimationEnd != null)
+            if (onAnimationEnd != null)
             {
                 if (_waitAnimationEndCoroutine != null)
                 {
@@ -103,7 +105,7 @@ namespace Ivayami.Enemy
 
         private IEnumerator WaitAnimationEndCoroutine(int stateHash, Action onAnimationEnd)
         {
-            if(_animator.GetCurrentAnimatorStateInfo(0).shortNameHash != stateHash)
+            if (_animator.GetCurrentAnimatorStateInfo(0).shortNameHash != stateHash)
             {
                 while (_animator.GetCurrentAnimatorStateInfo(0).shortNameHash != stateHash)
                 {

@@ -17,10 +17,30 @@ namespace Ivayami.UI {
             public float StressMax { get { return _stressAnimationMax; } }
         }
 
+        [Header("Parameters")]
+
         [SerializeField] private Indicator[] _stressIndicators;
+        [SerializeField, Range(0f, 1f)] private float _smoothFactor;
+
+        [Header("Cache")]
+
+        private float _displayTarget;
+        private float _displayCurrent;
+        private bool _gamePaused = false;
 
         private void Start() {
-            PlayerStress.Instance.onStressChange.AddListener(UpdateStressIndicators);
+            PlayerStress.Instance.onStressChange.AddListener(UpdateDisplayTarget);
+        }
+
+        private void Update() {
+            if (!_gamePaused) {
+                _displayCurrent = Mathf.Lerp(_displayCurrent, _displayTarget, _smoothFactor);
+                UpdateStressIndicators(_displayCurrent);
+            }
+        }
+
+        private void UpdateDisplayTarget(float target) {
+            _displayTarget = target;
         }
 
         private void UpdateStressIndicators(float stress) {
