@@ -6,6 +6,7 @@ namespace Ivayami.Player {
 
         [SerializeField] private Transform _cameraAimPoint;
         public Camera MainCamera { get; private set; }
+        public CinemachineBrain CinemachineBrain { get; private set; }
         public CinemachineFreeLook FreeLookCam { get; private set; }
         public CinemachineInputProvider InputProvider { get; private set; }
         public Transform CameraAimPoint => _cameraAimPoint;
@@ -16,6 +17,7 @@ namespace Ivayami.Player {
             FreeLookCam = GetComponent<CinemachineFreeLook>();
             InputProvider = GetComponent<CinemachineInputProvider>();
             MainCamera = Camera.main;
+            CinemachineBrain = MainCamera.GetComponent<CinemachineBrain>();
         }
 
         public void SetSensitivityX(float sensitivityX) {
