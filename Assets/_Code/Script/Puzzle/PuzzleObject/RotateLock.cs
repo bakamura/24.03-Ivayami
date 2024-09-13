@@ -68,6 +68,7 @@ namespace Ivayami.Puzzle
         private IEnumerator AnimateButtonCoroutine(sbyte direction, Transform rotateObject)
         {
             float count = 0;
+            RotateLockButton currentBtn = _currentBtn;
             Quaternion initialRotation = rotateObject.localRotation;
             Quaternion finalRotation = Quaternion.Euler(initialRotation.eulerAngles.x + _rotationAngle * direction, 0, 0);
             while (count < 1)
@@ -76,7 +77,7 @@ namespace Ivayami.Puzzle
                 rotateObject.localRotation = Quaternion.Lerp(initialRotation, finalRotation, count);
                 yield return null;
             }
-            _currentBtn.UpdateButtonDisplay(0);
+            currentBtn.UpdateButtonDisplay(0);
             rotateObject.localRotation = initialRotation;
             _animateCoroutine = null;
             //_onCheckPassword?.Invoke();
