@@ -31,13 +31,13 @@ namespace Ivayami.UI {
         }
 
         public void PointersUpdate() {
-            Vector2 playerPosInMap = Vector2.zero;
-            playerPosInMap[0] = PlayerMovement.Instance.transform.position.x / _mapWorldSize.x;
-            playerPosInMap[1] = PlayerMovement.Instance.transform.position.z / _mapWorldSize.y;
-            playerPosInMap *= _mapRectTranform.sizeDelta;
+            //Vector2 playerPosInMap = Vector2.zero;
+            //playerPosInMap[0] = PlayerMovement.Instance.transform.position.x / _mapWorldSize.x;
+            //playerPosInMap[1] = PlayerMovement.Instance.transform.position.z / _mapWorldSize.y;
+            //playerPosInMap *= _mapRectTranform.sizeDelta;
 
-            _playerPointer.anchoredPosition = playerPosInMap;
-            _playerPointer.rotation = Quaternion.Euler(0f, 0f, _cam.transform.eulerAngles.y); //
+            //_playerPointer.anchoredPosition = playerPosInMap;
+            //_playerPointer.rotation = Quaternion.Euler(0f, 0f, _cam.transform.eulerAngles.y); //
 
             foreach (RectTransform goalPointer in _goalPointers) {
                 Vector2 goalPosInMap = SceneController.Instance.PointerInChapter(goalPointer.name.Split('_')[1]);
