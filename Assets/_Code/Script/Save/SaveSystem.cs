@@ -32,7 +32,7 @@ namespace Ivayami.Save {
         }
 
         public void LoadProgress(byte saveId, Action loadSaveCallback) {
-            StartCoroutine(LoadSaveRoutine($"{_progressPath}/{ProgressFolderName}_{saveId}", typeof(SaveProgress), loadSaveCallback));
+            StartCoroutine(LoadSaveRoutine($"{_progressPath}/{ProgressFolderName}_{saveId}.sav", typeof(SaveProgress), loadSaveCallback));
 
             Logger.Log(LogType.Save, $"Loading Progress for save {saveId}");
         }
@@ -72,9 +72,9 @@ namespace Ivayami.Save {
             List<SaveProgress> progressSaves = new List<SaveProgress>();
             int saveId = 0;
             while (true) {
-                if (File.Exists($"{_progressPath}/{ProgressFolderName}_{saveId}")) {
-                    Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/Save_{saveId}");
-
+                print($"Try Load {_progressPath}/{ProgressFolderName}_{saveId}");
+                if (File.Exists($"{_progressPath}/{ProgressFolderName}_{saveId}.sav")) {
+                    Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/{ProgressFolderName}_{saveId}.sav");                    
                     yield return readTask;
 
                     progressSaves.Add(JsonUtility.FromJson<SaveProgress>(Encryption.Decrypt(readTask.Result)));
