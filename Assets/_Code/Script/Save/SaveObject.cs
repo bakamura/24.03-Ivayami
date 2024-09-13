@@ -27,7 +27,11 @@ namespace Ivayami.Save
 
         protected virtual void OnDisable()
         {
-            if (SaveSystem.Instance) SaveSystem.Instance.UnregisterSaveObject(this);
+            if (SaveSystem.Instance)
+            {
+                SaveData();
+                SaveSystem.Instance.UnregisterSaveObject(this);
+            }
         }
 
 #if UNITY_EDITOR
