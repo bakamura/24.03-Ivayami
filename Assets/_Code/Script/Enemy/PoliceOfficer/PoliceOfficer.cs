@@ -125,7 +125,7 @@ namespace Ivayami.Enemy
                         _navMeshAgent.isStopped = true;
                         _navMeshAgent.velocity = Vector3.zero;
                         _enemyAnimator.Walking(0);
-                        _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
+                        _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, true);
                         //PlayerStress.Instance.SetStressMin(98);
                         _enemyAnimator.TargetDetected(HandleTargetDetected);
                     }
@@ -320,7 +320,7 @@ namespace Ivayami.Enemy
             StopTargetPointReachedCoroutine();
             _navMeshAgent.isStopped = true;
             _navMeshAgent.velocity = Vector3.zero;
-            _enemySounds.PlaySound(EnemySounds.SoundTypes.TakeDamage);
+            _enemySounds.PlaySound(EnemySounds.SoundTypes.TakeDamage, true);
             _enemyAnimator.TakeDamage(OnAttackAnimationEnd);
         }
 

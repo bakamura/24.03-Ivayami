@@ -26,16 +26,6 @@ namespace Ivayami.Audio
             [Tooltip("Will only show if the audio is 3D")] public bool DrawGizmos;
             public Color MinRangGizmoColor;
             public Color MaxRangGizmoColor;
-            public SoundEventData(EventReference reference, bool allowFadeOut, Range attenuation, EventInstance instance, bool drawGizmos, Color minRange, Color maxRange)
-            {
-                AudioReference = reference;
-                AllowFadeOut = allowFadeOut;
-                AttenuationRange = attenuation;
-                AudioInstance = instance;
-                DrawGizmos = drawGizmos;
-                MinRangGizmoColor = minRange;
-                MaxRangGizmoColor = maxRange;
-            }
 #endif
         }
 
