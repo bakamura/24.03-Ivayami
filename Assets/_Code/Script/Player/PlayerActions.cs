@@ -1,15 +1,13 @@
-using Ivayami.Player.Ability;
-using Ivayami.Puzzle;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using Ivayami.Player.Ability;
+using Ivayami.Puzzle;
 
-namespace Ivayami.Player
-{
-    public class PlayerActions : MonoSingleton<PlayerActions>
-    {
+namespace Ivayami.Player {
+    public class PlayerActions : MonoSingleton<PlayerActions> {
 
         [Header("Inputs")]
 
@@ -36,14 +34,15 @@ namespace Ivayami.Player
 
 #if UNITY_EDITOR
         [Header("Debug")]
+
+        [SerializeField] private bool _drawGizmos;
         [SerializeField] private Color _sphereCastGizmoColor;
         [SerializeField] private Color _interactableHitPointGizmoColor;
 #endif
         public bool Interacting { get; private set; } = false;
         public IInteractable InteractableTarget { get; private set; }
 
-        public enum InteractAnimation
-        {
+        public enum InteractAnimation {
             Default,
             EnterLocker,
             PullRope,
@@ -70,8 +69,7 @@ namespace Ivayami.Player
 
         private const string INTERACT_LONG_BLOCK_KEY = "InteractLong";
 
-        protected override void Awake()
-        {
+        protected override void Awake() {
             base.Awake();
 
             _interactInput.action.started += Interact;
@@ -87,32 +85,25 @@ namespace Ivayami.Player
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
         }
 
-        private void Start()
-        {
+        private void Start() {
             _cam = PlayerCamera.Instance.MainCamera;
         }
 
-        private void FixedUpdate()
-        {
+        private void FixedUpdate() {
             if (!Interacting) InteractObjectDetect();
         }
 
-        private void Interact(InputAction.CallbackContext input)
-        {
-            if (input.phase == InputActionPhase.Started)
-            {
-                if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent)
-                {
+        private void Interact(InputAction.CallbackContext input) {
+            if (input.phase == InputActionPhase.Started) {
+                if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
                     InteractAnimation animation = InteractableTarget.Interact();
-                    if (InteractableTarget is IInteractableLong)
-                    {
+                    if (InteractableTarget is IInteractableLong) {
                         PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
                         onInteractLong?.Invoke(true);
 
                         Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
                     }
-                    else
-                    {
+                    else {
                         onInteract?.Invoke(animation);
 
                         Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
@@ -120,8 +111,7 @@ namespace Ivayami.Player
                 }
                 else Logger.Log(LogType.Player, $"Interact: No Target");
             }
-            else if (input.phase == InputActionPhase.Canceled && Interacting)
-            {
+            else if (input.phase == InputActionPhase.Canceled && Interacting) {
                 if (InteractableTarget is IInteractableLong) PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, true);
                 (InteractableTarget as IInteractableLong).InteractStop();
                 onInteractLong?.Invoke(false);
@@ -130,8 +120,7 @@ namespace Ivayami.Player
             }
         }
 
-        private void InteractObjectDetect()
-        {
+        private void InteractObjectDetect() {
             //_interactableClosestDistanceCache = _interactRange;
             _interactableClosestCache = null;
             //Ray ray = _cam.ScreenPointToRay(_screenCenter);
@@ -144,12 +133,9 @@ namespace Ivayami.Player
             //    }
             //    else _interactableClosestCache = _hitInfoCache.collider.GetComponent<IInteractable>();
             //}
-            if (Physics.SphereCast(_cam.transform.position, _interactSphereCastRadius, _cam.transform.forward, out _hitInfoCache, _interactRange, _interactLayer))
-            {
-                if (Physics.Raycast(_cam.transform.position, (_hitInfoCache.point - _cam.transform.position).normalized, out RaycastHit hit, Vector3.Distance(_cam.transform.position, _hitInfoCache.point), _blockLayers))
-                {
-                    //Logger.Log(LogType.Player, $"Blocked By {hit.transform.name}");
-                    Debug.Log($"Blocked By {hit.transform.name}");
+            if (Physics.SphereCast(_cam.transform.position, _interactSphereCastRadius, _cam.transform.forward, out _hitInfoCache, _interactRange, _interactLayer)) {
+                if (Physics.Raycast(_cam.transform.position, (_hitInfoCache.point - _cam.transform.position).normalized, out RaycastHit hit, Vector3.Distance(_cam.transform.position, _hitInfoCache.point), _blockLayers)) {
+                    Logger.Log(LogType.Player, $"Blocked By {hit.transform.name}");
                     _interactableClosestCache = null;
                 }
                 else _interactableClosestCache = _hitInfoCache.collider.GetComponent<IInteractable>();
@@ -171,8 +157,7 @@ namespace Ivayami.Player
             //    }
             //}
             //print($"Current {InteractableTarget.gameObject.name} New found {_interactableClosestCache.gameObject.name}");
-            if (InteractableTarget != _interactableClosestCache)
-            {
+            if (InteractableTarget != _interactableClosestCache) {
                 InteractableTarget?.InteratctableHighlight.UpdateFeedbacks(false);
                 InteractableTarget = _interactableClosestCache;
                 InteractableTarget?.InteratctableHighlight.UpdateFeedbacks(true);
@@ -181,19 +166,15 @@ namespace Ivayami.Player
             }
         }
 
-        private void Ability(InputAction.CallbackContext input)
-        {
-            if (_abilityCurrent >= 0)
-            {
-                if (input.phase == InputActionPhase.Started)
-                {
+        private void Ability(InputAction.CallbackContext input) {
+            if (_abilityCurrent >= 0) {
+                if (input.phase == InputActionPhase.Started) {
                     _abilities[_abilityCurrent].AbilityStart();
                     onAbility?.Invoke(_abilities[_abilityCurrent].name);
 
                     Logger.Log(LogType.Player, $"Ability Start: {_abilities[_abilityCurrent].name}");
                 }
-                else if (input.phase == InputActionPhase.Canceled)
-                {
+                else if (input.phase == InputActionPhase.Canceled) {
                     _abilities[_abilityCurrent].AbilityEnd();
                     onAbility?.Invoke($"{_abilities[_abilityCurrent].name}End");
 
@@ -202,10 +183,8 @@ namespace Ivayami.Player
             }
         }
 
-        private void ChangeAbility(InputAction.CallbackContext input)
-        {
-            switch (input.ReadValue<Vector2>())
-            {
+        private void ChangeAbility(InputAction.CallbackContext input) {
+            switch (input.ReadValue<Vector2>()) {
                 case Vector2 v2 when v2.Equals(Vector2.up):
                     if (_abilities.Count < 1) return;
                     _abilityCurrent = 0;
@@ -228,8 +207,7 @@ namespace Ivayami.Player
             Logger.Log(LogType.Player, $"Ability Changed to: {_abilities[_abilityCurrent].name}");
         }
 
-        public void AddAbility(PlayerAbility ability)
-        {
+        public void AddAbility(PlayerAbility ability) {
             PlayerAbility abilityInstance = Instantiate(ability);
             Quaternion localRotation = abilityInstance.transform.rotation;
             abilityInstance.transform.parent = HoldPointLeft;
@@ -240,8 +218,7 @@ namespace Ivayami.Player
             Logger.Log(LogType.Player, $"Ability Add: {ability.name}");
         }
 
-        public void RemoveAbility(PlayerAbility ability)
-        {
+        public void RemoveAbility(PlayerAbility ability) {
             PlayerAbility abilityInList = _abilities.OrderBy(abilityIterator => abilityIterator.GetType() == ability.GetType()).First();
             if (_abilityCurrent >= _abilities.FindIndex((abilityIterator) => abilityIterator == abilityInList)) _abilityCurrent--;
             _abilities.Remove(abilityInList);
@@ -250,15 +227,13 @@ namespace Ivayami.Player
             Logger.Log(LogType.Player, $"Ability Remove: {ability.name}");
         }
 
-        public bool CheckAbility(PlayerAbility abilityChecking)
-        {
+        public bool CheckAbility(PlayerAbility abilityChecking) {
             Debug.Log(abilityChecking.GetType()); // DEBUG REMOVE
             foreach (PlayerAbility ability in _abilities) if (ability.GetType() == abilityChecking.GetType()) return true;
             return false;
         }
 
-        public void ChangeInputMap(string mapId)
-        {
+        public void ChangeInputMap(string mapId) {
             _actionMapCurrent?.Disable();
             _actionMapCurrent = mapId != null ? _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId) : null;
             _actionMapCurrent?.Enable();
@@ -266,12 +241,8 @@ namespace Ivayami.Player
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
-        {
-            if (_cam)
-            {
-                //Gizmos.color = _camRayColor;
-                //Gizmos.DrawRay(_cam.ScreenPointToRay(_screenCenter));
+        private void OnDrawGizmosSelected() {
+            if (_drawGizmos && _cam) {
                 Gizmos.color = _sphereCastGizmoColor;
                 //middle
                 Gizmos.DrawLine(_cam.transform.position, _cam.transform.position + _cam.transform.forward * _interactRange);
