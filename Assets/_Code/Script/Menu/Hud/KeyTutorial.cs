@@ -20,14 +20,14 @@ namespace Ivayami.UI {
         }
 
         private void Start() {
-            Pause.Instance.onPause.AddListener(() => _icon.enabled = false);
-            Pause.Instance.onPause.AddListener(() => _icon.enabled = true);
         }
 
         public void StartTutorial() {
             _fadeUI.Open();
-            InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisuals);
             _actionIndicator.action.performed += KeyPressed;
+            Pause.Instance.onPause.AddListener(IconDisable);
+            Pause.Instance.onUnpause.AddListener(IconEnable);
+            InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisuals);
         }
 
         private void UpdateVisuals(bool isGamepad) {
@@ -37,6 +37,16 @@ namespace Ivayami.UI {
         private void KeyPressed(InputAction.CallbackContext obj) {
             _fadeUI.Close();
             _actionIndicator.action.performed -= KeyPressed;
+            Pause.Instance.onPause.AddListener(IconDisable);
+            Pause.Instance.onUnpause.AddListener(IconEnable);
+        }
+
+        private void IconEnable() {
+            _icon.enabled = true;
+        }
+
+        private void IconDisable() {
+            _icon.enabled = false;
         }
 
     }
