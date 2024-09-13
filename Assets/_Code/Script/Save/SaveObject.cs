@@ -5,6 +5,7 @@ namespace Ivayami.Save
     public abstract class SaveObject : MonoBehaviour
     {
         [SerializeField, ReadOnly] private string _id;
+        [SerializeField] private bool _saveOnDisable = true;
         public string ID
         {
             get { return _id; }
@@ -29,7 +30,7 @@ namespace Ivayami.Save
         {
             if (SaveSystem.Instance)
             {
-                SaveData();
+                if (_saveOnDisable) SaveData();
                 SaveSystem.Instance.UnregisterSaveObject(this);
             }
         }
