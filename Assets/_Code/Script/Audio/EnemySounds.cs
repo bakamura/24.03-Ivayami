@@ -61,11 +61,7 @@ namespace Ivayami.Audio
                     StopReplayCoroutine();
                     _soundInterrupted = false;
                     return;
-                }
-                if (_debugLog && _onAudioEnd != null) UnityEngine.Debug.Log($"Audio Callback End {_currentSoundData.SoundType}");
-                _onAudioEnd?.Invoke();
-                _onAudioEnd = null;
-                    
+                }                    
 
                 if (_currentSoundData.ReplayAudioOnEnd)
                 {
@@ -73,6 +69,10 @@ namespace Ivayami.Audio
                     StopReplayCoroutine();
                     _delayToReplayCoroutine = StartCoroutine(ReplayDelayCoroutine());
                 }
+
+                if (_debugLog && _onAudioEnd != null) UnityEngine.Debug.Log($"Audio Callback End {_currentSoundData.SoundType}");
+                _onAudioEnd?.Invoke();
+                _onAudioEnd = null;
             }
         }
 
