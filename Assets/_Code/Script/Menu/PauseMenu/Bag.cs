@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Ivayami.Player;
+using Ivayami.Save;
 
 namespace Ivayami.UI {
     public class Bag : MonoSingleton<Bag> {
@@ -28,7 +29,7 @@ namespace Ivayami.UI {
         }
 
         public void DisplayItemInfo(InventoryItem item) {
-            _itemDescriptor.text = item != null ? $"{item.DisplayName}\n{item.Description}" : "";
+            _itemDescriptor.text = item.GetTranslation((LanguageTypes) SaveSystem.Instance.Options.language) != null ? $"{item.DisplayName}\n{item.Description}" : "";
         }
 
     }
