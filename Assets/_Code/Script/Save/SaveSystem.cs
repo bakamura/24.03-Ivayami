@@ -37,7 +37,7 @@ namespace Ivayami.Save {
         }
 
         public void LoadProgress(byte saveId, Action loadSaveCallback) {
-            StartCoroutine(LoadSaveRoutine($"{_progressPath}/{ProgressFolderName}_{saveId}", typeof(SaveProgress), loadSaveCallback));
+            StartCoroutine(LoadSaveRoutine($"{_progressPath}/{ProgressFolderName}_{saveId}.sav", typeof(SaveProgress), loadSaveCallback));
 
             Logger.Log(LogType.Save, $"Loading Progress for save {saveId}");
         }
