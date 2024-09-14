@@ -29,7 +29,8 @@ namespace Ivayami.UI {
         }
 
         public void DisplayItemInfo(InventoryItem item) {
-            _itemDescriptor.text = item.GetTranslation((LanguageTypes) SaveSystem.Instance.Options.language) != null ? $"{item.DisplayName}\n{item.Description}" : "";
+            InventoryItem itemTranslation = item?.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
+            _itemDescriptor.text = itemTranslation != null ? $"{itemTranslation.DisplayName}\n{itemTranslation.Description}" : "";
         }
 
     }
