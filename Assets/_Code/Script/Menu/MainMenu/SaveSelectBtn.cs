@@ -3,6 +3,7 @@ using TMPro;
 using Ivayami.Save;
 using Ivayami.Scene;
 using Ivayami.Dialogue;
+using Ivayami.Player;
 
 namespace Ivayami.UI {
     public class SaveSelectBtn : MonoBehaviour {
@@ -36,6 +37,7 @@ namespace Ivayami.UI {
                 if (_isFirstTime) SaveSelector.Instance.FirstTimeFade.FadeIn();
                 else SaveSelector.Instance.NormalFade.FadeIn();
                 SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayerIfGame;
+                PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
             });
         }
 
