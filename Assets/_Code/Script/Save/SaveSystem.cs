@@ -92,7 +92,7 @@ namespace Ivayami.Save {
 
         private void SaveProgress() {
             Progress.lastPlayedDate = DateTime.Now.ToString("dd/MM/yy [HH:mm]");
-            StartCoroutine(WriteSaveRoutine($"{_progressPath}/{ProgressFolderName}_{Progress.id}", typeof(SaveProgress)));
+            StartCoroutine(WriteSaveRoutine($"{_progressPath}/{ProgressFolderName}_{Progress.id}.sav", typeof(SaveProgress)));
 
             Logger.Log(LogType.Save, $"Writing Progress for save {Progress.id}");
         }
