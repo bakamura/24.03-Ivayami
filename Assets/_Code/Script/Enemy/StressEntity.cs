@@ -5,8 +5,7 @@ using System;
 using Ivayami.Player;
 
 namespace Ivayami.Enemy
-{
-    [RequireComponent(typeof(SphereCollider))]
+{    
     public class StressEntity : MonoBehaviour
     {
         [Header("StressArea Parameters")]
@@ -16,7 +15,6 @@ namespace Ivayami.Enemy
         [SerializeField] private bool _debugLogs;
 #if UNITY_EDITOR
         [SerializeField] private bool _drawGizmos;
-        private SphereCollider _sphereCollider;
 #endif
         [Serializable]
         private struct StressAreaInfo
@@ -39,11 +37,20 @@ namespace Ivayami.Enemy
                 SetActiveState(value);
             }
         }
-        private bool _isStressAreaActive;
+        private bool _isStressAreaActive = true;
         private StressAreaInfo[] _stressAreasInOrder;
         private Coroutine _stressIncreaseCoroutine;
         private WaitForSeconds _delay;
         private bool _targetInsideArea;
+        private StressEntityCollision _stressCollision
+        {
+            get
+            {
+                if (!m_stressCollision) m_stressCollision = GetComponentInChildren<StressEntityCollision>();
+                return m_stressCollision;
+            }
+        }
+        private StressEntityCollision m_stressCollision;
 
         protected virtual void Awake()
         {
@@ -51,13 +58,13 @@ namespace Ivayami.Enemy
             _stressAreasInOrder = _stressAreas.OrderBy(x => x.Range).ToArray();
         }
 
-        protected virtual void OnTriggerEnter(Collider other)
+        public void EnterArea()
         {
             _targetInsideArea = true;
-            if (isStressAreaActive) _stressIncreaseCoroutine ??= StartCoroutine(StressIncreaseCoroutine());
+            if (isStressAreaActive && PlayerMovement.Instance) _stressIncreaseCoroutine ??= StartCoroutine(StressIncreaseCoroutine());
         }
 
-        protected virtual void OnTriggerExit(Collider other)
+        public void ExitArea()
         {
             if (_stressIncreaseCoroutine != null)
             {
@@ -76,7 +83,7 @@ namespace Ivayami.Enemy
                     if (Vector3.Distance(transform.position, PlayerMovement.Instance.transform.position) <= _stressAreasInOrder[i].Range)
                     {
                         if (_debugLogs) Debug.Log($"Adding stress {_stressAreasInOrder[i].StressIncrease} with a max of {_stressAreasInOrder[i].MaxStress}");
-                        PlayerStress.Instance.AddStress(_stressAreasInOrder[i].StressIncrease, _stressAreasInOrder[i].MaxStress);
+                        PlayerStress.Instance.AddStress(_stressAreasInOrder[i].StressIncrease * _stressIncreaseTickFrequency, _stressAreasInOrder[i].MaxStress);
                         break;
                     }
                 }
@@ -88,6 +95,10 @@ namespace Ivayami.Enemy
         private void SetActiveState(bool isActive)
         {
             _isStressAreaActive = isActive;
+            if (_targetInsideArea && _isStressAreaActive)
+            {
+                EnterArea();
+            }
         }
 
 #if UNITY_EDITOR
@@ -98,8 +109,7 @@ namespace Ivayami.Enemy
 
         protected virtual void OnValidate()
         {
-            if (!_sphereCollider) _sphereCollider = GetComponent<SphereCollider>();
-            if (_stressAreas != null && _stressAreas.Length > 0) _sphereCollider.radius = _stressAreas.Max(x => x.Range);
+            if (_stressAreas != null && _stressAreas.Length > 0 && _stressCollision) _stressCollision.SphereCollider.radius = _stressAreas.Max(x => x.Range);
         }
 
         private void DrawStressAreaGizmos(Vector3 startPosition)

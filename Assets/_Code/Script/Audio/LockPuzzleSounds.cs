@@ -28,10 +28,10 @@ namespace Ivayami.Audio
             switch (soundType)
             {
                 case SoundTypes.ChangeOption:
-                    PlayOneShot(_changeOptionSoundInstance);
+                    PlayOneShot(_changeOptionSoundInstance, false, Range.Empty);
                     break;
                 case SoundTypes.ConfirmOption:
-                    PlayOneShot(_confirmOptionSoundInstance);
+                    PlayOneShot(_confirmOptionSoundInstance, false, Range.Empty);
                     break;
             }
         }
@@ -44,6 +44,13 @@ namespace Ivayami.Audio
                 if (!_confirmOptionSoundReference.IsNull) _confirmOptionSoundInstance = InstantiateEvent(_confirmOptionSoundReference);
                 _hasDoneSetup = true;
             }
+        }
+
+        private void OnDisable()
+        {
+            if (_changeOptionSoundInstance.isValid()) _changeOptionSoundInstance.release();
+            if (_confirmOptionSoundInstance.isValid()) _confirmOptionSoundInstance.release();
+            _hasDoneSetup = false;
         }
     }
 }

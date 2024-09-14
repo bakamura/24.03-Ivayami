@@ -9,10 +9,10 @@ public static class PlayerTerminalCommands
 
     private static List<InventoryItem> _allItemsList = Resources.LoadAll<InventoryItem>("Items").ToList();
 
-    [ConsoleMethod("TogglePlayerMovement", "Toggles Player's Movement", "canMove")]
-    public static void TogglePlayerMovement(bool canMove)
+    [ConsoleMethod("TogglePlayerMovement", "Toggles Player's Movement", "key", "canMove")]
+    public static void TogglePlayerMovement(string key, bool canMove)
     {
-        PlayerMovement.Instance.ToggleMovement(canMove);
+        PlayerMovement.Instance.ToggleMovement(key, canMove);
     }
 
     [ConsoleMethod("ChangeInputMap", "Changes the current input map", "mapName")]
@@ -32,7 +32,11 @@ public static class PlayerTerminalCommands
     public static void GiveItem(string itemID)
     {
         InventoryItem result = _allItemsList.Find(x => x.name.ToUpper() == itemID.ToUpper());
-        if (result != null) PlayerInventory.Instance.AddToInventory(result);
+        if (result != null)
+        {
+            PlayerInventory.Instance.AddToInventory(result);
+            Debug.Log($"The item {itemID} has been added to inventory");
+        }
         else Debug.LogWarning($"The item: {itemID} doesn't exist");
     }
 

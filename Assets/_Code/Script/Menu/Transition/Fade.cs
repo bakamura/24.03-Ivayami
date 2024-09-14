@@ -5,15 +5,18 @@ namespace Ivayami.UI {
     public class Fade : Menu {
 
         [SerializeField] private bool _interactable;
+        private Coroutine _fadeRoutine;
 
         public override void Open() {
-            StartCoroutine(OpenRoutine());
+            if (_fadeRoutine != null) StopCoroutine(_fadeRoutine);
+            _fadeRoutine = StartCoroutine(OpenRoutine());
 
             Logger.Log(LogType.UI, $"Open Menu '{name}'");
         }
 
         public override void Close() {
-            StartCoroutine(CloseRoutine());
+            if (_fadeRoutine != null) StopCoroutine(_fadeRoutine);
+            _fadeRoutine = StartCoroutine(CloseRoutine());
 
             Logger.Log(LogType.UI, $"Close Menu '{name}'");
         }
@@ -30,6 +33,7 @@ namespace Ivayami.UI {
                 _canvasGroup.interactable = true;
                 _canvasGroup.blocksRaycasts = true;
             }
+            _fadeRoutine = null;
         }
 
         private IEnumerator CloseRoutine() {
@@ -42,6 +46,7 @@ namespace Ivayami.UI {
 
                 yield return null;
             }
+            _fadeRoutine = null;
         }
 
     }

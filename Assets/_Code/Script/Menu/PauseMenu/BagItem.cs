@@ -5,22 +5,22 @@ using Ivayami.Player;
 namespace Ivayami.UI {
     public class BagItem : MonoBehaviour {
 
-        [Header("Parameters")]
+        [Header("References")]
 
-        [SerializeField] private Image _itemPreview;
+        [SerializeField] private Image _icon;
 
         [Header("Cache")]
 
-        private Button _button;
-
-        private void Awake() {
-            _button = GetComponent<Button>();
-        }
+        private InventoryItem item;
 
         public void SetItemDisplay(InventoryItem item) {
-            name = item.DisplayName;
-            _itemPreview.sprite = item.Sprite;
-            _itemPreview.transform.localPosition = Vector3.zero;
+            this.item = item;
+            _icon.sprite = item != null ? item.Sprite : null;
+            _icon.color = item != null ? Color.white : new Color(0, 0, 0, 0);
+        }
+
+        public void DisplayInfo() {
+            Bag.Instance.DisplayItemInfo(item);
         }
 
     }
