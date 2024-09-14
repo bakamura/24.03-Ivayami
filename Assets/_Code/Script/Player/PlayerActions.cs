@@ -63,6 +63,7 @@ namespace Ivayami.Player {
         [Header("Cache")]
 
         private Camera _cam;
+        private Cinemachine.CinemachineBrain _brain;
         //private Vector2 _screenCenter = new Vector2(Screen.width, Screen.height) / 2;
         private RaycastHit _hitInfoCache;
         private IInteractable _interactableClosestCache;
@@ -87,6 +88,7 @@ namespace Ivayami.Player {
 
         private void Start() {
             _cam = PlayerCamera.Instance.MainCamera;
+            _brain = PlayerCamera.Instance.CinemachineBrain;
         }
 
         private void FixedUpdate() {
@@ -133,12 +135,15 @@ namespace Ivayami.Player {
             //    }
             //    else _interactableClosestCache = _hitInfoCache.collider.GetComponent<IInteractable>();
             //}
-            if (Physics.SphereCast(_cam.transform.position, _interactSphereCastRadius, _cam.transform.forward, out _hitInfoCache, _interactRange, _interactLayer)) {
-                if (Physics.Raycast(_cam.transform.position, (_hitInfoCache.point - _cam.transform.position).normalized, out RaycastHit hit, Vector3.Distance(_cam.transform.position, _hitInfoCache.point), _blockLayers)) {
-                    Logger.Log(LogType.Player, $"Blocked By {hit.transform.name}");
-                    _interactableClosestCache = null;
+            if(_actionMapCurrent != null && _actionMapCurrent.name == "Player" && !_brain.IsBlending)
+            {
+                if (Physics.SphereCast(_cam.transform.position, _interactSphereCastRadius, _cam.transform.forward, out _hitInfoCache, _interactRange, _interactLayer)) {
+                    if (Physics.Raycast(_cam.transform.position, (_hitInfoCache.point - _cam.transform.position).normalized, out RaycastHit hit, Vector3.Distance(_cam.transform.position, _hitInfoCache.point), _blockLayers)) {
+                        Logger.Log(LogType.Player, $"Blocked By {hit.transform.name}");
+                        _interactableClosestCache = null;
+                    }
+                    else _interactableClosestCache = _hitInfoCache.collider.GetComponent<IInteractable>();
                 }
-                else _interactableClosestCache = _hitInfoCache.collider.GetComponent<IInteractable>();
             }
             //Physics.SphereCastNonAlloc(_cam.ScreenPointToRay(_screenCenter), _interactSphereCastRadius, _raycastHitsCache, _interactRange, _interactLayer);
             //Vector2 playerPositionFlat = new Vector2(transform.position.x, transform.position.z); // Make Cache
