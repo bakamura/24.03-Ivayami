@@ -5,6 +5,7 @@ namespace Ivayami.Save
     public abstract class SaveObject : MonoBehaviour
     {
         [SerializeField, ReadOnly] private string _id;
+        [SerializeField] private bool _saveOnDisable = true;
         public string ID
         {
             get { return _id; }
@@ -27,7 +28,11 @@ namespace Ivayami.Save
 
         protected virtual void OnDisable()
         {
-            if (SaveSystem.Instance) SaveSystem.Instance.UnregisterSaveObject(this);
+            if (SaveSystem.Instance)
+            {
+                if (_saveOnDisable) SaveData();
+                SaveSystem.Instance.UnregisterSaveObject(this);
+            }
         }
 
 #if UNITY_EDITOR
