@@ -33,7 +33,7 @@ namespace Ivayami.Enemy
             _animator = GetComponentInChildren<EnemyAnimator>();
             if (_fixedWalkArea)
             {
-                SetMovementData(_fixedWalkArea.MovementData);
+                if (_fixedWalkArea.MovementData) SetMovementData(_fixedWalkArea.MovementData);
                 SetWalkArea(_fixedWalkArea);
                 _fixedWalkArea.AddEnemyToArea(this, gameObject.name);
             }
@@ -96,7 +96,7 @@ namespace Ivayami.Enemy
                 {
                     //Debug.Log($"Index {currentPoint.CurrentPointIndex}, Position {currentPoint.Point.Position}");
                     _navMeshAgent.SetDestination(currentPoint.Point.Position);
-                }                
+                }
                 yield return _delay;
             }
             _walkCoroutine = null;
