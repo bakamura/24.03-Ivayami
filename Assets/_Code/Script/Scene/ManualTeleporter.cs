@@ -42,18 +42,12 @@ namespace Ivayami.Scene
                 else if(_teleportTarget.TryGetComponent<NavMeshAgent>(out _currentAgent))
                 {
                     _currentAgent.enabled = false;
-                    _onTeleportEnd.AddListener(HandleTeleportEndToNavMeshAgent);
                     _teleportTarget.SetPositionAndRotation(transform.position, Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0));
                 }
                 else _teleportTarget.SetPositionAndRotation(transform.position, Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0));
             }
+            if(_currentAgent) _currentAgent.enabled = true;
             _onTeleportEnd?.Invoke();
-        }
-
-        private void HandleTeleportEndToNavMeshAgent()
-        {
-            _currentAgent.enabled = true;
-            _onTeleportEnd.RemoveListener(HandleTeleportEndToNavMeshAgent);
         }
 
 #if UNITY_EDITOR
