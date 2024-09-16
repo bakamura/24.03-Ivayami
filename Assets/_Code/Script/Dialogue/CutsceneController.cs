@@ -62,7 +62,6 @@ namespace Ivayami.Dialogue
 
         public void SkipCutscene()
         {
-            Debug.Log("SkipCutscene()");
             if (!IsPlaying)
                 return;
 
