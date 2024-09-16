@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028334, g: 0.2257134, b: 0.30692226, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.3069224, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -367,7 +367,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -6.5, y: 1.5, z: 0}
-  m_LocalScale: {x: 4, y: 1, z: 7}
+  m_LocalScale: {x: 4, y: 4, z: 7}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2135887907}
@@ -594,7 +594,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -658,7 +660,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &135527407
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -726,6 +727,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 824531bb41ff14d4abf87152b15ef044, type: 2}
+  _patrolBehaviour: 0
   _points:
   - Position: {x: -0.4, y: 0, z: -2.72}
     DelayToNextPoint: 1
@@ -802,6 +804,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 824531bb41ff14d4abf87152b15ef044, type: 2}
+  _patrolBehaviour: 0
   _points:
   - Position: {x: -7.4, y: 0, z: 4.87}
     DelayToNextPoint: 1
@@ -1332,7 +1335,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 5.96, y: 1, z: 0.68}
-  m_LocalScale: {x: 5, y: 2, z: 1}
+  m_LocalScale: {x: 5, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2135887907}
@@ -1570,7 +1573,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -1598,7 +1603,6 @@ MonoBehaviour:
           m_StringArgument: interact
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &456361853
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1666,7 +1670,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 1.1
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -1694,7 +1700,6 @@ MonoBehaviour:
           m_StringArgument: interact
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &478597166
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1783,7 +1788,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -1811,7 +1818,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!1 &589845924
 GameObject:
   m_ObjectHideFlags: 0
@@ -1879,7 +1885,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -1931,7 +1939,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!1 &648251174
 GameObject:
   m_ObjectHideFlags: 0
@@ -2198,6 +2205,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 824531bb41ff14d4abf87152b15ef044, type: 2}
+  _patrolBehaviour: 0
   _points:
   - Position: {x: -14.08, y: 0, z: -2.72}
     DelayToNextPoint: 1
@@ -2700,6 +2708,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 6c7de0eae48e59546878afb2613c9b0b, type: 2}
+  _patrolBehaviour: 0
   _points:
   - Position: {x: -32.3, y: 0, z: -8.81}
     DelayToNextPoint: 1
@@ -2778,6 +2787,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 5a348f06105a5804bb902113ddc9d4de, type: 2}
+  _patrolBehaviour: 0
   _points:
   - Position: {x: 32.3, y: 0, z: -8.82}
     DelayToNextPoint: 1
@@ -3029,7 +3039,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -3045,7 +3057,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &883515677
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3479,7 +3490,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0.1
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -3507,7 +3520,6 @@ MonoBehaviour:
           m_StringArgument: interact
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &960039715
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3847,7 +3859,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -3875,7 +3889,6 @@ MonoBehaviour:
           m_StringArgument: interact
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &1125022616
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4046,6 +4059,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 6c7de0eae48e59546878afb2613c9b0b, type: 2}
+  _patrolBehaviour: 0
   _points:
   - Position: {x: 0, y: 0, z: -14.06}
     DelayToNextPoint: 0
@@ -4426,7 +4440,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0.5
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -4454,7 +4470,6 @@ MonoBehaviour:
           m_StringArgument: interact
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &1252148389
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4665,7 +4680,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 1.1
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -4693,7 +4710,6 @@ MonoBehaviour:
           m_StringArgument: interact
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &1371408910
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4760,7 +4776,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1, z: 5}
-  m_LocalScale: {x: 5, y: 2, z: 1}
+  m_LocalScale: {x: 5, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2135887907}
@@ -5231,7 +5247,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0.1
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -5259,7 +5277,6 @@ MonoBehaviour:
           m_StringArgument: interact
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &1557969908
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5624,7 +5641,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0.5
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -5652,7 +5671,6 @@ MonoBehaviour:
           m_StringArgument: interact
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &1621683021
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5720,7 +5738,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 1.15
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -5748,7 +5768,6 @@ MonoBehaviour:
           m_StringArgument: interact
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &1645786850
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5846,7 +5865,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: -0.23157802, z: 0, w: 0.9728164}
   m_LocalPosition: {x: 0, y: 1, z: -6.62}
-  m_LocalScale: {x: 5, y: 2, z: 1}
+  m_LocalScale: {x: 5, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2135887907}
@@ -6073,7 +6092,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -6101,7 +6122,6 @@ MonoBehaviour:
           m_StringArgument: interact
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &1702982884
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6499,7 +6519,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -6527,7 +6549,6 @@ MonoBehaviour:
           m_StringArgument: interact
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!65 &1893475528
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7355,7 +7376,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
+  _targetNeedToStayInside: 0
   _delayToActivateEvent: 0.6
+  _optionalTag: 
   _onExecute:
     m_PersistentCalls:
       m_Calls:
@@ -7431,7 +7454,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _optionalTag: 
 --- !u!1 &2140863279
 GameObject:
   m_ObjectHideFlags: 0
