@@ -62,6 +62,9 @@ namespace Ivayami.Enemy
         public bool IsActive { get; private set; }
         public LayerMask TargetLayer => _targetLayer;
 
+        public int ID => gameObject.GetInstanceID();
+        public bool CanChangeWalkArea => true;
+
         #region MainBehaviour
         protected override void Awake()
         {
@@ -161,17 +164,17 @@ namespace Ivayami.Enemy
                     else
                     {
                         //PlayerStress.Instance.SetStressMin(0);
-                        if (_currenWalkArea && _currenWalkArea.GetCurrentPoint(gameObject.GetInstanceID(), out EnemyWalkArea.Point point))
+                        if (_currenWalkArea && _currenWalkArea.GetCurrentPoint(ID, out EnemyWalkArea.EnemyData point))
                         {
                             _navMeshAgent.speed = _currentMovementData.WalkSpeed;
-                            if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(point.Position.x, 0, point.Position.z)) <= _navMeshAgent.stoppingDistance)
+                            if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(point.Point.Position.x, 0, point.Point.Position.z)) <= _navMeshAgent.stoppingDistance)
                             {
-                                yield return new WaitForSeconds(point.DelayToNextPoint);
-                                _navMeshAgent.SetDestination(_currenWalkArea.GoToNextPoint(gameObject.GetInstanceID()).Position);
+                                yield return new WaitForSeconds(point.Point.DelayToNextPoint);
+                                _navMeshAgent.SetDestination(_currenWalkArea.GoToNextPoint(ID).Point.Position);
                             }
                             else
                             {
-                                _navMeshAgent.SetDestination(point.Position);
+                                _navMeshAgent.SetDestination(point.Point.Position);
                             }
                         }
                         if (_debugLog) Debug.Log("Patroling");

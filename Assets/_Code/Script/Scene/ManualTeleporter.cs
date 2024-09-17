@@ -1,6 +1,7 @@
 using UnityEngine;
 using Ivayami.Player;
 using UnityEngine.Events;
+using UnityEngine.AI;
 
 namespace Ivayami.Scene
 {
@@ -18,6 +19,7 @@ namespace Ivayami.Scene
         [SerializeField] private Color _gizmoColor = Color.red;        
         [SerializeField, Min(0f)] private float _gizmoSize = .2f;
 #endif
+        private NavMeshAgent _currentAgent;
 
         [ContextMenu("TP")]
         public void Teleport()
@@ -37,8 +39,14 @@ namespace Ivayami.Scene
                     rb.position = transform.position;
                     rb.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
                 } 
+                else if(_teleportTarget.TryGetComponent<NavMeshAgent>(out _currentAgent))
+                {
+                    _currentAgent.enabled = false;
+                    _teleportTarget.SetPositionAndRotation(transform.position, Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0));
+                }
                 else _teleportTarget.SetPositionAndRotation(transform.position, Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0));
             }
+            if(_currentAgent) _currentAgent.enabled = true;
             _onTeleportEnd?.Invoke();
         }
 
