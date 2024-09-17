@@ -11,6 +11,15 @@ namespace Ivayami.Player {
 
         private List<InventoryItem> _itemList = new List<InventoryItem>();
 
+        [SerializeField] private ItemFallbackIconInfo[] _iconsFallbakcs;
+
+        [System.Serializable]
+        public struct ItemFallbackIconInfo
+        {
+            public ItemType ItemType;
+            public Sprite Icon;
+        }
+
         private int _checkInventoryIndexCache;
 
         public InventoryItem[] CheckInventory() {
@@ -44,6 +53,15 @@ namespace Ivayami.Player {
                 InventoryItem[] itemAssets = Resources.LoadAll<InventoryItem>($"Items/ENUS");
                 foreach (string itemName in itemNames) _itemList.Add(itemAssets.First(asset => asset.name == itemName));
             }
+        }
+
+        public Sprite GetFallbackIcon(ItemType itemType)
+        {
+            for(int i = 0; i < _iconsFallbakcs.Length; i++)
+            {
+                if (_iconsFallbakcs[i].ItemType == itemType) return _iconsFallbakcs[i].Icon;
+            }
+            return null;
         }
 
     }
