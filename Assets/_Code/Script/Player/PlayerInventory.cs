@@ -1,4 +1,5 @@
 using Ivayami.UI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,8 +11,16 @@ namespace Ivayami.Player {
         public UnityEvent<InventoryItem[]> onInventoryUpdate = new UnityEvent<InventoryItem[]>();
 
         private List<InventoryItem> _itemList = new List<InventoryItem>();
+        [SerializeField] private Sprite[] _itemTypeDefaultIcons;
+        public Dictionary<ItemType, Sprite> ItemTypeDefaultIcons = new Dictionary<ItemType, Sprite>();
 
         private int _checkInventoryIndexCache;
+
+        protected override void Awake() {
+            base.Awake();
+
+            for(int i = 0; i < _itemTypeDefaultIcons.Length; i++) ItemTypeDefaultIcons.Add((ItemType) i, _itemTypeDefaultIcons[i]);
+        }
 
         public InventoryItem[] CheckInventory() {
             return _itemList.ToArray();
@@ -45,6 +54,12 @@ namespace Ivayami.Player {
                 foreach (string itemName in itemNames) _itemList.Add(itemAssets.First(asset => asset.name == itemName));
             }
         }
+
+#if UNITY_EDITOR
+        private void OnValidate() {
+            if (_itemTypeDefaultIcons == null || _itemTypeDefaultIcons.Length != Enum.GetNames(typeof(ItemType)).Length) Array.Resize(ref _itemTypeDefaultIcons, Enum.GetNames(typeof(ItemType)).Length);
+        }
+#endif
 
     }
 }
