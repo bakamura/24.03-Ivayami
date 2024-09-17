@@ -11,7 +11,7 @@ namespace Ivayami.Enemy
         [Header("StressArea Parameters")]
         [SerializeField, Min(0f)] private float _stressIncreaseTickFrequency = .2f;
         [SerializeField, Tooltip("The smaller radius allways has the priority")] private StressAreaInfo[] _stressAreas;
-        [Header("Debug")]
+        [Header("StressArea Debug")]
         [SerializeField] private bool _debugLogs;
 #if UNITY_EDITOR
         [SerializeField] private bool _drawGizmos;
