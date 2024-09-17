@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using Cinemachine;
 using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
 
@@ -27,6 +28,7 @@ namespace Ivayami.Player {
 
         [Header("Interact")]
 
+        [SerializeField] private InteractableDetector _interactableDetector;
         [SerializeField] private float _interactRange;
         [SerializeField] private float _interactSphereCastRadius;
         [SerializeField] private LayerMask _interactLayer;
@@ -63,8 +65,7 @@ namespace Ivayami.Player {
         [Header("Cache")]
 
         private Camera _cam;
-        private Cinemachine.CinemachineBrain _brain;
-        //private Vector2 _screenCenter = new Vector2(Screen.width, Screen.height) / 2;
+        private CinemachineBrain _brain;
         private RaycastHit _hitInfoCache;
         private IInteractable _interactableClosestCache;
 
@@ -92,7 +93,7 @@ namespace Ivayami.Player {
         }
 
         private void FixedUpdate() {
-            if (!Interacting) InteractObjectDetect();
+            if (!Interacting && _actionMapCurrent?.name != "Player" && !_brain.IsBlending) InteractObjectDetect();
         }
 
         private void Interact(InputAction.CallbackContext input) {
@@ -123,45 +124,13 @@ namespace Ivayami.Player {
         }
 
         private void InteractObjectDetect() {
-            //_interactableClosestDistanceCache = _interactRange;
             _interactableClosestCache = null;
-            //Ray ray = _cam.ScreenPointToRay(_screenCenter);
-            //if (Physics.SphereCast(ray, _interactSphereCastRadius, out _hitInfoCache, _interactRange, _interactLayer))
-            //{
-            //    if (Physics.Raycast(ray, out RaycastHit hit, Vector3.Distance(_cam.transform.position, _hitInfoCache.point), _blockLayers))
-            //    {
-            //        Debug.Log($"Blocked By {hit.transform.name}");
-            //        _interactableClosestCache = null;
-            //    }
-            //    else _interactableClosestCache = _hitInfoCache.collider.GetComponent<IInteractable>();
-            //}
-            if(_actionMapCurrent != null && _actionMapCurrent.name == "Player" && !_brain.IsBlending)
-            {
-                if (Physics.SphereCast(_cam.transform.position, _interactSphereCastRadius, _cam.transform.forward, out _hitInfoCache, _interactRange, _interactLayer)) {
-                    if (Physics.Raycast(_cam.transform.position, (_hitInfoCache.point - _cam.transform.position).normalized, out RaycastHit hit, Vector3.Distance(_cam.transform.position, _hitInfoCache.point), _blockLayers)) {
-                        Logger.Log(LogType.Player, $"Blocked By {hit.transform.name}");
-                        _interactableClosestCache = null;
-                    }
-                    else _interactableClosestCache = _hitInfoCache.collider.GetComponent<IInteractable>();
-                }
+
+            // Order by distance from detector
+            for (int i = 0; i < _interactableDetector.InteractablesDetected.Count; i++) {
+                // Check if ray can hit interactable, if so break
             }
-            //Physics.SphereCastNonAlloc(_cam.ScreenPointToRay(_screenCenter), _interactSphereCastRadius, _raycastHitsCache, _interactRange, _interactLayer);
-            //Vector2 playerPositionFlat = new Vector2(transform.position.x, transform.position.z); // Make Cache
-            //Vector2 hitPositionFlat = Vector2.zero; // Make Cache
-            //foreach (RaycastHit hit in _raycastHitsCache) {
-            //    if (!hit.collider) return;
-            //    _interactableIterator = hit.collider.GetComponent<IInteractable>();
-            //    if (_interactableIterator != null && !Physics.Raycast(_cam.ScreenPointToRay(_screenCenter), _interactRange, _blockLayers)) {
-            //        hitPositionFlat[0] = hit.point.x;
-            //        hitPositionFlat[1] = hit.point.z;
-            //        _interactableDistanceIterator = Vector3.Distance(playerPositionFlat, hitPositionFlat);
-            //        if (_interactableClosestDistanceCache > _interactableDistanceIterator) {
-            //            _interactableClosestDistanceCache = _interactableDistanceIterator;
-            //            _interactableClosestCache = _interactableIterator;
-            //        }
-            //    }
-            //}
-            //print($"Current {InteractableTarget.gameObject.name} New found {_interactableClosestCache.gameObject.name}");
+
             if (InteractableTarget != _interactableClosestCache) {
                 InteractableTarget?.InteratctableHighlight.UpdateFeedbacks(false);
                 InteractableTarget = _interactableClosestCache;
@@ -169,8 +138,10 @@ namespace Ivayami.Player {
                 onInteractTargetChange?.Invoke(InteractableTarget);
                 Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(InteractableTarget != null ? InteractableTarget.gameObject.name : "Null")}");
             }
+
         }
 
+        #region Abilities (To be removed)
         private void Ability(InputAction.CallbackContext input) {
             if (_abilityCurrent >= 0) {
                 if (input.phase == InputActionPhase.Started) {
@@ -233,10 +204,10 @@ namespace Ivayami.Player {
         }
 
         public bool CheckAbility(PlayerAbility abilityChecking) {
-            Debug.Log(abilityChecking.GetType()); // DEBUG REMOVE
             foreach (PlayerAbility ability in _abilities) if (ability.GetType() == abilityChecking.GetType()) return true;
             return false;
         }
+        #endregion
 
         public void ChangeInputMap(string mapId) {
             _actionMapCurrent?.Disable();
