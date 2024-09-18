@@ -11,19 +11,19 @@ namespace Ivayami.Enemy
     public class PoliceOfficer : StressEntity, IEnemyWalkArea, IChangeTargetPoint
     {
         [Header("Officer Parameters")]
+        [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
         [SerializeField, Min(0f)] private float _minDetectionRange;
         [SerializeField, Min(0f)] private float _detectionRange;
         [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
-        [SerializeField, Min(0f)] private float _stayInLastTargetPositionDuration;
         [SerializeField, Range(0f, 180f)] private float _visionAngle = 60f;
         [SerializeField] private Vector3 _visionOffset;
-        [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
+        [SerializeField] private LayerMask _targetLayer;
+        [SerializeField] private LayerMask _blockVisionLayer;
         //[SerializeField, Min(0f)] private float _stressIncreaseOnAttackTarget;
         [SerializeField] private bool _startActive;
         [SerializeField] private bool _goToLastTargetPosition;
+        [SerializeField, Min(0f)] private float _stayInLastTargetPositionDuration;
         [SerializeField] private HitboxInfo[] _attackAreaInfos;
-        [SerializeField] private LayerMask _targetLayer;
-        [SerializeField] private LayerMask _blockVisionLayer;
 
         [Header("Officer Debug")]
         [SerializeField] private bool _debugLog;
