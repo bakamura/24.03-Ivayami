@@ -12,12 +12,12 @@ namespace Ivayami.Dialogue
         [Serializable]
         public struct DialogueEvent
         {
+            public Speech[] Speeches;
 #if UNITY_EDITOR
             public string FilterTags;
 #endif
             public string EventId;
             [Min(0f), Tooltip("Wait for this time to continue dialogue. Will not continue if a cutscene is playing or value is 0")] public float FixedDurationInSpeech;
-            public Speech[] Speeches;
         }
 
 #if UNITY_EDITOR
