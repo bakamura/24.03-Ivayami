@@ -55,6 +55,7 @@ namespace Ivayami.Enemy
         private NavMeshAgent m_navMeshAgent;
         private EnemyAnimator _enemyAnimator;
         private EnemySounds _enemySounds;
+        private HitboxAttack _hitboxAttack;
         private CapsuleCollider _collision;
         private Collider[] _hitsCache = new Collider[1];
         private WaitForSeconds _behaviourTickDelay;
@@ -62,23 +63,13 @@ namespace Ivayami.Enemy
         private Quaternion _initialRotation;
         private Vector3 _lastTargetPosition;
         private Vector3 _initialPosition;
-        private float _currentTargetColliderSizeFactor;
         private bool _isChasing;
         private bool _canChaseTarget = true;
         private bool _canWalkPath = true;
         private bool _directContactWithTarget;
+        private float _currentTargetColliderSizeFactor;
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
-        private HitboxAttack _hitboxAttack;
-        [System.Serializable]
-        private struct HitboxInfo
-        {
-            [Range(0, 1)] public float MinInterval;
-            [Range(0, 1)] public float MaxInterval;
-            [SerializeField, Min(0f)] public float StressIncrease;
-            public Vector3 Center;
-            public Vector3 Size;
-        }
 
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
@@ -264,6 +255,7 @@ namespace Ivayami.Enemy
         private void HandleTargetDetectedAnimationEnd()
         {
             _isChasing = true;
+            _lastTargetPosition = _hitsCache[0].transform.position;
             _navMeshAgent.isStopped = false;
         }
 
