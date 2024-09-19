@@ -129,12 +129,12 @@ namespace Ivayami.Player {
             IInteractable[] interactables = _interactableDetector.InteractablesDetected.OrderBy(interactable => Vector3.Distance(interactable.gameObject.transform.position, _interactableDetector.transform.position)).ToArray();
             for (int i = 0; i < interactables.Length; i++) {
                 if (Physics.Raycast(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position), out RaycastHit hit, 99f, _interactLayer)) {
-                    if (!Physics.Raycast(_interactableDetector.transform.position, (hit.transform.position - _interactableDetector.transform.position),
-                        Vector3.Distance(_interactableDetector.transform.position, (hit.transform.position - _interactableDetector.transform.position)), _blockLayers)) {
+                    if (!Physics.Raycast(_interactableDetector.transform.position, (hit.point - _interactableDetector.transform.position), out RaycastHit hit2, Vector3.Distance(_interactableDetector.transform.position, hit.point), _blockLayers, QueryTriggerInteraction.Ignore))
+                        /*Vector3.Distance(_interactableDetector.transform.position, (hit.transform.position - _interactableDetector.transform.position)), _blockLayers))*/ {
                         _interactableClosestCache = interactables[i];
                         break;
                     }
-                    else Debug.Log($"Interaction Ray with '{interactables[i].gameObject.name}', block layer was hit");
+                    else Debug.Log($"Interaction Ray with '{interactables[i].gameObject.name}', block layer was hit by {(hit2.collider ? hit2.collider.name : "none")}");
                 }
             }
             if (InteractableTarget != _interactableClosestCache) {
@@ -223,18 +223,13 @@ namespace Ivayami.Player {
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmosSelected() {
+        private void OnDrawGizmos() {
             IInteractable[] interactables = _interactableDetector.InteractablesDetected.OrderBy(interactable => Vector3.Distance(interactable.gameObject.transform.position, _interactableDetector.transform.position)).ToArray();
             for (int i = 0; i < interactables.Length; i++) {
-                if (Physics.Raycast(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position), out RaycastHit hit, 99f, _interactLayer)) {
-                    Gizmos.color = Color.green;
-                    Gizmos.DrawSphere(hit.point, 0.125f);
-                    if (Physics.Raycast(_interactableDetector.transform.position, (hit.transform.position - _interactableDetector.transform.position), out RaycastHit hit2)) {
-                        Gizmos.color = Color.red;
-                        Gizmos.DrawSphere(hit2.point, 0.125f); // Test
-                    }
-                }
-                Gizmos.color = Color.yellow;
+                Physics.Raycast(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position), out RaycastHit hit, 99f, _interactLayer, QueryTriggerInteraction.Ignore);
+                Physics.Raycast(_interactableDetector.transform.position, (hit.point - _interactableDetector.transform.position), out RaycastHit hit2, Vector3.Distance(_interactableDetector.transform.position, (hit.point - _interactableDetector.transform.position)), _blockLayers, QueryTriggerInteraction.Ignore);
+                
+                Gizmos.color = hit.transform == null ? Color.yellow : (hit2.transform == null  ? Color.green : Color.red);
                 Gizmos.DrawRay(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position));
             }
         }
