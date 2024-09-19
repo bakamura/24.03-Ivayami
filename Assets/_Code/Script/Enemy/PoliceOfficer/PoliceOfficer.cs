@@ -197,10 +197,10 @@ namespace Ivayami.Enemy
 
         private bool CheckForTarget(float halfVisionAngle)
         {
-            bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(transform.position, _detectionRange, _hitsCache, _targetLayer) > 0 : true;
+            Vector3 rayOrigin = transform.position + _visionOffset;
+            bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(rayOrigin, _detectionRange, _hitsCache, _targetLayer) > 0 : true;
 
             bool isInMinRange;
-            Vector3 rayOrigin = transform.position + _visionOffset;
             Vector3 targetCenter = Vector3.zero;
             if (_hitsCache[0])
             {

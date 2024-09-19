@@ -227,10 +227,10 @@ namespace Ivayami.Enemy
 
         private bool CheckForTarget(float halfVisionAngle)
         {
-            bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(transform.position, _detectionRange, _hitsCache, _targetLayer) > 0 : true;
+            Vector3 rayOrigin = transform.position + _visionOffset;
+            bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(rayOrigin, _detectionRange, _hitsCache, _targetLayer) > 0 : true;
 
             bool isInMinRange;
-            Vector3 rayOrigin = transform.position + _visionOffset;
             Vector3 targetCenter = Vector3.zero;
             if (_hitsCache[0])
             {
@@ -331,16 +331,16 @@ namespace Ivayami.Enemy
             }            
         }
 
-        private void OnDrawGizmos()
-        {
-            if (_hitsCache[0])
-            {
-                Gizmos.color = Color.black;
-                Vector3 targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
-                Vector3 rayOrigin = transform.position + _visionOffset;
-                Gizmos.DrawLine(rayOrigin, rayOrigin + (targetCenter - rayOrigin).normalized * Vector3.Distance(rayOrigin, targetCenter));
-            }
-        }
+        //private void OnDrawGizmos()
+        //{
+        //    if (_hitsCache[0])
+        //    {
+        //        Gizmos.color = Color.black;
+        //        Vector3 targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
+        //        Vector3 rayOrigin = transform.position + _visionOffset;
+        //        Gizmos.DrawLine(rayOrigin, rayOrigin + (targetCenter - rayOrigin).normalized * Vector3.Distance(rayOrigin, targetCenter));
+        //    }
+        //}
 
         protected override void OnValidate()
         {
