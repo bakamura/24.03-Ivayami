@@ -9,7 +9,7 @@ namespace Ivayami.Enemy
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
     public class EnemyPatrol : StressEntity
     {
-        [Header("Enemy Parameters")]
+        //[Header("Enemy Parameters")]
         [SerializeField, Min(0f)] private float _minDetectionRange;
         [SerializeField, Min(0f)] private float _detectionRange;
         [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
@@ -19,17 +19,18 @@ namespace Ivayami.Enemy
         [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
         [SerializeField, Min(0f)] private float _stressIncreaseOnTargetDetected;
         [SerializeField, Min(0f)] private float _stressIncreaseWhileChasing;
-        [SerializeField, Min(0f)] private float _stressIncreaseOnAttackTarget;
+        //[SerializeField, Min(0f)] private float _stressIncreaseOnAttackTarget;
         [SerializeField] private bool _startActive;
         [SerializeField] private bool _goToLastTargetPosition;
         [SerializeField] private bool _attackTarget;
+        [SerializeField] private HitboxInfo[] _attackAreaInfos;
         [SerializeField] private bool _loseTargetWhenHidden = true;
         [SerializeField] private LayerMask _targetLayer;
         [SerializeField] private LayerMask _blockVisionLayer;
         [SerializeField] private Vector3[] _patrolPoints;
 
-        [Header("Debug")]
-        [SerializeField] private bool _debugLog;
+        //[Header("Enemy Debug")]
+        [SerializeField] private bool _debugLogsEnemyPatrol;
 #if UNITY_EDITOR
         [SerializeField] private bool _drawMinDistance;
         [SerializeField] private Color _minDistanceAreaColor = Color.yellow;
@@ -52,20 +53,21 @@ namespace Ivayami.Enemy
             }
         }
         private NavMeshAgent m_navMeshAgent;
-        private WaitForSeconds _behaviourTickDelay;
-        private WaitForSeconds _betweenPatrolPointsDelay;
-        private CapsuleCollider _collision;
-        private Vector3 _initialPosition;
-        private bool _isChasing;
         private EnemyAnimator _enemyAnimator;
         private EnemySounds _enemySounds;
+        private HitboxAttack _hitboxAttack;
+        private CapsuleCollider _collision;
+        private Collider[] _hitsCache = new Collider[1];
+        private WaitForSeconds _behaviourTickDelay;
+        private WaitForSeconds _betweenPatrolPointsDelay;
         private Quaternion _initialRotation;
         private Vector3 _lastTargetPosition;
-        private float _currentTargetColliderSizeFactor;
-        private Collider[] _hitsCache = new Collider[1];
+        private Vector3 _initialPosition;
+        private bool _isChasing;
         private bool _canChaseTarget = true;
         private bool _canWalkPath = true;
         private bool _directContactWithTarget;
+        private float _currentTargetColliderSizeFactor;
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
 
@@ -80,6 +82,7 @@ namespace Ivayami.Enemy
             _betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints);
             _enemyAnimator = GetComponentInChildren<EnemyAnimator>();
             _enemySounds = GetComponent<EnemySounds>();
+            if (_attackTarget) _hitboxAttack = GetComponentInChildren<HitboxAttack>();
 
             _initialPosition = transform.position;
             _initialRotation = transform.rotation;
@@ -90,7 +93,7 @@ namespace Ivayami.Enemy
         {
             if (_isChasing && _directContactWithTarget && _stressIncreaseWhileChasing > 0)
             {
-                if (_debugLog) Debug.Log($"Chasing Stress added {_stressIncreaseWhileChasing * Time.deltaTime}");
+                if (_debugLogsEnemyPatrol) Debug.Log($"Chasing Stress added {_stressIncreaseWhileChasing * Time.deltaTime}");
                 PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * Time.deltaTime);
             }
         }
@@ -140,24 +143,25 @@ namespace Ivayami.Enemy
                     {
                         if (!_isChasing)
                         {
-                            if (_debugLog) Debug.Log("Target Detected");
+                            if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
                             StopMovement(true);
-                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, false, () => {
+                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, false, () =>
+                            {
                                 _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing, false);
-                                });
+                            });
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                             _enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);
                         }
                         _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                         _lastTargetPosition = _hitsCache[0].transform.position;
-                        if (_debugLog) Debug.Log("Chase Target");
-                        if (_attackTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance + _currentTargetColliderSizeFactor)
+                        if (_debugLogsEnemyPatrol) Debug.Log("Chase Target");
+                        if (_attackTarget && _chaseTargetPatience == _delayToLoseTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance + _currentTargetColliderSizeFactor)
                         {
                             StopMovement(true);
-                            PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
+                            //PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
                             //_isChasing = false;
-                            _enemyAnimator.Attack(HandleAttackAnimationEnd);
-                            if (_debugLog) Debug.Log("Attack Target");
+                            _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange);
+                            if (_debugLogsEnemyPatrol) Debug.Log("Attack Target");
                         }
                     }
                     else
@@ -167,12 +171,12 @@ namespace Ivayami.Enemy
                             if (_goToLastTargetPosition)
                             {
                                 _navMeshAgent.SetDestination(_lastTargetPosition);
-                                if (_debugLog) Debug.Log($"Moving to last target position {_lastTargetPosition}");
+                                if (_debugLogsEnemyPatrol) Debug.Log($"Moving to last target position {_lastTargetPosition}");
                                 if (Vector3.Distance(transform.position, _lastTargetPosition) <= _navMeshAgent.stoppingDistance)
                                 {
                                     _goToLastTargetPointPatience += _behaviourTickFrequency;
                                     StopMovement(false);
-                                    if (_debugLog) Debug.Log("Last target point reached");
+                                    if (_debugLogsEnemyPatrol) Debug.Log("Last target point reached");
                                     if (_goToLastTargetPointPatience >= _delayBetweenPatrolPoints)
                                     {
                                         _isChasing = false;
@@ -188,7 +192,7 @@ namespace Ivayami.Enemy
                             if (_canWalkPath)
                             {
                                 _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
-                                if (_debugLog) Debug.Log("Patroling");
+                                if (_debugLogsEnemyPatrol) Debug.Log("Patroling");
                                 if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
                                 {
                                     if (_patrolPoints.Length > 1)
@@ -198,7 +202,7 @@ namespace Ivayami.Enemy
                                         currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
                                         if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
                                         else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
-                                        if (_debugLog) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
+                                        if (_debugLogsEnemyPatrol) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
                                     }
                                     else
                                     {
@@ -223,20 +227,26 @@ namespace Ivayami.Enemy
 
         private bool CheckForTarget(float halfVisionAngle)
         {
-            bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(transform.position, _detectionRange, _hitsCache, _targetLayer) > 0 : true;
+            Vector3 rayOrigin = transform.position + _visionOffset;
+            bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(rayOrigin, _detectionRange, _hitsCache, _targetLayer) > 0 : true;
 
             bool isInMinRange;
-            if (_hitsCache[0]) isInMinRange = Vector3.Distance(_hitsCache[0].transform.position, transform.position) <= _minDetectionRange;
-            else isInMinRange = Physics.OverlapSphereNonAlloc(transform.position, _minDetectionRange, _hitsCache, _targetLayer) > 0;
+            Vector3 targetCenter = Vector3.zero;
+            if (_hitsCache[0])
+            {
+                targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
+                isInMinRange = Vector3.Distance(targetCenter, rayOrigin) <= _minDetectionRange;
+            }
+            else isInMinRange = Physics.OverlapSphereNonAlloc(rayOrigin, _minDetectionRange, _hitsCache, _targetLayer) > 0;
 
-            if (!_hitsCache[0]) return false;
+            if (!_hitsCache[0]) return false;            
 
-            bool isHidden = (_loseTargetWhenHidden && PlayerMovement.Instance.hidingState != PlayerMovement.HidingState.None) || !_loseTargetWhenHidden;
-            bool blockingVision = Physics.Raycast(transform.position + _visionOffset, (_hitsCache[0].transform.position - transform.position).normalized, Vector3.Distance(transform.position, _hitsCache[0].transform.position), _blockVisionLayer);
-            bool isInVisionAngle = Vector3.Angle(transform.forward, (_hitsCache[0].transform.position - transform.position).normalized) <= halfVisionAngle;
+            bool isHidden = (_loseTargetWhenHidden && PlayerMovement.Instance.hidingState != PlayerMovement.HidingState.None) || !_loseTargetWhenHidden;            
+            bool blockingVision = Physics.Raycast(rayOrigin, (targetCenter - rayOrigin).normalized, /*out RaycastHit hit,*/ Vector3.Distance(rayOrigin, targetCenter), _blockVisionLayer);
+            bool isInVisionAngle = Vector3.Angle(transform.forward, (targetCenter - rayOrigin).normalized) <= halfVisionAngle;
             _currentTargetColliderSizeFactor = _hitsCache[0].bounds.extents.z;
 
-            if (_debugLog)
+            if (_debugLogsEnemyPatrol /*&& hit.collider*/)
                 Debug.Log($"is Hidden {isHidden}, blocking vision {blockingVision}, is in Min range {isInMinRange}, target Inside Radius {targetInsideRange}, is in Vision Angle {isInVisionAngle}");
             _directContactWithTarget = !isHidden && !blockingVision && (isInMinRange || (isInVisionAngle && targetInsideRange));
             return _directContactWithTarget;
@@ -245,12 +255,27 @@ namespace Ivayami.Enemy
         private void HandleAttackAnimationEnd()
         {
             _navMeshAgent.isStopped = false;
+            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0);
         }
 
         private void HandleTargetDetectedAnimationEnd()
         {
             _isChasing = true;
+            _lastTargetPosition = _hitsCache[0].transform.position;
             _navMeshAgent.isStopped = false;
+        }
+
+        private void OnAnimationStepChange(float normalizedTime)
+        {
+            for (int i = 0; i < _attackAreaInfos.Length; i++)
+            {
+                if (normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
+                {
+                    _hitboxAttack.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncrease);
+                    return;
+                }
+            }
+            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0);
         }
 
         public void ChangeSpeed(float speed)
@@ -303,6 +328,38 @@ namespace Ivayami.Enemy
             {
                 Gizmos.color = _stoppingDistanceColor;
                 Gizmos.DrawLine(transform.position, transform.position + transform.right * _navMeshAgent.stoppingDistance);
+            }            
+        }
+
+        //private void OnDrawGizmos()
+        //{
+        //    if (_hitsCache[0])
+        //    {
+        //        Gizmos.color = Color.black;
+        //        Vector3 targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
+        //        Vector3 rayOrigin = transform.position + _visionOffset;
+        //        Gizmos.DrawLine(rayOrigin, rayOrigin + (targetCenter - rayOrigin).normalized * Vector3.Distance(rayOrigin, targetCenter));
+        //    }
+        //}
+
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            if (_attackAreaInfos == null) return;
+            for (int i = 0; i < _attackAreaInfos.Length; i++)
+            {
+                if (_attackAreaInfos[i].MinInterval > _attackAreaInfos[i].MaxInterval) _attackAreaInfos[i].MinInterval = _attackAreaInfos[i].MaxInterval;
+            }
+            if (_attackTarget && !_hitboxAttack)
+            {
+                _hitboxAttack = GetComponentInChildren<HitboxAttack>();
+                if (!_hitboxAttack)
+                {
+                    Debug.Log("To make enemy attack please add a HitboxAttack component as child");
+                    //GameObject go = new GameObject("HitboxAttackArea");
+                    //go.transform.parent = transform;
+                    //_hitboxAttack = go.AddComponent<HitboxAttack>();
+                }
             }
         }
 #endif

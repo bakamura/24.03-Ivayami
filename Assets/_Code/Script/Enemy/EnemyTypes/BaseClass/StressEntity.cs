@@ -8,11 +8,12 @@ namespace Ivayami.Enemy
 {    
     public class StressEntity : MonoBehaviour
     {
-        [Header("StressArea Parameters")]
+        [Header("Stress Entity Parameters")]
+        //[Space(10)]
         [SerializeField, Min(0f)] private float _stressIncreaseTickFrequency = .2f;
         [SerializeField, Tooltip("The smaller radius allways has the priority")] private StressAreaInfo[] _stressAreas;
-        [Header("Debug")]
-        [SerializeField] private bool _debugLogs;
+        //[Header("StressArea Debug")]
+        [SerializeField] private bool _debugLogsStressEntity;
 #if UNITY_EDITOR
         [SerializeField] private bool _drawGizmos;
 #endif
@@ -82,7 +83,7 @@ namespace Ivayami.Enemy
                 {
                     if (Vector3.Distance(transform.position, PlayerMovement.Instance.transform.position) <= _stressAreasInOrder[i].Range)
                     {
-                        if (_debugLogs) Debug.Log($"Adding stress {_stressAreasInOrder[i].StressIncrease} with a max of {_stressAreasInOrder[i].MaxStress}");
+                        if (_debugLogsStressEntity) Debug.Log($"Adding stress {_stressAreasInOrder[i].StressIncrease} with a max of {_stressAreasInOrder[i].MaxStress}");
                         PlayerStress.Instance.AddStress(_stressAreasInOrder[i].StressIncrease * _stressIncreaseTickFrequency, _stressAreasInOrder[i].MaxStress);
                         break;
                     }
