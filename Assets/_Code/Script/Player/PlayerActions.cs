@@ -93,7 +93,7 @@ namespace Ivayami.Player {
         }
 
         private void FixedUpdate() {
-            if (!Interacting && _actionMapCurrent?.name != "Player" && !_brain.IsBlending) InteractObjectDetect();
+            if (!Interacting && /*_actionMapCurrent?.name != "Player" &&*/ !_brain.IsBlending) InteractObjectDetect();
         }
 
         private void Interact(InputAction.CallbackContext input) {
@@ -126,11 +126,17 @@ namespace Ivayami.Player {
         private void InteractObjectDetect() {
             _interactableClosestCache = null;
 
-            // Order by distance from detector
-            for (int i = 0; i < _interactableDetector.InteractablesDetected.Count; i++) {
-                // Check if ray can hit interactable, if so break
+            IInteractable[] interactables = _interactableDetector.InteractablesDetected.OrderBy(interactable => Vector3.Distance(interactable.gameObject.transform.position, _interactableDetector.transform.position)).ToArray();
+            for (int i = 0; i < interactables.Length; i++) {
+                if (Physics.Raycast(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position), out RaycastHit hit, 99f, _interactLayer)) {
+                    if (!Physics.Raycast(_interactableDetector.transform.position, (hit.transform.position - _interactableDetector.transform.position),
+                        Vector3.Distance(_interactableDetector.transform.position, (hit.transform.position - _interactableDetector.transform.position)), _blockLayers)) {
+                        _interactableClosestCache = interactables[i];
+                        break;
+                    }
+                    else Debug.Log($"Interaction Ray with '{interactables[i].gameObject.name}', block layer was hit");
+                }
             }
-
             if (InteractableTarget != _interactableClosestCache) {
                 InteractableTarget?.InteratctableHighlight.UpdateFeedbacks(false);
                 InteractableTarget = _interactableClosestCache;
@@ -218,22 +224,18 @@ namespace Ivayami.Player {
 
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected() {
-            if (_drawGizmos && _cam) {
-                Gizmos.color = _sphereCastGizmoColor;
-                //middle
-                Gizmos.DrawLine(_cam.transform.position, _cam.transform.position + _cam.transform.forward * _interactRange);
-                //up
-                Gizmos.DrawLine(_cam.transform.position + _cam.transform.up * _interactSphereCastRadius, _cam.transform.position + _cam.transform.up * _interactSphereCastRadius + _cam.transform.forward * _interactRange);
-                //down
-                Gizmos.DrawLine(_cam.transform.position + -_cam.transform.up * _interactSphereCastRadius, _cam.transform.position + -_cam.transform.up * _interactSphereCastRadius + _cam.transform.forward * _interactRange);
-                //right
-                Gizmos.DrawLine(_cam.transform.position + _cam.transform.right * _interactSphereCastRadius, _cam.transform.position + _cam.transform.right * _interactSphereCastRadius + _cam.transform.forward * _interactRange);
-                //left
-                Gizmos.DrawLine(_cam.transform.position + -_cam.transform.right * _interactSphereCastRadius, _cam.transform.position + -_cam.transform.right * _interactSphereCastRadius + _cam.transform.forward * _interactRange);
-                //final point
-                Gizmos.DrawSphere(_cam.transform.position + _cam.transform.forward * _interactRange, _interactSphereCastRadius);
-                Gizmos.color = _interactableHitPointGizmoColor;
-                if (_hitInfoCache.collider) Gizmos.DrawSphere(_hitInfoCache.point, .05f);
+            IInteractable[] interactables = _interactableDetector.InteractablesDetected.OrderBy(interactable => Vector3.Distance(interactable.gameObject.transform.position, _interactableDetector.transform.position)).ToArray();
+            for (int i = 0; i < interactables.Length; i++) {
+                if (Physics.Raycast(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position), out RaycastHit hit, 99f, _interactLayer)) {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawSphere(hit.point, 0.125f);
+                    if (Physics.Raycast(_interactableDetector.transform.position, (hit.transform.position - _interactableDetector.transform.position), out RaycastHit hit2)) {
+                        Gizmos.color = Color.red;
+                        Gizmos.DrawSphere(hit2.point, 0.125f); // Test
+                    }
+                }
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawRay(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position));
             }
         }
 #endif
