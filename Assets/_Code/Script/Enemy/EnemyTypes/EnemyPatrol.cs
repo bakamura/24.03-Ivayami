@@ -338,9 +338,10 @@ namespace Ivayami.Enemy
                 _hitboxAttack = GetComponentInChildren<HitboxAttack>();
                 if (!_hitboxAttack)
                 {
-                    GameObject go = new GameObject("HitboxAttackArea");
-                    go.transform.parent = transform;
-                    _hitboxAttack = go.AddComponent<HitboxAttack>();
+                    Debug.Log("To make enemy attack please add a HitboxAttack component as child");
+                    //GameObject go = new GameObject("HitboxAttackArea");
+                    //go.transform.parent = transform;
+                    //_hitboxAttack = go.AddComponent<HitboxAttack>();
                 }
             }
         }
