@@ -4,6 +4,7 @@ using UnityEngine.AI;
 //using Ivayami.Player;
 using Ivayami.Audio;
 using System;
+using Ivayami.Player;
 
 namespace Ivayami.Enemy
 {
@@ -56,6 +57,7 @@ namespace Ivayami.Enemy
         private Coroutine _detectTargetPointOffBehaviourReachedCoroutine;
         private Vector3 _lastTargetPosition;
         private bool _isChasing;
+        private bool _directContactWithTarget;
         private float _halfVisionAngle;
         private float _speedMultiplier;
         private float _chaseTargetPatience;
@@ -195,16 +197,28 @@ namespace Ivayami.Enemy
 
         private bool CheckForTarget(float halfVisionAngle)
         {
-            bool targetInsideRange = Physics.OverlapSphereNonAlloc(transform.position, _detectionRange, _hitsCache, _targetLayer) > 0;
-            if (!targetInsideRange) return false;
-            bool blockingVision = Physics.Raycast(transform.position + _visionOffset, (_hitsCache[0].transform.position - transform.position).normalized, Vector3.Distance(transform.position, _hitsCache[0].transform.position), _blockVisionLayer);
-            bool isInMinRange = Vector3.Distance(_hitsCache[0].transform.position, transform.position) <= _minDetectionRange;
-            bool isInVisionAngle = Vector3.Angle(transform.forward, (_hitsCache[0].transform.position - transform.position).normalized) <= halfVisionAngle;
-            if(_hitsCache[0])_currentTargetColliderSizeFactor = _hitsCache[0].bounds.extents.z;
+            bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(transform.position, _detectionRange, _hitsCache, _targetLayer) > 0 : true;
 
-            if (_debugLog)
-                Debug.Log($"target Inside Radius {targetInsideRange}, blocking vision {blockingVision}, is in Min range {isInMinRange}, is in Vision Angle {isInVisionAngle}");
-            return targetInsideRange && !blockingVision && (isInMinRange || isInVisionAngle);
+            bool isInMinRange;
+            Vector3 rayOrigin = transform.position + _visionOffset;
+            Vector3 targetCenter = Vector3.zero;
+            if (_hitsCache[0])
+            {
+                targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
+                isInMinRange = Vector3.Distance(targetCenter, rayOrigin) <= _minDetectionRange;
+            }
+            else isInMinRange = Physics.OverlapSphereNonAlloc(rayOrigin, _minDetectionRange, _hitsCache, _targetLayer) > 0;
+
+            if (!_hitsCache[0]) return false;
+            
+            bool blockingVision = Physics.Raycast(rayOrigin, (targetCenter - rayOrigin).normalized, /*out RaycastHit hit,*/ Vector3.Distance(rayOrigin, targetCenter), _blockVisionLayer);
+            bool isInVisionAngle = Vector3.Angle(transform.forward, (targetCenter - rayOrigin).normalized) <= halfVisionAngle;
+            _currentTargetColliderSizeFactor = _hitsCache[0].bounds.extents.z;
+
+            if (_debugLog /*&& hit.collider*/)
+                Debug.Log($"blocking vision {blockingVision}, is in Min range {isInMinRange}, target Inside Radius {targetInsideRange}, is in Vision Angle {isInVisionAngle}");
+            _directContactWithTarget = !blockingVision && (isInMinRange || (isInVisionAngle && targetInsideRange));
+            return _directContactWithTarget;
         }
         #endregion
 

@@ -230,17 +230,23 @@ namespace Ivayami.Enemy
             bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(transform.position, _detectionRange, _hitsCache, _targetLayer) > 0 : true;
 
             bool isInMinRange;
-            if (_hitsCache[0]) isInMinRange = Vector3.Distance(_hitsCache[0].transform.position, transform.position) <= _minDetectionRange;
-            else isInMinRange = Physics.OverlapSphereNonAlloc(transform.position, _minDetectionRange, _hitsCache, _targetLayer) > 0;
+            Vector3 rayOrigin = transform.position + _visionOffset;
+            Vector3 targetCenter = Vector3.zero;
+            if (_hitsCache[0])
+            {
+                targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
+                isInMinRange = Vector3.Distance(targetCenter, rayOrigin) <= _minDetectionRange;
+            }
+            else isInMinRange = Physics.OverlapSphereNonAlloc(rayOrigin, _minDetectionRange, _hitsCache, _targetLayer) > 0;
 
-            if (!_hitsCache[0]) return false;
+            if (!_hitsCache[0]) return false;            
 
-            bool isHidden = (_loseTargetWhenHidden && PlayerMovement.Instance.hidingState != PlayerMovement.HidingState.None) || !_loseTargetWhenHidden;
-            bool blockingVision = Physics.Raycast(transform.position + _visionOffset, (_hitsCache[0].transform.position - transform.position).normalized, Vector3.Distance(transform.position, _hitsCache[0].transform.position), _blockVisionLayer);
-            bool isInVisionAngle = Vector3.Angle(transform.forward, (_hitsCache[0].transform.position - transform.position).normalized) <= halfVisionAngle;
+            bool isHidden = (_loseTargetWhenHidden && PlayerMovement.Instance.hidingState != PlayerMovement.HidingState.None) || !_loseTargetWhenHidden;            
+            bool blockingVision = Physics.Raycast(rayOrigin, (targetCenter - rayOrigin).normalized, /*out RaycastHit hit,*/ Vector3.Distance(rayOrigin, targetCenter), _blockVisionLayer);
+            bool isInVisionAngle = Vector3.Angle(transform.forward, (targetCenter - rayOrigin).normalized) <= halfVisionAngle;
             _currentTargetColliderSizeFactor = _hitsCache[0].bounds.extents.z;
 
-            if (_debugLogsEnemyPatrol)
+            if (_debugLogsEnemyPatrol /*&& hit.collider*/)
                 Debug.Log($"is Hidden {isHidden}, blocking vision {blockingVision}, is in Min range {isInMinRange}, target Inside Radius {targetInsideRange}, is in Vision Angle {isInVisionAngle}");
             _directContactWithTarget = !isHidden && !blockingVision && (isInMinRange || (isInVisionAngle && targetInsideRange));
             return _directContactWithTarget;
@@ -322,6 +328,17 @@ namespace Ivayami.Enemy
             {
                 Gizmos.color = _stoppingDistanceColor;
                 Gizmos.DrawLine(transform.position, transform.position + transform.right * _navMeshAgent.stoppingDistance);
+            }            
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (_hitsCache[0])
+            {
+                Gizmos.color = Color.black;
+                Vector3 targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
+                Vector3 rayOrigin = transform.position + _visionOffset;
+                Gizmos.DrawLine(rayOrigin, rayOrigin + (targetCenter - rayOrigin).normalized * Vector3.Distance(rayOrigin, targetCenter));
             }
         }
 
@@ -332,8 +349,8 @@ namespace Ivayami.Enemy
             for (int i = 0; i < _attackAreaInfos.Length; i++)
             {
                 if (_attackAreaInfos[i].MinInterval > _attackAreaInfos[i].MaxInterval) _attackAreaInfos[i].MinInterval = _attackAreaInfos[i].MaxInterval;
-            }            
-            if(_attackTarget && !_hitboxAttack)
+            }
+            if (_attackTarget && !_hitboxAttack)
             {
                 _hitboxAttack = GetComponentInChildren<HitboxAttack>();
                 if (!_hitboxAttack)
