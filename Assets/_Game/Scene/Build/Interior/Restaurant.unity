@@ -27744,6 +27744,7 @@ Transform:
   - {fileID: 909629488}
   - {fileID: 856175311}
   - {fileID: 1031448661}
+  - {fileID: 1855362149}
   m_Father: {fileID: 523799631}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1165179267
@@ -34435,6 +34436,70 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 78a7c91ec21ab1f4abc59ccce5e172c1, type: 3}
   m_PrefabInstance: {fileID: 1487289061}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1490538108
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1490538109}
+  - component: {fileID: 1490538110}
+  m_Layer: 6
+  m_Name: AfterGettingOutRestauranteFirstTime
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &1490538109
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490538108}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1602334072}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1490538110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490538108}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d74e5c4dd631c2d4f9b5d9951c476bf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerOnStart: 0
+  _progressConditions:
+  - AreaProgress: {fileID: 11400000, guid: 15b6332898099804e88049643bd47887, type: 2}
+    ProgressStepMin: 2
+    ProgressStepMax: 3
+  _onTrigger:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1855362148}
+        m_TargetAssemblyTypeName: Ivayami.Dialogue.DialogueTrigger, Assembly-CSharp
+        m_MethodName: StartDialogue
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &1494546993
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40131,6 +40196,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 419041449}
+    - targetCorrespondingSourceObject: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1490538109}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       insertIndex: -1
@@ -46248,6 +46316,53 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2002809325224681385, guid: ade099e5f374be94fa29f381a2a19223, type: 3}
   m_PrefabInstance: {fileID: 1851673008}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1855362147
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1855362149}
+  - component: {fileID: 1855362148}
+  m_Layer: 10
+  m_Name: NPCDialogueAfterGettinOutFirstTime
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1855362148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1855362147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dialogue: {fileID: 11400000, guid: e48ab910482ab124ca85fbb3551922a7, type: 2}
+  _activateOnce: 0
+  _lockPlayerInput: 1
+--- !u!4 &1855362149
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1855362147}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1161263841}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1861187666 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2669645b32624b34bad4251cdccfcc81, type: 3}
