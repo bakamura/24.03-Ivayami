@@ -130,9 +130,9 @@ namespace Ivayami.Dialogue
                         }
                         for (int a = 0; a < _allDialogues[i].dialogue.Length; a++)
                         {
-                            if (!string.IsNullOrEmpty(_allDialogues[i].dialogue[a].eventId) && _allDialogues[i].dialogue[a].eventId.ToUpper().Contains(_filter.ToUpper()))
+                            if (!string.IsNullOrEmpty(_allDialogues[i].dialogue[a].EventId) && _allDialogues[i].dialogue[a].EventId.ToUpper().Contains(_filter.ToUpper()))
                             {
-                                _dialoguesSearchCache.Add(new DialogueSearchInfo(_allDialogues[i], (sbyte)a, _allDialogues[i].dialogue[a].eventId));
+                                _dialoguesSearchCache.Add(new DialogueSearchInfo(_allDialogues[i], (sbyte)a, _allDialogues[i].dialogue[a].EventId));
                             }
                         }
                     }

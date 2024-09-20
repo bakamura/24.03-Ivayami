@@ -117,7 +117,7 @@ namespace Ivayami.Puzzle
                     for (int i = 0; i < _animations.Length; i++)
                     {
                         temp = _animations[i].Animator.GetCurrentAnimatorClipInfo(0)[0].clip;
-                        _animations[i].Animator.Play(_animations[i].StateHash, 0, _currentClickAmount * (_framesAdvancePerClick / (temp.length * temp.frameRate)));
+                        _animations[i].Animator.Play(_animations[i].StateHash, 0, _currentClickAmount * (_framesAdvancePerClick / (temp.frameRate * temp.length)) + .01f);
                     }
                 }
             }
