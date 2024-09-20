@@ -55,7 +55,7 @@ namespace Ivayami.UI {
         }
 
         public void SetCurrentMenuInitialAsSelected() {
-            SetSelected(_currentMenu.InitialSelected.gameObject);
+            SetSelected(_currentMenu.InitialSelected?.gameObject);
         }
 
     }
