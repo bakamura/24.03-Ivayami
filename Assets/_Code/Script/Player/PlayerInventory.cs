@@ -1,9 +1,12 @@
+#if UNITY_EDITOR
 using System;
+#endif
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using Ivayami.UI;
+using Ivayami.Save;
 
 namespace Ivayami.Player {
     public class PlayerInventory : MonoSingleton<PlayerInventory> {
@@ -19,7 +22,7 @@ namespace Ivayami.Player {
         protected override void Awake() {
             base.Awake();
 
-            for(int i = 0; i < _itemTypeDefaultIcons.Length; i++) ItemTypeDefaultIcons.Add((ItemType) i, _itemTypeDefaultIcons[i]);
+            for (int i = 0; i < _itemTypeDefaultIcons.Length; i++) ItemTypeDefaultIcons.Add((ItemType)i, _itemTypeDefaultIcons[i]);
         }
 
         public InventoryItem[] CheckInventory() {
@@ -35,7 +38,7 @@ namespace Ivayami.Player {
             _itemList.Add(item);
             onInventoryUpdate.Invoke(CheckInventory());
             if (shouldEmphasize) ;
-            else InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite);
+            else InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite, item.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language).DisplayName);
 
             Logger.Log(LogType.Player, $"Inventory Add: {item.DisplayName} ({item.name}) / {item.Type}");
         }
