@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -29,18 +30,10 @@ namespace Ivayami.Player {
         [Header("Interact")]
 
         [SerializeField] private InteractableDetector _interactableDetector;
-        [SerializeField] private float _interactRange;
-        [SerializeField] private float _interactSphereCastRadius;
         [SerializeField] private LayerMask _interactLayer;
         [SerializeField] private LayerMask _blockLayers;
+        [SerializeField] private float _interactableCheckDelay;
 
-#if UNITY_EDITOR
-        [Header("Debug")]
-
-        [SerializeField] private bool _drawGizmos;
-        [SerializeField] private Color _sphereCastGizmoColor;
-        [SerializeField] private Color _interactableHitPointGizmoColor;
-#endif
         public bool Interacting { get; private set; } = false;
         public IInteractable InteractableTarget { get; private set; }
 
@@ -68,6 +61,7 @@ namespace Ivayami.Player {
         private CinemachineBrain _brain;
         private RaycastHit _hitInfoCache;
         private IInteractable _interactableClosestCache;
+        private WaitForSeconds _interactableCheckWait;
 
         private const string INTERACT_LONG_BLOCK_KEY = "InteractLong";
 
@@ -81,6 +75,7 @@ namespace Ivayami.Player {
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable();
 
             onInteractLong.AddListener((interacting) => Interacting = interacting);
+            _interactableCheckWait = new WaitForSeconds(_interactableCheckDelay);
 
             _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //
 
@@ -90,10 +85,7 @@ namespace Ivayami.Player {
         private void Start() {
             _cam = PlayerCamera.Instance.MainCamera;
             _brain = PlayerCamera.Instance.CinemachineBrain;
-        }
-
-        private void FixedUpdate() {
-            if (!Interacting && /*_actionMapCurrent?.name != "Player" &&*/ !_brain.IsBlending) InteractObjectDetect();
+            StartCoroutine(InteractObjectDetect());
         }
 
         private void Interact(InputAction.CallbackContext input) {
@@ -123,28 +115,32 @@ namespace Ivayami.Player {
             }
         }
 
-        private void InteractObjectDetect() {
-            _interactableClosestCache = null;
+        private IEnumerator InteractObjectDetect() {
+            while (true) {
+                if (!Interacting && _actionMapCurrent?.name == "Player" && !_brain.IsBlending) {
+                    _interactableClosestCache = null;
 
-            IInteractable[] interactables = _interactableDetector.InteractablesDetected.OrderBy(interactable => Vector3.Distance(interactable.gameObject.transform.position, _interactableDetector.transform.position)).ToArray();
-            for (int i = 0; i < interactables.Length; i++) {
-                if (Physics.Raycast(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position), out RaycastHit hit, 99f, _interactLayer)) {
-                    if (!Physics.Raycast(_interactableDetector.transform.position, (hit.point - _interactableDetector.transform.position), out RaycastHit hit2, Vector3.Distance(_interactableDetector.transform.position, hit.point), _blockLayers, QueryTriggerInteraction.Ignore))
-                        /*Vector3.Distance(_interactableDetector.transform.position, (hit.transform.position - _interactableDetector.transform.position)), _blockLayers))*/ {
-                        _interactableClosestCache = interactables[i];
-                        break;
+                    IInteractable[] interactables = _interactableDetector.InteractablesDetected.OrderBy(interactable => Vector3.Distance(interactable.gameObject.transform.position, _interactableDetector.transform.position)).ToArray();
+                    for (int i = 0; i < interactables.Length; i++) {
+                        if (Physics.Raycast(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position), out RaycastHit hit, 99f, _interactLayer)) {
+                            if (!Physics.Raycast(_interactableDetector.transform.position, (hit.point - _interactableDetector.transform.position), out RaycastHit hit2, Vector3.Distance(_interactableDetector.transform.position, hit.point), _blockLayers, QueryTriggerInteraction.Ignore)) {
+                                _interactableClosestCache = interactables[i];
+                                break;
+                            }
+                            else Debug.Log($"Interaction Ray with '{interactables[i].gameObject.name}', block layer was hit by {(hit2.collider ? hit2.collider.name : "none")}");
+                        }
                     }
-                    else Debug.Log($"Interaction Ray with '{interactables[i].gameObject.name}', block layer was hit by {(hit2.collider ? hit2.collider.name : "none")}");
+                    if (InteractableTarget != _interactableClosestCache) {
+                        InteractableTarget?.InteratctableHighlight.UpdateFeedbacks(false);
+                        InteractableTarget = _interactableClosestCache;
+                        InteractableTarget?.InteratctableHighlight.UpdateFeedbacks(true);
+                        onInteractTargetChange?.Invoke(InteractableTarget);
+                        Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(InteractableTarget != null ? InteractableTarget.gameObject.name : "Null")}");
+                    }
                 }
-            }
-            if (InteractableTarget != _interactableClosestCache) {
-                InteractableTarget?.InteratctableHighlight.UpdateFeedbacks(false);
-                InteractableTarget = _interactableClosestCache;
-                InteractableTarget?.InteratctableHighlight.UpdateFeedbacks(true);
-                onInteractTargetChange?.Invoke(InteractableTarget);
-                Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(InteractableTarget != null ? InteractableTarget.gameObject.name : "Null")}");
-            }
 
+                yield return _interactableCheckWait;
+            }
         }
 
         #region Abilities (To be removed)
@@ -223,13 +219,13 @@ namespace Ivayami.Player {
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmos() {
+        private void OnDrawGizmosSelected() {
             IInteractable[] interactables = _interactableDetector.InteractablesDetected.OrderBy(interactable => Vector3.Distance(interactable.gameObject.transform.position, _interactableDetector.transform.position)).ToArray();
             for (int i = 0; i < interactables.Length; i++) {
                 Physics.Raycast(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position), out RaycastHit hit, 99f, _interactLayer, QueryTriggerInteraction.Ignore);
-                Physics.Raycast(_interactableDetector.transform.position, (hit.point - _interactableDetector.transform.position), out RaycastHit hit2, Vector3.Distance(_interactableDetector.transform.position, (hit.point - _interactableDetector.transform.position)), _blockLayers, QueryTriggerInteraction.Ignore);
-                
-                Gizmos.color = hit.transform == null ? Color.yellow : (hit2.transform == null  ? Color.green : Color.red);
+                Physics.Raycast(_interactableDetector.transform.position, (hit.point - _interactableDetector.transform.position), out RaycastHit hit2, Vector3.Distance(_interactableDetector.transform.position, hit.point), _blockLayers, QueryTriggerInteraction.Ignore);
+
+                Gizmos.color = hit.transform == null ? Color.yellow : (hit2.transform == null ? Color.green : Color.red);
                 Gizmos.DrawRay(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position));
             }
         }
