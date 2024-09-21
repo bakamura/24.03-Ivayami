@@ -37,8 +37,9 @@ namespace Ivayami.Player {
         public void AddToInventory(InventoryItem item, bool shouldEmphasize = false) {
             _itemList.Add(item);
             onInventoryUpdate.Invoke(CheckInventory());
-            if (shouldEmphasize) ;
-            else InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite, item.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language).DisplayName);
+            InventoryItem itemTranslation = item.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
+            if (shouldEmphasize) ItemEmphasisDisplay.Instance.DisplayItem(item.Sprite, itemTranslation.DisplayName, itemTranslation.Description);
+            else InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite, itemTranslation.DisplayName);
 
             Logger.Log(LogType.Player, $"Inventory Add: {item.DisplayName} ({item.name}) / {item.Type}");
         }
