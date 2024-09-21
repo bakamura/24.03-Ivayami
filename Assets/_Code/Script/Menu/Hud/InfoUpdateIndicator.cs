@@ -1,9 +1,9 @@
-using Ivayami.Save;
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using Ivayami.Save;
 
 namespace Ivayami.UI {
     public class InfoUpdateIndicator : MonoSingleton<InfoUpdateIndicator> {
