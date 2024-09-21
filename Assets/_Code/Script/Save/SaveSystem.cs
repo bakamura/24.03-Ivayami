@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
+using Ivayami.Player;
 
 namespace Ivayami.Save {
     public class SaveSystem : MonoSingleton<SaveSystem> {
@@ -29,10 +30,14 @@ namespace Ivayami.Save {
 
         private void Start() {
             SavePoint.onSaveGame.AddListener(SaveProgress);
+            PlayerInventory.Instance.onInventoryUpdate.AddListener((inventory) => {
+                Progress.inventory = new string[inventory.Length];
+                for(int i = 0; i < inventory.Length; i++) Progress.inventory[i] = inventory[i].name;
+            });
         }
 
         public void LoadProgress(byte saveId, Action loadSaveCallback) {
-            StartCoroutine(LoadSaveRoutine($"{_progressPath}/{ProgressFolderName}_{saveId}", typeof(SaveProgress), loadSaveCallback));
+            StartCoroutine(LoadSaveRoutine($"{_progressPath}/{ProgressFolderName}_{saveId}.sav", typeof(SaveProgress), loadSaveCallback));
 
             Logger.Log(LogType.Save, $"Loading Progress for save {saveId}");
         }
@@ -56,7 +61,7 @@ namespace Ivayami.Save {
                 Logger.Log(LogType.Save, $"Loaded Save of type '{type.Name}' in {savePath}");
             }
             else {
-                if (type == typeof(SaveProgress)) Progress = new SaveProgress(byte.Parse(savePath.Split('_')[1]));
+                if (type == typeof(SaveProgress)) Progress = new SaveProgress((byte)int.Parse(savePath.Split('_')[1].Split('.')[0]));
                 else Options = new SaveOptions();
                 loadSaveCallback?.Invoke();
 
@@ -72,8 +77,8 @@ namespace Ivayami.Save {
             List<SaveProgress> progressSaves = new List<SaveProgress>();
             int saveId = 0;
             while (true) {
-                if (File.Exists($"{_progressPath}/{ProgressFolderName}_{saveId}")) {
-                    Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/{ProgressFolderName}_{saveId}");                    
+                if (File.Exists($"{_progressPath}/{ProgressFolderName}_{saveId}.sav")) {
+                    Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/{ProgressFolderName}_{saveId}.sav");                    
                     yield return readTask;
 
                     progressSaves.Add(JsonUtility.FromJson<SaveProgress>(Encryption.Decrypt(readTask.Result)));
@@ -87,7 +92,7 @@ namespace Ivayami.Save {
 
         private void SaveProgress() {
             Progress.lastPlayedDate = DateTime.Now.ToString("dd/MM/yy [HH:mm]");
-            StartCoroutine(WriteSaveRoutine($"{_progressPath}/{ProgressFolderName}_{Progress.id}", typeof(SaveProgress)));
+            StartCoroutine(WriteSaveRoutine($"{_progressPath}/{ProgressFolderName}_{Progress.id}.sav", typeof(SaveProgress)));
 
             Logger.Log(LogType.Save, $"Writing Progress for save {Progress.id}");
         }

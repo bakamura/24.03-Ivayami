@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 using Ivayami.Player;
 using Ivayami.Scene;
+using Ivayami.Save;
 
 namespace Ivayami.debug
 {
@@ -41,6 +42,8 @@ namespace Ivayami.debug
             controller.enabled = true;
             PlayerActions.Instance.ChangeInputMap("Player");
             PlayerMovement.Instance.RemoveAllBlockers();
+            SaveSystem.Instance.DeleteProgress(0);
+            SaveSystem.Instance.LoadProgress(0, null);
             SceneController.Instance.OnAllSceneRequestEndDebug -= OnSceneLoad;
         }
 

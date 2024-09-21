@@ -88,9 +88,9 @@ namespace Ivayami.Dialogue
                 }
                 for (int a = 0; a < _dialogueAssets[i].dialogue.Length; a++)
                 {
-                    if (_dialogueAssets[i].dialogue[a].eventId == eventID)
+                    if (_dialogueAssets[i].dialogue[a].EventId == eventID)
                     {
-                        _dialogueAssets[i].dialogue[a].eventId = null;
+                        _dialogueAssets[i].dialogue[a].EventId = null;
                         //return;
                     }
                 }
@@ -108,9 +108,9 @@ namespace Ivayami.Dialogue
                 }
                 for (int a = 0; a < _dialogueAssets[i].dialogue.Length; a++)
                 {
-                    if (_dialogueAssets[i].dialogue[a].eventId == previousID && !string.IsNullOrEmpty(_dialogueAssets[i].dialogue[a].eventId))
+                    if (_dialogueAssets[i].dialogue[a].EventId == previousID && !string.IsNullOrEmpty(_dialogueAssets[i].dialogue[a].EventId))
                     {
-                        _dialogueAssets[i].dialogue[a].eventId = currentID;
+                        _dialogueAssets[i].dialogue[a].EventId = currentID;
                         //return;
                     }
                 }
