@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using Ivayami.Scene;
+using Ivayami.Save;
 
 namespace Ivayami.UI {
     public class Map : MonoBehaviour {
@@ -9,6 +10,7 @@ namespace Ivayami.UI {
         [Header("Pointers")]
 
         [SerializeField, Tooltip("Every pointer should be named Pointer_{ProgressNameCaseSensitive}")] private RectTransform[] _goalPointers;
+        [SerializeField, Tooltip("Every blocker should be named Blocker_{tool}_{id}")] private GameObject[] _roadBlockers;
 
         [Header("Open Map")]
 
@@ -31,6 +33,9 @@ namespace Ivayami.UI {
                 Vector2 goalPosInMap = SceneController.Instance.PointerInChapter(goalPointer.name.Split('_')[1]);
                 goalPointer.gameObject.SetActive(goalPosInMap != Vector2.zero);
                 if (goalPosInMap != Vector2.zero) goalPointer.anchoredPosition = goalPosInMap;
+            }
+            foreach (GameObject blocker in _roadBlockers) {
+                blocker.SetActive(SaveSystem.Instance.Progress.id == 1); // id should be substituted for the blockers save
             }
         }
 
