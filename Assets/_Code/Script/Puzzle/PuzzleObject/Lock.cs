@@ -240,7 +240,7 @@ namespace Ivayami.Puzzle
                 {
                     _deliverOptions[iconsIndex].enabled = true;
                     _deliverOptions[iconsIndex].sprite = PlayerInventory.Instance.CheckInventoryFor(_itemsCache[requestIndex].name) ?
-                        _itemsCache[requestIndex].Sprite : PlayerInventory.Instance.GetFallbackIcon(_itemsCache[requestIndex].Type);
+                        _itemsCache[requestIndex].Sprite : PlayerInventory.Instance.ItemTypeDefaultIcons[_itemsCache[requestIndex].Type];
                     if (iconsIndex == Mathf.FloorToInt(_deliverOptions.Length / 2)
                         && !_currentItemSelected) _currentItemSelected = _itemsCache[requestIndex];
                 }            
