@@ -7,7 +7,7 @@ public class InteractableDetector : MonoBehaviour {
     private List<IInteractable> _interactablesDetected = new List<IInteractable>();
     public List<IInteractable> InteractablesDetected { 
         get {
-            _interactablesDetected.RemoveAll(interactable => interactable as MonoBehaviour == null);
+            _interactablesDetected.RemoveAll(interactable => interactable as MonoBehaviour == null || !(interactable as MonoBehaviour).gameObject.activeSelf);
             return _interactablesDetected; 
         } 
     }

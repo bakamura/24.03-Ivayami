@@ -15,7 +15,7 @@ namespace Ivayami.Player {
 
         private List<InventoryItem> _itemList = new List<InventoryItem>();
         [SerializeField] private Sprite[] _itemTypeDefaultIcons;
-        public Dictionary<ItemType, Sprite> ItemTypeDefaultIcons = new Dictionary<ItemType, Sprite>();
+        public Dictionary<ItemType, Sprite> ItemTypeDefaultIcons { get; private set; } = new Dictionary<ItemType, Sprite>();
 
         private int _checkInventoryIndexCache;
 
