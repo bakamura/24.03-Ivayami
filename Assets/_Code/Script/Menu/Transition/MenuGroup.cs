@@ -54,5 +54,9 @@ namespace Ivayami.UI {
             PreventSelectPointer.Instance.ExecuteIfNotClick(() => EventSystem.current.SetSelectedGameObject(selectedObject));
         }
 
+        public void SetCurrentMenuInitialAsSelected() {
+            SetSelected(_currentMenu.InitialSelected?.gameObject);
+        }
+
     }
 }
