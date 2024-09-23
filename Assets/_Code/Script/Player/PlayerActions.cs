@@ -127,7 +127,6 @@ namespace Ivayami.Player {
                                 _interactableClosestCache = interactables[i];
                                 break;
                             }
-                            else Debug.Log($"Interaction Ray with '{interactables[i].gameObject.name}', block layer was hit by {(hit2.collider ? hit2.collider.name : "none")}");
                         }
                     }
                     if (InteractableTarget != _interactableClosestCache) {
