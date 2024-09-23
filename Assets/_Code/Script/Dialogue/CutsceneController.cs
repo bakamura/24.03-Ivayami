@@ -62,7 +62,6 @@ namespace Ivayami.Dialogue
 
         public void SkipCutscene()
         {
-            Debug.Log("SkipCutscene()");
             if (!IsPlaying)
                 return;
 
@@ -92,6 +91,7 @@ namespace Ivayami.Dialogue
         {
             PlayerMovement.Instance.UpdateVisualsVisibility(true);
             DialogueController.Instance.StopDialogue();
+            DialogueController.Instance.PauseDialogue(false);
             RuntimeManager.PauseAllEvents(false);
             PlayerAudioListener.Instance.UpdateAudioSource(true);
             IsPlaying = false;

@@ -1,3 +1,4 @@
+using Ivayami.Scene;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -106,6 +107,7 @@ namespace Ivayami.Player {
         }
 
         private void Start() {
+            SceneController.Instance.OnAllSceneRequestEnd += RemoveCrouch;
             PlayerActions.Instance.onInteract.AddListener((animation) => BlockMovementFor(INTERACT_BLOCK_KEY, PlayerAnimation.Instance.GetInteractAnimationDuration(animation)));
         }
 
@@ -140,19 +142,28 @@ namespace Ivayami.Player {
         }
 
         private void Crouch(InputAction.CallbackContext input) {
-            if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) {
-                Crouching = !Crouching;
-                _movementSpeedMax = Crouching ? _crouchSpeedMax : (_running ? _movementSpeedRun : _movementSpeedWalk);
-                SetColliderHeight(Crouching ? _crouchColliderHeight : _walkColliderHeight);
-
-                if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
-                _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
-
-                onCrouch?.Invoke(Crouching);
-
-                Logger.Log(LogType.Player, $"Crouch Toggle: {Crouching}");
+            if (_movementBlock.Count <= 0) {
+                if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) ToggleCrouch();
+                else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
             }
-            else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
+        }
+
+        private void ToggleCrouch() {
+            Crouching = !Crouching;
+            _movementSpeedMax = Crouching ? _crouchSpeedMax : (_running ? _movementSpeedRun : _movementSpeedWalk);
+            SetColliderHeight(Crouching ? _crouchColliderHeight : _walkColliderHeight);
+
+            if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
+            _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
+
+            onCrouch?.Invoke(Crouching);
+
+            Logger.Log(LogType.Player, $"Crouch Toggle: {Crouching}");
+
+        }
+
+        private void RemoveCrouch() {
+            if(Crouching) ToggleCrouch();
         }
 
         private IEnumerator CrouchSmoothHeightRoutine() {

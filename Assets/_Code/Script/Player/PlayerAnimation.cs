@@ -11,7 +11,7 @@ namespace Ivayami.Player {
         [Header("Cache")]
 
         private static int IDLE = Animator.StringToHash("Idle");
-        private static int FAIL = Animator.StringToHash("Idle");
+        private static int FAIL = Animator.StringToHash("Fail");
         private static int MOVE_SPEED = Animator.StringToHash("MoveSpeed");
         private static int MOVE_X = Animator.StringToHash("MoveX");
         private static int MOVE_Y = Animator.StringToHash("MoveY");

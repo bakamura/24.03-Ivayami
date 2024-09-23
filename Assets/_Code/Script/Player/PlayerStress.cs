@@ -38,6 +38,7 @@ namespace Ivayami.Player {
             Pause.Instance.onUnpause.AddListener(() => _pauseStressRelieve = false);
             onStressChange.AddListener(FailStateCheck);
             onFail.AddListener(() => StartCoroutine(DelayToRespawn()));
+            onFailFade.AddListener(ResetStress);
             _restartWait = new WaitForSeconds(_restartDelay);
 
             Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");
@@ -80,6 +81,14 @@ namespace Ivayami.Player {
             }
         }
 
+        private void ResetStress() {
+            _failState = false;
+            _stressCurrent = 0;
+            onStressChange.Invoke(_stressCurrent);
+            PlayerAnimation.Instance.GoToIdle();
+            PlayerMovement.Instance.ToggleMovement(FAIL_BLOCK_KEY, true);
+        }
+
         public void OverrideFailLoad() {
             _overrideFailLoad = true;
         }
@@ -93,29 +102,18 @@ namespace Ivayami.Player {
 
             yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
 
-            _stressCurrent = 0;
-            onStressChange.Invoke(_stressCurrent);
             onFailFade.Invoke();
-            PlayerMovement.Instance.ToggleMovement(FAIL_BLOCK_KEY, true);
-            if (!_overrideFailLoad) {
-                SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes);
-                _overrideFailLoad = false;
-            }
+
+            if (_overrideFailLoad) _overrideFailLoad = false;
+            else SaveSystem.Instance.LoadProgress(SaveSystem.Instance.Progress.id, () => SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes));
         }
 
         private void HandleUnloadAllScenes() {
-            SceneController.Instance.OnAllSceneRequestEnd -= HandleUnloadAllScenes;
             UnityEvent onSceneLoaded = new UnityEvent();
-            onSceneLoaded.AddListener(UnlockPlayer);
+            onSceneLoaded.AddListener(() => SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport());
             SceneController.Instance.StartLoad("BaseTerrain", onSceneLoaded);
-        }
-
-        private void UnlockPlayer() {
-            PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].transform.position);
-            PlayerAnimation.Instance.GoToIdle();
-            _stressCurrent = 0;
-            onStressChange?.Invoke(_stressCurrent);
-            _failState = false;
+            SceneController.Instance.OnAllSceneRequestEnd -= HandleUnloadAllScenes;
+            PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
         }
 
     }

@@ -11,27 +11,23 @@ namespace Ivayami.UI {
         [SerializeField] private Sprite _indicatorKeyboard;
         [SerializeField] private Sprite _indicatorGamepad;
 
-        private Image m_icon;
-        private Image _icon {
-            get {
-                if (!m_icon) m_icon = GetComponentInChildren<Image>();
-                return m_icon;
-            }
+        private Image _icon;
+        private Fade _fadeUI;
+
+        private void Awake() {
+            _icon = GetComponentInChildren<Image>();
+            _fadeUI = GetComponentInChildren<Fade>();
         }
-        private Fade m_fadeUI;
-        private Fade _fadeUI {
-            get {
-                if (!m_fadeUI) m_fadeUI = GetComponentInChildren<Fade>();
-                return m_fadeUI;
-            }
+
+        private void Start() {
         }
 
         public void StartTutorial() {
-            //GameObject instance = Instantiate(_uiPrefab, FindObjectOfType<InfoUpdateIndicator>().GetComponentInChildren<Fade>().transform);
-            //_icon = instance.GetComponentInChildren<Image>();
             _fadeUI.Open();
-            InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisuals);
             _actionIndicator.action.performed += KeyPressed;
+            Pause.Instance.onPause.AddListener(IconDisable);
+            Pause.Instance.onUnpause.AddListener(IconEnable);
+            InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisuals);
         }
 
         private void UpdateVisuals(bool isGamepad) {
@@ -41,6 +37,16 @@ namespace Ivayami.UI {
         private void KeyPressed(InputAction.CallbackContext obj) {
             _fadeUI.Close();
             _actionIndicator.action.performed -= KeyPressed;
+            Pause.Instance.onPause.AddListener(IconDisable);
+            Pause.Instance.onUnpause.AddListener(IconEnable);
+        }
+
+        private void IconEnable() {
+            _icon.enabled = true;
+        }
+
+        private void IconDisable() {
+            _icon.enabled = false;
         }
 
     }

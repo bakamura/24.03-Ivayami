@@ -29,7 +29,7 @@ namespace Ivayami.Dialogue
         [SerializeField] private DialogueLayout[] _dialogueVariations;
         [SerializeField] private bool _debugLogs;
 
-        private Dictionary<string, List<DialogeRef>> _dialoguesIDs = new Dictionary<string, List<DialogeRef>>();
+        private Dictionary<int, int> _dialoguesIDs = new Dictionary<int, int>();
         private CanvasGroup _canvasGroup;
         //private Dictionary<string, Dialogue> _dialogueDictionary = new Dictionary<string, Dialogue>();
         private Coroutine _writtingCoroutine;
@@ -80,20 +80,18 @@ namespace Ivayami.Dialogue
 
             IsPaused = true;
             Dialogue[] dialogues;
-            for (int i = 0; i < Enum.GetNames(typeof(LanguageTypes)).Length; i++)
+            dialogues = Resources.LoadAll<Dialogue>("Dialogues");
+            int instanceId;
+            for(int i = 0; i < dialogues.Length; i++)
             {
-                dialogues = Resources.LoadAll<Dialogue>($"Dialogues/{Enum.GetName(typeof(LanguageTypes), i)}");
-                for (int a = 0; a < dialogues.Length; a++)
+                instanceId = dialogues[i].ID;
+                if (!_dialoguesIDs.ContainsKey(instanceId))
                 {
-                    if (!_dialoguesIDs.ContainsKey(dialogues[a].id))
-                    {
-                        _dialoguesIDs.Add(dialogues[a].id, new List<DialogeRef>());
-                        _dialoguesIDs[dialogues[a].id].Add(new DialogeRef(dialogues[a].GetInstanceID(), (LanguageTypes)i));
-                    }
-                    else
-                    {
-                        _dialoguesIDs[dialogues[a].id].Add(new DialogeRef(dialogues[a].GetInstanceID(), (LanguageTypes)i));
-                    }
+                    _dialoguesIDs.Add(instanceId, instanceId);
+                }
+                else
+                {
+                    Debug.LogWarning($"Dialogue {dialogues[i].name} Duplicate Found, please delete it");
                 }
             }
             AsyncOperation operation = Resources.UnloadUnusedAssets();
@@ -106,7 +104,7 @@ namespace Ivayami.Dialogue
         //}
 
         #region BaseStructure
-        public void StartDialogue(string dialogueId, bool lockInput)
+        public void StartDialogue(int dialogueId, bool lockInput)
         {
             if (IsPaused)
             {
@@ -115,6 +113,7 @@ namespace Ivayami.Dialogue
             }
             if (TryGetDialogueInstanceID(dialogueId, out int instanceID) /*&& _writtingCoroutine == null*/)
             {
+                if (_currentDialogue) StopDialogue();
                 Dialogue dialogue = (Dialogue)Resources.InstanceIDToObject(instanceID);
                 LockInput = lockInput;
                 if (LockInput)
@@ -129,32 +128,21 @@ namespace Ivayami.Dialogue
                 _currentSpeechIndex = 0;
                 _currentDialogue = dialogue;
                 OnDialogeStart?.Invoke();
-                if (_writtingCoroutine != null)
-                {
-                    StopCoroutine(_writtingCoroutine);
-                    _writtingCoroutine = null;
-                }
+                //if (_writtingCoroutine != null)
+                //{
+                //    StopCoroutine(_writtingCoroutine);
+                //    _writtingCoroutine = null;
+                //}
                 _writtingCoroutine = StartCoroutine(WrittingCoroutine(true));
             }
         }
 
-        private bool TryGetDialogueInstanceID(string dialogueId, out int instanceId)
+        private bool TryGetDialogueInstanceID(int dialogueId, out int instanceId)
         {
             instanceId = 0;
             if (_dialoguesIDs.ContainsKey(dialogueId))
             {
-                LanguageTypes languageType = LanguageTypes.ENUS;
-                for (int i = 0; i < _dialoguesIDs[dialogueId].Count; i++)
-                {
-                    instanceId = _dialoguesIDs[dialogueId][i].InstanceID;
-                    languageType = _dialoguesIDs[dialogueId][i].LanguageType;
-                    if (_dialoguesIDs[dialogueId][i].LanguageType == (LanguageTypes)SaveSystem.Instance.Options.language)
-                    {
-                        //instanceId = _dialoguesIDs[dialogueId][i].InstanceID;
-                        break;
-                    }
-                }
-                if (languageType != (LanguageTypes)SaveSystem.Instance.Options.language) Debug.LogWarning($"the dialogue {dialogueId} has not an asset for the language {Enum.GetName(typeof(LanguageTypes), SaveSystem.Instance.Options.language)}, using fallback language");
+                instanceId = dialogueId;                
                 return true;
             }
             else
@@ -193,11 +181,11 @@ namespace Ivayami.Dialogue
             if (eraseCurrentContent)
             {
                 _continueDialogueIcon.SetActive(false);
-                _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].announcerName;
+                _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].announcerName;
                 _speechTextComponent.text = "";
                 _currentCharIndex = 0;
                 //_currentDelay = 0;
-                _currentDialogueCharArray = _currentDialogue.dialogue[_currentSpeechIndex].content.ToCharArray();
+                _currentDialogueCharArray = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content.ToCharArray();
                 if (CutsceneController.IsPlaying || !LockInput)
                 {
                     _dialogueBackground.sprite = _dialogueVariations[1].Background;
@@ -210,7 +198,7 @@ namespace Ivayami.Dialogue
                     _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _dialogueVariations[0].Dimensions.x);
                     _dialogueContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _dialogueVariations[0].Dimensions.y);
                 }
-                ActivateDialogueEvents(_currentDialogue.dialogue[_currentSpeechIndex].eventId);
+                ActivateDialogueEvents(_currentDialogue.dialogue[_currentSpeechIndex].EventId);
             }
 
             _canvasGroup.alpha = _currentDialogueCharArray.Length > 0 ? 1 : 0;
@@ -257,8 +245,8 @@ namespace Ivayami.Dialogue
         {
             if (_debugLogs) Debug.Log($"Skipping typewrite anim");
             StopCoroutine(_writtingCoroutine);
-            _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].content;
-            _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].announcerName;
+            _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content;
+            _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].announcerName;
             if (LockInput) _continueDialogueIcon.SetActive(true);
             //_readyForNextSpeech = true;
             OnSkipSpeech?.Invoke();
@@ -269,7 +257,7 @@ namespace Ivayami.Dialogue
         {
             if (CurrentDialogue)
             {
-                if (_debugLogs) Debug.Log($"End of Dialogue {_currentDialogue.id}");
+                if (_debugLogs) Debug.Log($"End of Dialogue {_currentDialogue.name}");
                 if (_writtingCoroutine != null) StopCoroutine(_writtingCoroutine);
                 _writtingCoroutine = null;
                 ActivateDialogueEvents(_currentDialogue.onEndEventId);
@@ -286,8 +274,8 @@ namespace Ivayami.Dialogue
                     //_continueInput.action.Disable();
                 }
                 LockInput = false;
+                IsPaused = false;
             }
-            PauseDialogue(false);
         }
 
         public void UpdateDialogueEventsList(DialogueEvents dialogueEvents)
@@ -310,34 +298,6 @@ namespace Ivayami.Dialogue
                 }
             }
         }
-
-        //public void ChangeLanguage(LanguageTypes languageType)
-        //{
-        //IsPaused = true;
-
-        //for(int i = 0; i < Enum.GetNames(typeof(LanguageTypes)).Length; i++)
-        //{
-        //    _dialoguesIDs.Add((LanguageTypes)i, Resources.LoadAll<Dialogue>($"Dialogues/{languageType}").Select(x => x.GetInstanceID()).ToList());
-        //}
-        ////_dialoguesIDs = Resources.LoadAll<Dialogue>($"Dialogues/{languageType}").Select(x => x.GetInstanceID()).ToList();
-        ////_dialogueDictionary.Clear();
-        ////for (int i = 0; i < _dialogues.Length; i++)
-        ////{
-        ////    if (!_dialogueDictionary.ContainsKey(_dialogues[i].id))
-        ////    {
-        ////        _dialogueDictionary.Add(_dialogues[i].id, _dialogues[i]);
-        ////    }
-        ////    else
-        ////    {
-        ////        if (_debugLogs)
-        ////        {
-        ////            Debug.LogWarning($"the dialogue ID {_dialogues[i].id} is already in use");
-        ////        }
-        ////    }
-        ////}
-        //AsyncOperation operation = Resources.UnloadUnusedAssets();
-        //operation.completed += (AsyncOperation op) => IsPaused = false;
-        //}
 
         public void PauseDialogue(bool isPaused)
         {
