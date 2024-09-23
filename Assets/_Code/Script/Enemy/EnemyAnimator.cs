@@ -7,6 +7,7 @@ namespace Ivayami.Enemy
     [RequireComponent(typeof(Animator))]
     public class EnemyAnimator : MonoBehaviour
     {
+        [SerializeField] private bool _animationScaleWithMovementSpeed;
         //private static readonly int WALKING_BOOL = Animator.StringToHash("walking");
         private static readonly int SPAWNING_TRIGGER = Animator.StringToHash("spawning");
         private static readonly int ATTACK_TRIGGER = Animator.StringToHash("attacking");
@@ -39,7 +40,7 @@ namespace Ivayami.Enemy
         public void Walking(float speed, Action onAnimationEnd = null)
         {
             //_animator.SetBool(WALKING_BOOL, walking);
-            _animator.SetFloat(MOVE_SPEED_FLOAT, speed);
+            _animator.SetFloat(MOVE_SPEED_FLOAT, _animationScaleWithMovementSpeed ? speed : 1);
             StartAnimationEvent(WALKING_STATE, onAnimationEnd);
         }
         /// <param name="onAnimationEnd">
