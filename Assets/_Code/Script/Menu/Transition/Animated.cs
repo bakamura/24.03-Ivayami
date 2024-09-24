@@ -13,7 +13,7 @@ namespace Ivayami.UI {
         private Animator _animator;
         private static int _openId = Animator.StringToHash("Open");
         private static int _closeId = Animator.StringToHash("Close");
-        //protected new float _transitionDuration; // Somehow hide in the inspector (Maybe custom inspector)
+        // Somehow hide in the inspector (Maybe custom inspector) TransitionDuration & AnimationCurve
 
         protected override void Awake() {
             base.Awake();

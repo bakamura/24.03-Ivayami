@@ -776,7 +776,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _transitionDuration: 0
+  _transitionDuration: 0.25
   <InitialSelected>k__BackingField: {fileID: 2694992950500255770}
 --- !u!114 &6021301376851763167
 MonoBehaviour:
@@ -1166,7 +1166,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cadab348dc84fe47bb7590711c49bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interactable: 0
+  _interactable: 1
   <OnTransitionStart>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
@@ -1209,12 +1209,12 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _transitionDuration: 0
+  _transitionDuration: 0.25
   <InitialSelected>k__BackingField: {fileID: 0}
-  _openStartPos: {x: 0, y: 0}
+  _openStartPos: {x: 0, y: -1595}
   _openEndPos: {x: 0, y: 0}
   _closeStartPos: {x: 0, y: 0}
-  _closeEndPos: {x: 0, y: 0}
+  _closeEndPos: {x: 0, y: -1595}
 --- !u!114 &155189501506110813
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1790,7 +1790,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _transitionDuration: 0
+  _transitionDuration: 0.25
   <InitialSelected>k__BackingField: {fileID: 0}
 --- !u!114 &7915192131669283939
 MonoBehaviour:
@@ -3233,7 +3233,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _transitionDuration: 0
+  _transitionDuration: 0.25
   <InitialSelected>k__BackingField: {fileID: 8462197244823085092}
 --- !u!114 &8888808984145839652
 MonoBehaviour:
@@ -4642,7 +4642,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7815445dcdadd134c853b4107ab709ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interactable: 0
+  _interactable: 1
   <OnTransitionStart>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
@@ -4654,10 +4654,34 @@ MonoBehaviour:
       m_Calls: []
   <OnOpenEnd>k__BackingField:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4966016387854258672}
+        m_TargetAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+        m_MethodName: Open
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   <OnCloseStart>k__BackingField:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4966016387854258672}
+        m_TargetAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+        m_MethodName: Close
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   <OnCloseEnd>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
@@ -4666,9 +4690,9 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
-      inSlope: 1
-      outSlope: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
@@ -4676,8 +4700,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 1
-      outSlope: 1
+      inSlope: 0
+      outSlope: 0
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
@@ -4687,8 +4711,8 @@ MonoBehaviour:
     m_RotationOrder: 4
   _transitionDuration: 0
   <InitialSelected>k__BackingField: {fileID: 5676708730019187579}
-  _openAnimation: {fileID: 0}
-  _closeAnimation: {fileID: 0}
+  _openAnimation: {fileID: 7400000, guid: 0e01b5c1bb46db0479cf5b5e18d63705, type: 2}
+  _closeAnimation: {fileID: 7400000, guid: f95ba5246261c474195fee793958dac1, type: 2}
 --- !u!114 &2077717282937735204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7440,6 +7464,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2393231989275974534}
+  - component: {fileID: 956352521688360450}
+  - component: {fileID: 4966016387854258672}
   m_Layer: 5
   m_Name: ContentSelectBtns
   m_TagString: Untagged
@@ -7470,6 +7496,75 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 250, y: 0}
   m_Pivot: {x: 1, y: 0.5}
+--- !u!225 &956352521688360450
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9011029918717979330}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &4966016387854258672
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9011029918717979330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactable: 0
+  <OnTransitionStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnTransitionEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  _transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _transitionDuration: 0.125
+  <InitialSelected>k__BackingField: {fileID: 0}
 --- !u!1001 &885179318465505669
 PrefabInstance:
   m_ObjectHideFlags: 0
