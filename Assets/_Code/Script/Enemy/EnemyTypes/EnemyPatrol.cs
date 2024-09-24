@@ -42,6 +42,7 @@ namespace Ivayami.Enemy
         [SerializeField, Tooltip("if value in NavMeshAgent is 0, the final distance will be collider radius + 0.2")] private Color _stoppingDistanceColor = Color.green;
         [SerializeField, Min(0)] private float _patrolPointRadius = .2f;
         private Mesh _FOVMesh;
+        //private RaycastHit _blockHit;
 #endif
 
         private NavMeshAgent _navMeshAgent
@@ -228,7 +229,7 @@ namespace Ivayami.Enemy
         private bool CheckForTarget(float halfVisionAngle)
         {
             Vector3 rayOrigin = transform.position + _visionOffset;
-            bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(rayOrigin, _detectionRange, _hitsCache, _targetLayer) > 0 : true;
+            bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(rayOrigin, _detectionRange, _hitsCache, _targetLayer, QueryTriggerInteraction.Ignore) > 0 : true;
 
             bool isInMinRange;
             Vector3 targetCenter = Vector3.zero;
@@ -237,16 +238,16 @@ namespace Ivayami.Enemy
                 targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
                 isInMinRange = Vector3.Distance(targetCenter, rayOrigin) <= _minDetectionRange;
             }
-            else isInMinRange = Physics.OverlapSphereNonAlloc(rayOrigin, _minDetectionRange, _hitsCache, _targetLayer) > 0;
+            else isInMinRange = Physics.OverlapSphereNonAlloc(rayOrigin, _minDetectionRange, _hitsCache, _targetLayer, QueryTriggerInteraction.Ignore) > 0;
 
-            if (!_hitsCache[0]) return false;            
+            if (!_hitsCache[0]) return false;
 
-            bool isHidden = (_loseTargetWhenHidden && PlayerMovement.Instance.hidingState != PlayerMovement.HidingState.None) || !_loseTargetWhenHidden;            
-            bool blockingVision = Physics.Raycast(rayOrigin, (targetCenter - rayOrigin).normalized, /*out RaycastHit hit,*/ Vector3.Distance(rayOrigin, targetCenter), _blockVisionLayer);
+            bool isHidden = (_loseTargetWhenHidden && PlayerMovement.Instance.hidingState != PlayerMovement.HidingState.None) || !_loseTargetWhenHidden;
+            bool blockingVision = Physics.Raycast(rayOrigin, (targetCenter - rayOrigin).normalized, /*out _blockHit,*/ Vector3.Distance(rayOrigin, targetCenter), _blockVisionLayer, QueryTriggerInteraction.Ignore);
             bool isInVisionAngle = Vector3.Angle(transform.forward, (targetCenter - rayOrigin).normalized) <= halfVisionAngle;
             _currentTargetColliderSizeFactor = _hitsCache[0].bounds.extents.z;
 
-            if (_debugLogsEnemyPatrol /*&& hit.collider*/)
+            if (_debugLogsEnemyPatrol)
                 Debug.Log($"is Hidden {isHidden}, blocking vision {blockingVision}, is in Min range {isInMinRange}, target Inside Radius {targetInsideRange}, is in Vision Angle {isInVisionAngle}");
             _directContactWithTarget = !isHidden && !blockingVision && (isInMinRange || (isInVisionAngle && targetInsideRange));
             return _directContactWithTarget;
@@ -328,7 +329,7 @@ namespace Ivayami.Enemy
             {
                 Gizmos.color = _stoppingDistanceColor;
                 Gizmos.DrawLine(transform.position, transform.position + transform.right * _navMeshAgent.stoppingDistance);
-            }            
+            }
         }
 
         //private void OnDrawGizmos()
@@ -338,7 +339,12 @@ namespace Ivayami.Enemy
         //        Gizmos.color = Color.black;
         //        Vector3 targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
         //        Vector3 rayOrigin = transform.position + _visionOffset;
-        //        Gizmos.DrawLine(rayOrigin, rayOrigin + (targetCenter - rayOrigin).normalized * Vector3.Distance(rayOrigin, targetCenter));
+        //        Gizmos.DrawLine(rayOrigin, targetCenter /*+ (targetCenter - rayOrigin).normalized * Vector3.Distance(rayOrigin, targetCenter)*/);
+        //    }
+        //    if (_blockHit.collider)
+        //    {
+        //        Gizmos.color = Color.blue;
+        //        Gizmos.DrawSphere(_blockHit.point, .1f);
         //    }
         //}
 
