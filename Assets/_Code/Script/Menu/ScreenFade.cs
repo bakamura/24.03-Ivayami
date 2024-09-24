@@ -1,13 +1,12 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using System;
 using Ivayami.Player;
 
 namespace Ivayami.UI
 {
-    public class ScreenFade : MonoBehaviour
-    {
+    public class ScreenFade : MonoBehaviour {
         private static bool _isFading;
         [SerializeField, Min(0f)] private float _delayBeforeStartFade;
         [SerializeField] private UnityEvent _onAfterDelayBeforeFadeStart;
@@ -16,17 +15,15 @@ namespace Ivayami.UI
         [SerializeField] private UnityEvent _onFadeEnd;
         [SerializeField] private bool _debugLogs;
 
-        private AnimationCurve _previousCurve;
         private Action _onFadeEndCallback;
-        private Coroutine _waitEndCoroutine;
         private Coroutine _delayFadeStartCoroutine;
         private bool _isFadeIn;
+        private bool _callbackExecuted;
         private const string BLOCK_KEY = "ScreenFade";
+
         [ContextMenu("FadeIn")]
-        public void FadeIn()
-        {
-            if (!_isFading)
-            {
+        public void FadeIn() {
+            if (!_isFading) {
                 if (_debugLogs) Debug.Log($"Fade In Request From {gameObject.name}");
                 _isFading = true;
                 _isFadeIn = true;
@@ -34,11 +31,10 @@ namespace Ivayami.UI
                 PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
             }
         }
+
         [ContextMenu("FadeOut")]
-        public void FadeOut()
-        {
-            if (!_isFading)
-            {
+        public void FadeOut() {
+            if (!_isFading) {
                 if (_debugLogs) Debug.Log($"Fade Out Request From {gameObject.name}");
                 _isFading = true;
                 _isFadeIn = false;
@@ -72,52 +68,47 @@ namespace Ivayami.UI
         //    }
         //}
 
-        private IEnumerator FadeStartDelayCoroutine()
-        {
+        private IEnumerator FadeStartDelayCoroutine() {
             yield return new WaitForSeconds(_delayBeforeStartFade);
             _delayFadeStartCoroutine = null;
             if (_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
-            _previousCurve = SceneTransition.Instance.TransitionCurve;
             SceneTransition.Instance.SetAnimationCurve(_fadeCurve);
-            if (_isFadeIn) SceneTransition.Instance.Menu.Open();
-            else SceneTransition.Instance.Menu.Close();
             DelayFadeStartEnd();
-            _waitEndCoroutine = StartCoroutine(WaitFadeCoroutine());
-        }
-
-        private IEnumerator WaitFadeCoroutine(Action onFadeEnd = null)
-        {
-            float count = 0;
-            _onFadeEndCallback = onFadeEnd;
-            while (count < SceneTransition.Instance.Menu.TransitionDuration)
-            {
-                count += Time.deltaTime;
-                yield return null;
+            if (_isFadeIn) {
+                SceneTransition.Instance.OnOpenEnd.AddListener(FadeEnd);
+                SceneTransition.Instance.Open();
             }
-            _waitEndCoroutine = null;
-            FadeEnd();
+            else {
+                SceneTransition.Instance.OnCloseEnd.AddListener(FadeEnd);
+                SceneTransition.Instance.Close();
+            }
         }
 
         private void DelayFadeStartEnd()
         {
             _onAfterDelayBeforeFadeStart?.Invoke();
         }
-
+        
         private void FadeEnd()
         {
             if (_debugLogs) Debug.Log($"Fade End From {gameObject.name}");
-            SceneTransition.Instance.SetAnimationCurve(_previousCurve);
+            _callbackExecuted = true;
             _onFadeEndCallback?.Invoke();
             _onFadeEnd?.Invoke();
             _onFadeEndCallback = null;
             _isFading = false;
+            if (_isFadeIn) {
+                SceneTransition.Instance.OnOpenEnd.RemoveListener(FadeEnd);
+            }
+            else {
+                SceneTransition.Instance.OnCloseEnd.RemoveListener(FadeEnd);
+            }
         }
 
         private void OnDisable()
         {
-            if (_waitEndCoroutine != null)
+            if (!_callbackExecuted)
             {
-                _waitEndCoroutine = null;
                 FadeEnd();
             }
             if (_delayFadeStartCoroutine != null)

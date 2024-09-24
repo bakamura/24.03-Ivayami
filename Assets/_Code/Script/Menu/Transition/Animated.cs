@@ -1,36 +1,34 @@
 using UnityEngine;
-using System.Linq;
 
 namespace Ivayami.UI {
     public class Animated : Menu {
+
+        [Header("Animated")]
+
+        [SerializeField] private AnimationClip _openAnimation;
+        [SerializeField] private AnimationClip _closeAnimation;
 
         [Header("Cache")]
 
         private Animator _animator;
         private static int _openId = Animator.StringToHash("Open");
         private static int _closeId = Animator.StringToHash("Close");
+        //protected new float _transitionDuration; // Somehow hide in the inspector (Maybe custom inspector)
 
         protected override void Awake() {
             base.Awake();
 
             _animator = GetComponent<Animator>();
-            TransitionDuration = _animator.runtimeAnimatorController.animationClips.FirstOrDefault(x => x.name == "JournalOpen").length;
-        }
 
-        public override void Open() {
-            _animator.SetTrigger(_openId);
-            _canvasGroup.interactable = true;
-            _canvasGroup.blocksRaycasts = true;
+            OnOpenStart.AddListener(() => {
+                _animator.SetTrigger(_openId);
+                _transitionDuration = _openAnimation.length;
+            });
+            OnCloseStart.AddListener(() => {
+                _animator.SetTrigger(_closeId);
+                _transitionDuration = _closeAnimation.length;
+            });
 
-            Logger.Log(LogType.UI, $"Open Menu '{name}'");
-        }
-
-        public override void Close() {
-            _animator.SetTrigger(_closeId);
-            _canvasGroup.interactable = false;
-            _canvasGroup.blocksRaycasts = false;
-
-            Logger.Log(LogType.UI, $"Close Menu '{name}'");
         }
 
     }

@@ -11,11 +11,7 @@ namespace Ivayami.UI {
         private Coroutine _transitionCoroutine;
         [SerializeField] private bool _setMenuBtnSelectedOnStart;
         
-        private Navigation _noneNav = new Navigation();
-
-
         private void Start() {
-            _noneNav.mode = Navigation.Mode.None;
             if (_setMenuBtnSelectedOnStart) EventSystem.current.SetSelectedGameObject(_currentMenu.InitialSelected.gameObject);
         }
 
@@ -42,15 +38,23 @@ namespace Ivayami.UI {
             Selectable newSelectedObject = _currentMenu.GetComponentInChildren<Selectable>();
             if (newSelectedObject != null) EventSystem.current.SetSelectedGameObject(newSelectedObject.gameObject);
 
-            yield return new WaitForSeconds(_delayToOpen >= 0 ? _delayToOpen : (_currentMenu != null ? _currentMenu.TransitionDuration : 0f));
+            if (_delayToOpen >= 0) {
+                yield return new WaitForSeconds(_delayToOpen);
 
+                Open();
+            }
+            else if (_currentMenu != null) _currentMenu.OnTransitionEnd.AddListener(_currentMenu.Open);
+        }
+
+        private void Open() {
             _currentMenu.Open();
             _transitionCoroutine = null;
+            _currentMenu.OnTransitionEnd.RemoveListener(_currentMenu.Open);
 
             Logger.Log(LogType.UI, $"Change Menu End");
         }
 
-        public void SetSelected(GameObject selectedObject) {
+        public void SetSelected(GameObject selectedObject) { // Move Elsewhere?
             PreventSelectPointer.Instance.ExecuteIfNotClick(() => EventSystem.current.SetSelectedGameObject(selectedObject));
         }
 
