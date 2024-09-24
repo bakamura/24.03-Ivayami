@@ -83,8 +83,12 @@
 		</relationship>
 	</object>
 	<object class="MultiSound" id="{6985593d-ffe9-4109-93ed-99b80ace3320}">
+		<property name="playbackMode">
+			<value>1</value>
+		</property>
 		<relationship name="sounds">
 			<destination>{95778504-bef2-45bf-8b15-b7846db8879c}</destination>
+			<destination>{3e2f91b7-fe19-4fa4-9383-c9e0680e44e5}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusEffectChain" id="{7e988c76-cade-44f7-865b-e660e05a02e3}">
@@ -103,6 +107,9 @@
 	</object>
 	<object class="MixerBusPanner" id="{2f726bd7-925f-40f0-917c-228be3837d45}" />
 	<object class="MultiSound" id="{95778504-bef2-45bf-8b15-b7846db8879c}">
+		<property name="volume">
+			<value>-3</value>
+		</property>
 		<relationship name="sounds">
 			<destination>{f7343b61-4228-4143-b400-0cd69b53593b}</destination>
 			<destination>{da3837ab-0c17-496b-9ec7-04c6b1c0cdd6}</destination>
@@ -111,14 +118,34 @@
 			<destination>{f8f32a8e-ffc7-4447-a69c-0b0c8353a51d}</destination>
 		</relationship>
 	</object>
+	<object class="MultiSound" id="{3e2f91b7-fe19-4fa4-9383-c9e0680e44e5}">
+		<property name="volume">
+			<value>6.5</value>
+		</property>
+		<relationship name="sounds">
+			<destination>{9501b8b1-e25f-4567-b652-ef3ccd29ff2e}</destination>
+			<destination>{7aaf30ad-f603-47f6-9eed-0995680504d3}</destination>
+			<destination>{a6eac7f4-bbfc-426b-b98f-515309c2b6ca}</destination>
+			<destination>{4d31e705-c889-4e5f-9ac3-8ce01fb76e48}</destination>
+		</relationship>
+	</object>
 	<object class="MixerBusFader" id="{0f90479f-53cd-4ebc-a426-bf8dbb9efb1b}" />
 	<object class="MixerBusFader" id="{36985b93-9402-4a22-8247-1a137aa2981f}" />
 	<object class="ThreeEQEffect" id="{a35e0ebb-0b54-4e04-866a-696d0eb14859}">
+		<property name="lowGain">
+			<value>-5.5</value>
+		</property>
 		<property name="midGain">
-			<value>-18.5</value>
+			<value>1</value>
 		</property>
 		<property name="highGain">
 			<value>-3.5</value>
+		</property>
+		<property name="lowCrossover">
+			<value>700</value>
+		</property>
+		<property name="highCrossover">
+			<value>2000</value>
 		</property>
 	</object>
 	<object class="SFXReverbEffect" id="{ef9c5c4b-b69f-4ca7-9bf0-56cdc8c2ebf1}">
@@ -129,7 +156,7 @@
 			<value>5400</value>
 		</property>
 		<property name="wetLevel">
-			<value>-1</value>
+			<value>-37</value>
 		</property>
 	</object>
 	<object class="SpatialiserEffect" id="{48945369-0e2e-4cfd-b2a9-e782e3d97e91}" />
@@ -156,6 +183,26 @@
 	<object class="SingleSound" id="{f8f32a8e-ffc7-4447-a69c-0b0c8353a51d}">
 		<relationship name="audioFile">
 			<destination>{fbfb0905-864c-4b30-b60a-8b82ca1697ef}</destination>
+		</relationship>
+	</object>
+	<object class="SingleSound" id="{9501b8b1-e25f-4567-b652-ef3ccd29ff2e}">
+		<relationship name="audioFile">
+			<destination>{5f634f33-ed12-4a6c-af9c-060b3ac8a194}</destination>
+		</relationship>
+	</object>
+	<object class="SingleSound" id="{7aaf30ad-f603-47f6-9eed-0995680504d3}">
+		<relationship name="audioFile">
+			<destination>{43beaaca-021c-4046-9509-ecfe2e5e41b9}</destination>
+		</relationship>
+	</object>
+	<object class="SingleSound" id="{a6eac7f4-bbfc-426b-b98f-515309c2b6ca}">
+		<relationship name="audioFile">
+			<destination>{851621b6-f5be-4d9c-a7ef-4483c29b8c13}</destination>
+		</relationship>
+	</object>
+	<object class="SingleSound" id="{4d31e705-c889-4e5f-9ac3-8ce01fb76e48}">
+		<relationship name="audioFile">
+			<destination>{1fae7416-d332-4840-bfab-40d1cc6d0263}</destination>
 		</relationship>
 	</object>
 </objects>
