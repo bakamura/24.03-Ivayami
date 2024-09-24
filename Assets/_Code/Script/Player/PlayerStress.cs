@@ -105,7 +105,7 @@ namespace Ivayami.Player {
             onFailFade.Invoke();
 
             if (_overrideFailLoad) _overrideFailLoad = false;
-            else SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes);
+            else SaveSystem.Instance.LoadProgress(SaveSystem.Instance.Progress.id, () => SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes));
         }
 
         private void HandleUnloadAllScenes() {
@@ -113,6 +113,7 @@ namespace Ivayami.Player {
             onSceneLoaded.AddListener(() => SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport());
             SceneController.Instance.StartLoad("BaseTerrain", onSceneLoaded);
             SceneController.Instance.OnAllSceneRequestEnd -= HandleUnloadAllScenes;
+            PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
         }
 
     }
