@@ -16,8 +16,6 @@ namespace Ivayami.Dialogue
             _dialogueId = _dialogue.ID;
             _dialogueName = _dialogue.name;
             Resources.UnloadAsset(_dialogue);
-            //AsyncOperation operation = Resources.UnloadUnusedAssets();
-            //operation.completed += (asynOp) => Debug.Log(Resources.InstanceIDIsValid(_dialogueId));
         }
 
         [ContextMenu("StartDialogue")]
