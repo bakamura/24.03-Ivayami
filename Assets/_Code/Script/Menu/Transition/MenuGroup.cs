@@ -33,23 +33,27 @@ namespace Ivayami.UI {
             Logger.Log(LogType.UI, $"Change Menu Start");
 
             _currentMenu?.Close();
+
+            bool isInstant = _delayToOpen < 0;
+            if (isInstant) _currentMenu?.OnTransitionEnd.AddListener(Open);
+
             _currentMenu = menuToOpen;
 
-            Selectable newSelectedObject = _currentMenu.GetComponentInChildren<Selectable>();
-            if (newSelectedObject != null) EventSystem.current.SetSelectedGameObject(newSelectedObject.gameObject);
-
-            if (_delayToOpen >= 0) {
+            if (!isInstant) {
                 yield return new WaitForSeconds(_delayToOpen);
 
                 Open();
             }
-            else if (_currentMenu != null) _currentMenu.OnTransitionEnd.AddListener(_currentMenu.Open);
+
         }
 
         private void Open() {
             _currentMenu.Open();
             _transitionCoroutine = null;
-            _currentMenu.OnTransitionEnd.RemoveListener(_currentMenu.Open);
+            _currentMenu.OnTransitionEnd.RemoveListener(Open);
+            
+            Selectable newSelectedObject = _currentMenu.GetComponentInChildren<Selectable>();
+            if (newSelectedObject != null) EventSystem.current.SetSelectedGameObject(newSelectedObject.gameObject);
 
             Logger.Log(LogType.UI, $"Change Menu End");
         }

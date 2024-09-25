@@ -21,7 +21,7 @@ namespace Ivayami.UI {
         }
 
         protected override void TransitionBehaviour(float currentPhase) {
-            _rectTransform.anchoredPosition = Vector2.Lerp(_isOpening ? _openStartPos : _openEndPos, _isOpening ? _closeStartPos : _closeEndPos, currentPhase);
+            _rectTransform.anchoredPosition = Vector2.Lerp(_isOpening ? _openStartPos : _openEndPos, _isOpening ? _closeStartPos : _closeEndPos, _transitionCurve.Evaluate(currentPhase));
         }
 
     }

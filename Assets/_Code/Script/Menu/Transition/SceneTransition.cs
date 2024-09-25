@@ -6,6 +6,8 @@ namespace Ivayami.UI {
 
         public static SceneTransition Instance { get; private set; }
 
+        [Header("Scene Transition")]
+
         [SerializeField] private GameObject _loadingIcon;
 
         protected override void Awake() {

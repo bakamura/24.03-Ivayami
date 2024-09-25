@@ -21,7 +21,7 @@ namespace Ivayami.UI {
         [field: SerializeField] public UnityEvent OnCloseEnd { get; private set; }
 
         [SerializeField] protected AnimationCurve _transitionCurve;
-        [SerializeField] protected float _transitionDuration;
+        [SerializeField, Min(0.01f)] protected float _transitionDuration;
         [field: SerializeField] public Selectable InitialSelected { get; protected set; }
 
         protected CanvasGroup _canvasGroup;
@@ -46,7 +46,7 @@ namespace Ivayami.UI {
             OnOpenEnd.AddListener(() => InteractableUpdate(_interactable));
         }
 
-        public void Open() {
+        public virtual void Open() {
             CancelPrevious();
             _isOpening = true;
             _routine = StartCoroutine(Transition());
@@ -54,7 +54,7 @@ namespace Ivayami.UI {
             Logger.Log(LogType.UI, $"Open Menu '{name}'");
         }
 
-        public void Close() {
+        public virtual void Close() {
             CancelPrevious();
             _isOpening = false;
             _routine = StartCoroutine(Transition());
