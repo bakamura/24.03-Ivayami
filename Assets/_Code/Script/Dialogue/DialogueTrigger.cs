@@ -9,10 +9,13 @@ namespace Ivayami.Dialogue
         [SerializeField] private bool _lockPlayerInput;
         private bool _activated;
         private int _dialogueId;
+        private string _dialogueName;
 
-        private void Awake()
+        private void Start()
         {
             _dialogueId = _dialogue.ID;
+            _dialogueName = _dialogue.name;
+            Resources.UnloadAsset(_dialogue);
         }
 
         [ContextMenu("StartDialogue")]
@@ -34,16 +37,16 @@ namespace Ivayami.Dialogue
             }
             if(DialogueController.Instance.CurrentDialogue.ID != _dialogueId)
             {
-                Debug.LogWarning($"The current dialogue: {DialogueController.Instance.CurrentDialogue.ID} is different from the {_dialogue.ID} that the object {name} wants to continue, the command ContinueDialogue will not activate");
+                Debug.LogWarning($"The current dialogue: {DialogueController.Instance.CurrentDialogue.name} is different from the {_dialogueName} that the object {name} wants to continue, the command ContinueDialogue will not activate");
                 return;
             }
             if (DialogueController.Instance.CurrentDialogue.ID == _dialogueId) DialogueController.Instance.UpdateDialogue();
         }
 
-        public void ChangeDialogue(Dialogue dialogue)
-        {
-            _dialogue = dialogue;
-        }
+        //public void ChangeDialogue(Dialogue dialogue)
+        //{
+        //    _dialogue = dialogue;
+        //}
 
         private void OnTriggerEnter(Collider other)
         {
