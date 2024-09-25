@@ -56,7 +56,6 @@ namespace Ivayami.Dialogue
             if (_dialogue)
             {
                 _dialogueName = _dialogue.name;
-                _dialogue = null;
             }
         }
 #endif
