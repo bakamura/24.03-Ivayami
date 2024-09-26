@@ -12,7 +12,6 @@ namespace Ivayami.Enemy
         [SerializeField] private bool _lookAtPlayerOnStart;
         [SerializeField] private EnemyWalkArea _fixedWalkArea;
         [SerializeField, Min(0f)] private float _minDistanceFromPathPoint;
-        [SerializeField] private bool _scaleAnimationWithSpeed;
         [SerializeField] private EnemyWalkArea.PathCallback[] _pathsCallback;
 
         private WaitForSeconds _delay = new WaitForSeconds(_tick);
@@ -77,7 +76,7 @@ namespace Ivayami.Enemy
             EnemyWalkArea.EnemyData currentPoint;
             while (_currenWalkArea && !_navMeshAgent.isStopped && _currenWalkArea.GetCurrentPoint(ID, out currentPoint))
             {
-                _animator.Walking(_scaleAnimationWithSpeed ? _navMeshAgent.velocity.magnitude : 1);
+                _animator.Walking(_navMeshAgent.velocity.magnitude);
                 if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(currentPoint.Point.Position.x, 0, currentPoint.Point.Position.z)) <= _navMeshAgent.stoppingDistance)
                 {
                     yield return new WaitForSeconds(currentPoint.Point.DelayToNextPoint);
