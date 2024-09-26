@@ -85,6 +85,7 @@ namespace Ivayami.Scene
 
         public void StartLoad(string sceneId, UnityEvent onSceneUpdate = null)
         {
+            Debug.Log($"Start Load '{sceneId}'");
             SceneData data = UpdateSceneList(sceneId);
             if (!data.IsBeingLoaded)
             {
