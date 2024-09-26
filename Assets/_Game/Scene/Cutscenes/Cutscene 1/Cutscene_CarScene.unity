@@ -254,6 +254,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1006601522104506412, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1006601522104506412, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1006601522104506412, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1006601522104506412, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1006601522104506412, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2108306894131583600, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -422,6 +442,26 @@ PrefabInstance:
       propertyPath: m_SceneBindings.Array.data[27].value
       value: 
       objectReference: {fileID: 1326679447}
+    - target: {fileID: 8293107566635876111, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8293107566635876111, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8293107566635876111, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8293107566635876111, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8293107566635876111, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2502,6 +2542,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1441095717244563936, guid: 28faf7eb4621790488a5eba664867307, type: 3}
   m_PrefabInstance: {fileID: 227221933}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &232244070
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 232244072}
+  - component: {fileID: 232244071}
+  m_Layer: 0
+  m_Name: SavePointRef
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &232244071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 232244070}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31f0efc5322b43949be994d855c311d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _id: 0
+--- !u!4 &232244072
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 232244070}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &260666367
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2994,8 +3079,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delayBeforeStartFade: 0
-  _onAfterDelayBeforeFadeStart:
+  _delayToFadeOut: 0
+  _beforeFade:
+    m_PersistentCalls:
+      m_Calls: []
+  _afterFade:
     m_PersistentCalls:
       m_Calls: []
   _duration: 1.9
@@ -3023,10 +3111,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _onFadeEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  _debugLogs: 0
 --- !u!1001 &328946313
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16048,6 +16132,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 40b53ff32895b0549b0f5e8096dfb954, type: 3}
   m_PrefabInstance: {fileID: 890537962}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &906853971
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 906853972}
+  m_Layer: 0
+  m_Name: <<<Cutscene>>>
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &906853972
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 906853971}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &919083243
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -18374,36 +18489,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delayBeforeStartFade: 0
-  _onAfterDelayBeforeFadeStart:
+  _delayToFadeOut: 0
+  _beforeFade:
     m_PersistentCalls:
       m_Calls: []
-  _duration: 0.01
-  _fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _onFadeEnd:
+  _afterFade:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1878428559}
@@ -18430,7 +18520,31 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _debugLogs: 0
+  _duration: 0.01
+  _fadeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 1
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!4 &1215426730
 Transform:
   m_ObjectHideFlags: 0
@@ -19453,8 +19567,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delayBeforeStartFade: 0
-  _onAfterDelayBeforeFadeStart:
+  _delayToFadeOut: 0
+  _beforeFade:
+    m_PersistentCalls:
+      m_Calls: []
+  _afterFade:
     m_PersistentCalls:
       m_Calls: []
   _duration: 2
@@ -19482,10 +19599,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _onFadeEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  _debugLogs: 0
 --- !u!1001 &1334174662
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -23388,7 +23501,19 @@ MonoBehaviour:
       m_Calls: []
   _onAllScenesRequestEnd:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 232244071}
+        m_TargetAssemblyTypeName: Ivayami.Save.SavePointReference, Assembly-CSharp
+        m_MethodName: Teleport
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _drawGizmos: 0
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!4 &1878428560
@@ -35326,9 +35451,11 @@ SceneRoots:
   - {fileID: 14941320}
   - {fileID: 1149702289}
   - {fileID: 1878428560}
+  - {fileID: 232244072}
   - {fileID: 1215426730}
-  - {fileID: 347357191}
   - {fileID: 1326679448}
+  - {fileID: 906853972}
+  - {fileID: 347357191}
   - {fileID: 1943769597}
   - {fileID: 1565682992}
   - {fileID: 890091739}

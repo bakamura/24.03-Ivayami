@@ -3,18 +3,23 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using Ivayami.Player;
+using UnityEngine.Serialization; // Remove later
 
-namespace Ivayami.UI
-{
+namespace Ivayami.UI {
     public class ScreenFade : MonoBehaviour {
-        private static bool _isFading;
-        [SerializeField, Min(0f)] private float _delayBeforeStartFade;
-        [SerializeField] private UnityEvent _onAfterDelayBeforeFadeStart;
+
+        [Header("Events")]
+
+        [SerializeField, Min(0f), FormerlySerializedAs("_delayBeforeStartFade")] private float _delayToFadeOut;
+        [SerializeField, FormerlySerializedAs("_onAfterDelayBeforeFadeStart")] private UnityEvent _beforeFade;
+        [SerializeField, FormerlySerializedAs("_onFadeEnd")] private UnityEvent _afterFade;
+
         [SerializeField, Min(0f)] private float _duration = 1f;
         [SerializeField] private AnimationCurve _fadeCurve = AnimationCurve.Linear(0, 0, 1, 1);
-        [SerializeField] private UnityEvent _onFadeEnd;
-        [SerializeField] private bool _debugLogs;
 
+        [Header("Cache")]
+
+        private static bool _isFading;
         private Action _onFadeEndCallback;
         private Coroutine _delayFadeStartCoroutine;
         private bool _isFadeIn;
@@ -24,7 +29,7 @@ namespace Ivayami.UI
         [ContextMenu("FadeIn")]
         public void FadeIn() {
             if (!_isFading) {
-                if (_debugLogs) Debug.Log($"Fade In Request From {gameObject.name}");
+                Debug.Log($"Fade In Request From {gameObject.name}");
                 _isFading = true;
                 _isFadeIn = true;
                 _delayFadeStartCoroutine = StartCoroutine(FadeStartDelayCoroutine());
@@ -35,7 +40,7 @@ namespace Ivayami.UI
         [ContextMenu("FadeOut")]
         public void FadeOut() {
             if (!_isFading) {
-                if (_debugLogs) Debug.Log($"Fade Out Request From {gameObject.name}");
+                Debug.Log($"Fade Out Request From {gameObject.name}");
                 _isFading = true;
                 _isFadeIn = false;
                 _delayFadeStartCoroutine = StartCoroutine(FadeStartDelayCoroutine());
@@ -43,37 +48,12 @@ namespace Ivayami.UI
             }
         }
 
-        //public void FadeIn(Action onFadeEnd = null)
-        //{
-        //    if (!_isFading)
-        //    {
-        //        _isFading = true;
-        //        if (_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
-        //        _previousCurve = SceneTransition.Instance.TransitionCurve;
-        //        SceneTransition.Instance.SetAnimationCurve(_fadeCurve);
-        //        SceneTransition.Instance.Menu.Open();
-        //        StartCoroutine(WaitFadeCoroutine(onFadeEnd));
-        //    }
-        //}
-        //public void FadeOut(Action onFadeEnd = null)
-        //{
-        //    if (!_isFading)
-        //    {
-        //        _isFading = true;
-        //        if (_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
-        //        _previousCurve = SceneTransition.Instance.TransitionCurve;
-        //        SceneTransition.Instance.SetAnimationCurve(_fadeCurve);
-        //        SceneTransition.Instance.Menu.Close();
-        //        _waitEndCoroutione = StartCoroutine(WaitFadeCoroutine(onFadeEnd));
-        //    }
-        //}
-
         private IEnumerator FadeStartDelayCoroutine() {
-            yield return new WaitForSeconds(_delayBeforeStartFade);
+            if (!_isFadeIn) yield return new WaitForSeconds(_delayToFadeOut);
             _delayFadeStartCoroutine = null;
             if (_duration > 0f) SceneTransition.Instance.SetDuration(_duration);
             SceneTransition.Instance.SetAnimationCurve(_fadeCurve);
-            DelayFadeStartEnd();
+            _beforeFade?.Invoke();
             if (_isFadeIn) {
                 SceneTransition.Instance.OnOpenEnd.AddListener(FadeEnd);
                 SceneTransition.Instance.Open();
@@ -84,37 +64,22 @@ namespace Ivayami.UI
             }
         }
 
-        private void DelayFadeStartEnd()
-        {
-            _onAfterDelayBeforeFadeStart?.Invoke();
-        }
-        
-        private void FadeEnd()
-        {
-            if (_debugLogs) Debug.Log($"Fade End From {gameObject.name}");
+        private void FadeEnd() {
+            Debug.Log($"Fade End From {gameObject.name}");
             _callbackExecuted = true;
             _onFadeEndCallback?.Invoke();
-            _onFadeEnd?.Invoke();
+            _afterFade?.Invoke();
             _onFadeEndCallback = null;
             _isFading = false;
-            if (_isFadeIn) {
-                SceneTransition.Instance.OnOpenEnd.RemoveListener(FadeEnd);
-            }
-            else {
-                SceneTransition.Instance.OnCloseEnd.RemoveListener(FadeEnd);
-            }
+            if (_isFadeIn) SceneTransition.Instance.OnOpenEnd.RemoveListener(FadeEnd);
+            else SceneTransition.Instance.OnCloseEnd.RemoveListener(FadeEnd);
         }
 
-        private void OnDisable()
-        {
-            if (!_callbackExecuted)
-            {
-                FadeEnd();
-            }
-            if (_delayFadeStartCoroutine != null)
-            {
+        private void OnDisable() {
+            if (!_callbackExecuted) FadeEnd();
+            if (_delayFadeStartCoroutine != null) {
                 _delayFadeStartCoroutine = null;
-                DelayFadeStartEnd();
+                _beforeFade?.Invoke();
                 _isFading = false;
             }
         }

@@ -32,19 +32,27 @@ namespace Ivayami.UI {
         }
 
         public void EnterSave() {
-            // Probably should fade in before start loading, then decide what to do
+            SceneTransition.Instance.OnCloseEnd.AddListener(EnterSaveWaitFadeIn);
+            SceneTransition.Instance.Close();
+        }
+
+        private void EnterSaveWaitFadeIn() {
             SaveSystem.Instance.LoadProgress(_id, () => {
-                if (_isFirstTime) SaveSelector.Instance.FirstTimeFade.FadeIn();
-                else SaveSelector.Instance.NormalFade.FadeIn();
-                SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayerIfGame;
                 PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
+
+                SaveSelector.Instance.MainMenuUnloader.UnloadScene();
+                if (_isFirstTime) SaveSelector.Instance.CutsceneLoader.LoadScene();
+                else {
+                    SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
+                    SaveSelector.Instance.BaseTerrainLoader.LoadScene();
+                }
             });
         }
 
-        private void TeleportPlayerIfGame() {
+        private void TeleportPlayer() {
             if (!CutsceneController.IsPlaying) {
                 SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
-                SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayerIfGame;
+                SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayer;
             }
         }
 
