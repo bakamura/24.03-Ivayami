@@ -1,5 +1,6 @@
 using UnityEngine;
 using Ivayami.Scene;
+using Ivayami.Player;
 
 namespace Ivayami.UI {
     public class SceneTransition : Fade {
@@ -10,6 +11,8 @@ namespace Ivayami.UI {
 
         [SerializeField] private GameObject _loadingIcon;
 
+        private const string BLOCK_KEY = "ScreenFade";
+
         protected override void Awake() {
             if (Instance == null) Instance = this;
             else if (Instance != this) {
@@ -18,11 +21,14 @@ namespace Ivayami.UI {
             }
             base.Awake();
 
-            OnOpenEnd.AddListener(() => SetLoadingIconState(false)); // Change To Close when fix inversion
+            OnOpenStart.AddListener(() => PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false));
+            OnCloseStart.AddListener(() => PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true));
+            OnCloseEnd.AddListener(() => SetLoadingIconState(false));
         }
 
         private void Start() {
-            Open(); // Change to Close when fix inversion
+            PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
+            Close();
             SceneController.Instance.OnLoadScene += (sceneName) => SetLoadingIconState(true);
         }
 

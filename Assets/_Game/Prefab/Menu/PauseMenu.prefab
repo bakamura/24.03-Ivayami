@@ -98,36 +98,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delayBeforeStartFade: 0
-  _onAfterDelayBeforeFadeStart:
+  _delayToFadeOut: 0
+  _beforeFade:
     m_PersistentCalls:
       m_Calls: []
-  _duration: 1
-  _fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _onFadeEnd:
+  _afterFade:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7701454260802632360}
@@ -142,7 +117,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _debugLogs: 0
+  _duration: 1
 --- !u!114 &2183341077878176319
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -155,48 +130,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delayBeforeStartFade: 0
-  _onAfterDelayBeforeFadeStart:
+  _delayToFadeOut: 0
+  _beforeFade:
+    m_PersistentCalls:
+      m_Calls: []
+  _afterFade:
     m_PersistentCalls:
       m_Calls: []
   _duration: 2.5
-  _fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 3.081761
-      outSlope: 3.081761
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.0375
-    - serializedVersion: 3
-      time: 0.18501286
-      value: 0.8177489
-      inSlope: 0.5113374
-      outSlope: 0.87635386
-      tangentMode: 1
-      weightedMode: 0
-      inWeight: 1
-      outWeight: 0.14620331
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0.023198323
-      outSlope: 0.023198323
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.5083333
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _onFadeEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  _debugLogs: 0
 --- !u!1 &260069583969597471
 GameObject:
   m_ObjectHideFlags: 0
@@ -742,7 +683,19 @@ MonoBehaviour:
       m_Calls: []
   <OnOpenStart>k__BackingField:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7915192131669283939}
+        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: CloseCurrentThenOpen
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3561373631828177653}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   <OnOpenEnd>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
@@ -2624,18 +2577,6 @@ MonoBehaviour:
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 3220688595204261714}
-          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 7915192131669283939}
-        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
-        m_MethodName: CloseCurrentThenOpen
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 3561373631828177653}
           m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -7114,18 +7055,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 7915192131669283939}
-        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
-        m_MethodName: CloseCurrentThenOpen
-        m_Mode: 2
-        m_Arguments:
-          m_ObjectArgument: {fileID: 3561373631828177653}
-          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: GoForth
@@ -7545,8 +7474,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 2
-      outSlope: 2
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -7554,8 +7483,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 0
-      outSlope: 0
+      inSlope: 2
+      outSlope: 2
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -9476,6 +9405,38 @@ PrefabInstance:
       propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2309103510032901628}
+    - target: {fileID: 1519151148489678416, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: <OnOpenStart>k__BackingField.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1519151148489678416, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: <OnOpenStart>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1519151148489678416, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: <OnOpenStart>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 7915192131669283939}
+    - target: {fileID: 1519151148489678416, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: <OnOpenStart>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1519151148489678416, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: <OnOpenStart>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: CloseCurrentThenOpen
+      objectReference: {fileID: 0}
+    - target: {fileID: 1519151148489678416, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: <OnOpenStart>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Ivayami.UI.MenuGroup, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 1519151148489678416, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: <OnOpenStart>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 3561373631828177653}
+    - target: {fileID: 1519151148489678416, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: <OnOpenStart>k__BackingField.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: Ivayami.UI.Menu, Assembly-CSharp
+      objectReference: {fileID: 0}
     - target: {fileID: 2217966361225814052, guid: 187e861f151bd864996c2305e988bacb, type: 3}
       propertyPath: _onSelect.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
       value: 5

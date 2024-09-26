@@ -18,8 +18,6 @@ namespace Ivayami.UI {
         public Sprite PlaceImage { get; private set; }
         public string PlaceName { get; private set; }
 
-        private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
-
         public void Setup(SaveProgress progress, byte id) {
             _id = id;
             UiText uiText = _uiText.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
@@ -32,8 +30,8 @@ namespace Ivayami.UI {
         }
 
         public void EnterSave() {
-            SceneTransition.Instance.OnCloseEnd.AddListener(EnterSaveWaitFadeIn);
-            SceneTransition.Instance.Close();
+            SceneTransition.Instance.OnOpenEnd.AddListener(EnterSaveWaitFadeIn);
+            SceneTransition.Instance.Open();
         }
 
         private void EnterSaveWaitFadeIn() {
@@ -41,7 +39,10 @@ namespace Ivayami.UI {
                 PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
 
                 SaveSelector.Instance.MainMenuUnloader.UnloadScene();
-                if (_isFirstTime) SaveSelector.Instance.CutsceneLoader.LoadScene();
+                if (_isFirstTime) {
+                    SceneController.Instance.OnAllSceneRequestEnd += () => SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
+                    SaveSelector.Instance.CutsceneLoader.LoadScene();
+                }
                 else {
                     SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
                     SaveSelector.Instance.BaseTerrainLoader.LoadScene();
@@ -50,10 +51,8 @@ namespace Ivayami.UI {
         }
 
         private void TeleportPlayer() {
-            if (!CutsceneController.IsPlaying) {
-                SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
-                SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayer;
-            }
+            SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
+            SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayer;
         }
 
     }
