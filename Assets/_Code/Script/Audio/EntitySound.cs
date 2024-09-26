@@ -1,6 +1,7 @@
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
+using FMOD;
 
 namespace Ivayami.Audio
 {
@@ -26,7 +27,6 @@ namespace Ivayami.Audio
         {
             sound.getPlaybackState(out PLAYBACK_STATE state);
             if (state == PLAYBACK_STATE.PLAYING) sound.stop(fadeOut ? FMOD.Studio.STOP_MODE.ALLOWFADEOUT : FMOD.Studio.STOP_MODE.IMMEDIATE);
-            //sound.setVolume(SaveSystem.Instance && SaveSystem.Instance.Options != null ? SaveSystem.Instance.Options.sfxVol : 1f);
 
             sound.getDescription(out EventDescription description);
             description.is3D(out bool is3d);
@@ -42,13 +42,14 @@ namespace Ivayami.Audio
 
             if (onAudioEnd != null) sound.setCallback(onAudioEnd, EVENT_CALLBACK_TYPE.SOUND_STOPPED);
             sound.start();
-            //RuntimeManager.PlayOneShotAttached(new EventReference(), gameObject);
         }
 
 
         protected EventInstance InstantiateEvent(EventReference sound)
         {
             EventInstance eventInstance = RuntimeManager.CreateInstance(sound);
+            RuntimeManager.GetEventDescription(sound).is3D(out bool is3d);
+            if (is3d) eventInstance.set3DAttributes(transform.position.To3DAttributes());
             return eventInstance;
         }
 
