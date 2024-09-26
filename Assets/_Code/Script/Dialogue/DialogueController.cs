@@ -77,12 +77,12 @@ namespace Ivayami.Dialogue
             Dialogue[] dialogues;
             dialogues = Resources.LoadAll<Dialogue>("Dialogues");
             string assetName;
-            for(int i = 0; i < dialogues.Length; i++)
+            for (int i = 0; i < dialogues.Length; i++)
             {
                 assetName = dialogues[i].name;
                 if (!_dialoguesIDs.ContainsKey(assetName))
                 {
-                    _dialoguesIDs.Add(assetName, dialogues[i].ID);                    
+                    _dialoguesIDs.Add(assetName, dialogues[i].ID);
                 }
                 else
                 {
@@ -91,7 +91,7 @@ namespace Ivayami.Dialogue
                 //Resources.UnloadAsset(dialogues[i]);
             }
             AsyncOperation operation = Resources.UnloadUnusedAssets();
-            operation.completed += (AsyncOperation op) => IsPaused = false;
+            operation.completed += (AsyncOperation op) => { IsPaused = false; };
         }
 
         #region BaseStructure
@@ -127,7 +127,7 @@ namespace Ivayami.Dialogue
             instanceId = 0;
             if (_dialoguesIDs.ContainsKey(dialogueName))
             {
-                instanceId = _dialoguesIDs[dialogueName];                
+                instanceId = _dialoguesIDs[dialogueName];
                 return true;
             }
             else

@@ -12,7 +12,7 @@ namespace Ivayami.Dialogue
 
         private void Start()
         {
-            if (_dialogue) Resources.UnloadAsset(_dialogue);
+            if (_dialogue) Resources.UnloadAsset(_dialogue);            
         }
 
         [ContextMenu("StartDialogue")]
