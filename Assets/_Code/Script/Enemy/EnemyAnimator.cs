@@ -7,6 +7,7 @@ namespace Ivayami.Enemy
     [RequireComponent(typeof(Animator))]
     public class EnemyAnimator : MonoBehaviour
     {
+        [SerializeField] private bool _animationScaleWithMovementSpeed;
         //private static readonly int WALKING_BOOL = Animator.StringToHash("walking");
         private static readonly int SPAWNING_TRIGGER = Animator.StringToHash("spawning");
         private static readonly int ATTACK_TRIGGER = Animator.StringToHash("attacking");
@@ -39,7 +40,7 @@ namespace Ivayami.Enemy
         public void Walking(float speed, Action onAnimationEnd = null)
         {
             //_animator.SetBool(WALKING_BOOL, walking);
-            _animator.SetFloat(MOVE_SPEED_FLOAT, speed);
+            _animator.SetFloat(MOVE_SPEED_FLOAT, _animationScaleWithMovementSpeed ? speed : 1);
             StartAnimationEvent(WALKING_STATE, onAnimationEnd);
         }
         /// <param name="onAnimationEnd">
@@ -53,10 +54,10 @@ namespace Ivayami.Enemy
         /// <param name="onAnimationEnd">
         /// will only activate once
         /// </param>
-        public void Attack(Action onAnimationEnd = null)
+        public void Attack(Action onAnimationEnd = null, Action<float> currentAnimationStepCallback = null)
         {
             _animator.SetTrigger(ATTACK_TRIGGER);
-            StartAnimationEvent(ATTACK_STATE, onAnimationEnd);
+            StartAnimationEvent(ATTACK_STATE, onAnimationEnd, currentAnimationStepCallback);
         }
         /// <param name="onAnimationEnd">
         /// will only activate once
@@ -90,7 +91,7 @@ namespace Ivayami.Enemy
             _animator.SetFloat(CHASING_FLOAT, isChasing ? 1 : 0);
         }
 
-        private void StartAnimationEvent(int stateHash, Action onAnimationEnd)
+        private void StartAnimationEvent(int stateHash, Action onAnimationEnd, Action<float> currentAnimationStepCallback = null)
         {
             if (onAnimationEnd != null)
             {
@@ -99,11 +100,11 @@ namespace Ivayami.Enemy
                     StopCoroutine(_waitAnimationEndCoroutine);
                     _waitAnimationEndCoroutine = null;
                 }
-                _waitAnimationEndCoroutine = StartCoroutine(WaitAnimationEndCoroutine(stateHash, onAnimationEnd));
+                _waitAnimationEndCoroutine = StartCoroutine(WaitAnimationEndCoroutine(stateHash, onAnimationEnd, currentAnimationStepCallback));
             }
         }
 
-        private IEnumerator WaitAnimationEndCoroutine(int stateHash, Action onAnimationEnd)
+        private IEnumerator WaitAnimationEndCoroutine(int stateHash, Action onAnimationEnd, Action<float> currentAnimationStepCallback = null)
         {
             if (_animator.GetCurrentAnimatorStateInfo(0).shortNameHash != stateHash)
             {
@@ -114,6 +115,7 @@ namespace Ivayami.Enemy
             }
             while (_animator.GetCurrentAnimatorStateInfo(0).shortNameHash == stateHash)
             {
+                currentAnimationStepCallback?.Invoke(_animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
                 yield return null;
             }
             onAnimationEnd?.Invoke();
