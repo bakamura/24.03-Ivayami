@@ -27,7 +27,7 @@ namespace Ivayami.Dialogue
         [SerializeField] private DialogueLayout[] _dialogueVariations;
         [SerializeField] private bool _debugLogs;
 
-        private Dictionary<int, int> _dialoguesIDs = new Dictionary<int, int>();
+        private Dictionary<string, int> _dialoguesIDs = new Dictionary<string, int>();
         private CanvasGroup _canvasGroup;
         private Coroutine _writtingCoroutine;
         private WaitForSeconds _typeWrittingDelay;
@@ -76,32 +76,33 @@ namespace Ivayami.Dialogue
             IsPaused = true;
             Dialogue[] dialogues;
             dialogues = Resources.LoadAll<Dialogue>("Dialogues");
-            int instanceId;
-            for(int i = 0; i < dialogues.Length; i++)
+            string assetName;
+            for (int i = 0; i < dialogues.Length; i++)
             {
-                instanceId = dialogues[i].ID;
-                if (!_dialoguesIDs.ContainsKey(instanceId))
+                assetName = dialogues[i].name;
+                if (!_dialoguesIDs.ContainsKey(assetName))
                 {
-                    _dialoguesIDs.Add(instanceId, instanceId);
+                    _dialoguesIDs.Add(assetName, dialogues[i].ID);
                 }
                 else
                 {
                     Debug.LogWarning($"Dialogue {dialogues[i].name} Duplicate Found, please delete it");
                 }
+                //Resources.UnloadAsset(dialogues[i]);
             }
             AsyncOperation operation = Resources.UnloadUnusedAssets();
-            operation.completed += (AsyncOperation op) => IsPaused = false;
+            operation.completed += (AsyncOperation op) => { IsPaused = false; };
         }
 
         #region BaseStructure
-        public void StartDialogue(int dialogueId, bool lockInput)
+        public void StartDialogue(string dialogueName, bool lockInput)
         {
             if (IsPaused)
             {
-                if (_debugLogs) Debug.Log($"Dialogue is Paused, will not start {dialogueId}");
+                if (_debugLogs) Debug.Log($"Dialogue is Paused, will not start {dialogueName}");
                 return;
             }
-            if (TryGetDialogueInstanceID(dialogueId, out int instanceID))
+            if (TryGetDialogueInstanceID(dialogueName, out int instanceID))
             {
                 if (_currentDialogue) StopDialogue();
                 Dialogue dialogue = (Dialogue)Resources.InstanceIDToObject(instanceID);
@@ -111,7 +112,7 @@ namespace Ivayami.Dialogue
                     PlayerActions.Instance.ChangeInputMap("Dialogue");
                     _continueInput.action.performed += HandleContinueDialogue;
                 }
-                if (_debugLogs) Debug.Log($"Starting dialogue {dialogueId}");
+                if (_debugLogs) Debug.Log($"Starting dialogue {dialogueName}");
                 _canvasGroup.alpha = 1;
                 _canvasGroup.blocksRaycasts = true;
                 _currentSpeechIndex = 0;
@@ -121,17 +122,17 @@ namespace Ivayami.Dialogue
             }
         }
 
-        private bool TryGetDialogueInstanceID(int dialogueId, out int instanceId)
+        private bool TryGetDialogueInstanceID(string dialogueName, out int instanceId)
         {
             instanceId = 0;
-            if (_dialoguesIDs.ContainsKey(dialogueId))
+            if (_dialoguesIDs.ContainsKey(dialogueName))
             {
-                instanceId = dialogueId;                
+                instanceId = _dialoguesIDs[dialogueName];
                 return true;
             }
             else
             {
-                Debug.LogError($"the dialogue {dialogueId} is not present in the dictionary");
+                Debug.LogError($"the dialogue {dialogueName} is not present in the dictionary");
                 return false;
             }
         }

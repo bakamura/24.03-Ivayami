@@ -40,7 +40,7 @@ namespace Ivayami.Enemy
         public void Walking(float speed, Action onAnimationEnd = null)
         {
             //_animator.SetBool(WALKING_BOOL, walking);
-            _animator.SetFloat(MOVE_SPEED_FLOAT, _animationScaleWithMovementSpeed ? speed : 1);
+            _animator.SetFloat(MOVE_SPEED_FLOAT, _animationScaleWithMovementSpeed ? speed : Math.Clamp(speed, 0, 1));
             StartAnimationEvent(WALKING_STATE, onAnimationEnd);
         }
         /// <param name="onAnimationEnd">
