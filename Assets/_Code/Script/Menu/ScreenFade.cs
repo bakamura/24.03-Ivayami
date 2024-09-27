@@ -16,7 +16,7 @@ namespace Ivayami.UI {
 
         [Header("Cache")]
 
-        private static bool? _isFadeIn = null;
+        private bool? _isFadeIn = null;
         private Coroutine _fadeOutDelayCoroutine;
 
         [ContextMenu("FadeIn")]
