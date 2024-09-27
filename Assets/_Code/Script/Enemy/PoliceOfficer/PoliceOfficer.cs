@@ -187,9 +187,9 @@ namespace Ivayami.Enemy
                             }
                         }
                         if (_debugLogPoliceOfficer) Debug.Log("Patroling");
-                    }
-                    _enemyAnimator.Chasing(_isChasing);
+                    }                    
                 }
+                _enemyAnimator.Chasing(_isChasing);
                 _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude);
                 yield return _behaviourTickDelay;
             }

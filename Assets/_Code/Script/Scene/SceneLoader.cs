@@ -17,22 +17,22 @@ namespace Ivayami.Scene
 
         private void OnTriggerEnter(Collider other)
         {
-            SceneController.Instance.StartLoad(_sceneId, _onSceneLoad);
+            SceneController.Instance.LoadScene(_sceneId, _onSceneLoad);
         }
 
         private void OnTriggerExit(Collider other)
         {
-            SceneController.Instance.StartLoad(_sceneId, _onSceneUnload);
+            SceneController.Instance.UnloadScene(_sceneId, _onSceneUnload);
         }
 
         public void LoadScene()
         {
-            SceneController.Instance.StartLoad(_sceneId, _onSceneLoad);
+            SceneController.Instance.LoadScene(_sceneId, _onSceneLoad);
         }
 
         public void UnloadScene()
         {
-            SceneController.Instance.StartLoad(_sceneId, _onSceneUnload);
+            SceneController.Instance.UnloadScene(_sceneId, _onSceneUnload);
         }
 
         public void UnloadAllScenes()
