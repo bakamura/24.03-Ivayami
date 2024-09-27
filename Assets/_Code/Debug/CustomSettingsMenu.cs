@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 using UnityEditor.SceneManagement;
 using Ivayami.Player;
 using Ivayami.Scene;
+using Ivayami.Save;
 
 namespace Ivayami.debug
 {
@@ -34,10 +35,15 @@ namespace Ivayami.debug
         }
 
         public static void OnSceneLoad()
-        {                        
-            PlayerMovement.Instance.ToggleMovement(true);
-            PlayerActions.Instance.ChangeInputMap("Player");
+        {
+            CharacterController controller = PlayerMovement.Instance.GetComponent<CharacterController>();
+            controller.enabled = false;
             PlayerMovement.Instance.SetPosition(Ivayami.debug.CustomSettingsHandler.CameraPosition);
+            controller.enabled = true;
+            PlayerActions.Instance.ChangeInputMap("Player");
+            PlayerMovement.Instance.RemoveAllBlockers();
+            SaveSystem.Instance.DeleteProgress(0);
+            SaveSystem.Instance.LoadProgress(0, null);
             SceneController.Instance.OnAllSceneRequestEndDebug -= OnSceneLoad;
         }
 

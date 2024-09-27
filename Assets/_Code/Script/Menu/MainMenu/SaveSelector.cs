@@ -20,17 +20,14 @@ namespace Ivayami.UI {
         [field: SerializeField] public ScreenFade NormalFade { get; private set; }
 
         private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
-
-        protected override void Awake() {
-            base.Awake();
-
-            StartCoroutine(WaitForSaveOptions());
-
-            PlayerActions.Instance.ChangeInputMap("Menu");
-        }
+        private const string BLOCKER_KEY = "MainMenu";
 
         private void Start() {
+            StartCoroutine(WaitForSaveOptions());
+
             Options.OnChangeLanguage.AddListener((language) => SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate));
+            PlayerActions.Instance.ChangeInputMap("Menu");
+            PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, false);
         }
 
         private IEnumerator WaitForSaveOptions() {
@@ -45,9 +42,15 @@ namespace Ivayami.UI {
 
         public void DisplaySaveInfo(int saveId) {
             _previewImage.sprite = _saveSelectBtns[saveId].PlaceImage;
+            _previewImage.color = _previewImage.sprite != null ? Color.white : new Color(0, 0, 0, 0);
             _previewText.text = _saveSelectBtns[saveId].PlaceName;
 
             Logger.Log(LogType.UI, $"Display Save {saveId}");
         }
+
+        public void RemovePlayerBlocker() {
+            PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, true);
+        }
+
     }
 }

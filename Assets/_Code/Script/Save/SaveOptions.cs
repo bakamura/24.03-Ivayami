@@ -12,6 +12,7 @@ namespace Ivayami.Save {
         public float cameraSensitivityY = 0.5f;
 
         public Int32 language;
+        public LanguageTypes Language { get { return (LanguageTypes)language; } }
 
     }
 }
