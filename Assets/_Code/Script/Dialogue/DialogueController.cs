@@ -16,12 +16,10 @@ namespace Ivayami.Dialogue
     [RequireComponent(typeof(CanvasGroup), typeof(DialogueSounds))]
     public class DialogueController : MonoSingleton<DialogueController>
     {
-
         [SerializeField, Min(0f)] private float _characterShowDelay;
-        //[SerializeField, Min(0f), Tooltip("default value for when dialogue canot be skipped by player input")] private float _delayToAutoStartNextSpeech;
-        //[SerializeField] private InputActionAsset _inputActionMap;
         [SerializeField] private InputActionReference _continueInput;
         [SerializeField] private TMP_Text _speechTextComponent;
+        [SerializeField] private TMP_Text _textToCopyFrom;
         [SerializeField] private TMP_Text _announcerNameTextComponent;
         [SerializeField] private Image _dialogueBackground;
         [SerializeField] private RectTransform _dialogueContainer;
@@ -29,21 +27,18 @@ namespace Ivayami.Dialogue
         [SerializeField] private DialogueLayout[] _dialogueVariations;
         [SerializeField] private bool _debugLogs;
 
-        private Dictionary<int, int> _dialoguesIDs = new Dictionary<int, int>();
+        private Dictionary<string, int> _dialoguesIDs = new Dictionary<string, int>();
         private CanvasGroup _canvasGroup;
-        //private Dictionary<string, Dialogue> _dialogueDictionary = new Dictionary<string, Dialogue>();
         private Coroutine _writtingCoroutine;
         private WaitForSeconds _typeWrittingDelay;
-        //private WaitForSeconds _autoStartNextDelay;
         private Dialogue _currentDialogue;
         private List<DialogueEvents> _dialogueEventsList = new List<DialogueEvents>();
-        //private bool _readyForNextSpeech = true;
-        private sbyte _currentSpeechIndex;
         private DialogueSounds _dialogueSounds;
+        private RectTransform _textSpeechRect;
         private char[] _currentDialogueCharArray;
         private int _currentCharIndex;
-        //private float _currentDelay;
-        [System.Serializable]
+        private sbyte _currentSpeechIndex;
+        [Serializable]
         private struct DialogueLayout
         {
             public Sprite Background;
@@ -74,44 +69,40 @@ namespace Ivayami.Dialogue
             base.Awake();
 
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
-            //_autoStartNextDelay = new WaitForSeconds(_delayToAutoStartNextSpeech);
             _canvasGroup = GetComponent<CanvasGroup>();
             _dialogueSounds = GetComponent<DialogueSounds>();
+            _textSpeechRect = _speechTextComponent.GetComponent<RectTransform>();
 
             IsPaused = true;
             Dialogue[] dialogues;
             dialogues = Resources.LoadAll<Dialogue>("Dialogues");
-            int instanceId;
-            for(int i = 0; i < dialogues.Length; i++)
+            string assetName;
+            for (int i = 0; i < dialogues.Length; i++)
             {
-                instanceId = dialogues[i].ID;
-                if (!_dialoguesIDs.ContainsKey(instanceId))
+                assetName = dialogues[i].name;
+                if (!_dialoguesIDs.ContainsKey(assetName))
                 {
-                    _dialoguesIDs.Add(instanceId, instanceId);
+                    _dialoguesIDs.Add(assetName, dialogues[i].ID);
                 }
                 else
                 {
                     Debug.LogWarning($"Dialogue {dialogues[i].name} Duplicate Found, please delete it");
                 }
+                //Resources.UnloadAsset(dialogues[i]);
             }
             AsyncOperation operation = Resources.UnloadUnusedAssets();
-            operation.completed += (AsyncOperation op) => IsPaused = false;
+            operation.completed += (AsyncOperation op) => { IsPaused = false; };
         }
 
-        //private void Start()
-        //{
-        //    Options.OnChangeLanguage.AddListener(ChangeLanguage);
-        //}
-
         #region BaseStructure
-        public void StartDialogue(int dialogueId, bool lockInput)
+        public void StartDialogue(string dialogueName, bool lockInput)
         {
             if (IsPaused)
             {
-                if (_debugLogs) Debug.Log($"Dialogue is Paused, will not start {dialogueId}");
+                if (_debugLogs) Debug.Log($"Dialogue is Paused, will not start {dialogueName}");
                 return;
             }
-            if (TryGetDialogueInstanceID(dialogueId, out int instanceID) /*&& _writtingCoroutine == null*/)
+            if (TryGetDialogueInstanceID(dialogueName, out int instanceID))
             {
                 if (_currentDialogue) StopDialogue();
                 Dialogue dialogue = (Dialogue)Resources.InstanceIDToObject(instanceID);
@@ -120,34 +111,28 @@ namespace Ivayami.Dialogue
                 {
                     PlayerActions.Instance.ChangeInputMap("Dialogue");
                     _continueInput.action.performed += HandleContinueDialogue;
-                    //_continueInput.action.Enable();
                 }
-                if (_debugLogs) Debug.Log($"Starting dialogue {dialogueId}");
+                if (_debugLogs) Debug.Log($"Starting dialogue {dialogueName}");
                 _canvasGroup.alpha = 1;
                 _canvasGroup.blocksRaycasts = true;
                 _currentSpeechIndex = 0;
                 _currentDialogue = dialogue;
                 OnDialogeStart?.Invoke();
-                //if (_writtingCoroutine != null)
-                //{
-                //    StopCoroutine(_writtingCoroutine);
-                //    _writtingCoroutine = null;
-                //}
                 _writtingCoroutine = StartCoroutine(WrittingCoroutine(true));
             }
         }
 
-        private bool TryGetDialogueInstanceID(int dialogueId, out int instanceId)
+        private bool TryGetDialogueInstanceID(string dialogueName, out int instanceId)
         {
             instanceId = 0;
-            if (_dialoguesIDs.ContainsKey(dialogueId))
+            if (_dialoguesIDs.ContainsKey(dialogueName))
             {
-                instanceId = dialogueId;                
+                instanceId = _dialoguesIDs[dialogueName];
                 return true;
             }
             else
             {
-                Debug.LogError($"the dialogue {dialogueId} is not present in the dictionary");
+                Debug.LogError($"the dialogue {dialogueName} is not present in the dictionary");
                 return false;
             }
         }
@@ -157,7 +142,7 @@ namespace Ivayami.Dialogue
             {
                 SkipSpeech();
             }
-            else /*(_writtingCoroutine == null && _readyForNextSpeech)*/
+            else
             {
                 _currentSpeechIndex++;
                 _dialogueSounds.PlaySound(DialogueSounds.SoundTypes.ContinueDialogue);
@@ -170,7 +155,6 @@ namespace Ivayami.Dialogue
                 else
                 {
                     _continueDialogueIcon.SetActive(false);
-                    //_readyForNextSpeech = false;
                     _writtingCoroutine = StartCoroutine(WrittingCoroutine(true));
                 }
             }
@@ -182,9 +166,9 @@ namespace Ivayami.Dialogue
             {
                 _continueDialogueIcon.SetActive(false);
                 _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].announcerName;
-                _speechTextComponent.text = "";
+                _speechTextComponent.text = null;
+                _textToCopyFrom.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content;
                 _currentCharIndex = 0;
-                //_currentDelay = 0;
                 _currentDialogueCharArray = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content.ToCharArray();
                 if (CutsceneController.IsPlaying || !LockInput)
                 {
@@ -200,7 +184,7 @@ namespace Ivayami.Dialogue
                 }
                 ActivateDialogueEvents(_currentDialogue.dialogue[_currentSpeechIndex].EventId);
             }
-
+            _textSpeechRect.rect.Set(_textSpeechRect.rect.x, _textSpeechRect.rect.y, _textToCopyFrom.preferredWidth, _textToCopyFrom.preferredHeight);
             _canvasGroup.alpha = _currentDialogueCharArray.Length > 0 ? 1 : 0;
             while (_currentCharIndex < _currentDialogueCharArray.Length)
             {
@@ -223,16 +207,7 @@ namespace Ivayami.Dialogue
             }
 
             yield return new WaitForSeconds(_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech);
-            //if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0 && _currentDelay < _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech)
-            //{
-            //    while (_currentDelay < _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech)
-            //    {
-            //        _currentDelay += Time.deltaTime;
-            //        yield return null;
-            //    }
-            //}
             if (LockInput) _continueDialogueIcon.SetActive(true);
-            //_readyForNextSpeech = true;
             _writtingCoroutine = null;
             if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0)
             {
@@ -248,7 +223,6 @@ namespace Ivayami.Dialogue
             _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content;
             _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].announcerName;
             if (LockInput) _continueDialogueIcon.SetActive(true);
-            //_readyForNextSpeech = true;
             OnSkipSpeech?.Invoke();
             _writtingCoroutine = null;
         }
@@ -271,7 +245,6 @@ namespace Ivayami.Dialogue
                 {
                     PlayerActions.Instance.ChangeInputMap("Player");
                     _continueInput.action.performed -= HandleContinueDialogue;
-                    //_continueInput.action.Disable();
                 }
                 LockInput = false;
                 IsPaused = false;

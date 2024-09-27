@@ -27,7 +27,7 @@ namespace Ivayami.Enemy
         [SerializeField] private HitboxInfo[] _attackAreaInfos;
 
         [Header("Officer Debug")]
-        [SerializeField] private bool _debugLog;
+        [SerializeField] private bool _debugLogPoliceOfficer;
 #if UNITY_EDITOR
         [SerializeField] private bool _drawMinDistance;
         [SerializeField] private Color _minDistanceAreaColor = Color.yellow;
@@ -142,7 +142,7 @@ namespace Ivayami.Enemy
                     {
                         Attack();
                     }
-                    if (_debugLog) Debug.Log("Chase Target");
+                    if (_debugLogPoliceOfficer) Debug.Log("Chase Target");
                 }
                 else
                 {
@@ -152,11 +152,11 @@ namespace Ivayami.Enemy
                         if (_goToLastTargetPosition)
                         {
                             _navMeshAgent.SetDestination(_lastTargetPosition);
-                            if (_debugLog) Debug.Log($"Moving to last target position {_lastTargetPosition}");
+                            if (_debugLogPoliceOfficer) Debug.Log($"Moving to last target position {_lastTargetPosition}");
                             if (_navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
                             {
                                 _goToLastTargetPointPatience += _behaviourTickFrequency;
-                                if (_debugLog) Debug.Log("Last target point reached");
+                                if (_debugLogPoliceOfficer) Debug.Log("Last target point reached");
                                 if (_goToLastTargetPointPatience >= _stayInLastTargetPositionDuration)
                                 {
                                     _isChasing = false;
@@ -164,7 +164,7 @@ namespace Ivayami.Enemy
                                 }
                                 else
                                 {
-                                    if(_debugLog) Debug.Log("Waiting in Last Target Point");
+                                    if (_debugLogPoliceOfficer) Debug.Log("Waiting in Last Target Point");
                                 }
                             }
                         }
@@ -186,10 +186,10 @@ namespace Ivayami.Enemy
                                 _navMeshAgent.SetDestination(point.Point.Position);
                             }
                         }
-                        if (_debugLog) Debug.Log("Patroling");
-                    }
-                    _enemyAnimator.Chasing(_isChasing);
+                        if (_debugLogPoliceOfficer) Debug.Log("Patroling");
+                    }                    
                 }
+                _enemyAnimator.Chasing(_isChasing);
                 _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude);
                 yield return _behaviourTickDelay;
             }
@@ -198,7 +198,7 @@ namespace Ivayami.Enemy
         private bool CheckForTarget(float halfVisionAngle)
         {
             Vector3 rayOrigin = transform.position + _visionOffset;
-            bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(rayOrigin, _detectionRange, _hitsCache, _targetLayer) > 0 : true;
+            bool targetInsideRange = _detectionRange > 0 ? Physics.OverlapSphereNonAlloc(rayOrigin, _detectionRange, _hitsCache, _targetLayer, QueryTriggerInteraction.Ignore) > 0 : true;
 
             bool isInMinRange;
             Vector3 targetCenter = Vector3.zero;
@@ -207,15 +207,15 @@ namespace Ivayami.Enemy
                 targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
                 isInMinRange = Vector3.Distance(targetCenter, rayOrigin) <= _minDetectionRange;
             }
-            else isInMinRange = Physics.OverlapSphereNonAlloc(rayOrigin, _minDetectionRange, _hitsCache, _targetLayer) > 0;
+            else isInMinRange = Physics.OverlapSphereNonAlloc(rayOrigin, _minDetectionRange, _hitsCache, _targetLayer, QueryTriggerInteraction.Ignore) > 0;
 
             if (!_hitsCache[0]) return false;
-            
-            bool blockingVision = Physics.Raycast(rayOrigin, (targetCenter - rayOrigin).normalized, /*out RaycastHit hit,*/ Vector3.Distance(rayOrigin, targetCenter), _blockVisionLayer);
+
+            bool blockingVision = Physics.Raycast(rayOrigin, (targetCenter - rayOrigin).normalized, /*out RaycastHit hit,*/ Vector3.Distance(rayOrigin, targetCenter), _blockVisionLayer, QueryTriggerInteraction.Ignore);
             bool isInVisionAngle = Vector3.Angle(transform.forward, (targetCenter - rayOrigin).normalized) <= halfVisionAngle;
             _currentTargetColliderSizeFactor = _hitsCache[0].bounds.extents.z;
 
-            if (_debugLog /*&& hit.collider*/)
+            if (_debugLogPoliceOfficer)
                 Debug.Log($"blocking vision {blockingVision}, is in Min range {isInMinRange}, target Inside Radius {targetInsideRange}, is in Vision Angle {isInVisionAngle}");
             _directContactWithTarget = !blockingVision && (isInMinRange || (isInVisionAngle && targetInsideRange));
             return _directContactWithTarget;
@@ -227,7 +227,7 @@ namespace Ivayami.Enemy
         {
             if (!_navMeshAgent.isStopped)
             {
-                if (_debugLog) Debug.Log("Attack Target");
+                if (_debugLogPoliceOfficer) Debug.Log("Attack Target");
                 StopBehaviour();
                 StopTargetPointReachedCoroutine();
                 _navMeshAgent.isStopped = true;
@@ -353,7 +353,7 @@ namespace Ivayami.Enemy
 
         public void Trip()
         {
-            if (_debugLog) Debug.Log("Trip Animation");
+            if (_debugLogPoliceOfficer) Debug.Log("Trip Animation");
             StopBehaviour();
             StopTargetPointReachedCoroutine();
             _navMeshAgent.isStopped = true;
