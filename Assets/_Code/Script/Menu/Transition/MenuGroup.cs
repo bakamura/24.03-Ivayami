@@ -53,7 +53,7 @@ namespace Ivayami.UI {
             _transitionCoroutine = null;
             _currentMenu.OnTransitionEnd.RemoveListener(Open);
 
-            Selectable newSelectedObject = _currentMenu.GetComponentInChildren<Selectable>();
+            Selectable newSelectedObject = _currentMenu.InitialSelected;
             if (newSelectedObject != null) EventSystem.current.SetSelectedGameObject(newSelectedObject.gameObject);
 
             Logger.Log(LogType.UI, $"Change Menu End");
