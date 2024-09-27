@@ -40,7 +40,7 @@ namespace Ivayami.UI {
 
                 SaveSelector.Instance.MainMenuUnloader.UnloadScene();
                 if (_isFirstTime) {
-                    SceneController.Instance.OnAllSceneRequestEnd += () => SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
+                    SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayerNextLoad;
                     SaveSelector.Instance.CutsceneLoader.LoadScene();
                 }
                 else {
@@ -53,6 +53,11 @@ namespace Ivayami.UI {
         private void TeleportPlayer() {
             SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
             SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayer;
+        }
+
+        private void TeleportPlayerNextLoad() {
+            SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
+            SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayerNextLoad;
         }
 
     }
