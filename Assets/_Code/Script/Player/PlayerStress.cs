@@ -99,23 +99,22 @@ namespace Ivayami.Player {
             yield return _restartWait;
 
             SceneTransition.Instance.OnOpenEnd.AddListener(RespawnFailFade);
-            SceneTransition.Instance.Open();
+            SceneTransition.Instance.Close(); 
         }
-
 
         private void RespawnFailFade() {
             onFailFade.Invoke();
 
             if (_overrideFailLoad) _overrideFailLoad = false;
-            else SaveSystem.Instance.LoadProgress(SaveSystem.Instance.Progress.id, () => SceneController.Instance.UnloadAllScenes(ReloadAndReset));
+            else SaveSystem.Instance.LoadProgress(SaveSystem.Instance.Progress.id, () => SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes));
             SceneTransition.Instance.OnOpenEnd.RemoveListener(RespawnFailFade);
         }
 
-        private void ReloadAndReset() {
+        private void HandleUnloadAllScenes() {
             UnityEvent onSceneLoaded = new UnityEvent();
             onSceneLoaded.AddListener(() => SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport());
             SceneController.Instance.StartLoad("BaseTerrain", onSceneLoaded);
-            SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
+            SceneController.Instance.OnAllSceneRequestEnd -= HandleUnloadAllScenes;
             PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
         }
 
