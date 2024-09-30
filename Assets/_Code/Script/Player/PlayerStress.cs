@@ -98,14 +98,16 @@ namespace Ivayami.Player {
 
             yield return _restartWait;
 
-            SceneTransition.Instance.Menu.Close();
+            SceneTransition.Instance.OnOpenEnd.AddListener(RespawnFailFade);
+            SceneTransition.Instance.Open();
+        }
 
-            yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
-
+        private void RespawnFailFade() {
             onFailFade.Invoke();
 
             if (_overrideFailLoad) _overrideFailLoad = false;
             else SaveSystem.Instance.LoadProgress(SaveSystem.Instance.Progress.id, () => SceneController.Instance.UnloadAllScenes(ReloadAndReset));
+            SceneTransition.Instance.OnOpenEnd.RemoveListener(RespawnFailFade);
         }
 
         private void ReloadAndReset() {
