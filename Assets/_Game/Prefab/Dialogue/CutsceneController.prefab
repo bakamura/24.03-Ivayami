@@ -61,6 +61,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interactable: 0
+  <OnTransitionStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnTransitionEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
   _transitionCurve:
     serializedVersion: 2
     m_Curve:
@@ -85,9 +104,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  <TransitionDuration>k__BackingField: 0
+  _transitionDuration: 0.125
   <InitialSelected>k__BackingField: {fileID: 0}
-  _interactable: 0
 --- !u!1 &1052034076364099513
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,8 +447,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6e871dd239ff0846b96b9e497f3a39e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentMenu: {fileID: 0}
-  _delayToOpen: 0
+  _currentMenu: {fileID: 5765292668744803864}
+  _delayToOpen: -1
   _setMenuBtnSelectedOnStart: 0
 --- !u!114 &1624836140107170707
 MonoBehaviour:
@@ -514,6 +532,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interactable: 1
+  <OnTransitionStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnTransitionEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
   _transitionCurve:
     serializedVersion: 2
     m_Curve:
@@ -538,9 +575,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  <TransitionDuration>k__BackingField: 0.5
+  _transitionDuration: 0.125
   <InitialSelected>k__BackingField: {fileID: 0}
-  _interactable: 1
 --- !u!114 &4514428413621201549
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -564,7 +600,7 @@ GameObject:
   - component: {fileID: 4605505727779030447}
   - component: {fileID: 1580820789085734953}
   m_Layer: 0
-  m_Name: FadeOut
+  m_Name: CutsceneFadeOut
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -597,39 +633,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delayBeforeStartFade: 0
-  _onAfterDelayBeforeFadeStart:
+  _delayToFadeOut: 0
+  _beforeFade:
+    m_PersistentCalls:
+      m_Calls: []
+  _afterFade:
     m_PersistentCalls:
       m_Calls: []
   _duration: 0.5
-  _fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _onFadeEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  _debugLogs: 0
 --- !u!1 &4716422315558278705
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,6 +653,7 @@ GameObject:
   - component: {fileID: 5721016753906124718}
   - component: {fileID: 2793149467296294870}
   - component: {fileID: 3194268924047896570}
+  - component: {fileID: 8887496233195639458}
   m_Layer: 0
   m_Name: CutsceneController
   m_TagString: Untagged
@@ -675,13 +687,67 @@ PlayableDirector:
   m_GameObject: {fileID: 4716422315558278705}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 0}
+  m_PlayableAsset: {fileID: 11400000, guid: ea4fc596a116ab94696c77748056da85, type: 2}
   m_InitialState: 0
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
   m_SceneBindings:
-  - key: {fileID: -2952862229386478365, guid: d409594871df3804a9c3c01b16541e1b, type: 2}
+  - key: {fileID: 2811300489442301834, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 2610726568046084932, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 7180602870913657006, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -2118651521432799530, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -7027115657066471478, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 3713791526938362336, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -6438039894321775728, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 4340501063829088710, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 5419866944139007798, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -7020217610659802325, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -6247141516607162443, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 8158969290201358038, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 6099088332310394309, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 5993388367985164662, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 3460147187582971084, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -8508313875286660790, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 7390300052649112645, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 2176165829294569903, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 1425724867234478508, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 8885727047705708694, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 1076255604668646994, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -8415150205461597694, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -2058270111343014570, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 693687617366940180, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 3975651018306168475, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: 7559224146118284590, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -3906097893275554671, guid: ea4fc596a116ab94696c77748056da85, type: 2}
+    value: {fileID: 0}
+  - key: {fileID: -5682905189580503436, guid: ea4fc596a116ab94696c77748056da85, type: 2}
     value: {fileID: 0}
   m_ExposedReferences:
     m_References: []
@@ -746,7 +812,43 @@ MonoBehaviour:
         m_CallState: 2
   _onCutsceneEnd:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.InterpolateFogShader, Assembly-CSharp
+        m_MethodName: StartLerp
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
+        m_MethodName: FadeIn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _debug: 0
 --- !u!114 &3194268924047896570
 MonoBehaviour:
@@ -760,9 +862,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dialogue: {fileID: 0}
-  _activateOnce: 0
+  _dialogue: {fileID: 11400000, guid: eb3f109c415a8c140af6c70c736e91a2, type: 2}
+  _activateOnce: 1
   _lockPlayerInput: 0
+--- !u!95 &8887496233195639458
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4716422315558278705}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6288267226879727766
 GameObject:
   m_ObjectHideFlags: 0
@@ -926,7 +1049,19 @@ MonoBehaviour:
         m_CallState: 2
   _onPointerEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6340353806929863841}
+        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: SetSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6288267226879727766}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _onPointerExit:
     m_PersistentCalls:
       m_Calls: []
@@ -1105,7 +1240,19 @@ MonoBehaviour:
         m_CallState: 2
   _onPointerEnter:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6340353806929863841}
+        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: SetSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7053682147713354559}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _onPointerExit:
     m_PersistentCalls:
       m_Calls: []
