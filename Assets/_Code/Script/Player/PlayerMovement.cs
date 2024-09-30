@@ -112,10 +112,8 @@ namespace Ivayami.Player {
         }
 
         private void Update() {
-            if (_movementBlock.Count <= 0) {
-                Move();
-                Rotate();
-            }
+            if (_movementBlock.Count <= 0) Move();
+            Rotate();
         }
 
         private void MoveDirection(InputAction.CallbackContext input) {
@@ -163,7 +161,7 @@ namespace Ivayami.Player {
         }
 
         private void RemoveCrouch() {
-            if(Crouching) ToggleCrouch();
+            if (Crouching) ToggleCrouch();
         }
 
         private IEnumerator CrouchSmoothHeightRoutine() {
@@ -225,10 +223,9 @@ namespace Ivayami.Player {
             transform.position = position;
         }
 
-        public void SetTargetAngle(float angle) {
+        public void SetTargetAngle(float angle, bool isIstant = true) {
             _targetAngle = Quaternion.Euler(0f, angle, 0f);
-            _visualTransform.rotation = _targetAngle;
-            // cinemachine freelook
+            if (isIstant) _visualTransform.rotation = _targetAngle;
         }
 
         public void UpdateVisualsVisibility(bool isVisible) {
