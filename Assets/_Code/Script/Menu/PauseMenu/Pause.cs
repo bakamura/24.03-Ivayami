@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -19,7 +20,7 @@ namespace Ivayami.UI {
         [SerializeField] private InputActionReference _pauseInput;
         [SerializeField] private InputActionReference _unpauseInput;
 
-        [HideInInspector] public bool canPause = false;
+        private HashSet<string> _pauseBlocker = new HashSet<string>();
         public bool Paused { get; private set; } = false;
 
         private void Start() {
@@ -28,16 +29,12 @@ namespace Ivayami.UI {
 
             onPause.AddListener(() => ReturnAction.Instance.Set(UnpauseOnBack));
             PlayerStress.Instance.onFail.AddListener(UnpauseIfPaused);
-            PlayerStress.Instance.onFail.AddListener(() => canPause = false);
-            PlayerStress.Instance.onFailFade.AddListener(() => canPause = true);
-            SceneTransition.Instance.OnTransitionStart.AddListener(() => canPause = false);
-            SceneTransition.Instance.OnTransitionEnd.AddListener(() => canPause = true);
             SceneController.Instance.OnAllSceneRequestEnd += UnpauseIfPaused;
             DialogueController.Instance.OnDialogeStart += UnpauseIfPaused;
         }
 
         public void PauseGame(bool isPausing) {
-            if (canPause) {
+            if (_pauseBlocker.Count <= 0) {
                 Paused = isPausing;
                 (Paused ? onPause : onUnpause)?.Invoke();
                 PlayerActions.Instance.ChangeInputMap(Paused ? "Menu" : "Player");
@@ -53,6 +50,15 @@ namespace Ivayami.UI {
 
         private void UnpauseIfPaused() {
             if (Paused) PauseGame(false);
+        }
+
+        public void ToggleCanPause(string key, bool canPause) {
+            if (canPause) {
+                if (!_pauseBlocker.Remove(key)) Debug.LogWarning($"'{key}' tried to unlock movement but key isn't blocking");
+            }
+            else if (!_pauseBlocker.Add(key)) Debug.LogWarning($"'{key}' tried to lock movement but key is already blocking");
+
+            Logger.Log(LogType.UI, $"Puase blockers {(canPause ? "Increase" : "Decrease")} to: {_pauseBlocker.Count}");
         }
 
     }
