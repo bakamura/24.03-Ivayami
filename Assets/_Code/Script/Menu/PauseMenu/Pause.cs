@@ -47,7 +47,6 @@ namespace Ivayami.UI {
 
         public void UnpauseOnBack() {
             if (InputCallbacks.Instance.IsGamepad) PauseGame(false);
-
         }
 
         private void UnpauseIfPaused() {
