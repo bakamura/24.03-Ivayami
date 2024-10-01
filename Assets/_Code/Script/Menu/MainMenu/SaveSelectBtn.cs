@@ -2,7 +2,6 @@ using UnityEngine;
 using TMPro;
 using Ivayami.Save;
 using Ivayami.Scene;
-using Ivayami.Dialogue;
 using Ivayami.Player;
 
 namespace Ivayami.UI {
