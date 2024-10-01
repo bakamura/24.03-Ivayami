@@ -1,10 +1,10 @@
-using Ivayami.Scene;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using Ivayami.Scene;
 
 namespace Ivayami.Player {
     public class PlayerMovement : MonoSingleton<PlayerMovement> {
@@ -31,7 +31,8 @@ namespace Ivayami.Player {
         private float _acceleration;
         [SerializeField, Min(0)] private float _deccelerationDuration;
         private float _decceleration;
-        private HashSet<string> _movementBlock = new HashSet<string>(); // Should start with 1
+        private HashSet<string> _movementBlock = new HashSet<string>();
+        public bool CanMove {  get { return _movementBlock.Count <= 0; } }
         private bool _canRun = true;
 
         [Header("Rotation")]
@@ -87,7 +88,8 @@ namespace Ivayami.Player {
 
         public Vector3 VisualForward { get { return _visualTransform.forward; } }
 
-        protected override void Awake() {
+        protected override void Awake() 
+            {
             base.Awake();
 
             _movementInput.action.performed += MoveDirection;
@@ -112,7 +114,7 @@ namespace Ivayami.Player {
         }
 
         private void Update() {
-            if (_movementBlock.Count <= 0) Move();
+            if (CanMove) Move();
             Rotate();
         }
 
@@ -140,7 +142,7 @@ namespace Ivayami.Player {
         }
 
         private void Crouch(InputAction.CallbackContext input) {
-            if (_movementBlock.Count <= 0) {
+            if (CanMove) {
                 if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) ToggleCrouch();
                 else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
             }
