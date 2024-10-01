@@ -30,6 +30,8 @@ namespace Ivayami.UI {
             PlayerStress.Instance.onFail.AddListener(UnpauseIfPaused);
             PlayerStress.Instance.onFail.AddListener(() => canPause = false);
             PlayerStress.Instance.onFailFade.AddListener(() => canPause = true);
+            SceneTransition.Instance.OnTransitionStart.AddListener(() => canPause = false);
+            SceneTransition.Instance.OnTransitionEnd.AddListener(() => canPause = true);
             SceneController.Instance.OnAllSceneRequestEnd += UnpauseIfPaused;
             DialogueController.Instance.OnDialogeStart += UnpauseIfPaused;
         }
