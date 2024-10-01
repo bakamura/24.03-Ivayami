@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using FMODUnity;
 using FMOD.Studio;
 using FMOD;
@@ -21,6 +22,7 @@ namespace Ivayami.Audio
             public EventReference AudioReference;
             public bool AllowFadeOut;
             public Range AttenuationRange;
+            public UnityEvent OnAudioEnd;
             [HideInInspector] public EventInstance AudioInstance;
 #if UNITY_EDITOR
             [Tooltip("Will only show if the audio is 3D")] public bool DrawGizmos;
@@ -48,11 +50,15 @@ namespace Ivayami.Audio
 
         private void Update()
         {
-            if (_timelineInfo.HasEnded && _replayAudioOnEnd)
+            if (_timelineInfo.HasEnded)
             {
                 _timelineInfo.HasEnded = false;
-                StopReplayCoroutine();
-                _delayToReplayCoroutine = StartCoroutine(ReplayDelayCoroutine());
+                _currentSounData.OnAudioEnd?.Invoke();
+                if (_replayAudioOnEnd)
+                {
+                    StopReplayCoroutine();
+                    _delayToReplayCoroutine = StartCoroutine(ReplayDelayCoroutine());
+                }
             }
         }
 
@@ -62,7 +68,7 @@ namespace Ivayami.Audio
         {
             Setup();
             _currentSounData = _audiosData[UnityEngine.Random.Range(0, _audiosData.Length - 1)];
-            if (_replayAudioOnEnd)
+            if (_replayAudioOnEnd || _currentSounData.OnAudioEnd.GetPersistentEventCount() > 0)
             {
                 _audioEndCallback = new EVENT_CALLBACK(HandleOnAudioEnd);
                 _timelineHandle = GCHandle.Alloc(_timelineInfo);
