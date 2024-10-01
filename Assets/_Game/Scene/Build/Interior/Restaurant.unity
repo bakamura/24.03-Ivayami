@@ -2585,7 +2585,7 @@ MonoBehaviour:
     unityEvent:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 1060351132}
+        - m_Target: {fileID: 0}
           m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
           m_MethodName: LockInput
           m_Mode: 1
@@ -24199,7 +24199,7 @@ PrefabInstance:
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1060351132}
+      objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
@@ -26086,7 +26086,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1060351131}
   - component: {fileID: 1060351133}
-  - component: {fileID: 1060351132}
   m_Layer: 0
   m_Name: FadeScreenToCity
   m_TagString: Untagged
@@ -26109,18 +26108,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1390374423}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1060351132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1060351130}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afa73645d83a4ff468463eb130652fe7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1060351133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26133,36 +26120,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delayBeforeStartFade: 0
-  _onAfterDelayBeforeFadeStart:
+  _delayToFadeOut: 0
+  _beforeFade:
     m_PersistentCalls:
       m_Calls: []
-  _duration: 1
-  _fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _onFadeEnd:
+  _afterFade:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1722320178}
@@ -26189,7 +26151,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _debugLogs: 0
+  _duration: 1
 --- !u!1001 &1063520334
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37431,7 +37393,6 @@ GameObject:
   - component: {fileID: 1544524795}
   - component: {fileID: 1544524794}
   - component: {fileID: 1544524797}
-  - component: {fileID: 1544524796}
   m_Layer: 0
   m_Name: AriveRestaurant(SetProgress)
   m_TagString: Untagged
@@ -37518,18 +37479,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1544524796
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1544524792}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afa73645d83a4ff468463eb130652fe7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1544524797
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37542,50 +37491,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delayBeforeStartFade: 0
-  _onAfterDelayBeforeFadeStart:
+  _delayToFadeOut: 0
+  _beforeFade:
     m_PersistentCalls:
       m_Calls: []
-  _duration: 1
-  _fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _onFadeEnd:
+  _afterFade:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1544524796}
-        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
-        m_MethodName: UnlockInput
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 688388117}
         m_TargetAssemblyTypeName: Ivayami.Save.ProgressTriggerEvent, Assembly-CSharp
         m_MethodName: TryTrigger
@@ -37610,7 +37522,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _debugLogs: 0
+  _duration: 1
 --- !u!1001 &1547419286
 PrefabInstance:
   m_ObjectHideFlags: 0
