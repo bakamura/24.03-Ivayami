@@ -11,7 +11,7 @@ namespace Ivayami.Enemy
         SerializedProperty stressIncreaseTickFrequency, stressAreas, debugLogsStressEntity, drawGizmos;
         //Enemy Patrol variables
         SerializedProperty minDetectionRange, detectionRange, delayToLoseTarget, visionAngle, visionOffset, delayBetweenPatrolPoints, delayToStopSearchTarget, delayToFinishTargetSearch, behaviourTickFrequency, stressIncreaseOnTargetDetected,
-            stressIncreaseWhileChasing, startActive, goToLastTargetPosition, attackTarget, attackAreaInfos, loseTargetWhenHidden, targetLayer, blockVisionLayer, patrolPoints,
+            stressIncreaseWhileChasing, chaseSpeed, startActive, goToLastTargetPosition, attackTarget, attackAreaInfos, loseTargetWhenHidden, targetLayer, blockVisionLayer, patrolPoints,
             debugLogsEnemyPatrol, drawMinDistance, minDistanceAreaColor, drawDetectionRange, detectionRangeAreaColor, drawPatrolPoints, patrolPointsColor, drawStoppingDistance, stoppingDistanceColor, patrolPointRadius;
         private NavMeshAgent _navMeshAgent;
         private const float _space = 2;
@@ -72,6 +72,7 @@ namespace Ivayami.Enemy
             EditorGUILayout.PropertyField(delayToLoseTarget, new GUIContent("Delay To Lose Target"));
             EditorGUILayout.PropertyField(stressIncreaseOnTargetDetected, new GUIContent("Stress Increase On Target Detected"));
             EditorGUILayout.PropertyField(stressIncreaseWhileChasing, new GUIContent("Stress Increase While Chasing"));
+            EditorGUILayout.PropertyField(chaseSpeed, new GUIContent("Chase Speed"));
             EditorGUILayout.PropertyField(patrolPoints, new GUIContent("Patrol Points"));
             if (patrolPoints.arraySize > 1) EditorGUILayout.PropertyField(delayBetweenPatrolPoints, new GUIContent("Delay Between Patrol Points"));
             EditorGUI.indentLevel--;
@@ -130,6 +131,7 @@ namespace Ivayami.Enemy
             behaviourTickFrequency = serializedObject.FindProperty("_behaviourTickFrequency");
             stressIncreaseOnTargetDetected = serializedObject.FindProperty("_stressIncreaseOnTargetDetected");
             stressIncreaseWhileChasing = serializedObject.FindProperty("_stressIncreaseWhileChasing");
+            chaseSpeed = serializedObject.FindProperty("_chaseSpeed");
             startActive = serializedObject.FindProperty("_startActive");
             goToLastTargetPosition = serializedObject.FindProperty("_goToLastTargetPosition");
             attackTarget = serializedObject.FindProperty("_attackTarget");

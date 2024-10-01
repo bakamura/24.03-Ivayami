@@ -16,6 +16,7 @@ namespace Ivayami.Enemy
         private static readonly int TAKE_DAMAGE_TRIGGER = Animator.StringToHash("takeDamage");
         private static readonly int CHASING_BOOL = Animator.StringToHash("chasing");
         private static readonly int MOVE_SPEED_FLOAT = Animator.StringToHash("moveSpeed");
+        private static readonly int ATTACK_INDEX_FLOAT = Animator.StringToHash("attackIndex");
 
         private static readonly int WALKING_STATE = Animator.StringToHash("walk");
         private static readonly int CHASE_STATE = Animator.StringToHash("chase");
@@ -53,11 +54,15 @@ namespace Ivayami.Enemy
             _animator.SetTrigger(SPAWNING_TRIGGER);
             StartAnimationEvent(SPAWNING_STATE, onAnimationEnd);
         }
-        /// <param name="onAnimationEnd">
+        /// <summary>
         /// will only activate once
-        /// </param>
-        public void Attack(Action onAnimationEnd = null, Action<float> currentAnimationStepCallback = null)
+        /// </summary>
+        /// <param name="onAnimationEnd"></param>
+        /// <param name="currentAnimationStepCallback"></param>
+        /// <param name="attackAnimationIndex">Wich animation the enemy will play in the attack pool</param>
+        public void Attack(Action onAnimationEnd = null, Action<float> currentAnimationStepCallback = null, int attackAnimationIndex = 0)
         {
+            _animator.SetFloat(ATTACK_INDEX_FLOAT, attackAnimationIndex);
             _animator.SetTrigger(ATTACK_TRIGGER);
             StartAnimationEvent(ATTACK_STATE, onAnimationEnd, currentAnimationStepCallback);
         }
