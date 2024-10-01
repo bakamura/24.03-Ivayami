@@ -15,6 +15,7 @@ namespace Ivayami.UI {
         [Header("Open Map")]
 
         [SerializeField] private RectTransform _mapRectTranform;
+        [SerializeField] private ScrollRect _mapScrollRect;
         [SerializeField] private InputActionReference _openMapInput;
         [SerializeField] private Button _openMapBtn;
 
@@ -47,6 +48,7 @@ namespace Ivayami.UI {
         }
 
         public void RecenterMap() {
+            _mapScrollRect.StopMovement();
             _mapRectTranform.anchoredPosition = Vector2.zero;
         }
 

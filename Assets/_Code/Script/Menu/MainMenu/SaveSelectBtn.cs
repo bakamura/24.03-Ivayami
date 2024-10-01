@@ -18,8 +18,6 @@ namespace Ivayami.UI {
         public Sprite PlaceImage { get; private set; }
         public string PlaceName { get; private set; }
 
-        private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
-
         public void Setup(SaveProgress progress, byte id) {
             _id = id;
             UiText uiText = _uiText.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
@@ -32,20 +30,34 @@ namespace Ivayami.UI {
         }
 
         public void EnterSave() {
-            // Probably should fade in before start loading, then decide what to do
+            SceneTransition.Instance.OnOpenEnd.AddListener(EnterSaveWaitFadeIn);
+            SceneTransition.Instance.Open();
+        }
+
+        private void EnterSaveWaitFadeIn() {
             SaveSystem.Instance.LoadProgress(_id, () => {
-                if (_isFirstTime) SaveSelector.Instance.FirstTimeFade.FadeIn();
-                else SaveSelector.Instance.NormalFade.FadeIn();
-                SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayerIfGame;
                 PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
+
+                SaveSelector.Instance.MainMenuUnloader.UnloadScene();
+                if (_isFirstTime) {
+                    SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayerNextLoad;
+                    SaveSelector.Instance.CutsceneLoader.LoadScene();
+                }
+                else {
+                    SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
+                    SaveSelector.Instance.BaseTerrainLoader.LoadScene();
+                }
             });
         }
 
-        private void TeleportPlayerIfGame() {
-            if (!CutsceneController.IsPlaying) {
-                SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
-                SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayerIfGame;
-            }
+        private void TeleportPlayer() {
+            SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
+            SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayer;
+        }
+
+        private void TeleportPlayerNextLoad() {
+            SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
+            SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayerNextLoad;
         }
 
     }

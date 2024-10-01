@@ -35,7 +35,7 @@ namespace Ivayami.Player {
         [SerializeField] private float _interactableCheckDelay;
 
         public bool Interacting { get; private set; } = false;
-        public IInteractable InteractableTarget { get; private set; }
+        public IInteractable InteractableTarget { get; private set; } // Should be private now?
 
         public enum InteractAnimation {
             Default,
@@ -92,6 +92,8 @@ namespace Ivayami.Player {
             if (input.phase == InputActionPhase.Started) {
                 if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
                     InteractAnimation animation = InteractableTarget.Interact();
+                    Vector3 directionToInteractable = InteractableTarget.gameObject.transform.position - transform.position;
+                    PlayerMovement.Instance.SetTargetAngle(Mathf.Atan2(directionToInteractable[0], directionToInteractable[2]) * Mathf.Rad2Deg, false);
                     if (InteractableTarget is IInteractableLong) {
                         PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
                         onInteractLong?.Invoke(true);
