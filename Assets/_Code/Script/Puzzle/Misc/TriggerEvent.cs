@@ -25,12 +25,12 @@ namespace Ivayami.Puzzle
 
         private void OnTriggerEnter(Collider other)
         {
-            _isTargetInside = true;
+            _validTag = string.IsNullOrEmpty(_optionalTag) || other.CompareTag(_optionalTag);
+            if (_validTag) _isTargetInside = true;
             if (_triggerType == TriggerTypes.OnTriggerEnter && _eventDelayCoroutine == null)
             {
-                _validTag = string.IsNullOrEmpty(_optionalTag) || other.CompareTag(_optionalTag);
                 if (_validTag)
-                {                    
+                {
                     if (_delayToActivateEvent > 0) _eventDelayCoroutine = StartCoroutine(EventDelayCoroutine());
                     else _onExecute?.Invoke();
                 }
@@ -39,15 +39,15 @@ namespace Ivayami.Puzzle
 
         private void OnTriggerExit(Collider other)
         {
-            if(_isTargetInside && _targetNeedToStayInside && _eventDelayCoroutine != null)
+            _validTag = string.IsNullOrEmpty(_optionalTag) || other.CompareTag(_optionalTag);
+            if (_validTag) _isTargetInside = false;
+            if (_isTargetInside && _targetNeedToStayInside && _eventDelayCoroutine != null)
             {
                 StopCoroutine(_eventDelayCoroutine);
                 _eventDelayCoroutine = null;
             }
-            _isTargetInside = false;
             if (_triggerType == TriggerTypes.OnTriggerExit && _eventDelayCoroutine == null)
             {
-                _validTag = string.IsNullOrEmpty(_optionalTag) || other.CompareTag(_optionalTag);
                 if (_validTag)
                 {
                     if (_delayToActivateEvent > 0) _eventDelayCoroutine = StartCoroutine(EventDelayCoroutine());
@@ -58,9 +58,10 @@ namespace Ivayami.Puzzle
 
         private void OnCollisionEnter(Collision collision)
         {
+            _validTag = string.IsNullOrEmpty(_optionalTag) || collision.collider.CompareTag(_optionalTag);
+            if (_validTag) _isTargetInside = true;
             if (_triggerType == TriggerTypes.OnCollisionEnter && _eventDelayCoroutine == null)
             {
-                _validTag = string.IsNullOrEmpty(_optionalTag) || collision.collider.CompareTag(_optionalTag);
                 if (_validTag)
                 {
                     if (_delayToActivateEvent > 0) _eventDelayCoroutine = StartCoroutine(EventDelayCoroutine());
@@ -71,6 +72,8 @@ namespace Ivayami.Puzzle
 
         private void OnCollisionExit(Collision collision)
         {
+            _validTag = string.IsNullOrEmpty(_optionalTag) || collision.collider.CompareTag(_optionalTag);
+            if (_validTag) _isTargetInside = false;
             if (_triggerType == TriggerTypes.OnCollisionExit && _eventDelayCoroutine == null)
             {
                 _validTag = string.IsNullOrEmpty(_optionalTag) || collision.collider.CompareTag(_optionalTag);
@@ -79,6 +82,14 @@ namespace Ivayami.Puzzle
                     if (_delayToActivateEvent > 0) _eventDelayCoroutine = StartCoroutine(EventDelayCoroutine());
                     else _onExecute?.Invoke();
                 }
+            }
+        }
+
+        private void OnDisable()
+        {
+            if (_isTargetInside && (_triggerType == TriggerTypes.OnTriggerExit || _triggerType == TriggerTypes.OnCollisionExit))
+            {
+                _onExecute?.Invoke();
             }
         }
 

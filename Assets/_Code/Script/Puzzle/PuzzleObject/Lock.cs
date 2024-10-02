@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using Ivayami.Audio;
 using System.Collections;
+using System.Linq;
 
 namespace Ivayami.Puzzle
 {
@@ -35,13 +36,16 @@ namespace Ivayami.Puzzle
         [SerializeField] private UnityEvent _onInteractionFailed;
 
 
-        private sbyte _currentRequestIndex = 0;
+        private int _currentRequestIndex = 0;
         private List<ItemRequestData> _currentRequests = new List<ItemRequestData>();
+        private List<InventoryItem> _itemsDelivered = new List<InventoryItem>();
         private InteractableFeedbacks _interatctableFeedbacks;
         private InteractableSounds _interactableSounds;
         private LockPuzzleSounds _lockSounds;
         private WaitForSeconds _unlockWait;
         private Coroutine _unlockCoroutine;
+        private List<InventoryItem> _itemsCache;
+        private InventoryItem _currentItemSelected;
         public InteractableFeedbacks InteratctableHighlight { get => _interatctableFeedbacks; }
         public LockPuzzleSounds LockSounds => _lockSounds;
 
@@ -178,14 +182,12 @@ namespace Ivayami.Puzzle
                 switch (_interactionType)
                 {
                     case InteractionTypes.RequireItems:
-                        //if (EventSystem.current.currentSelectedGameObject == null)
-                        //    _deliverBtn.Select();
                         if (input.x != 0)
                         {
                             int temp = input.x > 0 ? 1 : -1;
-                            _currentRequestIndex += (sbyte)temp;
-                            LoopValueByArraySize(ref _currentRequestIndex, _currentRequests.Count);
-                            UpdateDeliverIcons((byte)_currentRequestIndex);
+                            _currentRequestIndex += temp;
+                            LoopValueByArraySize(ref _currentRequestIndex, _itemsCache.Count);
+                            UpdateDeliverIcons(_currentRequestIndex);
                         }
                         break;
                 }
@@ -207,13 +209,59 @@ namespace Ivayami.Puzzle
 
             if (isActive)
             {
-                _currentRequestIndex = 0;                
+                _currentRequestIndex = 0;
+                //select only the items that macth with items requests types
+                _itemsCache = PlayerInventory.Instance.CheckInventory().Where(x => ContainItemTypeInRequest(x.Type)).ToList();
+                //add any missing items
+                for (int i = 0; i < _currentRequests.Count; i++)
+                {
+                    if (!_itemsCache.Contains(_currentRequests[i].Item))
+                        _itemsCache.Add(_currentRequests[i].Item);
+                }
+                if (_itemsDelivered.Count > 0) _itemsCache.RemoveAll(x => _itemsDelivered.Contains(x));
                 UpdateDeliverIcons(0);
                 _deliverBtn.Select();
             }
         }
 
-        private void UpdateDeliverIcons(byte startIndex)
+        private void UpdateDeliverIcons(int startIndex)
+        {
+            for (int i = 0; i < _deliverOptions.Length; i++)
+            {
+                _deliverOptions[i].enabled = false;
+            }
+            int iconsIndex = _itemsCache.Count < _deliverOptions.Length ? Mathf.FloorToInt(_deliverOptions.Length / 2) : 0;
+            int iconsFilled = 0;
+            int requestIndex = startIndex;
+            _currentItemSelected = null;
+            while (iconsFilled < _deliverOptions.Length && iconsFilled < _itemsCache.Count)
+            {
+                if (requestIndex < _itemsCache.Count)
+                {
+                    _deliverOptions[iconsIndex].enabled = true;
+                    _deliverOptions[iconsIndex].sprite = PlayerInventory.Instance.CheckInventoryFor(_itemsCache[requestIndex].name) ?
+                        _itemsCache[requestIndex].Sprite : PlayerInventory.Instance.ItemTypeDefaultIcons[_itemsCache[requestIndex].Type];
+                    if (iconsIndex == Mathf.FloorToInt(_deliverOptions.Length / 2)
+                        && !_currentItemSelected) _currentItemSelected = _itemsCache[requestIndex];
+                }            
+                iconsIndex++;
+                iconsFilled++;
+                requestIndex++;
+                if (requestIndex == _itemsCache.Count) requestIndex = 0;
+            }
+        }
+
+        private bool ContainItemTypeInRequest(ItemType itemType)
+        {
+            for (int i = 0; i < _currentRequests.Count; i++)
+            {
+                if (_currentRequests[i].Item.Type == itemType) return true;
+            }
+            return false;
+        }
+
+        //Old Version
+        /*private void UpdateDeliverIcons(byte startIndex)
         {
             for (int i = 0; i < _deliverOptions.Length; i++)
             {
@@ -232,7 +280,7 @@ namespace Ivayami.Puzzle
                 if (iconsIndex == _deliverOptions.Length) iconsIndex = 0;
                 if (requestIndex == _currentRequests.Count) requestIndex = 0;
             }
-        }
+        }*/
 
         //called by interface Btn
         public void DeliverItem()
@@ -243,17 +291,18 @@ namespace Ivayami.Puzzle
                 {
                     if (PlayerInventory.Instance.CheckInventoryFor(_currentRequests[i].Item.name))
                     {
-                        RemoveItemFromRequestList(i);
+                        RemoveItemFromRequestList(_currentRequests[i].Item);
                     }
                 }
             }
             else
             {
                 _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ConfirmOption);
-                if (PlayerInventory.Instance.CheckInventoryFor(_currentRequests[_currentRequestIndex].Item.name))
+                InventoryItem isInRequestList = _currentRequests.Find(x => x.Item == _currentItemSelected).Item;
+                if (isInRequestList && PlayerInventory.Instance.CheckInventoryFor(_currentItemSelected.name))
                 {
-                    RemoveItemFromRequestList(_currentRequestIndex);
-                    ConstrainValueToArraySize(ref _currentRequestIndex, _currentRequests.Count);
+                    RemoveItemFromRequestList(_currentItemSelected);
+                    ConstrainValueToArraySize(ref _currentRequestIndex, _itemsCache.Count);
                     if (_currentRequests.Count > 0) UpdateDeliverIcons((byte)_currentRequestIndex);
                     //TryUnlock();
                     //return;
@@ -263,23 +312,30 @@ namespace Ivayami.Puzzle
             TryUnlock();
         }
 
-        private void RemoveItemFromRequestList(int index)
+        private void RemoveItemFromRequestList(InventoryItem item)
         {
+            int index;
+            for (index = 0; index < _currentRequests.Count; index++)
+            {
+                if (_currentRequests[index].Item == item) break;
+            }
             _currentRequests[index].OnItemDelivered?.Invoke();
             if (_currentRequests[index].UseItem) PlayerInventory.Instance.RemoveFromInventory(_currentRequests[index].Item);
             _currentRequests.RemoveAt(index);
+            _itemsDelivered.Add(item);
+            if (_itemsCache != null) _itemsCache.Remove(item);
         }
 
-        private void LoopValueByArraySize(ref sbyte valueToConstrain, int arraySize)
+        private void LoopValueByArraySize(ref int valueToConstrain, int arraySize)
         {
-            if (valueToConstrain < 0) valueToConstrain = (sbyte)(arraySize - 1);
+            if (valueToConstrain < 0) valueToConstrain = arraySize - 1;
             else if (valueToConstrain >= arraySize) valueToConstrain = 0;
         }
 
-        private void ConstrainValueToArraySize(ref sbyte valueToConstrain, int arraySize)
+        private void ConstrainValueToArraySize(ref int valueToConstrain, int arraySize)
         {
             if (valueToConstrain < 0) valueToConstrain = 0;
-            else if (valueToConstrain >= arraySize) valueToConstrain = (sbyte)(arraySize - 1);
+            else if (valueToConstrain >= arraySize) valueToConstrain = arraySize - 1;
         }
         #endregion
 

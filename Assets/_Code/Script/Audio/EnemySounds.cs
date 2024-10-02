@@ -61,11 +61,7 @@ namespace Ivayami.Audio
                     StopReplayCoroutine();
                     _soundInterrupted = false;
                     return;
-                }
-                if (_debugLog && _onAudioEnd != null) UnityEngine.Debug.Log($"Audio Callback End {_currentSoundData.SoundType}");
-                _onAudioEnd?.Invoke();
-                _onAudioEnd = null;
-                    
+                }                    
 
                 if (_currentSoundData.ReplayAudioOnEnd)
                 {
@@ -73,6 +69,10 @@ namespace Ivayami.Audio
                     StopReplayCoroutine();
                     _delayToReplayCoroutine = StartCoroutine(ReplayDelayCoroutine());
                 }
+
+                if (_debugLog && _onAudioEnd != null) UnityEngine.Debug.Log($"Audio Callback End {_currentSoundData.SoundType}");
+                _onAudioEnd?.Invoke();
+                _onAudioEnd = null;
             }
         }
 
@@ -116,13 +116,40 @@ namespace Ivayami.Audio
         {
             if (!_hasDoneSetup)
             {
+                //EventInstance instance;
                 for (int i = 0; i < _audiosData.Length; i++)
                 {
-                    if (!_audiosData[i].AudioReference.IsNull) _audiosData[i].AudioInstance = InstantiateEvent(_audiosData[i].AudioReference);
+                    if (!_audiosData[i].AudioReference.IsNull)
+                    {
+                        //if (ContainsEventInstance(_audiosData[i].AudioReference, out instance))
+                        //{
+                        //    _audiosData[i].AudioInstance = instance;
+                        //}
+                        //else
+                        //{
+                            _audiosData[i].AudioInstance = InstantiateEvent(_audiosData[i].AudioReference);
+                        //}
+                    }
                 }
                 _hasDoneSetup = true;
             }
         }
+
+        //private bool ContainsEventInstance(EventReference eventReference, out EventInstance instance)
+        //{
+        //    for(int i = 0; i < _audiosData.Length; i++)
+        //    {
+        //        if(eventReference.Equals(_audiosData[i].AudioReference) && _audiosData[i].AudioInstance.isValid())
+        //        {
+        //            print($"Found instance of {eventReference.Path}");
+        //            instance = _audiosData[i].AudioInstance; 
+        //            return true;
+        //        }
+        //    }
+        //    print($"No Reference Found instance of {eventReference.Path}, create instance");
+        //    instance = new EventInstance();
+        //    return false;
+        //}
 
         private void StopReplayCoroutine()
         {

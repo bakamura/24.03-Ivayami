@@ -10,12 +10,8 @@ namespace Ivayami.UI {
         [SerializeField] private float _delayToOpen;
         private Coroutine _transitionCoroutine;
         [SerializeField] private bool _setMenuBtnSelectedOnStart;
-        
-        private Navigation _noneNav = new Navigation();
-
 
         private void Start() {
-            _noneNav.mode = Navigation.Mode.None;
             if (_setMenuBtnSelectedOnStart) EventSystem.current.SetSelectedGameObject(_currentMenu.InitialSelected.gameObject);
         }
 
@@ -37,21 +33,38 @@ namespace Ivayami.UI {
             Logger.Log(LogType.UI, $"Change Menu Start");
 
             _currentMenu?.Close();
+
+            bool isInstant = _delayToOpen < 0;
+            bool previousWasNull = _currentMenu == null;
+            if (isInstant && !previousWasNull) _currentMenu.OnTransitionEnd.AddListener(Open);
+
             _currentMenu = menuToOpen;
 
-            Selectable newSelectedObject = _currentMenu.GetComponentInChildren<Selectable>();
-            if (newSelectedObject != null) EventSystem.current.SetSelectedGameObject(newSelectedObject.gameObject);
+            if (!isInstant || previousWasNull) {
+                if(!isInstant) yield return new WaitForSeconds(_delayToOpen);
 
-            yield return new WaitForSeconds(_delayToOpen >= 0 ? _delayToOpen : (_currentMenu != null ? _currentMenu.TransitionDuration : 0f));
+                Open();
+            }
 
+        }
+
+        private void Open() {
             _currentMenu.Open();
             _transitionCoroutine = null;
+            _currentMenu.OnTransitionEnd.RemoveListener(Open);
+
+            Selectable newSelectedObject = _currentMenu.InitialSelected;
+            if (newSelectedObject != null) EventSystem.current.SetSelectedGameObject(newSelectedObject.gameObject);
 
             Logger.Log(LogType.UI, $"Change Menu End");
         }
 
-        public void SetSelected(GameObject selectedObject) {
+        public void SetSelected(GameObject selectedObject) { // Move Elsewhere?
             PreventSelectPointer.Instance.ExecuteIfNotClick(() => EventSystem.current.SetSelectedGameObject(selectedObject));
+        }
+
+        public void SetCurrentMenuInitialAsSelected() {
+            SetSelected(_currentMenu.InitialSelected?.gameObject);
         }
 
     }

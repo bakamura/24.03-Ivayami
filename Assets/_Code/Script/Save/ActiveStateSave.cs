@@ -17,6 +17,7 @@ namespace Ivayami.Save
 
         public override void SaveData()
         {
+            if (!SaveSystem.Instance && SaveSystem.Instance.Progress == null) return;
             _data.ObjectStates = new bool[_objectsToSave.Length];
             for (int i = 0; i < _objectsToSave.Length; i++) _data.ObjectStates[i] = _objectsToSave[i].activeSelf;
             SaveSystem.Instance.Progress.RecordSaveObject(ID, _data);
