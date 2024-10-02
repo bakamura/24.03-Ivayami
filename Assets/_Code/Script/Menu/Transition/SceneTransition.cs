@@ -23,6 +23,8 @@ namespace Ivayami.UI {
 
             OnOpenStart.AddListener(() => PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false));
             OnCloseStart.AddListener(() => PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true));
+            OnTransitionStart.AddListener(() => Pause.Instance.ToggleCanPause(BLOCK_KEY, false));
+            OnTransitionEnd.AddListener(() => Pause.Instance.ToggleCanPause(BLOCK_KEY, true));
             OnCloseEnd.AddListener(() => SetLoadingIconState(false));
         }
 
