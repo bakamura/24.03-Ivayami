@@ -3,8 +3,8 @@ using UnityEngine;
 using UnityEditor;
 using Ivayami.Enemy;
 
-[CustomEditor(typeof(IluminatedEnemy))]
-public class IluminatedEnemyInspector : Editor
+[CustomEditor(typeof(IluminatedEnemyDetector))]
+public class IluminatedEnemyDetectorInspector : Editor
 {
     SerializedProperty lightBehaviour, finalSpeed, paraliseDuration, interpolateDuration, interpolateCurve;
     public override void OnInspectorGUI()

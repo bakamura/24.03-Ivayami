@@ -7,7 +7,7 @@ using Ivayami.Audio;
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
-    public class EnemyPatrol : StressEntity
+    public class EnemyPatrol : StressEntity, IIluminatedEnemy
     {
         //[Header("Enemy Parameters")]
         [SerializeField, Min(0f)] private float _minDetectionRange;
@@ -407,7 +407,7 @@ namespace Ivayami.Enemy
             //        //_hitboxAttack = go.AddComponent<HitboxAttack>();
             //    }
             //}
-        }
+        }        
 #endif
         #endregion
     }
