@@ -1,10 +1,11 @@
 using System.Collections;
 using UnityEngine;
 using Ivayami.Puzzle;
+using Ivayami.Player.Ability;
 
 namespace Ivayami.Enemy
 {
-    public class IluminatedEnemy : MonoBehaviour, ILightable
+    public class IluminatedEnemyDetector : MonoBehaviour, ILightable
     {
         [SerializeField] private LightBehaviours _lightBehaviour;
         [SerializeField, Min(0f)] private float _finalSpeed;
@@ -17,34 +18,38 @@ namespace Ivayami.Enemy
             Paralise,
             FollowLight
         }
-        private EnemyPatrol _enemyPatrol;
+        private IIluminatedEnemy _target;
         private WaitForSeconds _paraliseDelay;
         private bool _isIliuminated;
         private float _baseSpeed;
 
         private void Awake()
         {
-            if (!TryGetComponent<EnemyPatrol>(out _enemyPatrol))
-                _enemyPatrol = GetComponentInParent<EnemyPatrol>();
+            _target = GetComponentInParent<IIluminatedEnemy>();
+            if (_target == null)
+            {
+                Debug.LogWarning("No Illuminated enemy found in hierarchy");
+                return;
+            }
             if (_lightBehaviour == LightBehaviours.Paralise)
             {
                 _paraliseDelay = new WaitForSeconds(_paraliseDuration);
-                _baseSpeed = _enemyPatrol.CurrentSpeed;
             }
-            else Ivayami.Player.Ability.Lantern.OnIlluminate.AddListener(HandleIlumatePoint);
+            else Lantern.OnIlluminate.AddListener(HandleIlumatePoint);
         }
 
         private void OnDisable()
         {
-            if(_lightBehaviour == LightBehaviours.FollowLight) Ivayami.Player.Ability.Lantern.OnIlluminate.RemoveListener(HandleIlumatePoint);
+            if (_lightBehaviour == LightBehaviours.FollowLight) Lantern.OnIlluminate.RemoveListener(HandleIlumatePoint);
         }
 
         [ContextMenu("Iluminate")]
         public void Iluminate()
         {
-            if(_lightBehaviour == LightBehaviours.Paralise)
+            if (_lightBehaviour == LightBehaviours.Paralise)
             {
                 _isIliuminated = true;
+                _baseSpeed = _target.CurrentSpeed;
                 StartCoroutine(IluminateCoroutine());
             }
         }
@@ -56,45 +61,48 @@ namespace Ivayami.Enemy
             {
                 StopCoroutine(IluminateCoroutine());
                 _isIliuminated = false;
-                _enemyPatrol.ChangeSpeed(_baseSpeed);
+                _target.ChangeSpeed(_baseSpeed);
+                _target.UpdateBehaviour(true, true);
             }
         }
 
         private IEnumerator IluminateCoroutine()
         {
+            float count;
             while (_isIliuminated)
             {
-                if(_interpolateDuration > 0)
+                count = 0;
+                if (_interpolateDuration > 0)
                 {
-                    float count = 0;
-                    while(count < 1)
+                    while (count < 1)
                     {
                         count += Time.deltaTime / _interpolateDuration;
-                        _enemyPatrol.ChangeSpeed(Mathf.Lerp(_baseSpeed, _finalSpeed, _interpolateCurve.Evaluate(count)));
+                        _target.ChangeSpeed(Mathf.Lerp(_baseSpeed, _finalSpeed, _interpolateCurve.Evaluate(count)));
                         yield return null;
                     }
                 }
                 else
                 {
-                    _enemyPatrol.ChangeSpeed(_finalSpeed);
+                    _target.ChangeSpeed(_finalSpeed);
                 }
-                _enemyPatrol.StopBehaviour();
+                _target.UpdateBehaviour(false, false);
+                _target.ChangeSpeed(0);
                 yield return _paraliseDelay;
-                _enemyPatrol.ChangeSpeed(_baseSpeed);
-                _enemyPatrol.StartBehaviour();
+                _target.ChangeSpeed(_baseSpeed);
+                _target.UpdateBehaviour(true, true);
             }
         }
 
         private void HandleIlumatePoint(Vector3 point)
         {
-            if(point != Vector3.zero)
+            if (point != Vector3.zero)
             {
-                _enemyPatrol.UpdateBehaviour(false, true);
-                _enemyPatrol.ChangeTargetPoint(point);
+                _target.UpdateBehaviour(false, true);
+                _target.ChangeTargetPoint(point);
             }
             else
             {
-                _enemyPatrol.UpdateBehaviour(true, true);
+                _target.UpdateBehaviour(true, true);
             }
         }
 #if UNITY_EDITOR
