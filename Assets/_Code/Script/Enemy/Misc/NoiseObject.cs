@@ -5,7 +5,7 @@ namespace Ivayami.Enemy
     public class NoiseObject : MonoBehaviour
     {
         [SerializeField, Min(0f)] private float _noiseRange;
-        [SerializeField, Min(0f), Tooltip("Multiplicative")] private float _speedIncrease= 1;
+        [SerializeField, Min(0f)] private float _newSpeed= 1;
         [SerializeField, Min(0f)] private float _durationInPlace;
         [SerializeField] private LayerMask _noiseTargetLayer;
 
@@ -21,7 +21,7 @@ namespace Ivayami.Enemy
             {
                 if (_hitsCache[i] && _hitsCache[i].TryGetComponent<IChangeTargetPoint>(out IChangeTargetPoint temp))
                 {
-                    temp.GoToPoint(transform, _speedIncrease, _durationInPlace);
+                    temp.GoToPoint(transform, _newSpeed, _durationInPlace);
                 }
             }
         }

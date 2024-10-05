@@ -24,7 +24,11 @@ namespace Ivayami.UI {
             tabCurrent += (int)context.ReadValue<float>();
             if (tabCurrent < 0) tabCurrent += _tabBtns.Length;
             else if (tabCurrent >= _tabBtns.Length) tabCurrent -= _tabBtns.Length;
+            ChangeTo(tabCurrent);
+        }
 
+        public void ChangeTo(int tab) {
+            tabCurrent = tab;
             _tabBtns[tabCurrent].Select();
             _tabBtns[tabCurrent].onClick.Invoke();
         }

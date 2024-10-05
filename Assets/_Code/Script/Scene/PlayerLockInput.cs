@@ -1,30 +1,29 @@
 using UnityEngine;
 using Ivayami.Player;
-using Ivayami.UI;
 
-namespace Ivayami.Scene
-{
-    public class PlayerLockInput : MonoBehaviour 
-    {
-        //[SerializeField] private string _blockKey;
+namespace Ivayami.Scene {
+    public class PlayerLockInput : MonoBehaviour {
 
-        public void LockInput()
-        {
-            //PlayerMovement.Instance.ToggleMovement(_blockKey, false);
-            Pause.Instance.canPause = false;
+        public void LockInput() {
+            Debug.LogWarning($"{name} is using PlayerLockInput, please remove it!");
             PlayerActions.Instance.ChangeInputMap(null);
         }
 
-        public void UnlockInput()
-        {
-            //PlayerMovement.Instance.ToggleMovement(_blockKey, true);
-            Pause.Instance.canPause = true;
+        public void UnlockInput() {
+            Debug.LogWarning($"{name} is using PlayerLockInput, please remove it!");
             PlayerActions.Instance.ChangeInputMap("Player");
-        }        
+        }
 
-        public void ChangeInputToUI()
-        {
+        public void ChangeInputToUI() {
+            Debug.LogWarning($"{name} is using PlayerLockInput, please remove it!");
             PlayerActions.Instance.ChangeInputMap("Menu");
         }
+
+#if UNITY_EDITOR
+        private void OnValidate() {
+            Debug.LogWarning($"{name} is using PlayerLockInput, please remove it!");
+        }
+#endif
+
     }
 }

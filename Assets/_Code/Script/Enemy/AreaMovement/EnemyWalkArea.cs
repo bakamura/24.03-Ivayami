@@ -130,7 +130,7 @@ namespace Ivayami.Enemy
                         return _enemiesCurrentPathPointDic[id];
 #else
                         _enemiesCurrentPathPointDic[id] = new EnemyData(GenerateRandomPointInsideArea(), 1, 0);
-                        return new Point(transform.position, 0,0);
+                        return _enemiesCurrentPathPointDic[id];
 #endif
                     case PatrolBehaviour.Loop:
                         temp = _enemiesCurrentPathPointDic[id];
