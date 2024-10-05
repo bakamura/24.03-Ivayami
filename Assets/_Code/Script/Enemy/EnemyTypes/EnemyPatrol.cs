@@ -108,13 +108,19 @@ namespace Ivayami.Enemy
             }
         }
 
-        private void Start()
+        private void OnEnable()
         {
             if (_startActive)
             {
                 StartBehaviour();
             }
         }
+
+        private void OnDisable()
+        {
+            StopBehaviour();
+        }
+
         [ContextMenu("Start")]
         public void StartBehaviour()
         {
@@ -133,7 +139,7 @@ namespace Ivayami.Enemy
                 StopCoroutine(BehaviourCoroutine());
                 IsActive = false;
                 _isChasing = false;
-                StopMovement(true);
+                StopMovement(false);
             }
         }
 
