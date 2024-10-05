@@ -1,71 +1,72 @@
-using TMPro;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
+using TMPro;
+using Ivayami.Player;
 
 namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
 
-        [SerializeField] private Image _entryImage;
-        [SerializeField] private TextMeshProUGUI _entryNotes;
+        [SerializeField] private JournalDisplayPreset[] _presets;
+        [SerializeField] private RectTransform _selectionBtnPrefab;
         [SerializeField] private Animator _containerAnimator;
+
+        [SerializeField] private RectTransform _storySelectionContainer;
+        [SerializeField] private RectTransform _characterSelectionContainer;
+        [SerializeField] private RectTransform _documentSelectionContainer;
+        [SerializeField] private RectTransform _aberrationSelectionContainer;
 
         private static int _containerChange = Animator.StringToHash("Forward");
 
-        private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
-        private const string CHARACTER_DESCRIPTION_FOLDER = "CharacterDescription";
-        private const string DOCUMENT_FOLDER = "Document";
-        private const string ABERRATION_DESCRIPTION_FOLDER = "AberrationDescription";
+        private const string STORY_ENTRY = "ChapterDescription";
+        private const string CHARACTER_ENTRY = "CharacterDescription";
+        private const string DOCUMENT_ENTRY = "Document";
+        private const string ABERRATION__ENTRY = "AberrationDescription";
 
         public void ChangeAnimation() {
             _containerAnimator.SetTrigger(_containerChange);
         }
 
-        public void FocusChapter(int chapterId) {
-            ChapterDescription description = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{chapterId}");
-            if(description == null) {
-                Debug.LogWarning("Description Not Found");
-                return;
+        public void SetupSelections() {
+            // Check Current Story Progress for Story
+            // Check Current Story Progress for Characters
+            InventoryItem[] documentItems = PlayerInventory.Instance.CheckInventory().Where(item => item.Type == ItemType.Document).ToArray();
+            for (int i = 0; i < documentItems.Length; i++) {
+                if (_documentSelectionContainer.childCount <= i) Instantiate(_selectionBtnPrefab, _documentSelectionContainer);
+                _documentSelectionContainer.GetChild(i).GetComponentInChildren<TextMeshPro>().text = documentItems[i].DisplayName;
             }
-            _entryImage.sprite = description.Image;
-            _entryNotes.text = description.Text;
+            // Somehow Check Known Creatures
+        }
+
+        public void FocusChapter(int chapterId) {
+            DisplayEntry(Resources.Load<JournalEntry>($"{STORY_ENTRY}/ChapterDescription_{chapterId}"));
 
             Logger.Log(LogType.UI, $"Journal - Focus Chapter {chapterId}");
         }
 
         public void FocusCharacter(int characterId) {
-            ChapterDescription description = Resources.Load<ChapterDescription>($"{CHARACTER_DESCRIPTION_FOLDER}/CharacterDescription_{(true ? characterId : "null")}");
-            if (description == null) {
-                Debug.LogWarning("Description Not Found");
-                return;
-            }
-            _entryImage.sprite = description.Image;
-            _entryNotes.text = description.Text;
+            DisplayEntry(Resources.Load<JournalEntry>($"{CHARACTER_ENTRY}/CharacterDescription_{(true ? characterId : "null")}"));
 
             Logger.Log(LogType.UI, $"Journal - Focus Character {characterId}");
         }
 
         public void FocusDocument(int documentId) {
-            ChapterDescription description = Resources.Load<ChapterDescription>($"{DOCUMENT_FOLDER}/Document_{(true ? documentId : "null")}");
-            if (description == null) {
-                Debug.LogWarning("Description Not Found");
-                return;
-            }
-            _entryImage.sprite = description.Image;
-            _entryNotes.text = description.Text;
+            DisplayEntry(Resources.Load<JournalEntry>($"{DOCUMENT_ENTRY}/Document_{(true ? documentId : "null")}"));
 
             Logger.Log(LogType.UI, $"Journal - Focus Document {documentId}");
         }
 
         public void FocusAberration(int aberrationId) {
-            ChapterDescription description = Resources.Load<ChapterDescription>($"{ABERRATION_DESCRIPTION_FOLDER}/AberrationDescription_{(true ? aberrationId : "null")}");
-            if (description == null) {
+            DisplayEntry(Resources.Load<JournalEntry>($"{ABERRATION__ENTRY}/AberrationDescription_{(true ? aberrationId : "null")}"));
+
+            Logger.Log(LogType.UI, $"Journal - Focus Aberration {aberrationId}");
+        }
+
+        private void DisplayEntry(JournalEntry entry) {
+            if (entry == null) {
                 Debug.LogWarning("Description Not Found");
                 return;
             }
-            _entryImage.sprite = description.Image;
-            _entryNotes.text = description.Text;
-
-            Logger.Log(LogType.UI, $"Journal - Focus Aberration {aberrationId}");
+            _presets[entry.TemplateID].DisplayEntry(entry);
         }
 
     }
