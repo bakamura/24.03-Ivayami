@@ -40,4 +40,11 @@ public static class PlayerTerminalCommands
         else Debug.LogWarning($"The item: {itemID} doesn't exist");
     }
 
+    [ConsoleMethod("ToggleRun", "", "canRun")]
+    public static void ToggleRun(bool canRun)
+    {
+        PlayerMovement.Instance.AllowRun(canRun);
+        Debug.Log($"Run is now {canRun}");
+    }
+
 }

@@ -115,7 +115,7 @@ namespace Ivayami.Dialogue
         {
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, !isActive);
             PlayerMovement.Instance.UpdateVisualsVisibility(!isActive);
-            Pause.Instance.canPause = !isActive;
+            Pause.Instance.ToggleCanPause(BLOCK_KEY, !isActive);
             PlayerActions.Instance.ChangeInputMap(isActive ? "Menu" : "Player");
             for (int i = 0; i < _pauseCutsceneInputs.Length; i++)
             {
