@@ -26,8 +26,9 @@ namespace Ivayami.Enemy
 
         public bool CanChangeWalkArea => _fixedWalkArea;
 
-        private void Start()
+        private void Setup()
         {
+            if (_navMeshAgent) return;
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _animator = GetComponentInChildren<EnemyAnimator>();
             if (_fixedWalkArea)
@@ -39,19 +40,19 @@ namespace Ivayami.Enemy
             if (PlayerMovement.Instance && _lookAtPlayerOnStart)
                 TryLookAtPlayer();
         }
+        //private void OnTriggerEnter(Collider other)
+        //{
+        //    StartBehaviour();
+        //}
 
-        private void OnTriggerEnter(Collider other)
-        {
-            StartBehaviour();
-        }
-
-        private void OnTriggerExit(Collider other)
-        {
-            StopBehaviour();
-        }
+        //private void OnTriggerExit(Collider other)
+        //{
+        //    StopBehaviour();
+        //}
 
         public void StartBehaviour()
         {
+            Setup();
             if (_walkCoroutine == null)
             {
                 _navMeshAgent.isStopped = false;
