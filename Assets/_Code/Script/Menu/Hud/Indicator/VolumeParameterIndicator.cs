@@ -1,14 +1,16 @@
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Rendering;
-using System.Linq;
 
 namespace Ivayami.UI {
+    [RequireComponent(typeof(Volume))]
     public abstract class VolumeParameterIndicator<T1, T2> : Indicator where T1 : VolumeParameter {
 
         [Header("Volume Parameter")]
 
         [SerializeField] private string _volumeComponentName;
-        [SerializeField] private int _volumeParameterId;
+        [SerializeField] private string _volumeParameterName;
 
         [SerializeField] protected T2 _valueMin;
         [SerializeField] protected T2 _valueMax;
@@ -20,8 +22,12 @@ namespace Ivayami.UI {
         protected override void Awake() {
             base.Awake();
 
-            //foreach(VolumeParameter parameter in GetComponent<Volume>().profile.components.FirstOrDefault(component => component.GetType().Name == _volumeComponentName).parameters) Debug.Log(name);
-            _volumeParameter = (GetComponent<Volume>().profile.components.FirstOrDefault(component => component.GetType().Name == _volumeComponentName).parameters[_volumeParameterId]) as T1;
+            VolumeComponent component = GetComponent<Volume>().profile.components.FirstOrDefault(component => component.GetType().Name == _volumeComponentName);
+            if (component != null) {
+                _volumeParameter = component.GetType().GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).FirstOrDefault(field => field.Name.Equals(_volumeParameterName)).GetValue(component) as T1;
+                if (_volumeParameter == null) Debug.LogError($"No Volume Parameter named '{_volumeParameterName}' found");
+            }
+            else Debug.LogError($"No Volume Component named '{_volumeComponentName}' found in Profile {GetComponent<Volume>().profile.name} (in {name})");
         }
 
     }

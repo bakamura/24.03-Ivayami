@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 namespace Ivayami.UI {
@@ -8,7 +9,7 @@ namespace Ivayami.UI {
         protected override void Awake() {
             base.Awake();
 
-            _indicators = GetComponents<Indicator>();
+            _indicators = GetComponents<Indicator>().Where(Indicator => Indicator != this).ToArray();
         }
 
         public override void FillUpdate(float value) {
