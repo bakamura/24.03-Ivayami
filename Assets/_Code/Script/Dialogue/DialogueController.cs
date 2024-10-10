@@ -144,7 +144,7 @@ namespace Ivayami.Dialogue
             else
             {
                 _currentSpeechIndex++;
-                _dialogueSounds.PlaySound(DialogueSounds.SoundTypes.ContinueDialogue);
+                if (_canvasGroup.alpha > 0) _dialogueSounds.PlaySound(DialogueSounds.SoundTypes.ContinueDialogue);
                 //end of current dialogue
                 if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
                 {
@@ -207,13 +207,13 @@ namespace Ivayami.Dialogue
 
             if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0)
             {
-                while(_currentFixedDurationInSpeech < _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech)
+                while (_currentFixedDurationInSpeech < _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech)
                 {
                     _currentFixedDurationInSpeech += Time.deltaTime;
                     yield return null;
                 }
             }
-                //yield return new WaitForSeconds(_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech);
+            //yield return new WaitForSeconds(_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech);
             if (LockInput) _continueDialogueIcon.SetActive(true);
             _writtingCoroutine = null;
             if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0)
