@@ -16,6 +16,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private InputActionReference _cancelInteractionInput;
         [SerializeField] private InputActionReference _navigateUIInput;
         [SerializeField] private InputActionReference _confirmInput;
+        [SerializeField] private InputActionReference _clickInput;
 
         [SerializeField, Min(0f)] private float _unlockDelay;
         [SerializeField] private InteractionTypes _interactionType;
@@ -134,7 +135,11 @@ namespace Ivayami.Puzzle
                 if (_interactionType == InteractionTypes.RequirePassword)
                 {
                     _passwordUI.OnCheckPassword += TryUnlock;
-                    if (_passwordUI is RotateLock) _confirmInput.action.performed += HandleConfirmUI;
+                    if (_passwordUI is RotateLock)
+                    {
+                        _confirmInput.action.performed += HandleConfirmUI;
+                        _clickInput.action.performed += HandleConfirmUI;
+                    }
                 }
                 PlayerActions.Instance.ChangeInputMap("Menu");
             }
@@ -145,7 +150,11 @@ namespace Ivayami.Puzzle
                 if (_interactionType == InteractionTypes.RequirePassword)
                 {
                     _passwordUI.OnCheckPassword -= TryUnlock;
-                    if (_passwordUI is RotateLock) _confirmInput.action.performed -= HandleConfirmUI;
+                    if (_passwordUI is RotateLock)
+                    {
+                        _confirmInput.action.performed -= HandleConfirmUI;
+                        _clickInput.action.performed -= HandleConfirmUI;
+                    }
                 }
                 PlayerActions.Instance.ChangeInputMap("Player");
             }
