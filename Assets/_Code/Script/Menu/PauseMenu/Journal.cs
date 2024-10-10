@@ -1,5 +1,6 @@
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 using Ivayami.Player;
 
@@ -7,7 +8,7 @@ namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
 
         [SerializeField] private JournalDisplayPreset[] _presets;
-        [SerializeField] private RectTransform _selectionBtnPrefab;
+        [SerializeField] private Button _selectionBtnPrefab;
         [SerializeField] private Animator _containerAnimator;
 
         [SerializeField] private RectTransform _storySelectionContainer;
