@@ -21,7 +21,7 @@ namespace Ivayami.UI {
             Queue<InventoryItem> specialQ = new Queue<InventoryItem>();
             foreach (InventoryItem item in items) {
                 if (item.Type == ItemType.Special) specialQ.Enqueue(item);
-                else normalQ.Enqueue(item);
+                else if(item.Type != ItemType.Document) normalQ.Enqueue(item);
             }
             for (int i = 0; i < _itemNormalBtns.Length; i++) _itemNormalBtns[i].SetItemDisplay(normalQ.Count > 0 ? normalQ.Dequeue() : null);
             for (int i = 0; i < _itemSpecialBtns.Length; i++) _itemSpecialBtns[i].SetItemDisplay(specialQ.Count > 0 ? specialQ.Dequeue() : null);

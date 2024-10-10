@@ -1,71 +1,95 @@
-using TMPro;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+using Ivayami.Player;
+using Ivayami.Save;
 
 namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
 
-        [SerializeField] private Image _entryImage;
-        [SerializeField] private TextMeshProUGUI _entryNotes;
+        [SerializeField] private JournalDisplayPreset[] _presets;
+        [SerializeField] private Button _selectionBtnPrefab;
         [SerializeField] private Animator _containerAnimator;
 
-        private static int _containerChange = Animator.StringToHash("Forward");
+        [SerializeField] private RectTransform _storySelectionContainer;
+        [SerializeField] private RectTransform _characterSelectionContainer;
+        [SerializeField] private RectTransform _documentSelectionContainer;
+        [SerializeField] private RectTransform _aberrationSelectionContainer;
 
-        private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
-        private const string CHARACTER_DESCRIPTION_FOLDER = "CharacterDescription";
-        private const string DOCUMENT_FOLDER = "Document";
-        private const string ABERRATION_DESCRIPTION_FOLDER = "AberrationDescription";
+        private static int _containerChange = Animator.StringToHash("Forward");
 
         public void ChangeAnimation() {
             _containerAnimator.SetTrigger(_containerChange);
         }
 
-        public void FocusChapter(int chapterId) {
-            ChapterDescription description = Resources.Load<ChapterDescription>($"{CHAPTER_DESCRIPTION_FOLDER}/ChapterDescription_{chapterId}");
-            if(description == null) {
-                Debug.LogWarning("Description Not Found");
-                return;
-            }
-            _entryImage.sprite = description.Image;
-            _entryNotes.text = description.Text;
+        public void SetupSelections() {
+            // Story
+            for (int i = 0; i < SaveSystem.Instance.Progress.entryProgress["Story"]; i++) if (i >= _storySelectionContainer.childCount)
+                    SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/ENUS/StoryEntry_{i}").GetTranslation(SaveSystem.Instance.Options.Language));
 
+            // Characters
+            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/CharacterEntry/ENUS");
+            int currentChild = 0;
+            for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.entryProgress[entries[i].name] > 0) {
+                    SetupBtn(currentChild >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
+                    currentChild++;
+                }
+
+            // Documents
+            ReadableItem[] documentItems = PlayerInventory.Instance.CheckInventory().OfType<ReadableItem>().ToArray();
+            for (int i = 0; i < documentItems.Length; i++)
+                SetupBtn(i >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(i).GetComponentInChildren<Button>(), documentItems[i].JournalEntry);
+
+            // Creatures
+            entries = Resources.LoadAll<JournalEntry>($"Journal/AberrationEntry/ENUS");
+            currentChild = 0;
+            for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.entryProgress[entries[i].name] > 0) {
+                    SetupBtn(currentChild >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
+                    currentChild++;
+                }
+
+            Resources.UnloadUnusedAssets();
+        }
+
+        private void SetupBtn(Button btn, JournalEntry entry) {
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => DisplayEntry(entry));
+            btn.GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
+        }
+
+        public void FocusFirstChapter(int chapterId) {
+            _storySelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
+            
             Logger.Log(LogType.UI, $"Journal - Focus Chapter {chapterId}");
         }
 
-        public void FocusCharacter(int characterId) {
-            ChapterDescription description = Resources.Load<ChapterDescription>($"{CHARACTER_DESCRIPTION_FOLDER}/CharacterDescription_{(true ? characterId : "null")}");
-            if (description == null) {
-                Debug.LogWarning("Description Not Found");
-                return;
-            }
-            _entryImage.sprite = description.Image;
-            _entryNotes.text = description.Text;
+        public void FocusFirstCharacter(int characterId) {
+            _characterSelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
 
             Logger.Log(LogType.UI, $"Journal - Focus Character {characterId}");
         }
 
-        public void FocusDocument(int documentId) {
-            ChapterDescription description = Resources.Load<ChapterDescription>($"{DOCUMENT_FOLDER}/Document_{(true ? documentId : "null")}");
-            if (description == null) {
-                Debug.LogWarning("Description Not Found");
-                return;
-            }
-            _entryImage.sprite = description.Image;
-            _entryNotes.text = description.Text;
-
-            Logger.Log(LogType.UI, $"Journal - Focus Document {documentId}");
+        public void FocusFirstDocument() {
+            Transform firstBtn = _documentSelectionContainer.GetChild(0);
+            if (firstBtn != null) firstBtn.GetComponent<Button>().onClick.Invoke();
+            else; // Display "No Entries
         }
 
-        public void FocusAberration(int aberrationId) {
-            ChapterDescription description = Resources.Load<ChapterDescription>($"{ABERRATION_DESCRIPTION_FOLDER}/AberrationDescription_{(true ? aberrationId : "null")}");
-            if (description == null) {
+        public void FocusFirstAberration(int aberrationId) {
+            Transform firstBtn = _aberrationSelectionContainer.GetChild(0);
+            if (firstBtn != null) firstBtn.GetComponent<Button>().onClick.Invoke();
+            else; // Display "No Entries
+
+            Logger.Log(LogType.UI, $"Journal - Focus Aberration {aberrationId}");
+        }
+
+        private void DisplayEntry(JournalEntry entry) {
+            if (entry == null) {
                 Debug.LogWarning("Description Not Found");
                 return;
             }
-            _entryImage.sprite = description.Image;
-            _entryNotes.text = description.Text;
-
-            Logger.Log(LogType.UI, $"Journal - Focus Aberration {aberrationId}");
+            _presets[entry.TemplateID].DisplayEntry(entry);
         }
 
     }

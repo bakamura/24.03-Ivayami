@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 3770441227805815576}
   - component: {fileID: 6461201970263972077}
   - component: {fileID: 3295716889044474128}
+  - component: {fileID: 1761315189082437799}
   m_Layer: 5
   m_Name: Vignete
   m_TagString: Untagged
@@ -163,6 +164,44 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &1761315189082437799
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057321590927731002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7427fb8840518d4cbea36aebf30a92d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0.21939209
+      outSlope: 0.21939209
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.25666666
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1.270962
+      outSlope: 1.270962
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.18333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _min: 10
+  _max: 60
 --- !u!1 &1327357574892558469
 GameObject:
   m_ObjectHideFlags: 0
@@ -310,60 +349,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _stressIndicators:
-  - _canvasGroup: {fileID: 3295716889044474128}
-    _animationCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    _stressAnimationMin: 20
-    _stressAnimationMax: 60
-  - _canvasGroup: {fileID: 133164685144216299}
-    _animationCurve:
-      serializedVersion: 2
-      m_Curve:
-      - serializedVersion: 3
-        time: 0
-        value: 0
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      - serializedVersion: 3
-        time: 1
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 0
-        weightedMode: 0
-        inWeight: 0
-        outWeight: 0
-      m_PreInfinity: 2
-      m_PostInfinity: 2
-      m_RotationOrder: 4
-    _stressAnimationMin: 50
-    _stressAnimationMax: 90
+  - {fileID: 0}
+  - {fileID: 0}
   _smoothFactor: 0.1
 --- !u!114 &4481533242207865698
 MonoBehaviour:
