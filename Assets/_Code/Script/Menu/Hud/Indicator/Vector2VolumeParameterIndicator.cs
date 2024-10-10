@@ -7,16 +7,9 @@ namespace Ivayami.UI {
         [Tooltip("Leave at 0 for linear transition")]
         [SerializeField] private float _spinRate;
 
-        private float _circleLength;
         private float _angleCache;
         private Vector2 _vectorCache;
         private Vector2 _vectorHalf = Vector2.one / 2f;
-
-        protected override void Awake() {
-            base.Awake();
-
-            _circleLength = 2f * Mathf.PI;
-        }
 
         public override void FillUpdate(float value) {
             _volumeParameter.value = _spinRate > 0 ? AngleToVector2Spin(EvaluateCurve(value)) : Vector2.Lerp(_valueMin, _valueMax, EvaluateCurve(value));

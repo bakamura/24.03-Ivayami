@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Ivayami.Player;
+using Ivayami.Save;
 
 namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
@@ -18,46 +19,67 @@ namespace Ivayami.UI {
 
         private static int _containerChange = Animator.StringToHash("Forward");
 
-        private const string STORY_ENTRY = "ChapterDescription";
-        private const string CHARACTER_ENTRY = "CharacterDescription";
-        private const string DOCUMENT_ENTRY = "Document";
-        private const string ABERRATION__ENTRY = "AberrationDescription";
-
         public void ChangeAnimation() {
             _containerAnimator.SetTrigger(_containerChange);
         }
 
         public void SetupSelections() {
-            // Check Current Story Progress for Story
-            // Check Current Story Progress for Characters
-            InventoryItem[] documentItems = PlayerInventory.Instance.CheckInventory().Where(item => item.Type == ItemType.Document).ToArray();
-            for (int i = 0; i < documentItems.Length; i++) {
-                if (_documentSelectionContainer.childCount <= i) Instantiate(_selectionBtnPrefab, _documentSelectionContainer);
-                _documentSelectionContainer.GetChild(i).GetComponentInChildren<TextMeshPro>().text = documentItems[i].DisplayName;
-            }
-            // Somehow Check Known Creatures
+            // Story
+            for (int i = 0; i < SaveSystem.Instance.Progress.entryProgress["Story"]; i++) if (i >= _storySelectionContainer.childCount)
+                    SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/ENUS/StoryEntry_{i}").GetTranslation(SaveSystem.Instance.Options.Language));
+
+            // Characters
+            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/CharacterEntry/ENUS");
+            int currentChild = 0;
+            for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.entryProgress[entries[i].name] > 0) {
+                    SetupBtn(currentChild >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
+                    currentChild++;
+                }
+
+            // Documents
+            ReadableItem[] documentItems = PlayerInventory.Instance.CheckInventory().OfType<ReadableItem>().ToArray();
+            for (int i = 0; i < documentItems.Length; i++)
+                SetupBtn(i >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(i).GetComponentInChildren<Button>(), documentItems[i].JournalEntry);
+
+            // Creatures
+            entries = Resources.LoadAll<JournalEntry>($"Journal/AberrationEntry/ENUS");
+            currentChild = 0;
+            for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.entryProgress[entries[i].name] > 0) {
+                    SetupBtn(currentChild >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
+                    currentChild++;
+                }
+
+            Resources.UnloadUnusedAssets();
         }
 
-        public void FocusChapter(int chapterId) {
-            DisplayEntry(Resources.Load<JournalEntry>($"{STORY_ENTRY}/ChapterDescription_{chapterId}"));
+        private void SetupBtn(Button btn, JournalEntry entry) {
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => DisplayEntry(entry));
+            btn.GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
+        }
 
+        public void FocusFirstChapter(int chapterId) {
+            _storySelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
+            
             Logger.Log(LogType.UI, $"Journal - Focus Chapter {chapterId}");
         }
 
-        public void FocusCharacter(int characterId) {
-            DisplayEntry(Resources.Load<JournalEntry>($"{CHARACTER_ENTRY}/CharacterDescription_{(true ? characterId : "null")}"));
+        public void FocusFirstCharacter(int characterId) {
+            _characterSelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
 
             Logger.Log(LogType.UI, $"Journal - Focus Character {characterId}");
         }
 
-        public void FocusDocument(int documentId) {
-            DisplayEntry(Resources.Load<JournalEntry>($"{DOCUMENT_ENTRY}/Document_{(true ? documentId : "null")}"));
-
-            Logger.Log(LogType.UI, $"Journal - Focus Document {documentId}");
+        public void FocusFirstDocument() {
+            Transform firstBtn = _documentSelectionContainer.GetChild(0);
+            if (firstBtn != null) firstBtn.GetComponent<Button>().onClick.Invoke();
+            else; // Display "No Entries
         }
 
-        public void FocusAberration(int aberrationId) {
-            DisplayEntry(Resources.Load<JournalEntry>($"{ABERRATION__ENTRY}/AberrationDescription_{(true ? aberrationId : "null")}"));
+        public void FocusFirstAberration(int aberrationId) {
+            Transform firstBtn = _aberrationSelectionContainer.GetChild(0);
+            if (firstBtn != null) firstBtn.GetComponent<Button>().onClick.Invoke();
+            else; // Display "No Entries
 
             Logger.Log(LogType.UI, $"Journal - Focus Aberration {aberrationId}");
         }

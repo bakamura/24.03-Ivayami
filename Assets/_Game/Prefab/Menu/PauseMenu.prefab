@@ -2052,7 +2052,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2418,7 +2418,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1916238224119508093}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 1
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -2443,7 +2443,19 @@ MonoBehaviour:
       m_Calls: []
   <OnOpenStart>k__BackingField:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
+        m_MethodName: FocusChapter
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   <OnOpenEnd>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
@@ -2653,6 +2665,7 @@ GameObject:
   m_Component:
   - component: {fileID: 852369741859187569}
   - component: {fileID: 9121429147294170245}
+  - component: {fileID: 168495815343045377}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -2677,7 +2690,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 690}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &9121429147294170245
 MonoBehaviour:
@@ -2705,6 +2718,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &168495815343045377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2110070265695266771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &2194329089196996938
 GameObject:
   m_ObjectHideFlags: 0
@@ -2715,6 +2742,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2728280404852187443}
   - component: {fileID: 4195651041968726656}
+  - component: {fileID: 3779933815701004176}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -2739,7 +2767,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 690}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &4195651041968726656
 MonoBehaviour:
@@ -2767,6 +2795,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &3779933815701004176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2194329089196996938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &2302116759461242908
 GameObject:
   m_ObjectHideFlags: 0
@@ -4980,6 +5022,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8302726263975965099}
   - component: {fileID: 3019079417882148490}
+  - component: {fileID: 8329629231486611096}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -5004,7 +5047,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 690}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &3019079417882148490
 MonoBehaviour:
@@ -5032,6 +5075,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &8329629231486611096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4274376464338218564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &4502599484383361400
 GameObject:
   m_ObjectHideFlags: 0
@@ -5390,6 +5447,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
+        m_MethodName: SetupSelections
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onUnpause:
     m_PersistentCalls:
       m_Calls:
@@ -5563,18 +5632,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
         m_MethodName: ChangeAnimation
         m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2077717282937735204}
-        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
-        m_MethodName: FocusAberration
-        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5822,18 +5879,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
         m_MethodName: ChangeAnimation
         m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2077717282937735204}
-        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
-        m_MethodName: FocusDocument
-        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -6105,7 +6150,19 @@ MonoBehaviour:
       m_Calls: []
   <OnOpenStart>k__BackingField:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
+        m_MethodName: FocusDocument
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.JournalEntry, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   <OnOpenEnd>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
@@ -6436,18 +6493,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2077717282937735204}
-        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
-        m_MethodName: FocusCharacter
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: GoForth
@@ -6716,7 +6761,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _presets: []
-  _selectionBtnPrefab: {fileID: 0}
+  _selectionBtnPrefab: {fileID: 7932181767047747469, guid: 1a7b3381f858b5941b145ab29efa2058, type: 3}
   _containerAnimator: {fileID: 2883907360779277343}
   _storySelectionContainer: {fileID: 8302726263975965099}
   _characterSelectionContainer: {fileID: 852369741859187569}
@@ -7058,7 +7103,19 @@ MonoBehaviour:
       m_Calls: []
   <OnOpenStart>k__BackingField:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
+        m_MethodName: FocusCharacter
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   <OnOpenEnd>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
@@ -7134,6 +7191,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4108851681542931571}
   - component: {fileID: 8743484531314954139}
+  - component: {fileID: 8198811368398326731}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
@@ -7158,7 +7216,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 690}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &8743484531314954139
 MonoBehaviour:
@@ -7186,6 +7244,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &8198811368398326731
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5710827914943972446}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 0
+  m_VerticalFit: 2
 --- !u!1 &5814328577975441327
 GameObject:
   m_ObjectHideFlags: 0
@@ -8879,7 +8951,19 @@ MonoBehaviour:
       m_Calls: []
   <OnOpenStart>k__BackingField:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
+        m_MethodName: FocusAberration
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   <OnOpenEnd>k__BackingField:
     m_PersistentCalls:
       m_Calls: []
@@ -9261,18 +9345,6 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
         m_MethodName: ChangeAnimation
         m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2077717282937735204}
-        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
-        m_MethodName: FocusChapter
-        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
