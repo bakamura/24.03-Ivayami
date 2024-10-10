@@ -9,7 +9,7 @@ namespace Ivayami.Puzzle
     {
         [SerializeField, Min(.02f)] private float _animationDuration;
         [SerializeField, Range(0f, 360f)] private float _rotationAngle = 60;
-        [SerializeField] private Transform _lockBtnContainer;
+        //[SerializeField] private Transform _lockBtnContainer;
 
         private RotateLockButton[] _buttons;
         private Coroutine _animateCoroutine;
@@ -18,7 +18,7 @@ namespace Ivayami.Puzzle
         protected override void Awake()
         {
             base.Awake();
-            _buttons = _lockBtnContainer.GetComponentsInChildren<RotateLockButton>(true);
+            _buttons = GetComponentsInChildren<RotateLockButton>(true);
         }
 
         public override void UpdateActiveState(bool isActive)
@@ -30,14 +30,14 @@ namespace Ivayami.Puzzle
             }
             if (isActive)
             {
-                Cursor.lockState = CursorLockMode.Locked;
+                //Cursor.lockState = CursorLockMode.Locked;
                 navegationUIInput.action.performed += HandleNavigateUI;
                 _lock.InteratctableHighlight.UpdateFeedbacks(false, true);
                 _currentBtn.InteratctableHighlight.UpdateFeedbacks(true);
             }
             else
             {
-                Cursor.lockState = CursorLockMode.None;
+                //Cursor.lockState = CursorLockMode.None;
                 navegationUIInput.action.performed -= HandleNavigateUI;
                 _currentBtn.InteratctableHighlight.UpdateFeedbacks(false);
             }
@@ -61,7 +61,7 @@ namespace Ivayami.Puzzle
             {
                 _lock.LockSounds.PlaySound(Audio.LockPuzzleSounds.SoundTypes.ConfirmOption);
                 _currentBtn.UpdateButtonDisplay((sbyte)Mathf.Sign(input.y));
-                _animateCoroutine = StartCoroutine(AnimateButtonCoroutine((sbyte)Mathf.Sign(input.y), _currentBtn.transform));
+                _animateCoroutine = StartCoroutine(AnimateButtonCoroutine((sbyte)Mathf.Sign(input.y), _currentBtn.ButtonVisualTransform));
             }
         }
 
