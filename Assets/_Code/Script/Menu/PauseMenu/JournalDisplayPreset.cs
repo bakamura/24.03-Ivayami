@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 
 namespace Ivayami.UI {
+    [RequireComponent(typeof(Menu))]
     public class JournalDisplayPreset : MonoBehaviour {
 
         [Header("References")]
@@ -10,7 +11,20 @@ namespace Ivayami.UI {
         [SerializeField] private Image[] _entryImages;
         [SerializeField] private TextMeshProUGUI[] _entryNotes;
 
+        [Header("Cache")]
+
+        private MenuGroup _menuGroup;
+        private Menu _menuSelf;
+
+        private void Awake() {
+            _menuGroup = GetComponentInParent<MenuGroup>();
+            _menuSelf = GetComponent<Menu>();
+        }
+
         public void DisplayEntry(JournalEntry entry) {
+            foreach (TextMeshProUGUI entryNote in _entryNotes) entryNote.text = string.Empty;
+            _menuGroup.CloseCurrentThenOpen(_menuSelf);
+
             for (int i = 0; i < _entryImages.Length; i++) {
                 if (i < entry.Images.Length) _entryImages[i].sprite = entry.Images[i];
                 else {

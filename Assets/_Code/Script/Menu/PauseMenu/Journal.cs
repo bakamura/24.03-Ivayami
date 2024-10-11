@@ -17,6 +17,10 @@ namespace Ivayami.UI {
         [SerializeField] private RectTransform _documentSelectionContainer;
         [SerializeField] private RectTransform _aberrationSelectionContainer;
 
+        [SerializeField] private MenuGroup _displayMenuGroup;
+        [SerializeField] private MenuGroup _noEntriesMenuGroup;
+        [SerializeField] private Menu _noEntriesMenu;
+
         private static int _containerChange = Animator.StringToHash("Forward");
 
         public void ChangeAnimation() {
@@ -34,7 +38,7 @@ namespace Ivayami.UI {
         }
 
         private void SetupStorySelection() {
-            for (int i = 0; i < SaveSystem.Instance.Progress.GetEntryProgressOfType("StoryEntry"); i++) if (i >= _storySelectionContainer.childCount)
+            for (int i = 0; i <= SaveSystem.Instance.Progress.GetEntryProgressOfType("StoryEntry"); i++) if (i >= _storySelectionContainer.childCount)
                     SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/ENUS/StoryEntry_{i}").GetTranslation(SaveSystem.Instance.Options.Language));
         }
 
@@ -68,30 +72,44 @@ namespace Ivayami.UI {
             btn.GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
         }
 
-        public void FocusFirstChapter(int chapterId) {
+        public void FocusFirstChapter() {
             _storySelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
+            _noEntriesMenuGroup.CloseCurrent();
 
-            Logger.Log(LogType.UI, $"Journal - Focus Chapter {chapterId}");
+            Logger.Log(LogType.UI, $"Journal - Focus First Chapter");
         }
 
-        public void FocusFirstCharacter(int characterId) {
+        public void FocusFirstCharacter() {
             _characterSelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
+            _noEntriesMenuGroup.CloseCurrent();
 
-            Logger.Log(LogType.UI, $"Journal - Focus Character {characterId}");
+            Logger.Log(LogType.UI, $"Journal - Focus First Character");
         }
 
         public void FocusFirstDocument() {
-            Transform firstBtn = _documentSelectionContainer.GetChild(0);
-            if (firstBtn != null) firstBtn.GetComponent<Button>().onClick.Invoke();
-            else; // Display "No Entries
+            if (_documentSelectionContainer.childCount > 0) {
+                _documentSelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
+                _noEntriesMenuGroup.CloseCurrent();
+            }
+            else {
+                _displayMenuGroup.CloseCurrent();
+                _noEntriesMenuGroup.CloseCurrentThenOpen(_noEntriesMenu);
+            }
+
+            Logger.Log(LogType.UI, $"Journal - Focus First Document");
         }
 
-        public void FocusFirstAberration(int aberrationId) {
-            Transform firstBtn = _aberrationSelectionContainer.GetChild(0);
-            if (firstBtn != null) firstBtn.GetComponent<Button>().onClick.Invoke();
-            else; // Display "No Entries
+        public void FocusFirstAberration() {
+            if (_aberrationSelectionContainer.childCount > 0) {
+                _aberrationSelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
+                _noEntriesMenuGroup.CloseCurrent();
+            }
+            else {
+                _displayMenuGroup.CloseCurrent();
+                _noEntriesMenuGroup.CloseCurrentThenOpen(_noEntriesMenu);
+            }
 
-            Logger.Log(LogType.UI, $"Journal - Focus Aberration {aberrationId}");
+            Logger.Log(LogType.UI, $"Journal - Focus First Aberration");
         }
 
         private void DisplayEntry(JournalEntry entry) {
@@ -99,7 +117,8 @@ namespace Ivayami.UI {
                 Debug.LogWarning("Description Not Found");
                 return;
             }
-            _presets[entry.TemplateID].DisplayEntry(entry);
+            if (_presets.Length > entry.TemplateID) _presets[entry.TemplateID].DisplayEntry(entry);
+            else Debug.LogError($"'{entry.name}' tried using journal preset {entry.TemplateID} which is doesn't exist!");
         }
 
     }

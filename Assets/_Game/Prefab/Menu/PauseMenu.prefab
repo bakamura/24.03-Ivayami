@@ -2446,8 +2446,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2077717282937735204}
         m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
-        m_MethodName: FocusChapter
-        m_Mode: 3
+        m_MethodName: FocusFirstChapter
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3166,6 +3166,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2864555608788893912}
+  - component: {fileID: 2760392860986239448}
   m_Layer: 5
   m_Name: EntryDisplay
   m_TagString: Untagged
@@ -3194,6 +3195,21 @@ RectTransform:
   m_AnchoredPosition: {x: 243.75, y: 0}
   m_SizeDelta: {x: -537.5, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2760392860986239448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2499873719533822716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6e871dd239ff0846b96b9e497f3a39e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentMenu: {fileID: 0}
+  _delayToOpen: -1
+  _setMenuBtnSelectedOnStart: 0
 --- !u!1 &2503576290004175838
 GameObject:
   m_ObjectHideFlags: 0
@@ -3459,6 +3475,172 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &2805481900013769200
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 768557678194487309}
+  - component: {fileID: 4037589589463446774}
+  - component: {fileID: 1552735609416282317}
+  - component: {fileID: 3855887403989958031}
+  - component: {fileID: 6591181986893587845}
+  m_Layer: 5
+  m_Name: NoEntries
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &768557678194487309
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2805481900013769200}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2668318756824981037}
+  m_Father: {fileID: 3600437847663932317}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &4037589589463446774
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2805481900013769200}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
+--- !u!114 &1552735609416282317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2805481900013769200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6e871dd239ff0846b96b9e497f3a39e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentMenu: {fileID: 0}
+  _delayToOpen: 0
+  _setMenuBtnSelectedOnStart: 0
+--- !u!114 &3855887403989958031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2805481900013769200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactable: 1
+  <OnTransitionStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnTransitionEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2077717282937735204}
+        m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
+        m_MethodName: FocusFirstAberration
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  <OnOpenEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  _transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _transitionDuration: 0.125
+  <InitialSelected>k__BackingField: {fileID: 0}
+--- !u!114 &6591181986893587845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2805481900013769200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa08ab6e0800fa44ae55d278d1423e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Content: {fileID: 0}
+  m_Horizontal: 0
+  m_Vertical: 1
+  m_MovementType: 1
+  m_Elasticity: 0.05
+  m_Inertia: 1
+  m_DecelerationRate: 0.25
+  m_ScrollSensitivity: 5
+  m_Viewport: {fileID: 0}
+  m_HorizontalScrollbar: {fileID: 0}
+  m_VerticalScrollbar: {fileID: 0}
+  m_HorizontalScrollbarVisibility: 0
+  m_VerticalScrollbarVisibility: 0
+  m_HorizontalScrollbarSpacing: 0
+  m_VerticalScrollbarSpacing: 0
+  m_OnValueChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2836885754758907120
 GameObject:
   m_ObjectHideFlags: 0
@@ -5365,8 +5547,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2077717282937735204}
         m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
-        m_MethodName: FocusChapter
-        m_Mode: 3
+        m_MethodName: FocusFirstChapter
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -6153,11 +6335,11 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2077717282937735204}
         m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
-        m_MethodName: FocusDocument
-        m_Mode: 2
+        m_MethodName: FocusFirstDocument
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.JournalEntry, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -6760,13 +6942,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9f11319183667042bc8b5e980fc1c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _presets: []
+  _presets:
+  - {fileID: 6930692687965172476}
+  - {fileID: 3481440936299966725}
   _selectionBtnPrefab: {fileID: 7932181767047747469, guid: 1a7b3381f858b5941b145ab29efa2058, type: 3}
   _containerAnimator: {fileID: 2883907360779277343}
   _storySelectionContainer: {fileID: 8302726263975965099}
   _characterSelectionContainer: {fileID: 852369741859187569}
   _documentSelectionContainer: {fileID: 2728280404852187443}
   _aberrationSelectionContainer: {fileID: 4108851681542931571}
+  _displayMenuGroup: {fileID: 2760392860986239448}
+  _noEntriesMenuGroup: {fileID: 1552735609416282317}
+  _noEntriesMenu: {fileID: 3855887403989958031}
 --- !u!114 &7282375717703895526
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6804,6 +6991,8 @@ MonoBehaviour:
     Id: Findings
   - <Tmp>k__BackingField: {fileID: 6984796532787032070}
     Id: Abominations
+  - <Tmp>k__BackingField: {fileID: 6984796532787032070}
+    Id: NoEntries
 --- !u!1 &5448262379444832518
 GameObject:
   m_ObjectHideFlags: 0
@@ -7106,8 +7295,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2077717282937735204}
         m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
-        m_MethodName: FocusCharacter
-        m_Mode: 3
+        m_MethodName: FocusFirstCharacter
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -7407,6 +7596,140 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _normalFontAsset: {fileID: 11400000, guid: 03833a1712d0d0b4d983cd09b1c7ba33, type: 2}
   _highlightFontAsset: {fileID: 11400000, guid: 6b18bed91f10f0f49868d025c3b0eb30, type: 2}
+--- !u!1 &5869893961472559057
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2668318756824981037}
+  - component: {fileID: 4714198983866717132}
+  - component: {fileID: 2508717028640408409}
+  m_Layer: 5
+  m_Name: Text (TMP)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2668318756824981037
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5869893961472559057}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 768557678194487309}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: -60, y: 210}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &4714198983866717132
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5869893961472559057}
+  m_CullTransparentMesh: 1
+--- !u!114 &2508717028640408409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5869893961472559057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: No Entries
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 8cbb3d4786071dc4cbb047edea1b9fbf, type: 2}
+  m_sharedMaterial: {fileID: 7944113141737556210, guid: 8cbb3d4786071dc4cbb047edea1b9fbf, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 72
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 36
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 0
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &5880558566584217136
 GameObject:
   m_ObjectHideFlags: 0
@@ -8954,8 +9277,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2077717282937735204}
         m_TargetAssemblyTypeName: Ivayami.UI.Journal, Assembly-CSharp
-        m_MethodName: FocusAberration
-        m_Mode: 3
+        m_MethodName: FocusFirstAberration
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -10062,6 +10385,7 @@ RectTransform:
   - {fileID: 5793750987871015925}
   - {fileID: 5039567457179092745}
   - {fileID: 6322576418876058260}
+  - {fileID: 768557678194487309}
   m_Father: {fileID: 646597492946677160}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
