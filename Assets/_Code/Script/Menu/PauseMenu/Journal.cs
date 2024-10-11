@@ -24,32 +24,42 @@ namespace Ivayami.UI {
         }
 
         public void SetupSelections() {
-            // Story
-            for (int i = 0; i < SaveSystem.Instance.Progress.entryProgress["Story"]; i++) if (i >= _storySelectionContainer.childCount)
-                    SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/ENUS/StoryEntry_{i}").GetTranslation(SaveSystem.Instance.Options.Language));
+            // Needs to reset when entering a new game
+            SetupStorySelection();
+            SetupCharactersSelection();
+            SetupDocumentsSelection();
+            SetupAberrationsSelection();
 
-            // Characters
+            Resources.UnloadUnusedAssets();
+        }
+
+        private void SetupStorySelection() {
+            for (int i = 0; i < SaveSystem.Instance.Progress.GetEntryProgressOfType("StoryEntry"); i++) if (i >= _storySelectionContainer.childCount)
+                    SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/ENUS/StoryEntry_{i}").GetTranslation(SaveSystem.Instance.Options.Language));
+        }
+
+        private void SetupCharactersSelection() {
             JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/CharacterEntry/ENUS");
             int currentChild = 0;
-            for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.entryProgress[entries[i].name] > 0) {
+            for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.GetEntryProgressOfType(entries[i].name) > 0) {
                     SetupBtn(currentChild >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
                     currentChild++;
                 }
+        }
 
-            // Documents
+        private void SetupDocumentsSelection() {
             ReadableItem[] documentItems = PlayerInventory.Instance.CheckInventory().OfType<ReadableItem>().ToArray();
             for (int i = 0; i < documentItems.Length; i++)
                 SetupBtn(i >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(i).GetComponentInChildren<Button>(), documentItems[i].JournalEntry);
+        }
 
-            // Creatures
-            entries = Resources.LoadAll<JournalEntry>($"Journal/AberrationEntry/ENUS");
-            currentChild = 0;
-            for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.entryProgress[entries[i].name] > 0) {
+        private void SetupAberrationsSelection() {
+            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/AberrationEntry/ENUS");
+            int currentChild = 0;
+            for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.GetEntryProgressOfType(entries[i].name) > 0) {
                     SetupBtn(currentChild >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
                     currentChild++;
                 }
-
-            Resources.UnloadUnusedAssets();
         }
 
         private void SetupBtn(Button btn, JournalEntry entry) {
@@ -60,7 +70,7 @@ namespace Ivayami.UI {
 
         public void FocusFirstChapter(int chapterId) {
             _storySelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
-            
+
             Logger.Log(LogType.UI, $"Journal - Focus Chapter {chapterId}");
         }
 
