@@ -104,11 +104,15 @@ namespace Ivayami.Save {
         }
 
         private IEnumerator WriteSaveRoutine(string savePath, Type type) {
-            foreach (SaveObject saveObject in _saveObjects) {
-                if (saveObject) saveObject.SaveData();
-            }
 
-            if (type == typeof(SaveProgress)) yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Progress)));
+            if (type == typeof(SaveProgress))
+            {
+                foreach (SaveObject saveObject in _saveObjects)
+                {
+                    if (saveObject) saveObject.SaveData();
+                }
+                yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Progress)));
+            }
             else yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Options)));
 
             Logger.Log(LogType.Save, $"Wrote Save of type '{type.Name}' in {savePath}");
