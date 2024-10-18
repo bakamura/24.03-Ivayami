@@ -1,15 +1,17 @@
 using UnityEngine;
 using Ivayami.Scene;
+using Ivayami.Player;
 
 namespace Ivayami.UI {
     public class SceneTransition : Fade {
 
-        [SerializeField] private GameObject _loadingIcon;
         public static SceneTransition Instance { get; private set; }
 
-        private MenuGroup _menuGroup;
-        public Menu Menu { get; private set; }
-        public AnimationCurve TransitionCurve => _transitionCurve;
+        [Header("Scene Transition")]
+
+        [SerializeField] private GameObject _loadingIcon;
+
+        private const string BLOCK_KEY = "ScreenFade";
 
         protected override void Awake() {
             if (Instance == null) Instance = this;
@@ -17,47 +19,32 @@ namespace Ivayami.UI {
                 Debug.LogWarning($"Multiple instances of {typeof(SceneTransition).Name}, destroying object '{gameObject.name}'");
                 Destroy(gameObject);
             }
-
             base.Awake();
+
+            OnOpenStart.AddListener(() => PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false));
+            OnCloseStart.AddListener(() => PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true));
+            OnTransitionStart.AddListener(() => Pause.Instance.ToggleCanPause(BLOCK_KEY, false));
+            OnTransitionEnd.AddListener(() => Pause.Instance.ToggleCanPause(BLOCK_KEY, true));
+            OnCloseEnd.AddListener(() => SetLoadingIconState(false));
         }
 
         private void Start() {
-            _menuGroup = GetComponent<MenuGroup>();
-            Menu = GetComponent<Menu>();
-            _menuGroup.CloseCurrentThenOpen(Menu);
-            SceneController.Instance.OnAllSceneRequestEnd += HandleOnAllScenesRequestEnd;
-            SceneController.Instance.OnLoadScene += (sceneName) => UpdateLoadingIcon(true);
-        }
-
-        public override void Close()
-        {
-            base.Close();
-            UpdateLoadingIcon(false);
-        }
-
-        public void Transition() {
-            Logger.Log(LogType.UI, $"Scene Transition Fade");
-            _menuGroup.CloseCurrentThenOpen(Menu);
+            PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
+            Close();
+            SceneController.Instance.OnLoadScene += (sceneName) => SetLoadingIconState(true);
         }
 
         public void SetDuration(float durationSeconds) {
-            TransitionDuration = durationSeconds;
+            _transitionDuration = durationSeconds;
         }
 
-        public void SetAnimationCurve(AnimationCurve animCurve)
-        {
+        public void SetAnimationCurve(AnimationCurve animCurve) {
             _transitionCurve = animCurve;
         }
 
-        public void UpdateLoadingIcon(bool isActive)
-        {
+        private void SetLoadingIconState(bool isActive) {
             _loadingIcon.SetActive(isActive);
         }
 
-        private void HandleOnAllScenesRequestEnd()
-        {
-            UpdateLoadingIcon(false);
-            SceneController.Instance.OnAllSceneRequestEnd -= HandleOnAllScenesRequestEnd;
-        }
     }
 }

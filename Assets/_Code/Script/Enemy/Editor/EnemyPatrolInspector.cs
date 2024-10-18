@@ -10,8 +10,8 @@ namespace Ivayami.Enemy
         //Stress Entity variables
         SerializedProperty stressIncreaseTickFrequency, stressAreas, debugLogsStressEntity, drawGizmos;
         //Enemy Patrol variables
-        SerializedProperty minDetectionRange, detectionRange, delayToLoseTarget, visionAngle, visionOffset, delayBetweenPatrolPoints, behaviourTickFrequency, stressIncreaseOnTargetDetected,
-            stressIncreaseWhileChasing, startActive, goToLastTargetPosition, attackTarget, attackAreaInfos, loseTargetWhenHidden, targetLayer, blockVisionLayer, patrolPoints,
+        SerializedProperty minDetectionRange, detectionRange, delayToLoseTarget, visionAngle, visionOffset, delayBetweenPatrolPoints, delayToStopSearchTarget, delayToFinishTargetSearch, behaviourTickFrequency, stressIncreaseOnTargetDetected,
+            stressIncreaseWhileChasing, chaseSpeed, startActive, goToLastTargetPosition, attackTarget, attackAreaInfos, loseTargetWhenHidden, targetLayer, blockVisionLayer, patrolPoints,
             debugLogsEnemyPatrol, drawMinDistance, minDistanceAreaColor, drawDetectionRange, detectionRangeAreaColor, drawPatrolPoints, patrolPointsColor, drawStoppingDistance, stoppingDistanceColor, patrolPointRadius;
         private NavMeshAgent _navMeshAgent;
         private const float _space = 2;
@@ -61,12 +61,18 @@ namespace Ivayami.Enemy
             EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(startActive, new GUIContent("Start Active"));
             EditorGUILayout.PropertyField(goToLastTargetPosition, new GUIContent("Go To last Target Possition", "Enemy will go to last target position on target lost"));
+            if (goToLastTargetPosition.boolValue)
+            {
+                EditorGUILayout.PropertyField(delayToStopSearchTarget, new GUIContent("Delay To Stop Searching For Target", "after this amount of time the enemy will stop going to the last point of the target"));
+                EditorGUILayout.PropertyField(delayToFinishTargetSearch, new GUIContent("Delay To Finish Target Search", "time to exit from the GoToLastTarget state"));
+            }
             EditorGUILayout.PropertyField(loseTargetWhenHidden, new GUIContent("Lose Target When Target Hidden", "Will instantly lose target"));
             EditorGUILayout.PropertyField(attackTarget, new GUIContent("Attack Target", "Attack range is defined by Stopping Distance + Target Collider Extent Z"));
             if (attackTarget.boolValue) EditorGUILayout.PropertyField(attackAreaInfos, new GUIContent("Attacks Hitbox Info"));
             EditorGUILayout.PropertyField(delayToLoseTarget, new GUIContent("Delay To Lose Target"));
             EditorGUILayout.PropertyField(stressIncreaseOnTargetDetected, new GUIContent("Stress Increase On Target Detected"));
             EditorGUILayout.PropertyField(stressIncreaseWhileChasing, new GUIContent("Stress Increase While Chasing"));
+            EditorGUILayout.PropertyField(chaseSpeed, new GUIContent("Chase Speed"));
             EditorGUILayout.PropertyField(patrolPoints, new GUIContent("Patrol Points"));
             if (patrolPoints.arraySize > 1) EditorGUILayout.PropertyField(delayBetweenPatrolPoints, new GUIContent("Delay Between Patrol Points"));
             EditorGUI.indentLevel--;
@@ -120,9 +126,12 @@ namespace Ivayami.Enemy
             visionAngle = serializedObject.FindProperty("_visionAngle");
             visionOffset = serializedObject.FindProperty("_visionOffset");
             delayBetweenPatrolPoints = serializedObject.FindProperty("_delayBetweenPatrolPoints");
+            delayToStopSearchTarget = serializedObject.FindProperty("_delayToStopSearchTarget");
+            delayToFinishTargetSearch = serializedObject.FindProperty("_delayToFinishTargetSearch");
             behaviourTickFrequency = serializedObject.FindProperty("_behaviourTickFrequency");
             stressIncreaseOnTargetDetected = serializedObject.FindProperty("_stressIncreaseOnTargetDetected");
             stressIncreaseWhileChasing = serializedObject.FindProperty("_stressIncreaseWhileChasing");
+            chaseSpeed = serializedObject.FindProperty("_chaseSpeed");
             startActive = serializedObject.FindProperty("_startActive");
             goToLastTargetPosition = serializedObject.FindProperty("_goToLastTargetPosition");
             attackTarget = serializedObject.FindProperty("_attackTarget");

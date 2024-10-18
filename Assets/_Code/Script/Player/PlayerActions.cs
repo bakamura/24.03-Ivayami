@@ -35,7 +35,7 @@ namespace Ivayami.Player {
         [SerializeField] private float _interactableCheckDelay;
 
         public bool Interacting { get; private set; } = false;
-        public IInteractable InteractableTarget { get; private set; }
+        public IInteractable InteractableTarget { get; private set; } // Should be private now?
 
         public enum InteractAnimation {
             Default,
@@ -59,7 +59,8 @@ namespace Ivayami.Player {
 
         private Camera _cam;
         private CinemachineBrain _brain;
-        private RaycastHit _hitInfoCache;
+        private RaycastHit _interactableHitCache;
+        private RaycastHit _blockerHitCache;
         private IInteractable _interactableClosestCache;
         private WaitForSeconds _interactableCheckWait;
 
@@ -89,29 +90,33 @@ namespace Ivayami.Player {
         }
 
         private void Interact(InputAction.CallbackContext input) {
-            if (input.phase == InputActionPhase.Started) {
-                if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
-                    InteractAnimation animation = InteractableTarget.Interact();
-                    if (InteractableTarget is IInteractableLong) {
-                        PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
-                        onInteractLong?.Invoke(true);
+            if (PlayerMovement.Instance.CanMove) {
+                if (input.phase == InputActionPhase.Started) {
+                    if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
+                        InteractAnimation animation = InteractableTarget.Interact();
+                        Vector3 directionToInteractable = InteractableTarget.gameObject.transform.position - transform.position;
+                        PlayerMovement.Instance.SetTargetAngle(Mathf.Atan2(directionToInteractable[0], directionToInteractable[2]) * Mathf.Rad2Deg, false);
+                        if (InteractableTarget is IInteractableLong) {
+                            PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
+                            onInteractLong?.Invoke(true);
 
-                        Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
-                    }
-                    else {
-                        onInteract?.Invoke(animation);
+                            Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
+                        }
+                        else {
+                            onInteract?.Invoke(animation);
 
-                        Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
+                            Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
+                        }
                     }
+                    else Logger.Log(LogType.Player, $"Interact: No Target");
                 }
-                else Logger.Log(LogType.Player, $"Interact: No Target");
-            }
-            else if (input.phase == InputActionPhase.Canceled && Interacting) {
-                if (InteractableTarget is IInteractableLong) PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, true);
-                (InteractableTarget as IInteractableLong).InteractStop();
-                onInteractLong?.Invoke(false);
+                else if (input.phase == InputActionPhase.Canceled && Interacting) {
+                    if (InteractableTarget is IInteractableLong) PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, true);
+                    (InteractableTarget as IInteractableLong).InteractStop();
+                    onInteractLong?.Invoke(false);
 
-                Logger.Log(LogType.Player, $"Stop Interact Long with: {InteractableTarget.gameObject.name}");
+                    Logger.Log(LogType.Player, $"Stop Interact Long with: {InteractableTarget.gameObject.name}");
+                }
             }
         }
 
@@ -122,8 +127,8 @@ namespace Ivayami.Player {
 
                     IInteractable[] interactables = _interactableDetector.InteractablesDetected.OrderBy(interactable => Vector3.Distance(interactable.gameObject.transform.position, _interactableDetector.transform.position)).ToArray();
                     for (int i = 0; i < interactables.Length; i++) {
-                        if (Physics.Raycast(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position), out RaycastHit hit, 99f, _interactLayer)) {
-                            if (!Physics.Raycast(_interactableDetector.transform.position, (hit.point - _interactableDetector.transform.position), out RaycastHit hit2, Vector3.Distance(_interactableDetector.transform.position, hit.point), _blockLayers, QueryTriggerInteraction.Ignore)) {
+                        if (Physics.Raycast(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position), out _interactableHitCache, 99f, _interactLayer)) {
+                            if (!Physics.Raycast(_interactableDetector.transform.position, (_interactableHitCache.point - _interactableDetector.transform.position), out _blockerHitCache, Vector3.Distance(_interactableDetector.transform.position, _interactableHitCache.point), _blockLayers, QueryTriggerInteraction.Ignore)) {
                                 _interactableClosestCache = interactables[i];
                                 break;
                             }
