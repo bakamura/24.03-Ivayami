@@ -39,6 +39,8 @@ namespace Ivayami.Player {
             onStressChange.AddListener(FailStateCheck);
             onFail.AddListener(() => StartCoroutine(DelayToRespawn()));
             onFailFade.AddListener(ResetStress);
+            onFail.AddListener(() => Pause.Instance.ToggleCanPause(FAIL_BLOCK_KEY, false));
+            onFailFade.AddListener(() => Pause.Instance.ToggleCanPause(FAIL_BLOCK_KEY, true));
             _restartWait = new WaitForSeconds(_restartDelay);
 
             Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");

@@ -46,7 +46,7 @@ namespace Ivayami.Puzzle
         private void UpdateHiddenState()
         {
             if (PlayerMovement.Instance.Crouching && _isPlayerInside) PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.Bush;
-            else if(_bushesActive == 0) PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
+            else if(_bushesActive == 0 || !PlayerMovement.Instance.Crouching) PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
         }
     }
 

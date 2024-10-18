@@ -7,7 +7,7 @@ using Ivayami.Audio;
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
-    public class EnemyPatrol : StressEntity
+    public class EnemyPatrol : StressEntity, IIluminatedEnemy
     {
         //[Header("Enemy Parameters")]
         [SerializeField, Min(0f)] private float _minDetectionRange;
@@ -21,6 +21,7 @@ namespace Ivayami.Enemy
         [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
         [SerializeField, Min(0f)] private float _stressIncreaseOnTargetDetected;
         [SerializeField, Min(0f)] private float _stressIncreaseWhileChasing;
+        [SerializeField, Min(0f)] private float _chaseSpeed;
         //[SerializeField, Min(0f)] private float _stressIncreaseOnAttackTarget;
         [SerializeField] private bool _startActive;
         [SerializeField] private bool _goToLastTargetPosition;
@@ -75,6 +76,8 @@ namespace Ivayami.Enemy
         private float _currentTargetColliderSizeFactor;
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
+        private float _baseSpeed;
+        private int _currentAttackAnimIndex;
 
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
@@ -92,6 +95,7 @@ namespace Ivayami.Enemy
 
             _initialPosition = transform.position;
             _initialRotation = transform.rotation;
+            _baseSpeed = _navMeshAgent.speed;
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
         }
 
@@ -104,13 +108,19 @@ namespace Ivayami.Enemy
             }
         }
 
-        private void Start()
+        private void OnEnable()
         {
             if (_startActive)
             {
                 StartBehaviour();
             }
         }
+
+        private void OnDisable()
+        {
+            StopBehaviour();
+        }
+
         [ContextMenu("Start")]
         public void StartBehaviour()
         {
@@ -129,7 +139,7 @@ namespace Ivayami.Enemy
                 StopCoroutine(BehaviourCoroutine());
                 IsActive = false;
                 _isChasing = false;
-                StopMovement(true);
+                StopMovement(false);
             }
         }
 
@@ -157,7 +167,7 @@ namespace Ivayami.Enemy
                             });
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                             _enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);
-                        }
+                        }                        
                         _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                         _lastTargetPosition = _hitsCache[0].transform.position;
                         if (_debugLogsEnemyPatrol) Debug.Log("Chase Target");
@@ -166,7 +176,8 @@ namespace Ivayami.Enemy
                             StopMovement(true);
                             //PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
                             //_isChasing = false;
-                            _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange);
+                            _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange, _currentAttackAnimIndex);
+                            _currentAttackAnimIndex = _currentAttackAnimIndex == 0 ? 1 : 0;
                             if (_debugLogsEnemyPatrol) Debug.Log("Attack Target");
                         }
                     }
@@ -189,6 +200,7 @@ namespace Ivayami.Enemy
                                     StopMovement(true);
                                     _isChasing = false;
                                     _goToLastTargetPointPatience = 0;
+                                    _navMeshAgent.speed = _baseSpeed;
                                     yield return _endGoToLastTargetDelay;
                                     _navMeshAgent.isStopped = false;
                                 }
@@ -295,6 +307,7 @@ namespace Ivayami.Enemy
         private void HandleTargetDetectedAnimationEnd()
         {
             _isChasing = true;
+            _navMeshAgent.speed = _chaseSpeed;
             _lastTargetPosition = _hitsCache[0].transform.position;
             _navMeshAgent.isStopped = false;
         }
@@ -400,7 +413,7 @@ namespace Ivayami.Enemy
             //        //_hitboxAttack = go.AddComponent<HitboxAttack>();
             //    }
             //}
-        }
+        }        
 #endif
         #endregion
     }
