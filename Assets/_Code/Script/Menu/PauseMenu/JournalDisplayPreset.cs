@@ -26,6 +26,7 @@ namespace Ivayami.UI {
             _menuGroup.CloseCurrentThenOpen(_menuSelf);
 
             for (int i = 0; i < _entryImages.Length; i++) {
+                Debug.Log($"{i} < {entry.Images.Length}");
                 if (i < entry.Images.Length) _entryImages[i].sprite = entry.Images[i];
                 else {
                     Debug.LogWarning("Entry doesn't fill every image slot in template");

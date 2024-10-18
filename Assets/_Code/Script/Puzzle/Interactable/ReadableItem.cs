@@ -2,6 +2,7 @@ using UnityEngine;
 using Ivayami.Puzzle;
 using Ivayami.UI;
 using Ivayami.Save;
+using System.Linq;
 
 namespace Ivayami.Player {
     public class ReadableItem : InventoryItem {
@@ -10,8 +11,10 @@ namespace Ivayami.Player {
 
         public ReadableItem(string readableName) {
             name = readableName;
-            Readable readable = Resources.Load<Readable>($"Readable/ENUS/{name}").GetTranslation(SaveSystem.Instance.Options.Language);
+            Readable readable = Resources.LoadAll<Readable>($"Readable/ENUS").First(readable => readable.name == name).GetTranslation(SaveSystem.Instance.Options.Language);
+            DisplayName = readable.Title;
             JournalEntry = new JournalEntry(readable.Title, readable.Content);
+            Type = ItemType.Document;
         }
 
     }

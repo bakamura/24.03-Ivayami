@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using Ivayami.Player;
 using Ivayami.Save;
+using Ivayami.Audio;
 
 namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
@@ -12,6 +13,8 @@ namespace Ivayami.UI {
         [SerializeField] private Button _selectionBtnPrefab;
         [SerializeField] private Animator _containerAnimator;
 
+        [SerializeField] private UiSound _btnSound;
+        [SerializeField] private Button _chapterBtn;
         [SerializeField] private RectTransform _storySelectionContainer;
         [SerializeField] private RectTransform _characterSelectionContainer;
         [SerializeField] private RectTransform _documentSelectionContainer;
@@ -28,13 +31,24 @@ namespace Ivayami.UI {
         }
 
         public void SetupSelections() {
-            // Needs to reset when entering a new game
             SetupStorySelection();
             SetupCharactersSelection();
             SetupDocumentsSelection();
             SetupAberrationsSelection();
 
             Resources.UnloadUnusedAssets();
+            _chapterBtn.onClick.Invoke();
+        }
+
+        public void ResetSelections() {
+            int childCount = _storySelectionContainer.childCount;
+            for (int i = 0; i < childCount; i++) Destroy(_storySelectionContainer.GetChild(0).gameObject);
+            childCount = _characterSelectionContainer.childCount;
+            for (int i = 0; i < childCount; i++) Destroy(_characterSelectionContainer.GetChild(0).gameObject);
+            childCount = _documentSelectionContainer.childCount;
+            for (int i = 0; i < childCount; i++) Destroy(_documentSelectionContainer.GetChild(0).gameObject);
+            childCount = _aberrationSelectionContainer.childCount;
+            for (int i = 0; i < childCount; i++) Destroy(_aberrationSelectionContainer.GetChild(0).gameObject);
         }
 
         private void SetupStorySelection() {
@@ -43,10 +57,11 @@ namespace Ivayami.UI {
         }
 
         private void SetupCharactersSelection() {
+            SaveSystem.Instance.Progress.SaveEntryProgressOfType("Joca", 2); //
             JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/CharacterEntry/ENUS");
             int currentChild = 0;
             for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.GetEntryProgressOfType(entries[i].name) > 0) {
-                    SetupBtn(currentChild >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
+                    SetupBtn(currentChild >= _characterSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _characterSelectionContainer) : _characterSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
                     currentChild++;
                 }
         }
@@ -61,7 +76,7 @@ namespace Ivayami.UI {
             JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/AberrationEntry/ENUS");
             int currentChild = 0;
             for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.GetEntryProgressOfType(entries[i].name) > 0) {
-                    SetupBtn(currentChild >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
+                    SetupBtn(currentChild >= _aberrationSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _aberrationSelectionContainer) : _aberrationSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
                     currentChild++;
                 }
         }
@@ -69,18 +84,23 @@ namespace Ivayami.UI {
         private void SetupBtn(Button btn, JournalEntry entry) {
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() => DisplayEntry(entry));
+            btn.onClick.AddListener(_btnSound.GoForth);
             btn.GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
         }
 
         public void FocusFirstChapter() {
-            _storySelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
+            GameObject btnGO = _storySelectionContainer.GetChild(0).gameObject;
+            btnGO.GetComponent<Button>().onClick.Invoke();
+            _displayMenuGroup.SetSelected(btnGO);
             _noEntriesMenuGroup.CloseCurrent();
 
             Logger.Log(LogType.UI, $"Journal - Focus First Chapter");
         }
 
         public void FocusFirstCharacter() {
-            _characterSelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
+            GameObject btnGO = _characterSelectionContainer.GetChild(0).gameObject;
+            btnGO.GetComponent<Button>().onClick.Invoke();
+            _displayMenuGroup.SetSelected(btnGO);
             _noEntriesMenuGroup.CloseCurrent();
 
             Logger.Log(LogType.UI, $"Journal - Focus First Character");
@@ -88,7 +108,9 @@ namespace Ivayami.UI {
 
         public void FocusFirstDocument() {
             if (_documentSelectionContainer.childCount > 0) {
-                _documentSelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
+                GameObject btnGO = _documentSelectionContainer.GetChild(0).gameObject;
+                btnGO.GetComponent<Button>().onClick.Invoke();
+                _displayMenuGroup.SetSelected(btnGO);
                 _noEntriesMenuGroup.CloseCurrent();
             }
             else {
@@ -101,7 +123,9 @@ namespace Ivayami.UI {
 
         public void FocusFirstAberration() {
             if (_aberrationSelectionContainer.childCount > 0) {
-                _aberrationSelectionContainer.GetChild(0).GetComponent<Button>().onClick.Invoke();
+                GameObject btnGO = _aberrationSelectionContainer.GetChild(0).gameObject;
+                btnGO.GetComponent<Button>().onClick.Invoke();
+                _displayMenuGroup.SetSelected(btnGO);
                 _noEntriesMenuGroup.CloseCurrent();
             }
             else {

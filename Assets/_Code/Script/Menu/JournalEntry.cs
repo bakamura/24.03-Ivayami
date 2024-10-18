@@ -1,8 +1,9 @@
+using Ivayami.Save;
 using System.Linq;
 using UnityEngine;
 
 namespace Ivayami.UI {
-    [CreateAssetMenu(menuName = "ChapterInfo/Description")]
+    [CreateAssetMenu(menuName = "Texts/JournalyEntry")]
     public class JournalEntry : ScriptableObject {
 
         public enum EntryCategory {
@@ -14,12 +15,22 @@ namespace Ivayami.UI {
         [field: SerializeField] public int TemplateID { get; private set; }
         [field: SerializeField] public EntryCategory Category { get; private set; }
         [field: SerializeField] public string DisplayName { get; private set; }
-        [field: SerializeField, TextArea] public string Text { get; private set; }
+        [SerializeField] private AreaProgress _progressType;
+
+        [SerializeField, TextArea] private string[] _text;
+        public string Text { get { return string.Join("\n", _progressType != null ? _text.Take(SaveSystem.Instance.Progress.GetEntryProgressOfType(_progressType.Id)).ToArray() : _text); } }
         [field: SerializeField] public Sprite[] Images { get; private set; }
 
         public JournalEntry(string displayName, string content) {
             DisplayName = displayName;
-            Text = content;
+            _text = new string[] { content };
+            Images = new Sprite[0];
+        }
+
+        public JournalEntry(string displayName, string[] content) {
+            DisplayName = displayName;
+            _text = content;
+            Images = new Sprite[0];
         }
 
         public JournalEntry GetTranslation(LanguageTypes language) {
