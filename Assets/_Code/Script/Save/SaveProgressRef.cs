@@ -10,5 +10,9 @@ namespace Ivayami.Save {
             SaveSystem.Instance.Progress.SaveProgressOfType(_areaProgress.Id, progress);
         }
 
+        public void SetEntryProgressTo(int progress) {
+            SaveSystem.Instance.Progress.SaveEntryProgressOfType(_areaProgress.Id, progress);
+        }
+
     }
 }
