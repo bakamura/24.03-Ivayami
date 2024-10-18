@@ -55,7 +55,12 @@ namespace Ivayami.Player {
             _itemList.Clear();
             if (itemNames?.Length > 0) {
                 InventoryItem[] itemAssets = Resources.LoadAll<InventoryItem>($"Items/ENUS");
-                foreach (string itemName in itemNames) _itemList.Add(itemAssets.First(asset => asset.name == itemName));
+                InventoryItem iterator;
+                foreach (string itemName in itemNames) {
+                    iterator = itemAssets.First(asset => asset.name == itemName);
+                    if (iterator != null) _itemList.Add(iterator);
+                    else new ReadableItem(itemName);
+                }
             }
         }
 
