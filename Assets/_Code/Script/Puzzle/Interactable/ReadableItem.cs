@@ -1,8 +1,8 @@
+using System.Linq;
 using UnityEngine;
 using Ivayami.Puzzle;
 using Ivayami.UI;
 using Ivayami.Save;
-using System.Linq;
 
 namespace Ivayami.Player {
     public class ReadableItem : InventoryItem {
@@ -15,6 +15,7 @@ namespace Ivayami.Player {
             DisplayName = readable.Title;
             JournalEntry = new JournalEntry(readable.Title, readable.Content);
             Type = ItemType.Document;
+            Resources.UnloadUnusedAssets();
         }
 
     }
