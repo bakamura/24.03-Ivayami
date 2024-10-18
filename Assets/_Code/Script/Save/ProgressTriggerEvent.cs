@@ -41,10 +41,10 @@ namespace Ivayami.Save
         {
             for (int i = 0; i < _progressConditions.Length; i++)
             {
-                if (!SaveSystem.Instance.Progress.progress.ContainsKey(_progressConditions[i].AreaProgress.Id) ||
-                    (SaveSystem.Instance.Progress.progress.ContainsKey(_progressConditions[i].AreaProgress.Id) &&
-                    (SaveSystem.Instance.Progress.progress[_progressConditions[i].AreaProgress.Id] < _progressConditions[i].ProgressStepMin ||
-                    SaveSystem.Instance.Progress.progress[_progressConditions[i].AreaProgress.Id] > _progressConditions[i].ProgressStepMax)))
+                if (!SaveSystem.Instance.Progress.gameProgress.ContainsKey(_progressConditions[i].AreaProgress.Id) ||
+                    (SaveSystem.Instance.Progress.gameProgress.ContainsKey(_progressConditions[i].AreaProgress.Id) &&
+                    (SaveSystem.Instance.Progress.gameProgress[_progressConditions[i].AreaProgress.Id] < _progressConditions[i].ProgressStepMin ||
+                    SaveSystem.Instance.Progress.gameProgress[_progressConditions[i].AreaProgress.Id] > _progressConditions[i].ProgressStepMax)))
                 {
                     return;
                 }
