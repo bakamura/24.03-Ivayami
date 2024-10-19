@@ -79,14 +79,12 @@ namespace Ivayami.Audio
         }
 
         [ContextMenu("Pause")]
-        public void Pause()
+        public void Pause(bool isPaused)
         {
+            if (!_currentSounData.AudioInstance.isValid()) return;
             _currentSounData.AudioInstance.getPlaybackState(out PLAYBACK_STATE state);
-            if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STOPPED)
-            {
-                _currentSounData.AudioInstance.getPaused(out bool paused);
-                _currentSounData.AudioInstance.setPaused(!paused);
-            }
+            if (state != PLAYBACK_STATE.PLAYING) return;
+            _currentSounData.AudioInstance.setPaused(isPaused);
         }
 
         [ContextMenu("Stop")]
