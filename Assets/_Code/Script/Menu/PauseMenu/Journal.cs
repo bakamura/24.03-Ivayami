@@ -57,7 +57,6 @@ namespace Ivayami.UI {
         }
 
         private void SetupCharactersSelection() {
-            SaveSystem.Instance.Progress.SaveEntryProgressOfType("Joca", 2); //
             JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/CharacterEntry/ENUS");
             int currentChild = 0;
             for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.GetEntryProgressOfType(entries[i].name) > 0) {
