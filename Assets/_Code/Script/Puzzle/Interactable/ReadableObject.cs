@@ -27,6 +27,8 @@ namespace Ivayami.Puzzle {
             InteratctableHighlight = GetComponent<InteractableFeedbacks>();
             _focusCamera = GetComponentInChildren<CameraAnimationInfo>();
             _interactableSounds = GetComponent<InteractableSounds>();
+
+            gameObject.SetActive(PlayerInventory.Instance.CheckInventoryFor(_readable.name) == null);
         }
 
         public PlayerActions.InteractAnimation Interact() {
@@ -41,7 +43,8 @@ namespace Ivayami.Puzzle {
             ReturnAction.Instance.Set(StopReading);
 
             if (_goesToInventory) {
-                // TO DO
+                PlayerInventory.Instance.AddToInventory(new ReadableItem(_readable.name));
+                gameObject.SetActive(false);
             }
 
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
