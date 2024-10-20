@@ -36,7 +36,8 @@ namespace Ivayami.UI {
                 if (goalPosInMap != Vector2.zero) goalPointer.anchoredPosition = goalPosInMap;
             }
             foreach (GameObject blocker in _roadBlockers) {
-                blocker.SetActive(SaveSystem.Instance.Progress.id == 1); // id should be substituted for the blockers save
+                if (int.TryParse(blocker.name.Split('.')[0], out int id)) blocker.SetActive(SaveSystem.Instance.Progress.GetRoadBlockerState(id) == RoadBlocker.State.Discovered);
+                else Debug.LogWarning($"Couldn't get ID of road blocker indicator '{blocker.name}', make sure the object is named like '7.AnyNameReally'");
             }
         }
 
