@@ -4,6 +4,7 @@ using UnityEngine.AI;
 //using Ivayami.Player;
 using Ivayami.Audio;
 using System;
+using Ivayami.Player;
 
 namespace Ivayami.Enemy
 {
@@ -57,6 +58,7 @@ namespace Ivayami.Enemy
         private Vector3 _lastTargetPosition;
         private bool _isChasing;
         private bool _directContactWithTarget;
+        private bool _targetKilled;
         private float _halfVisionAngle;
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
@@ -80,6 +82,16 @@ namespace Ivayami.Enemy
             _halfVisionAngle = _visionAngle / 2f;
 
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
+        }
+
+        private void OnEnable()
+        {
+            PlayerStress.Instance.onFail.AddListener(OnTargetKill);
+        }
+
+        private void OnDisable()
+        {
+            PlayerStress.Instance.onFail.RemoveListener(OnTargetKill);
         }
 
         private void Start()
@@ -185,7 +197,7 @@ namespace Ivayami.Enemy
                             }
                         }
                         if (_debugLogPoliceOfficer) Debug.Log("Patroling");
-                    }                    
+                    }
                 }
                 _enemyAnimator.Chasing(_isChasing);
                 _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude);
@@ -228,7 +240,7 @@ namespace Ivayami.Enemy
                 if (_debugLogPoliceOfficer) Debug.Log("Attack Target");
                 StopBehaviour();
                 StopTargetPointReachedCoroutine();
-                _navMeshAgent.isStopped = true;
+                //_navMeshAgent.isStopped = true;
                 //PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
                 _enemyAnimator.Attack(OnAttackAnimationEnd, OnAnimationStepChange);
             }
@@ -236,9 +248,18 @@ namespace Ivayami.Enemy
 
         private void OnAttackAnimationEnd()
         {
-            _navMeshAgent.isStopped = false;
             _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0);
-            StartBehaviour();
+            if (_targetKilled)
+            {
+                _enemyAnimator.Walking(0);
+                _targetKilled = false;
+                //_enemyAnimator.Chasing(false);
+            }
+            else
+            {
+                //_navMeshAgent.isStopped = false;
+                StartBehaviour();
+            }
         }
 
         private void OnAnimationStepChange(float normalizedTime)
@@ -274,9 +295,10 @@ namespace Ivayami.Enemy
             _navMeshAgent.velocity = Vector3.zero;
             _enemyAnimator.Walking(0);
             if (!targetDetected) yield return stayInPointDelay;
-            _navMeshAgent.speed =  targetDetected ? _currentMovementData.ChaseSpeed : _currentMovementData.WalkSpeed;
+            _navMeshAgent.speed = targetDetected ? _currentMovementData.ChaseSpeed : _currentMovementData.WalkSpeed;
             _detectTargetPointOffBehaviourReachedCoroutine = null;
-            /*if (autoStartBehaviour) */StartBehaviour();
+            /*if (autoStartBehaviour) */
+            StartBehaviour();
         }
 
         public void SetMovementData(EnemyMovementData data)
@@ -353,6 +375,11 @@ namespace Ivayami.Enemy
             _isChasing = true;
             _lastTargetPosition = _hitsCache[0].transform.position;
             _navMeshAgent.isStopped = false;
+        }
+
+        private void OnTargetKill()
+        {
+            _targetKilled = true;
         }
         #endregion
         #region Debug
