@@ -343,36 +343,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delayBeforeStartFade: 0
-  _onAfterDelayBeforeFadeStart:
+  _delayToFadeOut: 0
+  _beforeFade:
     m_PersistentCalls:
       m_Calls: []
-  _duration: 1
-  _fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 1
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 1
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _onFadeEnd:
+  _afterFade:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2059627750335400975}
@@ -399,7 +374,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _debugLogs: 0
+  _duration: 1
 --- !u!114 &2768542277701445230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -412,45 +387,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _delayBeforeStartFade: 0
-  _onAfterDelayBeforeFadeStart:
+  _delayToFadeOut: 0
+  _beforeFade:
     m_PersistentCalls:
       m_Calls: []
-  _duration: 1
-  _fadeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 3.081761
-      outSlope: 3.081761
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.0375
-    - serializedVersion: 3
-      time: 0.18501286
-      value: 0.8177489
-      inSlope: 0.5113374
-      outSlope: 0.87635386
-      tangentMode: 1
-      weightedMode: 0
-      inWeight: 1
-      outWeight: 0.14620331
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0.023198323
-      outSlope: 0.023198323
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.5083333
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  _onFadeEnd:
+  _afterFade:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3477664043247287133}
@@ -477,7 +418,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _debugLogs: 0
+  _duration: 1
 --- !u!1 &4948980832416720641
 GameObject:
   m_ObjectHideFlags: 0
@@ -743,6 +684,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _interactable: 1
+  <OnTransitionStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnTransitionEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
   _transitionCurve:
     serializedVersion: 2
     m_Curve:
@@ -767,9 +727,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  <TransitionDuration>k__BackingField: 1
+  _transitionDuration: 1
   <InitialSelected>k__BackingField: {fileID: 0}
-  _interactable: 1
 --- !u!1 &5746978759858209912
 GameObject:
   m_ObjectHideFlags: 0
@@ -993,7 +952,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 64247a46e8089684e89152a500d9124c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8ca371697a3c54940a900b9d25bbbc50, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1325,7 +1284,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: fd8eff40f255fc54da09ddf36e15e8ca, type: 2}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
@@ -1358,11 +1317,11 @@ PrefabInstance:
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 2621519025074270220}
+      objectReference: {fileID: 1901731957498984179}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
-      objectReference: {fileID: 1901731957498984179}
+      objectReference: {fileID: 6103803572292850785}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[4].m_Target
       value: 
@@ -1393,15 +1352,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: LockInput
-      objectReference: {fileID: 0}
-    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
-      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
       value: ChangeInputToUI
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
-      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
       value: DeleteAll
+      objectReference: {fileID: 0}
+    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[3].m_MethodName
+      value: Open
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[4].m_MethodName
@@ -1417,11 +1376,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
-      value: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
+      value: Ivayami.Save.DeleteSaves, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[3].m_TargetAssemblyTypeName
-      value: Ivayami.Save.DeleteSaves, Assembly-CSharp
+      value: Ivayami.UI.Fade, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[4].m_TargetAssemblyTypeName
@@ -1558,8 +1517,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.71, y: 2.1347947, z: 2.97}
-  m_Center: {x: -0.010354149, y: 1.1166935, z: 0.0024370556}
+  m_Size: {x: 0.71, y: 2.1347947, z: 2.8777769}
+  m_Center: {x: -0.010354161, y: 1.1166935, z: -0.04367441}
 --- !u!114 &1901731957498984179
 MonoBehaviour:
   m_ObjectHideFlags: 0
