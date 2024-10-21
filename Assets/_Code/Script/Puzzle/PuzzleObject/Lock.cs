@@ -38,6 +38,8 @@ namespace Ivayami.Puzzle
 
 
         private int _currentRequestIndex = 0;
+        private const float _navigateInputCooldown = .2f;
+        private float _navigateInputCurrentCooldown;
         private List<ItemRequestData> _currentRequests = new List<ItemRequestData>();
         private List<InventoryItem> _itemsDelivered = new List<InventoryItem>();
         private InteractableFeedbacks _interatctableFeedbacks;
@@ -131,7 +133,7 @@ namespace Ivayami.Puzzle
             if (isActive)
             {
                 _cancelInteractionInput.action.performed += HandleExitInteraction;
-                _navigateUIInput.action.performed += HandleNavigateUI;
+                if(_interactionType == InteractionTypes.RequireItems) _navigateUIInput.action.performed += HandleNavigateUI;
                 if (_interactionType == InteractionTypes.RequirePassword)
                 {
                     _passwordUI.OnCheckPassword += TryUnlock;
@@ -146,7 +148,7 @@ namespace Ivayami.Puzzle
             else
             {
                 _cancelInteractionInput.action.performed -= HandleExitInteraction;
-                _navigateUIInput.action.performed -= HandleNavigateUI;
+                if (_interactionType == InteractionTypes.RequireItems) _navigateUIInput.action.performed -= HandleNavigateUI;
                 if (_interactionType == InteractionTypes.RequirePassword)
                 {
                     _passwordUI.OnCheckPassword -= TryUnlock;
@@ -184,22 +186,15 @@ namespace Ivayami.Puzzle
 
         private void HandleNavigateUI(InputAction.CallbackContext context)
         {
-            Vector2 input = context.ReadValue<Vector2>();
-            if (input != Vector2.zero)
+            Vector2 input = context.ReadValue<Vector2>();            
+            if (input.x != 0 && Time.time - _navigateInputCurrentCooldown > _navigateInputCooldown)
             {
                 _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ChangeOption);
-                switch (_interactionType)
-                {
-                    case InteractionTypes.RequireItems:
-                        if (input.x != 0)
-                        {
-                            int temp = input.x > 0 ? 1 : -1;
-                            _currentRequestIndex += temp;
-                            LoopValueByArraySize(ref _currentRequestIndex, _itemsCache.Count);
-                            UpdateDeliverIcons(_currentRequestIndex);
-                        }
-                        break;
-                }
+                int temp = input.x > 0 ? 1 : -1;
+                _currentRequestIndex += temp;
+                LoopValueByArraySize(ref _currentRequestIndex, _itemsCache.Count);
+                UpdateDeliverIcons(_currentRequestIndex);                
+                _navigateInputCurrentCooldown = Time.time;
             }
         }
 

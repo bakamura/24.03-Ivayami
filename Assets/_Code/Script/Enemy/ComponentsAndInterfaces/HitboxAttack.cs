@@ -1,11 +1,13 @@
 using UnityEngine;
 using Ivayami.Player;
+using System;
 
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(BoxCollider))]
     public class HitboxAttack : MonoBehaviour
     {
+        public Action OnTargetHit;
         private BoxCollider _boxCollider
         {
             get
@@ -28,6 +30,7 @@ namespace Ivayami.Enemy
         private void OnTriggerEnter(Collider other)
         {
             PlayerStress.Instance.AddStress(_currentStressIncrease);
+            OnTargetHit?.Invoke();
         }
     }
 }

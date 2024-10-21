@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 using FMODUnity;
 using Ivayami.Player;
 using Ivayami.UI;
@@ -69,6 +70,7 @@ namespace Ivayami.Dialogue
             {
                 _onUnpause?.Invoke();
             }
+            EventSystem.current.SetSelectedGameObject(null);
             _playableDirector.Stop();
             if (_debug) Debug.Log("Cutscene Skip");
             //_onCutsceneEnd?.Invoke();
@@ -84,6 +86,7 @@ namespace Ivayami.Dialogue
             DialogueController.Instance.PauseDialogue(false);
             RuntimeManager.PauseAllEvents(false);
             _onUnpause?.Invoke();
+            EventSystem.current.SetSelectedGameObject(null);
             if (_debug) Debug.Log("Cutscene Resume");
         }
 

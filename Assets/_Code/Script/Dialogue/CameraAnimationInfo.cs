@@ -43,7 +43,7 @@ namespace Ivayami.Dialogue
             {
                 if (_lookAtPlayer) LookAtTarget = PlayerCamera.Instance.CameraAimPoint;
                 else LookAtTarget = _lookAtTarget ? _lookAtTarget : transform;
-                if (_followPlayer) FollowTarget = PlayerCamera.Instance.CameraAimPoint;
+                if (_followPlayer) FollowTarget = PlayerCamera.Instance.CameraAimRotator;//PlayerCamera.Instance.CameraAimPoint;
                 else FollowTarget = _followTarget ? _followTarget : transform;
                 //StartDurationFocusDelay();
             }
