@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-//using Ivayami.Player;
 using Ivayami.Audio;
 using System;
 using Ivayami.Player;
@@ -55,6 +54,7 @@ namespace Ivayami.Enemy
         private WaitForSeconds _behaviourTickDelay;
         private Collider[] _hitsCache = new Collider[1];
         private Coroutine _detectTargetPointOffBehaviourReachedCoroutine;
+        private Coroutine _initializeCoroutine;
         private Vector3 _lastTargetPosition;
         private bool _isChasing;
         private bool _directContactWithTarget;
@@ -86,20 +86,27 @@ namespace Ivayami.Enemy
 
         private void OnEnable()
         {
+            if (_startActive && _initializeCoroutine == null)
+            {
+                _initializeCoroutine = StartCoroutine(InitializeAgent());
+                //StartBehaviour();
+            }
             PlayerStress.Instance.onFail.AddListener(OnTargetKill);
         }
 
         private void OnDisable()
         {
+            StopBehaviour();
             PlayerStress.Instance.onFail.RemoveListener(OnTargetKill);
         }
 
-        private void Start()
+        private IEnumerator InitializeAgent()
         {
-            if (_startActive)
-            {
-                StartBehaviour();
-            }
+            yield return new WaitForEndOfFrame();
+            _navMeshAgent.enabled = true;
+            //yield return new WaitForEndOfFrame();
+            StartBehaviour();
+            _initializeCoroutine = null;
         }
 
         [ContextMenu("Start")]
