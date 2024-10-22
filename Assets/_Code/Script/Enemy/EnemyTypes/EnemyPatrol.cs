@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Ivayami.Player;
 using Ivayami.Audio;
+using Unity.AI.Navigation;
 
 namespace Ivayami.Enemy
 {
@@ -66,6 +67,7 @@ namespace Ivayami.Enemy
         private WaitForSeconds _betweenPatrolPointsDelay;
         private WaitForSeconds _endGoToLastTargetDelay;
         private Coroutine _rotateCoroutine;
+        private Coroutine _initializeCoroutine;
         private Quaternion _initialRotation;
         private Vector3 _lastTargetPosition;
         private Vector3 _initialPosition;
@@ -110,15 +112,25 @@ namespace Ivayami.Enemy
 
         private void OnEnable()
         {
-            if (_startActive)
+            if (_startActive && _initializeCoroutine == null)
             {
-                StartBehaviour();
+                _initializeCoroutine = StartCoroutine(InitializeAgent());
+                //StartBehaviour();
             }
         }
 
         private void OnDisable()
         {
             StopBehaviour();
+        }
+
+        private IEnumerator InitializeAgent()
+        {
+            yield return new WaitForEndOfFrame();
+            _navMeshAgent.enabled = true;
+            //yield return new WaitForEndOfFrame();
+            StartBehaviour();
+            _initializeCoroutine = null;
         }
 
         [ContextMenu("Start")]
