@@ -26,11 +26,12 @@ namespace Ivayami.Puzzle {
 
         private void Awake() {
             InteratctableHighlight = GetComponent<InteractableFeedbacks>();
-            _playerCamPriority = FindObjectOfType<CinemachineFreeLook>().Priority;
+            if (!PlayerCamera.Instance) return;
+            _playerCamPriority = PlayerCamera.Instance.FreeLookCam.Priority;
         }
 
         private void Start() {
-            _delayChangeCamera = new WaitForSeconds(PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.EnterLocker) - Camera.main.GetComponent<CinemachineBrain>().m_DefaultBlend.BlendTime);
+            _delayChangeCamera = new WaitForSeconds(PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.EnterLocker) - PlayerCamera.Instance.CinemachineBrain.m_DefaultBlend.BlendTime);
         }
 
         public PlayerActions.InteractAnimation Interact() {
