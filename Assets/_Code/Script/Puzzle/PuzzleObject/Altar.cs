@@ -1,24 +1,60 @@
 using Ivayami.Audio;
 using Ivayami.Player;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
-using static Ivayami.Puzzle.Lock;
 
 namespace Ivayami.Puzzle
 {
     [RequireComponent(typeof(InteractableFeedbacks), typeof(InteractableSounds))]
     public class Altar : MonoBehaviour, IInteractable
     {
-        public InteractableFeedbacks InteratctableHighlight => throw new System.NotImplementedException();
+        [SerializeField] private DeliverUI _deliverUI;
+        [SerializeField] private GameObject _itemVisual;
+        [SerializeField] private ItemData[] _itemsData;
+        public InteractableFeedbacks InteratctableHighlight
+        {
+            get
+            {
+                if (!m_interatctableHighlight && this) m_interatctableHighlight = GetComponent<InteractableFeedbacks>();
+                return m_interatctableHighlight;
+            }
+        }
+        private InteractableFeedbacks m_interatctableHighlight;
+        private InteractableSounds _interactableSounds
+        {
+            get
+            {
+                if (!m_interactableSounds) m_interactableSounds = GetComponent<InteractableSounds>();
+                return m_interactableSounds;
+            }
+        }
+        private InteractableSounds m_interactableSounds;
+        private InventoryItem _currentItem;
+        private MeshFilter _itemMeshFilter;
+        private MeshRenderer _itemMeshRenderer;
+        [System.Serializable]
+        private struct ItemData
+        {
+            public InventoryItem Item;
+            public Mesh ItemModel;
+            public Material ItemMaterial;
+        }
 
         public PlayerActions.InteractAnimation Interact()
         {
-            throw new System.NotImplementedException();
+            if (_currentItem)
+            {
+
+            }
+            else
+            {
+                _deliverUI.UpdateUI(true);
+            }
+            return PlayerActions.InteractAnimation.Default;
+        }
+
+        public void SetItemVisual(int index)
+        {
+
         }
     }
 }
