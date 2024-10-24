@@ -28,6 +28,7 @@ namespace Ivayami.Puzzle {
             _focusCamera = GetComponentInChildren<CameraAnimationInfo>();
             _interactableSounds = GetComponent<InteractableSounds>();
 
+            if (!PlayerInventory.Instance) return;
             gameObject.SetActive(PlayerInventory.Instance.CheckInventoryFor(_readable.name) == null);
         }
 
