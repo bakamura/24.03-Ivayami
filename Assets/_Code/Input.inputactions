@@ -560,6 +560,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "MapDrag",
+                    "type": "PassThrough",
+                    "id": "50a2c6b0-28cf-42e9-8a28-2ccefb16e207",
+                    "expectedControlType": "Vector2",
+                    "processors": "InvertVector2",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1002,6 +1011,17 @@
                     "action": "ChangeTab",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "adb955a5-b845-4146-82cb-997f9c72533f",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "MapDrag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
