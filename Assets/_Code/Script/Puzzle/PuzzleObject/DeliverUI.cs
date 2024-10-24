@@ -1,0 +1,226 @@
+using Ivayami.Audio;
+using Ivayami.Player;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+
+namespace Ivayami.Puzzle
+{
+    [RequireComponent(typeof(LockPuzzleSounds), typeof(CanvasGroup))]
+    public class DeliverUI : MonoBehaviour
+    {
+        [SerializeField] private InputActionReference _navigateUIInput;
+        [SerializeField] private byte _requestAmountToComplete = 1;
+        [SerializeField] private bool _skipDeliverUI;
+        [SerializeField] private ItemRequestData[] _itemsRequired;
+        //[SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
+        [SerializeField] private Image[] _deliverOptions;
+        [SerializeField] private Selectable _deliverBtn;
+        [SerializeField] private UnityEvent _onDeliver;
+
+        private List<ItemRequestData> _currentRequests = new List<ItemRequestData>();
+        private List<InventoryItem> _itemsDelivered = new List<InventoryItem>();
+        private List<InventoryItem> _itemsCache;
+        private CanvasGroup _deliverItemsUI;
+        private LockPuzzleSounds _lockSounds;
+        private InventoryItem _currentItemSelected;
+        private int _currentRequestIndex = 0;
+        private const float _navigateInputCooldown = .2f;
+        private float _navigateInputCurrentCooldown;
+        [System.Serializable]
+        private struct ItemRequestData
+        {
+            public InventoryItem Item;
+            public bool UseItem;
+            public UnityEvent OnItemDelivered;
+        }
+
+        private void Awake()
+        {
+            _lockSounds = GetComponent<LockPuzzleSounds>();
+            _deliverItemsUI = GetComponent<CanvasGroup>();
+            if (_itemsRequired != null && _currentRequests.Count == 0)
+            {
+                for (int i = 0; i < _itemsRequired.Length; i++)
+                {
+                    _currentRequests.Add(_itemsRequired[i]);
+                }
+            }
+        }
+
+        public void UpdateUI(bool isActive)
+        {
+            if(isActive)
+            {
+                if (_skipDeliverUI)
+                {
+                    DeliverItem();
+                    return;
+                }
+                UpdateInputs(true);
+                UpdateDeliverItemUI(true);
+            }
+            else
+            {
+                UpdateInputs(false);
+                UpdateDeliverItemUI(false);
+            }
+        }
+
+        //called by interface Btn
+        public void DeliverItem()
+        {
+            if (_skipDeliverUI)
+            {
+                for (int i = 0; i < _currentRequests.Count; i++)
+                {
+                    if (PlayerInventory.Instance.CheckInventoryFor(_currentRequests[i].Item.name))
+                    {
+                        RemoveItemFromRequestList(_currentRequests[i].Item);
+                    }
+                }
+            }
+            else
+            {
+                _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ConfirmOption);
+                InventoryItem isInRequestList = _currentRequests.Find(x => x.Item == _currentItemSelected).Item;
+                if (isInRequestList && PlayerInventory.Instance.CheckInventoryFor(_currentItemSelected.name))
+                {
+                    RemoveItemFromRequestList(_currentItemSelected);
+                    ConstrainValueToArraySize(ref _currentRequestIndex, _itemsCache.Count);
+                    if (_currentRequests.Count > 0) UpdateDeliverIcons((byte)_currentRequestIndex);
+                }
+            }
+            _onDeliver?.Invoke();
+        }
+
+        public bool CheckRequestsCompletion()
+        {
+            return _itemsRequired.Length - _currentRequests.Count >= _requestAmountToComplete;
+        }
+
+        private void UpdateInputs(bool isActive)
+        {
+            if (isActive)
+            {
+                _navigateUIInput.action.performed += HandleNavigateUI;
+                PlayerActions.Instance.ChangeInputMap("Menu");
+            }
+            else
+            {
+                _navigateUIInput.action.performed -= HandleNavigateUI;
+                PlayerActions.Instance.ChangeInputMap("Player");
+            }
+        }
+
+        private void HandleNavigateUI(InputAction.CallbackContext context)
+        {
+            Vector2 input = context.ReadValue<Vector2>();
+            if (input.x != 0 && Time.time - _navigateInputCurrentCooldown > _navigateInputCooldown)
+            {
+                _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ChangeOption);
+                int temp = input.x > 0 ? 1 : -1;
+                _currentRequestIndex += temp;
+                LoopValueByArraySize(ref _currentRequestIndex, _itemsCache.Count);
+                UpdateDeliverIcons(_currentRequestIndex);
+                _navigateInputCurrentCooldown = Time.time;
+            }
+        }
+
+        private void UpdateDeliverItemUI(bool isActive)
+        {
+            _deliverItemsUI.alpha = isActive ? 1 : 0;
+            _deliverItemsUI.interactable = isActive;
+            _deliverItemsUI.blocksRaycasts = isActive;
+
+            if (isActive)
+            {
+                _currentRequestIndex = 0;
+                //select only the items that macth with items requests types
+                _itemsCache = PlayerInventory.Instance.CheckInventory().Where(x => ContainItemTypeInRequest(x.Type)).ToList();
+                //add any missing items
+                for (int i = 0; i < _currentRequests.Count; i++)
+                {
+                    if (!_itemsCache.Contains(_currentRequests[i].Item))
+                        _itemsCache.Add(_currentRequests[i].Item);
+                }
+                if (_itemsDelivered.Count > 0) _itemsCache.RemoveAll(x => _itemsDelivered.Contains(x));
+                UpdateDeliverIcons(0);
+                _deliverBtn.Select();
+            }
+        }
+
+        private void UpdateDeliverIcons(int startIndex)
+        {
+            for (int i = 0; i < _deliverOptions.Length; i++)
+            {
+                _deliverOptions[i].enabled = false;
+            }
+            int iconsIndex = _itemsCache.Count < _deliverOptions.Length ? Mathf.FloorToInt(_deliverOptions.Length / 2) : 0;
+            int iconsFilled = 0;
+            int requestIndex = startIndex;
+            _currentItemSelected = null;
+            while (iconsFilled < _deliverOptions.Length && iconsFilled < _itemsCache.Count)
+            {
+                if (requestIndex < _itemsCache.Count)
+                {
+                    _deliverOptions[iconsIndex].enabled = true;
+                    _deliverOptions[iconsIndex].sprite = PlayerInventory.Instance.CheckInventoryFor(_itemsCache[requestIndex].name) ?
+                        _itemsCache[requestIndex].Sprite : PlayerInventory.Instance.ItemTypeDefaultIcons[_itemsCache[requestIndex].Type];
+                    if (iconsIndex == Mathf.FloorToInt(_deliverOptions.Length / 2)
+                        && !_currentItemSelected) _currentItemSelected = _itemsCache[requestIndex];
+                }
+                iconsIndex++;
+                iconsFilled++;
+                requestIndex++;
+                if (requestIndex == _itemsCache.Count) requestIndex = 0;
+            }
+        }
+
+        private bool ContainItemTypeInRequest(ItemType itemType)
+        {
+            for (int i = 0; i < _currentRequests.Count; i++)
+            {
+                if (_currentRequests[i].Item.Type == itemType) return true;
+            }
+            return false;
+        }
+
+        private void RemoveItemFromRequestList(InventoryItem item)
+        {
+            int index;
+            for (index = 0; index < _currentRequests.Count; index++)
+            {
+                if (_currentRequests[index].Item == item) break;
+            }
+            _currentRequests[index].OnItemDelivered?.Invoke();
+            if (_currentRequests[index].UseItem) PlayerInventory.Instance.RemoveFromInventory(_currentRequests[index].Item);
+            _currentRequests.RemoveAt(index);
+            _itemsDelivered.Add(item);
+            _itemsCache?.Remove(item);
+        }
+
+        private void LoopValueByArraySize(ref int valueToConstrain, int arraySize)
+        {
+            if (valueToConstrain < 0) valueToConstrain = arraySize - 1;
+            else if (valueToConstrain >= arraySize) valueToConstrain = 0;
+        }
+
+        private void ConstrainValueToArraySize(ref int valueToConstrain, int arraySize)
+        {
+            if (valueToConstrain < 0) valueToConstrain = 0;
+            else if (valueToConstrain >= arraySize) valueToConstrain = arraySize - 1;
+        }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if(_itemsRequired == null) return;
+            if (_requestAmountToComplete > _itemsRequired.Length) _requestAmountToComplete = (byte)_itemsRequired.Length;
+        }
+#endif
+    }
+}
