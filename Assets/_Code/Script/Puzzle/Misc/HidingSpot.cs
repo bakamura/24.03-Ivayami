@@ -7,7 +7,7 @@ using System.Collections;
 namespace Ivayami.Puzzle {
     public class HidingSpot : MonoBehaviour, IInteractable {
 
-        public InteractableFeedbacks InteratctableHighlight { get; private set; }
+        public InteractableFeedbacks InteratctableFeedbacks { get; private set; }
 
         [Header("View")]
 
@@ -25,7 +25,7 @@ namespace Ivayami.Puzzle {
         private WaitForSeconds _delayChangeCamera;
 
         private void Awake() {
-            InteratctableHighlight = GetComponent<InteractableFeedbacks>();
+            InteratctableFeedbacks = GetComponent<InteractableFeedbacks>();
             if (!PlayerCamera.Instance) return;
             _playerCamPriority = PlayerCamera.Instance.FreeLookCam.Priority;
         }
