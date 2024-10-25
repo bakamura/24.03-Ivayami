@@ -66,6 +66,7 @@ namespace Ivayami.Enemy
         private WaitForSeconds _betweenPatrolPointsDelay;
         private WaitForSeconds _endGoToLastTargetDelay;
         private Coroutine _rotateCoroutine;
+        private Coroutine _initializeCoroutine;
         private Quaternion _initialRotation;
         private Vector3 _lastTargetPosition;
         private Vector3 _initialPosition;
@@ -110,10 +111,8 @@ namespace Ivayami.Enemy
 
         private void OnEnable()
         {
-            if (_startActive)
-            {
-                StartBehaviour();
-            }
+            if (!_navMeshAgent.enabled && _initializeCoroutine == null) _initializeCoroutine = StartCoroutine(InitializeAgent());
+            if (_startActive && _initializeCoroutine == null) StartBehaviour();
         }
 
         private void OnDisable()
@@ -121,11 +120,25 @@ namespace Ivayami.Enemy
             StopBehaviour();
         }
 
+        private IEnumerator InitializeAgent()
+        {
+            yield return new WaitForEndOfFrame();
+            _navMeshAgent.enabled = true;
+            //yield return new WaitForEndOfFrame();
+            if (_startActive) StartBehaviour();
+            _initializeCoroutine = null;
+        }
+
         [ContextMenu("Start")]
         public void StartBehaviour()
         {
             if (!IsActive)
             {
+                if (!_navMeshAgent.enabled && _initializeCoroutine == null)
+                {
+                    _initializeCoroutine = StartCoroutine(InitializeAgent());
+                    return;
+                }
                 IsActive = true;
                 _navMeshAgent.isStopped = false;
                 StartCoroutine(BehaviourCoroutine());
@@ -167,7 +180,7 @@ namespace Ivayami.Enemy
                             });
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                             _enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);
-                        }                        
+                        }
                         _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                         _lastTargetPosition = _hitsCache[0].transform.position;
                         if (_debugLogsEnemyPatrol) Debug.Log("Chase Target");
@@ -240,7 +253,7 @@ namespace Ivayami.Enemy
                                     }
                                     else
                                     {
-                                        if (transform.rotation != _initialRotation && _rotateCoroutine == null) _rotateCoroutine = StartCoroutine(RotateCoroutine());                                        
+                                        if (transform.rotation != _initialRotation && _rotateCoroutine == null) _rotateCoroutine = StartCoroutine(RotateCoroutine());
                                     }
                                 }
                             }
@@ -413,7 +426,7 @@ namespace Ivayami.Enemy
             //        //_hitboxAttack = go.AddComponent<HitboxAttack>();
             //    }
             //}
-        }        
+        }
 #endif
         #endregion
     }
