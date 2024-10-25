@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Ivayami.Puzzle
 {
-    public class Activable : MonoBehaviour
+    public abstract class Activable : MonoBehaviour
     {
         [Header("PARAMETERS")]
         [SerializeField, Min(0), Tooltip("If 0 will start active")] protected int _activatosNeededToActivate;
@@ -30,6 +30,7 @@ namespace Ivayami.Puzzle
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            if (_activators == null) return;
             if (_activatosNeededToActivate > _activators.Length) _activatosNeededToActivate = _activators.Length;
         }
 #endif

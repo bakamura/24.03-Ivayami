@@ -8,7 +8,7 @@ using Ivayami.Scene;
 namespace Ivayami.Save {
     public class SavePoint : MonoBehaviour, IInteractable {
 
-        public InteractableFeedbacks InteratctableHighlight { get; private set; }
+        public InteractableFeedbacks InteratctableFeedbacks { get; private set; }
 
         [Header("Save Interact")]
 
@@ -21,7 +21,7 @@ namespace Ivayami.Save {
         private bool _canSave = true;
 
         private void Awake() {
-            InteratctableHighlight = GetComponent<InteractableFeedbacks>();
+            InteratctableFeedbacks = GetComponent<InteractableFeedbacks>();
             UpdatePointsDictionary(_pointId, this);
         }
 
