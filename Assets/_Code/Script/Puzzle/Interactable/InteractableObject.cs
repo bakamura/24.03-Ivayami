@@ -22,7 +22,7 @@ namespace Ivayami.Puzzle
         }
         private InteractableSounds m_interactableSounds;
 
-        public InteractableFeedbacks InteratctableHighlight
+        public InteractableFeedbacks InteratctableFeedbacks
         {
             get
             {
