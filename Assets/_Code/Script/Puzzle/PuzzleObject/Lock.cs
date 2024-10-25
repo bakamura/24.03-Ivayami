@@ -29,7 +29,7 @@ namespace Ivayami.Puzzle
         private LockPuzzleSounds _lockSounds;
         private WaitForSeconds _unlockWait;
         private Coroutine _unlockCoroutine;
-        public InteractableFeedbacks InteratctableHighlight { get => _interatctableFeedbacks; }
+        public InteractableFeedbacks InteratctableFeedbacks { get => _interatctableFeedbacks; }
         public LockPuzzleSounds LockSounds => _lockSounds;
 
         [System.Serializable]

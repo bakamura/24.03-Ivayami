@@ -15,11 +15,12 @@ namespace Ivayami.Puzzle
         [SerializeField] private InputActionReference _navigateUIInput;
         [SerializeField] private byte _requestAmountToComplete = 1;
         [SerializeField] private bool _skipDeliverUI;
+        [SerializeField, Tooltip("Will auto use any item")] private bool _deliverAnyItem;
         [SerializeField] private ItemRequestData[] _itemsRequired;
         //[SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
-        [SerializeField] private Image[] _deliverOptions;
+        [SerializeField] private Image[] _deliverItemOptionsIcon;
         [SerializeField] private Selectable _deliverBtn;
-        [SerializeField] private UnityEvent _onDeliver;
+        [SerializeField] private UnityEvent<bool> _onTryDeliver;
 
         private List<ItemRequestData> _currentRequests = new List<ItemRequestData>();
         private List<InventoryItem> _itemsDelivered = new List<InventoryItem>();
@@ -30,6 +31,8 @@ namespace Ivayami.Puzzle
         private int _currentRequestIndex = 0;
         private const float _navigateInputCooldown = .2f;
         private float _navigateInputCurrentCooldown;
+
+        [HideInInspector] public UnityEvent<InventoryItem> OnDeliver;
         [System.Serializable]
         private struct ItemRequestData
         {
@@ -53,7 +56,7 @@ namespace Ivayami.Puzzle
 
         public void UpdateUI(bool isActive)
         {
-            if(isActive)
+            if (isActive)
             {
                 if (_skipDeliverUI)
                 {
@@ -73,28 +76,33 @@ namespace Ivayami.Puzzle
         //called by interface Btn
         public void DeliverItem()
         {
-            if (_skipDeliverUI)
+            bool deliverAchived = false;
+            if (_skipDeliverUI && !_deliverAnyItem)
             {
                 for (int i = 0; i < _currentRequests.Count; i++)
                 {
                     if (PlayerInventory.Instance.CheckInventoryFor(_currentRequests[i].Item.name))
                     {
                         RemoveItemFromRequestList(_currentRequests[i].Item);
+                        deliverAchived = true;
+                        OnDeliver?.Invoke(_currentRequests[i].Item);
                     }
                 }
             }
             else
             {
                 _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ConfirmOption);
-                InventoryItem isInRequestList = _currentRequests.Find(x => x.Item == _currentItemSelected).Item;
+                bool isInRequestList = _deliverAnyItem ? true : _currentRequests.Find(x => x.Item == _currentItemSelected).Item;
                 if (isInRequestList && PlayerInventory.Instance.CheckInventoryFor(_currentItemSelected.name))
                 {
                     RemoveItemFromRequestList(_currentItemSelected);
                     ConstrainValueToArraySize(ref _currentRequestIndex, _itemsCache.Count);
                     if (_currentRequests.Count > 0) UpdateDeliverIcons((byte)_currentRequestIndex);
+                    deliverAchived = true;
+                    OnDeliver?.Invoke(_currentItemSelected);
                 }
             }
-            _onDeliver?.Invoke();
+            _onTryDeliver?.Invoke(deliverAchived);
         }
 
         public bool CheckRequestsCompletion()
@@ -139,7 +147,7 @@ namespace Ivayami.Puzzle
             if (isActive)
             {
                 _currentRequestIndex = 0;
-                //select only the items that macth with items requests types
+                //select only the items that match with items requests types
                 _itemsCache = PlayerInventory.Instance.CheckInventory().Where(x => ContainItemTypeInRequest(x.Type)).ToList();
                 //add any missing items
                 for (int i = 0; i < _currentRequests.Count; i++)
@@ -155,22 +163,22 @@ namespace Ivayami.Puzzle
 
         private void UpdateDeliverIcons(int startIndex)
         {
-            for (int i = 0; i < _deliverOptions.Length; i++)
+            for (int i = 0; i < _deliverItemOptionsIcon.Length; i++)
             {
-                _deliverOptions[i].enabled = false;
+                _deliverItemOptionsIcon[i].enabled = false;
             }
-            int iconsIndex = _itemsCache.Count < _deliverOptions.Length ? Mathf.FloorToInt(_deliverOptions.Length / 2) : 0;
+            int iconsIndex = _itemsCache.Count < _deliverItemOptionsIcon.Length ? Mathf.FloorToInt(_deliverItemOptionsIcon.Length / 2) : 0;
             int iconsFilled = 0;
             int requestIndex = startIndex;
             _currentItemSelected = null;
-            while (iconsFilled < _deliverOptions.Length && iconsFilled < _itemsCache.Count)
+            while (iconsFilled < _deliverItemOptionsIcon.Length && iconsFilled < _itemsCache.Count)
             {
                 if (requestIndex < _itemsCache.Count)
                 {
-                    _deliverOptions[iconsIndex].enabled = true;
-                    _deliverOptions[iconsIndex].sprite = PlayerInventory.Instance.CheckInventoryFor(_itemsCache[requestIndex].name) ?
+                    _deliverItemOptionsIcon[iconsIndex].enabled = true;
+                    _deliverItemOptionsIcon[iconsIndex].sprite = PlayerInventory.Instance.CheckInventoryFor(_itemsCache[requestIndex].name) ?
                         _itemsCache[requestIndex].Sprite : PlayerInventory.Instance.ItemTypeDefaultIcons[_itemsCache[requestIndex].Type];
-                    if (iconsIndex == Mathf.FloorToInt(_deliverOptions.Length / 2)
+                    if (iconsIndex == Mathf.FloorToInt(_deliverItemOptionsIcon.Length / 2)
                         && !_currentItemSelected) _currentItemSelected = _itemsCache[requestIndex];
                 }
                 iconsIndex++;
@@ -192,15 +200,27 @@ namespace Ivayami.Puzzle
         private void RemoveItemFromRequestList(InventoryItem item)
         {
             int index;
+            bool itemFound = false;
             for (index = 0; index < _currentRequests.Count; index++)
             {
-                if (_currentRequests[index].Item == item) break;
+                if (_currentRequests[index].Item == item)
+                {
+                    itemFound = true;
+                    break;
+                }
             }
-            _currentRequests[index].OnItemDelivered?.Invoke();
-            if (_currentRequests[index].UseItem) PlayerInventory.Instance.RemoveFromInventory(_currentRequests[index].Item);
-            _currentRequests.RemoveAt(index);
-            _itemsDelivered.Add(item);
-            _itemsCache?.Remove(item);
+            if (itemFound)
+            {
+                _currentRequests[index].OnItemDelivered?.Invoke();
+                if (_currentRequests[index].UseItem) PlayerInventory.Instance.RemoveFromInventory(_currentRequests[index].Item);
+                _currentRequests.RemoveAt(index);
+                _itemsDelivered.Add(item);
+                _itemsCache?.Remove(item);
+            }
+            else
+            {
+                PlayerInventory.Instance.RemoveFromInventory(item);
+            }
         }
 
         private void LoopValueByArraySize(ref int valueToConstrain, int arraySize)
@@ -215,10 +235,23 @@ namespace Ivayami.Puzzle
             else if (valueToConstrain >= arraySize) valueToConstrain = arraySize - 1;
         }
 
+        public void RevertItemDeliver(InventoryItem item)
+        {
+            if (_itemsDelivered.Contains(item)) _itemsDelivered.Remove(item);
+            for (int i = 0; i < _itemsRequired.Length; i++)
+            {
+                if (_itemsRequired[i].Item == item)
+                {
+                    if (!_currentRequests.Contains(_itemsRequired[i])) _currentRequests.Add(_itemsRequired[i]);
+                    break;
+                }
+            }
+        }
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if(_itemsRequired == null) return;
+            if (_itemsRequired == null) return;
             if (_requestAmountToComplete > _itemsRequired.Length) _requestAmountToComplete = (byte)_itemsRequired.Length;
         }
 #endif
