@@ -25,6 +25,7 @@ namespace Ivayami.Puzzle
         private void Awake()
         {
             _interactableFeedbacks = GetComponent<InteractableFeedbacks>();
+            _interactableSounds = GetComponent<InteractableSounds>();
             _activatorAnimated = GetComponent<ActivatorAnimated>();
             _deliverUI.OnDeliver.AddListener(HandleItemDeliver);
             if (_currentItem)
@@ -72,7 +73,9 @@ namespace Ivayami.Puzzle
             if (_currentItemVisual) Destroy(_currentItemVisual);
             _currentItemVisual = Instantiate(item.Model, _itemVisualPosition);
             _activatorAnimated.Activate(true);
+            _currentItem = item;
             IsActive = _deliverUI.CheckRequestsCompletion();
+            ExitInteraction();
             onActivate?.Invoke();
         }
     }
