@@ -4,6 +4,7 @@ namespace Ivayami.Player {
         Special,
         Document,
         Consumable,
-        Key
+        Key,
+        Puzzle
     }
 }

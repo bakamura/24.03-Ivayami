@@ -18,7 +18,7 @@ namespace Ivayami.Save
         protected virtual void Start()
         {
             LoadData();
-            if (!_eventSubscribed)
+            if (!_eventSubscribed && PlayerStress.Instance)
             {
                 PlayerStress.Instance.onFail.AddListener(HandlePlayerDeath);
                 _eventSubscribed = true;

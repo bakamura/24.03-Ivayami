@@ -9,7 +9,7 @@ namespace Ivayami.Puzzle {
     [RequireComponent(typeof(InteractableSounds))]
     public class ReadableObject : MonoBehaviour, IInteractable {
 
-        public InteractableFeedbacks InteratctableHighlight { get; private set; }
+        public InteractableFeedbacks InteratctableFeedbacks { get; private set; }
         private InteractableSounds _interactableSounds;
 
         [Header("Reading")]
@@ -24,10 +24,11 @@ namespace Ivayami.Puzzle {
         private const string BLOCKER_KEY = "Readable";
 
         private void Awake() {
-            InteratctableHighlight = GetComponent<InteractableFeedbacks>();
+            InteratctableFeedbacks = GetComponent<InteractableFeedbacks>();
             _focusCamera = GetComponentInChildren<CameraAnimationInfo>();
             _interactableSounds = GetComponent<InteractableSounds>();
 
+            if (!PlayerInventory.Instance) return;
             gameObject.SetActive(PlayerInventory.Instance.CheckInventoryFor(_readable.name) == null);
         }
 
