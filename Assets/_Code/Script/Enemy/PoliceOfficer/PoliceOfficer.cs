@@ -86,11 +86,8 @@ namespace Ivayami.Enemy
 
         private void OnEnable()
         {
-            if (_startActive && _initializeCoroutine == null)
-            {
-                _initializeCoroutine = StartCoroutine(InitializeAgent());
-                //StartBehaviour();
-            }
+            if (!_navMeshAgent.enabled && _initializeCoroutine == null) _initializeCoroutine = StartCoroutine(InitializeAgent());
+            if (_startActive && _initializeCoroutine == null) StartBehaviour();
             PlayerStress.Instance.onFail.AddListener(OnTargetKill);
         }
 
@@ -105,7 +102,7 @@ namespace Ivayami.Enemy
             yield return new WaitForEndOfFrame();
             _navMeshAgent.enabled = true;
             //yield return new WaitForEndOfFrame();
-            StartBehaviour();
+            if (_startActive) StartBehaviour();
             _initializeCoroutine = null;
         }
 
@@ -114,7 +111,12 @@ namespace Ivayami.Enemy
         {
             if (!IsActive)
             {
-                IsActive = true;
+                if (!_navMeshAgent.enabled && _initializeCoroutine == null)
+                {
+                    _initializeCoroutine = StartCoroutine(InitializeAgent());
+                    return;
+                }
+                IsActive = true;                
                 //_navMeshAgent.isStopped = false;
                 StartCoroutine(BehaviourCoroutine());
             }
