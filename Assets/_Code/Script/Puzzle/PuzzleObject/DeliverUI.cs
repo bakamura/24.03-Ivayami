@@ -15,7 +15,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private InputActionReference _navigateUIInput;
         [SerializeField] private byte _requestAmountToComplete = 1;
         [SerializeField] private bool _skipDeliverUI;
-        [SerializeField, Tooltip("Will auto use the items")] private bool _deliverAnyItem;
+        [SerializeField, Tooltip("Will auto use any item")] private bool _deliverAnyItem;
         [SerializeField] private ItemRequestData[] _itemsRequired;
         //[SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
         [SerializeField] private Image[] _deliverItemOptionsIcon;
@@ -212,7 +212,7 @@ namespace Ivayami.Puzzle
             if (itemFound)
             {
                 _currentRequests[index].OnItemDelivered?.Invoke();
-                if (_currentRequests[index].UseItem || _deliverAnyItem) PlayerInventory.Instance.RemoveFromInventory(_currentRequests[index].Item);
+                if (_currentRequests[index].UseItem) PlayerInventory.Instance.RemoveFromInventory(_currentRequests[index].Item);
                 _currentRequests.RemoveAt(index);
                 _itemsDelivered.Add(item);
                 _itemsCache?.Remove(item);

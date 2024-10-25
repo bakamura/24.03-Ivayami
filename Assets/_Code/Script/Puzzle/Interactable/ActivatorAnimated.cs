@@ -6,30 +6,51 @@ namespace Ivayami.Puzzle
     [RequireComponent(typeof(Animator), typeof(Activator), typeof(InteractableSounds))]
     public class ActivatorAnimated : MonoBehaviour
     {
-        [SerializeField] private bool _autoSubscribeToActivator = true;
-        private Animator _animator;
-        private Activator _activator;
-        private InteractableSounds _interactableSounds;
+        private Animator _animator
+        {
+            get
+            {
+                if (!m_animator) m_animator = GetComponent<Animator>();
+                return m_animator;
+            }
+        }
+        private Animator m_animator;
+        private Activator _activator
+        {
+            get
+            {
+                if (!m_activator) m_activator = GetComponent<Activator>();
+                return m_activator;
+            }
+        }
+        private Activator m_activator;
+        private InteractableSounds _interactableSounds
+        {
+            get
+            {
+                if (!m_interactableSounds) m_interactableSounds = GetComponent<InteractableSounds>();
+                return m_interactableSounds;
+            }           
+        }
+        private InteractableSounds m_interactableSounds;
 
         private static readonly int ACTIVATE = Animator.StringToHash("activate");
 
         private void Awake()
         {
-            _animator = GetComponent<Animator>();
-            _activator = GetComponent<Activator>();
-            _interactableSounds = GetComponent<InteractableSounds>();
-            if(_autoSubscribeToActivator)_activator.onActivate.AddListener(HandleOnActivate);
+            _activator.onActivate.AddListener(HandleOnActivate);
         }
 
         private void HandleOnActivate()
         {
-            Activate(_activator.IsActive);
+            _animator.SetBool(ACTIVATE, _activator.IsActive);
+            _interactableSounds.PlaySound(_activator.IsActive ? InteractableSounds.SoundTypes.Activate : InteractableSounds.SoundTypes.Deactivate);
         }
 
-        public void Activate(bool isActive)
-        {
-            _animator.SetBool(ACTIVATE, isActive);
-            _interactableSounds.PlaySound(isActive ? InteractableSounds.SoundTypes.Activate : InteractableSounds.SoundTypes.Deactivate);
-        }
+        //public void UpdateAnimation(bool isActive)
+        //{
+        //    _animator.SetBool(ACTIVATE, isActive);
+        //    _interactableSounds.PlaySound(isActive ? InteractableSounds.SoundTypes.Activate : InteractableSounds.SoundTypes.Deactivate);
+        //}
     }
 }

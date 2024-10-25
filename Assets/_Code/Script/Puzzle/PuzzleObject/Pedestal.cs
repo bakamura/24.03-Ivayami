@@ -15,13 +15,15 @@ namespace Ivayami.Puzzle
         [SerializeField] private InventoryItem _itemToStart;
         [SerializeField] private UnityEvent _onDeliverUIOpen;
         [SerializeField] private UnityEvent _onCancelInteraction;
-        public InteractableFeedbacks InteratctableFeedbacks => _interactableFeedbacks;
-        private InteractableFeedbacks _interactableFeedbacks;
         private ActivatorAnimated _activatorAnimated;
+        private InteractableFeedbacks _interactableFeedbacks;
         private InteractableSounds _interactableSounds;
         private InventoryItem _currentItem;
         private GameObject _currentItemVisual;
 
+        public InteractableFeedbacks InteratctableFeedbacks => _interactableFeedbacks;
+        public DeliverUI DeliverUI => _deliverUI;
+        public ActivatorAnimated ActivatorAnimation => _activatorAnimated;
         private void Awake()
         {
             _interactableFeedbacks = GetComponent<InteractableFeedbacks>();
@@ -31,7 +33,8 @@ namespace Ivayami.Puzzle
             if (_currentItem)
             {
                 _currentItemVisual = Instantiate(_itemToStart.Model, _itemVisualPosition);
-                _activatorAnimated.Activate(true);
+                IsActive = true;
+                onActivate?.Invoke();
             }
         }
 
@@ -42,7 +45,8 @@ namespace Ivayami.Puzzle
                 PlayerInventory.Instance.AddToInventory(_currentItem);
                 Destroy(_currentItemVisual);
                 _deliverUI.RevertItemDeliver(_currentItem);
-                _activatorAnimated.Activate(false);
+                IsActive = false;
+                onActivate?.Invoke();
                 _currentItem = null;
             }
             else
@@ -56,7 +60,8 @@ namespace Ivayami.Puzzle
 
         private void HandleExitInteraction(InputAction.CallbackContext obj)
         {
-            ExitInteraction();            
+            ExitInteraction();
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.InteractReturn);            
         }
 
         private void ExitInteraction()
@@ -64,7 +69,6 @@ namespace Ivayami.Puzzle
             _cancelInteractionInput.action.performed -= HandleExitInteraction;
             _deliverUI.UpdateUI(false);
             _interactableFeedbacks.UpdateFeedbacks(true, true);
-            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.InteractReturn);
             _onCancelInteraction?.Invoke();
         }
 
@@ -72,9 +76,8 @@ namespace Ivayami.Puzzle
         {
             if (_currentItemVisual) Destroy(_currentItemVisual);
             _currentItemVisual = Instantiate(item.Model, _itemVisualPosition);
-            _activatorAnimated.Activate(true);
             _currentItem = item;
-            IsActive = _deliverUI.CheckRequestsCompletion();
+            IsActive = true;
             ExitInteraction();
             onActivate?.Invoke();
         }
