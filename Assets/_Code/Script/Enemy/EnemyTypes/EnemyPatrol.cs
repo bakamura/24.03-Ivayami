@@ -75,6 +75,7 @@ namespace Ivayami.Enemy
         private bool _canChaseTarget = true;
         private bool _canWalkPath = true;
         private bool _directContactWithTarget;
+        private bool _isAttacking;
         private float _currentTargetColliderSizeFactor;
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
@@ -125,7 +126,6 @@ namespace Ivayami.Enemy
         {
             yield return new WaitForEndOfFrame();
             _navMeshAgent.enabled = true;
-            //yield return new WaitForEndOfFrame();
             if (_startActive) StartBehaviour();
             _initializeCoroutine = null;
         }
@@ -174,22 +174,25 @@ namespace Ivayami.Enemy
                         if (!_isChasing)
                         {
                             if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
-                            StopMovement(true);
+                            //StopMovement(true);
                             _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, false, () =>
                             {
                                 _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing, false);
                             });
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
-                            _enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);
+                            _isChasing = true;
+                            _navMeshAgent.speed = _chaseSpeed;
+                            //_enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);
                         }
                         _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                         _lastTargetPosition = _hitsCache[0].transform.position;
                         if (_debugLogsEnemyPatrol) Debug.Log("Chase Target");
-                        if (_attackTarget && _chaseTargetPatience == _delayToLoseTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance + _currentTargetColliderSizeFactor)
+                        if (_attackTarget && !_isAttacking &&_chaseTargetPatience == _delayToLoseTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance + _currentTargetColliderSizeFactor)
                         {
-                            StopMovement(true);
+                            //StopMovement(true);
                             //PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
                             //_isChasing = false;
+                            _isAttacking = true;
                             _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange/*, _currentAttackAnimIndex*/);
                             //_currentAttackAnimIndex = _currentAttackAnimIndex == 0 ? 1 : 0;
                             if (_debugLogsEnemyPatrol) Debug.Log("Attack Target");
@@ -314,17 +317,18 @@ namespace Ivayami.Enemy
 
         private void HandleAttackAnimationEnd()
         {
-            _navMeshAgent.isStopped = false;
+            //_navMeshAgent.isStopped = false;
             _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0);
+            _isAttacking = false;
         }
 
-        private void HandleTargetDetectedAnimationEnd()
-        {
-            _isChasing = true;
-            _navMeshAgent.speed = _chaseSpeed;
-            _lastTargetPosition = _hitsCache[0].transform.position;
-            _navMeshAgent.isStopped = false;
-        }
+        //private void HandleTargetDetectedAnimationEnd()
+        //{
+        //    _isChasing = true;
+        //    _navMeshAgent.speed = _chaseSpeed;
+        //    _lastTargetPosition = _hitsCache[0].transform.position;
+        //    //_navMeshAgent.isStopped = false;
+        //}
 
         private void OnAnimationStepChange(float normalizedTime)
         {
