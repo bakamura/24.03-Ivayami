@@ -37,6 +37,7 @@ namespace Ivayami.Player {
         [Header("Stamina")]
 
         [SerializeField, Min(0)] private float _maxStamina = 100f;
+        [SerializeField, Range(0,1)] private float _minStaminaToRun;
         [SerializeField, Range(0,1), Tooltip("Depletion per second")] private float _staminaDepletionRate = .1f;
         [SerializeField, Range(0, 1), Tooltip("Depletion per second")] private float _staminaRegenerationRate = .1f;
         [SerializeField, Range(0,1), Tooltip("When stress is greater or equal to this value, stamia depletion will start")] private float _staminaDepletionStressThreshold = .6f;
@@ -109,7 +110,7 @@ namespace Ivayami.Player {
 
             _movementInput.action.performed += MoveDirection;
             _movementInput.action.canceled += MoveDirection;
-            _walkToggleInput.action.started += ToggleWalk;
+            _walkToggleInput.action.started += ToggleWalkInput;
             _crouchInput.action.started += Crouch;
 
             _acceleration = Time.fixedDeltaTime / _accelerationDuration;
@@ -203,8 +204,14 @@ namespace Ivayami.Player {
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
-        private void ToggleWalk(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
-            if (_canRun) {
+        private void ToggleWalkInput(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
+            if(_staminaCurrent > _maxStamina * _minStaminaToRun)ToggleWalk();
+        }
+
+        private void ToggleWalk()
+        {
+            if (_canRun)
+            {
                 _running = !_running;
                 if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
             }
@@ -218,7 +225,7 @@ namespace Ivayami.Player {
         private void StaminaUpdate()
         {
             bool inStressRange = _stressCurrent >= _staminaDepletionStressThreshold * _maxStressCurrent;
-            if (!_running)
+            if (!_running || _speedCurrent == 0)
             {
                 if (inStressRange && _staminaCurrent < _maxStamina) UpdateCurrentStamina(_staminaRegenerationRate);                
             }
