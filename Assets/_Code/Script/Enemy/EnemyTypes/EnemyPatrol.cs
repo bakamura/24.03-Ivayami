@@ -79,7 +79,7 @@ namespace Ivayami.Enemy
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
         private float _baseSpeed;
-        private int _currentAttackAnimIndex;
+        //private int _currentAttackAnimIndex;
 
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
@@ -190,8 +190,8 @@ namespace Ivayami.Enemy
                             StopMovement(true);
                             //PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
                             //_isChasing = false;
-                            _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange, _currentAttackAnimIndex);
-                            _currentAttackAnimIndex = _currentAttackAnimIndex == 0 ? 1 : 0;
+                            _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange/*, _currentAttackAnimIndex*/);
+                            //_currentAttackAnimIndex = _currentAttackAnimIndex == 0 ? 1 : 0;
                             if (_debugLogsEnemyPatrol) Debug.Log("Attack Target");
                         }
                     }
