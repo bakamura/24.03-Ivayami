@@ -9,6 +9,7 @@ namespace Ivayami.Enemy
     {
         public UnityEvent OnTargetHit;
         public UnityEvent OnHitboxActivate;
+        public UnityEvent OnHitboxDeactivate;
         private BoxCollider _boxCollider
         {
             get
@@ -19,6 +20,7 @@ namespace Ivayami.Enemy
         }
         private BoxCollider m_boxCollider;
         private float _currentStressIncrease;
+        private bool _previousState;
 
         public void UpdateHitbox(bool isActive, Vector3 center, Vector3 size, float stressIncrease)
         {
@@ -26,7 +28,9 @@ namespace Ivayami.Enemy
             _boxCollider.size = size;
             _currentStressIncrease = stressIncrease;
             _boxCollider.enabled = isActive;
-            if (isActive) OnHitboxActivate?.Invoke();
+            if (!_previousState && isActive) OnHitboxActivate?.Invoke();
+            if (_previousState && !isActive) OnHitboxDeactivate?.Invoke();
+            _previousState = isActive;
         }
 
         private void OnTriggerEnter(Collider other)
