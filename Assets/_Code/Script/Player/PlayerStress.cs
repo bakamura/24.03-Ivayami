@@ -22,6 +22,8 @@ namespace Ivayami.Player {
         private float _stressRelieveDelayTimer;
         private bool _pauseStressRelieve = false;
 
+        public float MaxStress => _stressMax;
+
         [Header("Fail")]
 
         [SerializeField] private float _restartDelay;
@@ -31,7 +33,7 @@ namespace Ivayami.Player {
 
         [Header("Cache")]
 
-        private const string FAIL_BLOCK_KEY = "FailState";
+        private const string FAIL_BLOCK_KEY = "FailState";        
 
         private void Start() {
             Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
@@ -119,6 +121,5 @@ namespace Ivayami.Player {
             SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
             PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
         }
-
     }
 }
