@@ -21,6 +21,7 @@ namespace Ivayami.Enemy
         [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
         [SerializeField, Min(0f)] private float _stressIncreaseOnTargetDetected;
         [SerializeField, Min(0f)] private float _stressIncreaseWhileChasing;
+        [SerializeField, Min(0f)] private float _stressMaxWhileChasing;
         [SerializeField, Min(0f)] private float _chaseSpeed;
         //[SerializeField, Min(0f)] private float _stressIncreaseOnAttackTarget;
         [SerializeField] private bool _startActive;
@@ -105,7 +106,7 @@ namespace Ivayami.Enemy
             if (_isChasing && _directContactWithTarget && _stressIncreaseWhileChasing > 0)
             {
                 if (_debugLogsEnemyPatrol) Debug.Log($"Chasing Stress added {_stressIncreaseWhileChasing * Time.deltaTime}");
-                PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * Time.deltaTime);
+                PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * Time.deltaTime, _stressMaxWhileChasing);
             }
         }
 

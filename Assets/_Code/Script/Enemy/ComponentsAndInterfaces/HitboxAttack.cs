@@ -1,13 +1,14 @@
 using UnityEngine;
 using Ivayami.Player;
-using System;
+using UnityEngine.Events;
 
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(BoxCollider))]
     public class HitboxAttack : MonoBehaviour
     {
-        public Action OnTargetHit;
+        public UnityEvent OnTargetHit;
+        public UnityEvent OnHitboxActivate;
         private BoxCollider _boxCollider
         {
             get
@@ -25,6 +26,7 @@ namespace Ivayami.Enemy
             _boxCollider.size = size;
             _currentStressIncrease = stressIncrease;
             _boxCollider.enabled = isActive;
+            if (isActive) OnHitboxActivate?.Invoke();
         }
 
         private void OnTriggerEnter(Collider other)
