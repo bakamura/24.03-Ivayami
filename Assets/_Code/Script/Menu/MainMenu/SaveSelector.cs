@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using Ivayami.Player;
 using Ivayami.Save;
+using Ivayami.Scene;
 
 namespace Ivayami.UI {
     public class SaveSelector : MonoSingleton<SaveSelector> {
@@ -16,10 +17,10 @@ namespace Ivayami.UI {
 
         //Game Entering
 
-        [field: SerializeField] public ScreenFade FirstTimeFade { get; private set; }
-        [field: SerializeField] public ScreenFade NormalFade { get; private set; }
+        [field: SerializeField] public SceneLoader BaseTerrainLoader { get; private set; }
+        [field: SerializeField] public SceneLoader CutsceneLoader { get; private set; }
+        [field: SerializeField] public SceneLoader MainMenuUnloader { get; private set; }
 
-        private const string CHAPTER_DESCRIPTION_FOLDER = "ChapterDescription";
         private const string BLOCKER_KEY = "MainMenu";
 
         private void Start() {
@@ -28,6 +29,7 @@ namespace Ivayami.UI {
             Options.OnChangeLanguage.AddListener((language) => SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate));
             PlayerActions.Instance.ChangeInputMap("Menu");
             PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, false);
+            Pause.Instance.ToggleCanPause(BLOCKER_KEY, false);
         }
 
         private IEnumerator WaitForSaveOptions() {
@@ -50,6 +52,7 @@ namespace Ivayami.UI {
 
         public void RemovePlayerBlocker() {
             PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, true);
+            Pause.Instance.ToggleCanPause(BLOCKER_KEY, true);
         }
 
     }

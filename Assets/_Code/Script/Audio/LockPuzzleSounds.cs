@@ -21,6 +21,16 @@ namespace Ivayami.Audio
             ConfirmOption
         }
 
+        public void PlayChangeOption()
+        {
+            PlaySound(SoundTypes.ChangeOption);
+        }
+
+        public void PlayConfirmOption()
+        {
+            PlaySound(SoundTypes.ConfirmOption);
+        }
+
         public void PlaySound(SoundTypes soundType)
         {
             Setup();

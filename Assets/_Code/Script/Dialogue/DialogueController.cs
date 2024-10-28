@@ -19,11 +19,11 @@ namespace Ivayami.Dialogue
         [SerializeField, Min(0f)] private float _characterShowDelay;
         [SerializeField] private InputActionReference _continueInput;
         [SerializeField] private TMP_Text _speechTextComponent;
-        [SerializeField] private TMP_Text _textToCopyFrom;
         [SerializeField] private TMP_Text _announcerNameTextComponent;
         [SerializeField] private Image _dialogueBackground;
         [SerializeField] private RectTransform _dialogueContainer;
         [SerializeField] private GameObject _continueDialogueIcon;
+        //0 = default box, 1 cutscene and free input dialogue
         [SerializeField] private DialogueLayout[] _dialogueVariations;
         [SerializeField] private bool _debugLogs;
 
@@ -34,10 +34,11 @@ namespace Ivayami.Dialogue
         private Dialogue _currentDialogue;
         private List<DialogueEvents> _dialogueEventsList = new List<DialogueEvents>();
         private DialogueSounds _dialogueSounds;
-        private RectTransform _textSpeechRect;
         private char[] _currentDialogueCharArray;
         private int _currentCharIndex;
+        private int _currentShowingChars = 0;
         private sbyte _currentSpeechIndex;
+        private float _currentFixedDurationInSpeech;
         [Serializable]
         private struct DialogueLayout
         {
@@ -71,7 +72,6 @@ namespace Ivayami.Dialogue
             _typeWrittingDelay = new WaitForSeconds(_characterShowDelay);
             _canvasGroup = GetComponent<CanvasGroup>();
             _dialogueSounds = GetComponent<DialogueSounds>();
-            _textSpeechRect = _speechTextComponent.GetComponent<RectTransform>();
 
             IsPaused = true;
             Dialogue[] dialogues;
@@ -145,7 +145,7 @@ namespace Ivayami.Dialogue
             else
             {
                 _currentSpeechIndex++;
-                _dialogueSounds.PlaySound(DialogueSounds.SoundTypes.ContinueDialogue);
+                if (_canvasGroup.alpha > 0) _dialogueSounds.PlaySound(DialogueSounds.SoundTypes.ContinueDialogue);
                 //end of current dialogue
                 if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
                 {
@@ -166,9 +166,11 @@ namespace Ivayami.Dialogue
             {
                 _continueDialogueIcon.SetActive(false);
                 _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].announcerName;
-                _speechTextComponent.text = null;
-                _textToCopyFrom.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content;
+                _speechTextComponent.maxVisibleCharacters = 0;
+                _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content;
                 _currentCharIndex = 0;
+                _currentShowingChars = 0;
+                _currentFixedDurationInSpeech = 0;
                 _currentDialogueCharArray = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content.ToCharArray();
                 if (CutsceneController.IsPlaying || !LockInput)
                 {
@@ -184,29 +186,35 @@ namespace Ivayami.Dialogue
                 }
                 ActivateDialogueEvents(_currentDialogue.dialogue[_currentSpeechIndex].EventId);
             }
-            _textSpeechRect.rect.Set(_textSpeechRect.rect.x, _textSpeechRect.rect.y, _textToCopyFrom.preferredWidth, _textToCopyFrom.preferredHeight);
             _canvasGroup.alpha = _currentDialogueCharArray.Length > 0 ? 1 : 0;
             while (_currentCharIndex < _currentDialogueCharArray.Length)
             {
                 if (_currentDialogueCharArray[_currentCharIndex] == '<')
                 {
-                    int index = _currentCharIndex;
-                    while (_currentDialogueCharArray[index] != '>')
+                    while (_currentDialogueCharArray[_currentCharIndex] != '>')
                     {
-                        _speechTextComponent.text += _currentDialogueCharArray[index];
-                        index++;
+                        _currentCharIndex++;
                     }
-                    _currentCharIndex = index;
+                    _currentCharIndex++;
                 }
                 else
                 {
-                    _speechTextComponent.text += _currentDialogueCharArray[_currentCharIndex];
+                    _currentShowingChars++;
                     _currentCharIndex++;
+                    _speechTextComponent.maxVisibleCharacters = _currentShowingChars;
                     yield return _typeWrittingDelay;
                 }
             }
 
-            yield return new WaitForSeconds(_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech);
+            if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0)
+            {
+                while (_currentFixedDurationInSpeech < _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech)
+                {
+                    _currentFixedDurationInSpeech += Time.deltaTime;
+                    yield return null;
+                }
+            }
+            //yield return new WaitForSeconds(_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech);
             if (LockInput) _continueDialogueIcon.SetActive(true);
             _writtingCoroutine = null;
             if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0)
@@ -220,8 +228,9 @@ namespace Ivayami.Dialogue
         {
             if (_debugLogs) Debug.Log($"Skipping typewrite anim");
             StopCoroutine(_writtingCoroutine);
-            _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content;
-            _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].announcerName;
+            _currentShowingChars = _currentDialogueCharArray.Length;
+            _speechTextComponent.maxVisibleCharacters = _currentShowingChars;
+            //_announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].announcerName;
             if (LockInput) _continueDialogueIcon.SetActive(true);
             OnSkipSpeech?.Invoke();
             _writtingCoroutine = null;

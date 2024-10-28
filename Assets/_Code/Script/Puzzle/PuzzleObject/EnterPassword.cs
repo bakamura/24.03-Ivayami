@@ -28,7 +28,7 @@ namespace Ivayami.Puzzle
             if (_passwordTextField.text == _incorrectPasswordText) EraseAll();
             _currentPassword += text.text;
             FormatPasswordText();
-            _lock.LockSounds.PlaySound(Audio.LockPuzzleSounds.SoundTypes.ConfirmOption);
+            //_lock.LockSounds.PlaySound(Audio.LockPuzzleSounds.SoundTypes.ConfirmOption);
             //if(_passwordTextField.text.Length == _passwordTextField.characterLimit) OnCheckPassword?.Invoke();
         }
 

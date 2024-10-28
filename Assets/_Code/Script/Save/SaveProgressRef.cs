@@ -5,10 +5,13 @@ namespace Ivayami.Save {
 
         [Header("Parameters")]
         [SerializeField] private AreaProgress _areaProgress;
-        //[SerializeField] private string _saveName;
 
         public void SetProgressTo(int progress) {
             SaveSystem.Instance.Progress.SaveProgressOfType(_areaProgress.Id, progress);
+        }
+
+        public void SetEntryProgressTo(int progress) {
+            SaveSystem.Instance.Progress.SaveEntryProgressOfType(_areaProgress.Id, progress);
         }
 
     }

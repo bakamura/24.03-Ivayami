@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 231618375883652894}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0.646}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -52,7 +52,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 0
   serializedVersion: 3
-  m_Size: {x: 2, y: 2, z: 2}
+  m_Size: {x: 1.5, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &7979798263519903882
 MonoBehaviour:
@@ -201,7 +201,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8073186486778736189}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: 0
   m_Radius: 0.5000001
   m_Speed: 5.5
@@ -260,8 +260,8 @@ MonoBehaviour:
     MaxInterval: 0.6
     StressIncrease: 999
     Center: {x: 0, y: 0, z: 0}
-    Size: {x: 2, y: 2, z: 2}
-  _debugLog: 0
+    Size: {x: 1.5, y: 2, z: 1}
+  _debugLogPoliceOfficer: 0
   _drawMinDistance: 0
   _minDistanceAreaColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 0.39215687}
   _drawDetectionRange: 0
@@ -1374,6 +1374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73e8af86ccdf6bd4299ede567d8ffef4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _animationScaleWithMovementSpeed: 0
 --- !u!4 &7852145921260173681 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9fddf1502c97460408dec83aadf7ea5a, type: 3}
