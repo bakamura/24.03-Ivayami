@@ -45,8 +45,7 @@ namespace Ivayami.Puzzle
                 PlayerInventory.Instance.AddToInventory(_currentItem);
                 Destroy(_currentItemVisual);
                 _deliverUI.RevertItemDeliver(_currentItem);
-                IsActive = false;
-                onActivate?.Invoke();
+                DeactivatePedestal();
                 _currentItem = null;
             }
             else
@@ -80,6 +79,15 @@ namespace Ivayami.Puzzle
             IsActive = true;
             ExitInteraction();
             onActivate?.Invoke();
+        }
+
+        public void DeactivatePedestal()
+        {
+            if (IsActive)
+            {
+                IsActive = false;
+                onActivate?.Invoke();
+            }
         }
     }
 }
