@@ -264,7 +264,7 @@ namespace Ivayami.Enemy
                         }
                     }
                     _enemyAnimator.Chasing(_isChasing);
-                    _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude);
+                    _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude / _navMeshAgent.speed);
                 }
                 yield return _behaviourTickDelay;
             }
