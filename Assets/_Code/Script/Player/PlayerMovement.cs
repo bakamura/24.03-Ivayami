@@ -19,6 +19,7 @@ namespace Ivayami.Player {
 
         public UnityEvent<Vector2> onMovement = new UnityEvent<Vector2>();
         public UnityEvent<bool> onCrouch = new UnityEvent<bool>();
+        public UnityEvent<float> onStaminaUpdate = new UnityEvent<float>();
 
         [Header("Movement")]
 
@@ -32,6 +33,18 @@ namespace Ivayami.Player {
         [SerializeField, Min(0)] private float _deccelerationDuration;
         private float _decceleration;
         private HashSet<string> _movementBlock = new HashSet<string>();
+
+        [Header("Stamina")]
+
+        [SerializeField, Min(0)] private float _maxStamina = 100f;
+        [SerializeField, Range(0,1)] private float _minStaminaToRun;
+        [SerializeField, Range(0,1), Tooltip("Depletion per second")] private float _staminaDepletionRate = .1f;
+        [SerializeField, Range(0, 1), Tooltip("Depletion per second")] private float _staminaRegenerationRate = .1f;
+        [SerializeField, Range(0,1), Tooltip("When stress is greater or equal to this value, stamia depletion will start")] private float _staminaDepletionStressThreshold = .6f;
+        //[SerializeField, Range(0,1)] private float _staminaFeedbackThreshold;
+        private float _staminaCurrent;
+        private float _stressCurrent;
+        private float _maxStressCurrent;
         public bool CanMove {  get { return _movementBlock.Count <= 0; } }
         private bool _canRun = true;
 
@@ -82,11 +95,14 @@ namespace Ivayami.Player {
         private Quaternion _targetAngle;
 
         private CharacterController _characterController;
-        private Transform _cameraTransform;
+        private Transform _cameraTransform;        
 
         private const string INTERACT_BLOCK_KEY = "Interact";
 
         public Vector3 VisualForward { get { return _visualTransform.forward; } }
+#if UNITY_EDITOR
+        public float MaxStamina => _maxStamina;
+#endif
 
         protected override void Awake() 
             {
@@ -94,13 +110,14 @@ namespace Ivayami.Player {
 
             _movementInput.action.performed += MoveDirection;
             _movementInput.action.canceled += MoveDirection;
-            _walkToggleInput.action.started += ToggleWalk;
+            _walkToggleInput.action.started += ToggleWalkInput;
             _crouchInput.action.started += Crouch;
 
             _acceleration = Time.fixedDeltaTime / _accelerationDuration;
             _decceleration = Time.fixedDeltaTime / _deccelerationDuration;
             _movementSpeedMax = _movementSpeedRun;
             _movementCache = Physics.gravity;
+            ResetStamina();           
 
             _characterController = GetComponent<CharacterController>();
             _cameraTransform = Camera.main.transform; //
@@ -111,11 +128,14 @@ namespace Ivayami.Player {
         private void Start() {
             SceneController.Instance.OnAllSceneRequestEnd += RemoveCrouch;
             PlayerActions.Instance.onInteract.AddListener((animation) => BlockMovementFor(INTERACT_BLOCK_KEY, PlayerAnimation.Instance.GetInteractAnimationDuration(animation)));
-        }
+            PlayerStress.Instance.onStressChange.AddListener(OnStressChange);
+            _maxStressCurrent = PlayerStress.Instance.MaxStress;
+        }        
 
         private void Update() {
             if (CanMove) Move();
             Rotate();
+            StaminaUpdate();
         }
 
         private void MoveDirection(InputAction.CallbackContext input) {
@@ -184,11 +204,50 @@ namespace Ivayami.Player {
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
-        private void ToggleWalk(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
-            if (_canRun) {
+        private void ToggleWalkInput(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
+            if(_staminaCurrent > _maxStamina * _minStaminaToRun)ToggleWalk();
+        }
+
+        private void ToggleWalk()
+        {
+            if (_canRun)
+            {
                 _running = !_running;
                 if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
             }
+        }
+
+        private void OnStressChange(float currentStress)
+        {
+            _stressCurrent = currentStress;
+        }
+
+        private void StaminaUpdate()
+        {
+            bool inStressRange = _stressCurrent >= _staminaDepletionStressThreshold * _maxStressCurrent;
+            if (!_running || _speedCurrent == 0)
+            {
+                if (inStressRange && _staminaCurrent < _maxStamina) UpdateCurrentStamina(_staminaRegenerationRate);                
+            }
+            else
+            {
+                if (inStressRange && _staminaCurrent > 0) UpdateCurrentStamina(-_staminaDepletionRate);
+            }
+            if (!inStressRange) ResetStamina();
+        }
+
+        private void UpdateCurrentStamina(float value)
+        {
+            _staminaCurrent = Mathf.Clamp(_staminaCurrent + value * _maxStamina * Time.deltaTime, 0, _maxStamina);
+            if (_staminaCurrent <= 0) AllowRun(false);
+            else AllowRun(true);
+            onStaminaUpdate?.Invoke(_staminaCurrent / _maxStamina);
+        }
+
+        private void ResetStamina()
+        {
+            _staminaCurrent = _maxStamina;
+            onStaminaUpdate?.Invoke(1);
         }
 
         public void AllowRun(bool allow) {
@@ -240,7 +299,7 @@ namespace Ivayami.Player {
         }
 
         private void OnValidate() {
-            _characterController = GetComponent<CharacterController>();
+            if(!_characterController)_characterController = GetComponent<CharacterController>();
             SetColliderHeight(_walkColliderHeight);
         }
 #endif

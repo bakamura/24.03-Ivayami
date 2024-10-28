@@ -23,6 +23,7 @@ namespace Ivayami.Player {
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
         private static int HOLDING = Animator.StringToHash("Holding");
         private static int GETUP = Animator.StringToHash("GetUp");
+        private static int STAMINA = Animator.StringToHash("Stamina");
 
         private Animator _animator;
 
@@ -36,6 +37,7 @@ namespace Ivayami.Player {
         private void Start() {
             PlayerMovement.Instance.onMovement.AddListener(MoveAnimation);
             PlayerMovement.Instance.onCrouch.AddListener(Crouch);
+            PlayerMovement.Instance.onStaminaUpdate.AddListener(Stamina);
             PlayerStress.Instance.onFail.AddListener(Fail);
             PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
@@ -85,6 +87,10 @@ namespace Ivayami.Player {
 
         private void Fail() {
             _animator.SetTrigger(FAIL);
+        }
+
+        private void Stamina(float currentValue){
+            _animator.SetFloat(STAMINA, currentValue);
         }
 
     }
