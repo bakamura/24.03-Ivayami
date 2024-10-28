@@ -84,6 +84,7 @@ namespace Ivayami.Puzzle
                 else
                 {
                     _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
+                    if (_deliveryUI.SkipDeliverUI) _interatctableFeedbacks.UpdateFeedbacks(true, true);
                     _onInteractionFailed?.Invoke();
                 }
             }
@@ -148,10 +149,7 @@ namespace Ivayami.Puzzle
 
         private void HandleExitInteraction(InputAction.CallbackContext context)
         {
-            if (context.ReadValue<float>() == 1)
-            {
-                CancelInteraction();
-            }
+            CancelInteraction();
         }
 
         private void HandleConfirmUI(InputAction.CallbackContext context)
