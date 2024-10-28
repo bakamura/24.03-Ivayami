@@ -33,6 +33,7 @@ namespace Ivayami.Puzzle
         private float _navigateInputCurrentCooldown;
 
         [HideInInspector] public UnityEvent<InventoryItem> OnDeliver;
+        public bool SkipDeliverUI => _skipDeliverUI;
         [System.Serializable]
         private struct ItemRequestData
         {

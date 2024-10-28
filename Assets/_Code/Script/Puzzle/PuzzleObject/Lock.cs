@@ -84,6 +84,7 @@ namespace Ivayami.Puzzle
                 else
                 {
                     _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
+                    if(_deliveryUI.SkipDeliverUI) _interatctableFeedbacks.UpdateFeedbacks(true, true);
                     _onInteractionFailed?.Invoke();
                 }
             }
