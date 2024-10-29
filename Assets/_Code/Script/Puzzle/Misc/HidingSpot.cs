@@ -25,7 +25,7 @@ namespace Ivayami.Puzzle {
 
         private void Awake() {
             InteratctableFeedbacks = GetComponent<InteractableFeedbacks>();
-            _objectAnimator = GetComponent<Animator>();
+            _objectAnimator = GetComponentInChildren<Animator>();
         }
 
         private void Start() {
