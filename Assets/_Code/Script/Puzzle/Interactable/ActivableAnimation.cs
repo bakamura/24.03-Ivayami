@@ -23,6 +23,7 @@ namespace Ivayami.Puzzle
 
         private static readonly int _interactBoolHash = Animator.StringToHash("interact");
         private static readonly int _activateBoolHash = Animator.StringToHash("activate");
+        private static readonly int _interactingTriggerHash = Animator.StringToHash("interacting");
 
         private static readonly int _interactionStateHash = Animator.StringToHash("interaction");
         private static readonly int _activationStateHash = Animator.StringToHash("activation");
@@ -51,7 +52,7 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public InteractableFeedbacks InteratctableHighlight { get => _interatctableHighlight; }
+        public InteractableFeedbacks InteratctableFeedbacks { get => _interatctableHighlight; }
 
         protected override void Awake()
         {
@@ -78,6 +79,7 @@ namespace Ivayami.Puzzle
                 if (_interactionAnimator)
                 {
                     _interactionAnimator.SetBool(_interactBoolHash, !_interactionAnimator.GetBool(_interactBoolHash));
+                    _interactionAnimator.SetTrigger(_interactingTriggerHash);
                     _interactableSounds.PlaySound(_interactionAnimator.GetBool(_interactBoolHash) ? InteractableSounds.SoundTypes.Interact : InteractableSounds.SoundTypes.InteractReturn);
                 }
                 CheckCallbacks(_interactBoolHash);

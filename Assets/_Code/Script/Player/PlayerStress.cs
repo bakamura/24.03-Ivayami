@@ -22,6 +22,8 @@ namespace Ivayami.Player {
         private float _stressRelieveDelayTimer;
         private bool _pauseStressRelieve = false;
 
+        public float MaxStress => _stressMax;
+
         [Header("Fail")]
 
         [SerializeField] private float _restartDelay;
@@ -31,13 +33,16 @@ namespace Ivayami.Player {
 
         [Header("Cache")]
 
-        private const string FAIL_BLOCK_KEY = "FailState";
+        private const string FAIL_BLOCK_KEY = "FailState";        
 
         private void Start() {
             Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
             Pause.Instance.onUnpause.AddListener(() => _pauseStressRelieve = false);
             onStressChange.AddListener(FailStateCheck);
             onFail.AddListener(() => StartCoroutine(DelayToRespawn()));
+            onFailFade.AddListener(ResetStress);
+            onFail.AddListener(() => Pause.Instance.ToggleCanPause(FAIL_BLOCK_KEY, false));
+            onFailFade.AddListener(() => Pause.Instance.ToggleCanPause(FAIL_BLOCK_KEY, true));
             _restartWait = new WaitForSeconds(_restartDelay);
 
             Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");
@@ -80,6 +85,14 @@ namespace Ivayami.Player {
             }
         }
 
+        private void ResetStress() {
+            _failState = false;
+            _stressCurrent = 0;
+            onStressChange.Invoke(_stressCurrent);
+            PlayerAnimation.Instance.GoToIdle();
+            PlayerMovement.Instance.ToggleMovement(FAIL_BLOCK_KEY, true);
+        }
+
         public void OverrideFailLoad() {
             _overrideFailLoad = true;
         }
@@ -89,34 +102,24 @@ namespace Ivayami.Player {
 
             yield return _restartWait;
 
-            SceneTransition.Instance.Menu.Close();
+            SceneTransition.Instance.OnOpenEnd.AddListener(RespawnFailFade);
+            SceneTransition.Instance.Open();
+        }
 
-            yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
-
-            _failState = false;
-            _stressCurrent = 0;
-            onStressChange.Invoke(_stressCurrent);
+        private void RespawnFailFade() {
             onFailFade.Invoke();
-            PlayerMovement.Instance.ToggleMovement(FAIL_BLOCK_KEY, true);
 
             if (_overrideFailLoad) _overrideFailLoad = false;
-            else SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes);
+            else SaveSystem.Instance.LoadProgress(SaveSystem.Instance.Progress.id, () => SceneController.Instance.UnloadAllScenes(ReloadAndReset));
+            SceneTransition.Instance.OnOpenEnd.RemoveListener(RespawnFailFade);
         }
 
-        private void HandleUnloadAllScenes() {
-            SceneController.Instance.OnAllSceneRequestEnd -= HandleUnloadAllScenes;
+        private void ReloadAndReset() {
             UnityEvent onSceneLoaded = new UnityEvent();
-            onSceneLoaded.AddListener(UnlockPlayer);
-            SceneController.Instance.StartLoad("BaseTerrain", onSceneLoaded);
+            onSceneLoaded.AddListener(() => SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport());
+            SceneController.Instance.LoadScene("BaseTerrain", onSceneLoaded);
+            SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
+            PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
         }
-
-        private void UnlockPlayer() {
-            PlayerMovement.Instance.SetPosition(SavePoint.Points[SaveSystem.Instance.Progress.pointId].transform.position);
-            PlayerAnimation.Instance.GoToIdle();
-            _stressCurrent = 0;
-            onStressChange?.Invoke(_stressCurrent);
-            _failState = false;
-        }
-
     }
 }

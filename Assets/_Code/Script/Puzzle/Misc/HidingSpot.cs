@@ -7,7 +7,7 @@ using System.Collections;
 namespace Ivayami.Puzzle {
     public class HidingSpot : MonoBehaviour, IInteractable {
 
-        public InteractableFeedbacks InteratctableHighlight { get; private set; }
+        public InteractableFeedbacks InteratctableFeedbacks { get; private set; }
 
         [Header("View")]
 
@@ -25,12 +25,13 @@ namespace Ivayami.Puzzle {
         private WaitForSeconds _delayChangeCamera;
 
         private void Awake() {
-            InteratctableHighlight = GetComponent<InteractableFeedbacks>();
-            _playerCamPriority = FindObjectOfType<CinemachineFreeLook>().Priority;
+            InteratctableFeedbacks = GetComponent<InteractableFeedbacks>();
+            if (!PlayerCamera.Instance) return;
+            _playerCamPriority = PlayerCamera.Instance.FreeLookCam.Priority;
         }
 
         private void Start() {
-            _delayChangeCamera = new WaitForSeconds(PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.EnterLocker) - Camera.main.GetComponent<CinemachineBrain>().m_DefaultBlend.BlendTime);
+            _delayChangeCamera = new WaitForSeconds(PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.EnterLocker) - PlayerCamera.Instance.CinemachineBrain.m_DefaultBlend.BlendTime);
         }
 
         public PlayerActions.InteractAnimation Interact() {

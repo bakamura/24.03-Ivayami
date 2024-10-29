@@ -406,7 +406,7 @@
                 {
                     "name": "",
                     "id": "530faaa0-7e23-4afa-abd0-f7583e9a394c",
-                    "path": "<Gamepad>/leftStick/down",
+                    "path": "<Gamepad>/leftStickPress",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -560,6 +560,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "MapDrag",
+                    "type": "PassThrough",
+                    "id": "50a2c6b0-28cf-42e9-8a28-2ccefb16e207",
+                    "expectedControlType": "Vector2",
+                    "processors": "InvertVector2",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -729,6 +738,61 @@
                     "isPartOfComposite": true
                 },
                 {
+                    "name": "Scroll",
+                    "id": "f36da097-2de7-43bd-b917-c62abb2f5f6f",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Navigate",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "646d7074-d911-476d-940c-8374bba2ac1b",
+                    "path": "<Mouse>/scroll/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "5ec5afc9-5ce7-4dbe-876c-8f777cf759f8",
+                    "path": "<Mouse>/scroll/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "f5e6f388-eebd-4ad5-8fa4-d61b6b927450",
+                    "path": "<Mouse>/scroll/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "4b3954a4-e8d3-4d8e-8226-41b0b72f87f3",
+                    "path": "<Mouse>/scroll/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "Navigate",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
                     "id": "5b2c7e42-615a-44fb-8b21-c0ff5896bd92",
                     "path": "<Gamepad>/buttonSouth",
@@ -884,8 +948,30 @@
                 },
                 {
                     "name": "",
+                    "id": "6b9ddc93-19dc-402d-b0b8-1eb071ee7214",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "UnPause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "db3e996e-2140-4a6e-9729-742d71bbc72f",
                     "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "UnPause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2c555966-b529-4dae-90ee-226e4111b0a8",
+                    "path": "<Keyboard>/m",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard + Mouse",
@@ -907,7 +993,7 @@
                 {
                     "name": "negative",
                     "id": "339b6b3c-7070-4af2-8d13-bd8f9d61d684",
-                    "path": "<Gamepad>/leftTrigger",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -918,13 +1004,24 @@
                 {
                     "name": "positive",
                     "id": "dacd93ec-64f5-4eb0-9d8a-1825be723165",
-                    "path": "<Gamepad>/rightTrigger",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "ChangeTab",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "adb955a5-b845-4146-82cb-997f9c72533f",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "MapDrag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
