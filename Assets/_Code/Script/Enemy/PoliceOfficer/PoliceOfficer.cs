@@ -257,7 +257,7 @@ namespace Ivayami.Enemy
 
         private void OnAttackAnimationEnd()
         {
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0);
+            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
             if (_targetKilled)
             {
                 _enemyAnimator.Walking(0);
@@ -277,11 +277,11 @@ namespace Ivayami.Enemy
             {
                 if (normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
                 {
-                    _hitboxAttack.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncrease);
+                    _hitboxAttack.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
                     return;
                 }
             }
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0);
+            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
         }
 
         private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine(Vector3 finalPos, /*bool stayInPath, bool autoStartBehaviour,*/ float durationInPlace)

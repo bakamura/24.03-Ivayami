@@ -322,7 +322,7 @@ namespace Ivayami.Enemy
         private void HandleAttackAnimationEnd()
         {
             //_navMeshAgent.isStopped = false;
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0);
+            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
             _isAttacking = false;
         }
 
@@ -340,11 +340,11 @@ namespace Ivayami.Enemy
             {
                 if (normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
                 {
-                    _hitboxAttack.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncrease);
+                    _hitboxAttack.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
                     return;
                 }
             }
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0);
+            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
         }
 
         public void ChangeSpeed(float speed)
