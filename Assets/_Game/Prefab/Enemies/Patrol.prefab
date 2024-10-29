@@ -188,17 +188,17 @@ MonoBehaviour:
   _stressIncreaseWhileChasing: 2.5
   _stressMaxWhileChasing: 70
   _chaseSpeed: 3.3
-  _minDetectionRangeInChase: 0
+  _minDetectionRangeInChase: 20
   _startActive: 1
   _goToLastTargetPosition: 1
   _attackTarget: 1
   _attackAreaInfos:
   - MinInterval: 0.1
     MaxInterval: 0.5
-    StressIncreaseOnEnter: 15
-    StressIncreaseOnStay: 0
+    StressIncreaseOnEnter: 0
+    StressIncreaseOnStay: 0.5
     Center: {x: 0, y: 0, z: 0}
-    Size: {x: 3, y: 6, z: 3}
+    Size: {x: 6, y: 6, z: 6}
   _loseTargetWhenHidden: 1
   _targetLayer:
     serializedVersion: 2
@@ -885,7 +885,7 @@ Animator:
   m_Controller: {fileID: 9100000, guid: 397fc70dad87d40409fed6359a91df5a, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
-  m_ApplyRootMotion: 1
+  m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_WarningMessage: 
@@ -905,7 +905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73e8af86ccdf6bd4299ede567d8ffef4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animationScaleWithMovementSpeed: 0
+  _animationScaleWithMovementSpeed: 1
   _attackAnimationLayer: 1
 --- !u!137 &8117714494186345577 stripped
 SkinnedMeshRenderer:
