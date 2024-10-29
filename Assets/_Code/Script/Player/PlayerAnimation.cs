@@ -5,6 +5,7 @@ using Ivayami.Save;
 namespace Ivayami.Player {
     public class PlayerAnimation : MonoSingleton<PlayerAnimation> {
 
+        [SerializeField, Range(0, 1), Tooltip("Percentage of Stamina to start animation")] private float _startTiredAnimThreshold = .1f;
         [SerializeField] private AnimationClip[] _interactAnimations;
         private Dictionary<PlayerActions.InteractAnimation, float> _interactAnimationDuration = new Dictionary<PlayerActions.InteractAnimation, float>();
 
@@ -36,6 +37,7 @@ namespace Ivayami.Player {
         private void Start() {
             PlayerMovement.Instance.onMovement.AddListener(MoveAnimation);
             PlayerMovement.Instance.onCrouch.AddListener(Crouch);
+            PlayerMovement.Instance.onStaminaUpdate.AddListener(Stamina);
             PlayerStress.Instance.onFail.AddListener(Fail);
             PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
@@ -85,6 +87,14 @@ namespace Ivayami.Player {
 
         private void Fail() {
             _animator.SetTrigger(FAIL);
+        }
+
+        private void Stamina(float currentValue){
+            if(currentValue <= _startTiredAnimThreshold)
+            {
+                _animator.SetLayerWeight(2, 1 - (currentValue / _startTiredAnimThreshold));
+            }
+            else _animator.SetLayerWeight(2, 0);
         }
 
     }
