@@ -5,6 +5,7 @@ using Ivayami.Save;
 namespace Ivayami.Player {
     public class PlayerAnimation : MonoSingleton<PlayerAnimation> {
 
+        [SerializeField, Range(0, 1), Tooltip("Percentage of Stamina to start animation")] private float _startTiredAnimThreshold = .1f;
         [SerializeField] private AnimationClip[] _interactAnimations;
         private Dictionary<PlayerActions.InteractAnimation, float> _interactAnimationDuration = new Dictionary<PlayerActions.InteractAnimation, float>();
 
@@ -23,7 +24,6 @@ namespace Ivayami.Player {
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
         private static int HOLDING = Animator.StringToHash("Holding");
         private static int GETUP = Animator.StringToHash("GetUp");
-        private static int STAMINA = Animator.StringToHash("Stamina");
 
         private Animator _animator;
 
@@ -90,7 +90,11 @@ namespace Ivayami.Player {
         }
 
         private void Stamina(float currentValue){
-            _animator.SetFloat(STAMINA, currentValue);
+            if(currentValue <= _startTiredAnimThreshold)
+            {
+                _animator.SetLayerWeight(2, 1 - (currentValue / _startTiredAnimThreshold));
+            }
+            else _animator.SetLayerWeight(2, 0);
         }
 
     }
