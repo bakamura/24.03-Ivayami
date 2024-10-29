@@ -188,15 +188,17 @@ MonoBehaviour:
   _stressIncreaseWhileChasing: 2.5
   _stressMaxWhileChasing: 70
   _chaseSpeed: 3.3
+  _minDetectionRangeInChase: 0
   _startActive: 1
   _goToLastTargetPosition: 1
   _attackTarget: 1
   _attackAreaInfos:
   - MinInterval: 0.1
     MaxInterval: 0.5
-    StressIncrease: 15
+    StressIncreaseOnEnter: 15
+    StressIncreaseOnStay: 0
     Center: {x: 0, y: 0, z: 0}
-    Size: {x: 1.5, y: 3, z: 1.5}
+    Size: {x: 3, y: 6, z: 3}
   _loseTargetWhenHidden: 1
   _targetLayer:
     serializedVersion: 2
@@ -211,6 +213,8 @@ MonoBehaviour:
   _debugLogsEnemyPatrol: 0
   _drawMinDistance: 1
   _minDistanceAreaColor: {r: 0.8722887, g: 1, b: 0, a: 0.39215687}
+  _drawMinDistanceInChase: 0
+  _minDistanceInChaseAreaColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   _drawDetectionRange: 1
   _detectionRangeAreaColor: {r: 1, g: 0, b: 0, a: 0.39215687}
   _drawPatrolPoints: 1
