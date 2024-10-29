@@ -19,14 +19,16 @@ namespace Ivayami.Enemy
             }
         }
         private BoxCollider m_boxCollider;
-        private float _currentStressIncrease;
+        private float _currentStressIncreaseOnEnter;
+        private float _currentStressIncreaseOnStay;
         private bool _previousState;
 
-        public void UpdateHitbox(bool isActive, Vector3 center, Vector3 size, float stressIncrease)
+        public void UpdateHitbox(bool isActive, Vector3 center, Vector3 size, float stressIncreaseOnEnter, float stressIncreaseOnStay)
         {
             _boxCollider.center = center;
             _boxCollider.size = size;
-            _currentStressIncrease = stressIncrease;
+            _currentStressIncreaseOnEnter = stressIncreaseOnEnter;
+            _currentStressIncreaseOnStay = stressIncreaseOnStay;
             _boxCollider.enabled = isActive;
             if (!_previousState && isActive) OnHitboxActivate?.Invoke();
             if (_previousState && !isActive) OnHitboxDeactivate?.Invoke();
@@ -35,8 +37,13 @@ namespace Ivayami.Enemy
 
         private void OnTriggerEnter(Collider other)
         {
-            PlayerStress.Instance.AddStress(_currentStressIncrease);
+            if (_currentStressIncreaseOnEnter > 0) PlayerStress.Instance.AddStress(_currentStressIncreaseOnEnter);
             OnTargetHit?.Invoke();
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (_currentStressIncreaseOnStay > 0) PlayerStress.Instance.AddStress(_currentStressIncreaseOnStay);
         }
     }
 }
