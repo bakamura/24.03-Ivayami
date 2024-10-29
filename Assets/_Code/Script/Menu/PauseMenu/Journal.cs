@@ -23,8 +23,15 @@ namespace Ivayami.UI {
         [SerializeField] private MenuGroup _displayMenuGroup;
         [SerializeField] private MenuGroup _noEntriesMenuGroup;
         [SerializeField] private Menu _noEntriesMenu;
+        private bool _shouldResetToStory;
 
         private static int _containerChange = Animator.StringToHash("Forward");
+
+        private void Start() {
+            Menu menu = GetComponent<Menu>();
+            menu.OnOpenStart.AddListener(() => _shouldResetToStory = true);
+            menu.OnCloseStart.AddListener(() => _shouldResetToStory = false);
+        }
 
         public void ChangeAnimation() {
             _containerAnimator.SetTrigger(_containerChange);
@@ -37,7 +44,7 @@ namespace Ivayami.UI {
             SetupAberrationsSelection();
 
             Resources.UnloadUnusedAssets();
-            _chapterBtn.onClick.Invoke();
+            if (_shouldResetToStory) _chapterBtn.onClick.Invoke();
         }
 
         public void ResetSelections() {

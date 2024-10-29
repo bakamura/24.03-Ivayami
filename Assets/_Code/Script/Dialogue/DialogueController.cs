@@ -23,6 +23,7 @@ namespace Ivayami.Dialogue
         [SerializeField] private Image _dialogueBackground;
         [SerializeField] private RectTransform _dialogueContainer;
         [SerializeField] private GameObject _continueDialogueIcon;
+        //0 = default box, 1 cutscene and free input dialogue
         [SerializeField] private DialogueLayout[] _dialogueVariations;
         [SerializeField] private bool _debugLogs;
 

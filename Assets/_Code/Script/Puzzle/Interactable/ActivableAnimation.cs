@@ -52,7 +52,7 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public InteractableFeedbacks InteratctableHighlight { get => _interatctableHighlight; }
+        public InteractableFeedbacks InteratctableFeedbacks { get => _interatctableHighlight; }
 
         protected override void Awake()
         {
