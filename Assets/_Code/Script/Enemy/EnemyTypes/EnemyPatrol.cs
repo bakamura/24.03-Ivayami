@@ -23,7 +23,7 @@ namespace Ivayami.Enemy
         [SerializeField, Min(0f)] private float _stressIncreaseWhileChasing;
         [SerializeField, Min(0f)] private float _stressMaxWhileChasing;
         [SerializeField, Min(0f)] private float _chaseSpeed;
-        //[SerializeField, Min(0f)] private float _stressIncreaseOnAttackTarget;
+        [SerializeField, Min(0f)] private float _minDetectionRangeInChase;
         [SerializeField] private bool _startActive;
         [SerializeField] private bool _goToLastTargetPosition;
         [SerializeField] private bool _attackTarget;
@@ -38,6 +38,8 @@ namespace Ivayami.Enemy
 #if UNITY_EDITOR
         [SerializeField] private bool _drawMinDistance;
         [SerializeField] private Color _minDistanceAreaColor = Color.yellow;
+        [SerializeField] private bool _drawMinDistanceInChase;
+        [SerializeField] private Color _minDistanceInChaseAreaColor = Color.yellow;
         [SerializeField] private bool _drawDetectionRange;
         [SerializeField] private Color _detectionRangeAreaColor = Color.red;
         [SerializeField] private bool _drawPatrolPoints;
@@ -221,6 +223,7 @@ namespace Ivayami.Enemy
                                     yield return _endGoToLastTargetDelay;
                                     _navMeshAgent.isStopped = false;
                                 }
+                                //old version without _endGoToLastTargetDelay
                                 /*_navMeshAgent.SetDestination(_lastTargetPosition);
                                 if (_debugLogsEnemyPatrol) Debug.Log($"Moving to last target position {_lastTargetPosition}");
                                 if (Vector3.Distance(transform.position, _lastTargetPosition) <= _navMeshAgent.stoppingDistance)
@@ -295,12 +298,13 @@ namespace Ivayami.Enemy
 
             bool isInMinRange;
             Vector3 targetCenter = Vector3.zero;
+            float currentMinRange = _isChasing ? _minDetectionRangeInChase : _minDetectionRange;
             if (_hitsCache[0])
             {
                 targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
-                isInMinRange = Vector3.Distance(targetCenter, rayOrigin) <= _minDetectionRange;
+                isInMinRange = Vector3.Distance(targetCenter, rayOrigin) <= currentMinRange;
             }
-            else isInMinRange = Physics.OverlapSphereNonAlloc(rayOrigin, _minDetectionRange, _hitsCache, _targetLayer, QueryTriggerInteraction.Ignore) > 0;
+            else isInMinRange = Physics.OverlapSphereNonAlloc(rayOrigin, currentMinRange, _hitsCache, _targetLayer, QueryTriggerInteraction.Ignore) > 0;
 
             if (!_hitsCache[0]) return false;
 
@@ -363,16 +367,23 @@ namespace Ivayami.Enemy
         protected override void OnDrawGizmosSelected()
         {
             base.OnDrawGizmosSelected();
+            bool drawMinDistance = (Application.isPlaying && !_isChasing) || !Application.isPlaying;
+            bool drawMinDistanceInChase = (Application.isPlaying && _isChasing) || !Application.isPlaying;
             if (_drawDetectionRange)
             {
                 _FOVMesh = DebugUtilities.CreateConeMesh(transform, _visionAngle, _detectionRange);
                 Gizmos.color = _detectionRangeAreaColor;
                 Gizmos.DrawMesh(_FOVMesh, transform.position + _visionOffset, Quaternion.identity);
             }
-            if (_drawMinDistance)
+            if (_drawMinDistance && drawMinDistance)
             {
                 Gizmos.color = _minDistanceAreaColor;
                 Gizmos.DrawSphere(transform.position, _minDetectionRange);
+            }
+            if (_drawMinDistanceInChase && drawMinDistanceInChase)
+            {
+                Gizmos.color = _minDistanceInChaseAreaColor;
+                Gizmos.DrawSphere(transform.position, _minDetectionRangeInChase);
             }
             if (_drawPatrolPoints)
             {
