@@ -5,6 +5,7 @@ using Ivayami.Player;
 
 public class DebugShowStress : MonoBehaviour {
 
+#if UNITY_EDITOR
     [SerializeField] private TextMeshProUGUI _stressText;
     [SerializeField] private Image _stressBar;
     [SerializeField] private TextMeshProUGUI _staminaText;
@@ -22,5 +23,5 @@ public class DebugShowStress : MonoBehaviour {
             _staminaBar.fillAmount = stamina;
         });
     }
-
+#endif
 }

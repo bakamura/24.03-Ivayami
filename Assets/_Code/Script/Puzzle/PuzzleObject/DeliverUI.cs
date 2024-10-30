@@ -84,9 +84,9 @@ namespace Ivayami.Puzzle
                 {
                     if (PlayerInventory.Instance.CheckInventoryFor(_currentRequests[i].Item.name))
                     {
-                        RemoveItemFromRequestList(_currentRequests[i].Item);
                         deliverAchived = true;
                         OnDeliver?.Invoke(_currentRequests[i].Item);
+                        RemoveItemFromRequestList(_currentRequests[i].Item);
                     }
                 }
             }
