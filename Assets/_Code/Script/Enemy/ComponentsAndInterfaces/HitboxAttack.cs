@@ -45,7 +45,7 @@ namespace Ivayami.Enemy
             WaitForSeconds delay = new WaitForSeconds(_tickFrequency);
             while (_isTargetInside)
             {
-                PlayerStress.Instance.AddStress(_currentStressIncreaseOnStay);
+                PlayerStress.Instance.AddStress(_currentStressIncreaseOnStay * _tickFrequency);
                 yield return delay;
             }
             _damageCoroutine = null;

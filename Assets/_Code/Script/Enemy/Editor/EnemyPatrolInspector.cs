@@ -56,7 +56,7 @@ namespace Ivayami.Enemy
 
             RenderHeader("Enemy Patrol Attack Paramaters", true);
             EditorGUILayout.PropertyField(stressIncreaseOnTargetDetected, new GUIContent("Stress Increase On Target Detected"));
-            EditorGUILayout.PropertyField(stressIncreaseWhileChasing, new GUIContent("Stress Increase While Chasing"));
+            EditorGUILayout.PropertyField(stressIncreaseWhileChasing, new GUIContent("Stress Increase While Chasing", "Stress per second increased by"));
             EditorGUILayout.PropertyField(stressMaxWhileChasing, new GUIContent("Stress Max While Chasing"));
             EditorGUILayout.PropertyField(attackTarget, new GUIContent("Attack Target", "Attack range is defined by Stopping Distance + Target Collider Extent Z"));
             if (attackTarget.boolValue) EditorGUILayout.PropertyField(attackAreaInfos, new GUIContent("Attacks Hitbox Info"));
