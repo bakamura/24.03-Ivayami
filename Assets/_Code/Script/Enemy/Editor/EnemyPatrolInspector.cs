@@ -4,6 +4,7 @@ using UnityEngine.AI;
 
 namespace Ivayami.Enemy
 {
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(EnemyPatrol))]
     public class EnemyPatrolInspector : Editor
     {
