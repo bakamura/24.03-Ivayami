@@ -6,7 +6,7 @@ namespace Ivayami.Puzzle {
 
         public GameObject gameObject { get; }
 
-        public InteractableFeedbacks InteratctableHighlight { get; }
+        public InteractableFeedbacks InteratctableFeedbacks { get; }
 
         public abstract PlayerActions.InteractAnimation Interact();
 

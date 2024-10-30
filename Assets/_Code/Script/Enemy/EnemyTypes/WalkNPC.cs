@@ -30,6 +30,7 @@ namespace Ivayami.Enemy
         {
             if (_navMeshAgent) return;
             _navMeshAgent = GetComponent<NavMeshAgent>();
+            _navMeshAgent.enabled = true;
             _animator = GetComponentInChildren<EnemyAnimator>();
             if (_fixedWalkArea)
             {

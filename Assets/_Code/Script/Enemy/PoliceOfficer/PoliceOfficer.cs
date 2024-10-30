@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-//using Ivayami.Player;
 using Ivayami.Audio;
 using System;
 using Ivayami.Player;
@@ -55,6 +54,7 @@ namespace Ivayami.Enemy
         private WaitForSeconds _behaviourTickDelay;
         private Collider[] _hitsCache = new Collider[1];
         private Coroutine _detectTargetPointOffBehaviourReachedCoroutine;
+        private Coroutine _initializeCoroutine;
         private Vector3 _lastTargetPosition;
         private bool _isChasing;
         private bool _directContactWithTarget;
@@ -86,20 +86,24 @@ namespace Ivayami.Enemy
 
         private void OnEnable()
         {
+            if (!_navMeshAgent.enabled && _initializeCoroutine == null) _initializeCoroutine = StartCoroutine(InitializeAgent());
+            if (_startActive && _initializeCoroutine == null) StartBehaviour();
             PlayerStress.Instance.onFail.AddListener(OnTargetKill);
         }
 
         private void OnDisable()
         {
+            StopBehaviour();
             PlayerStress.Instance.onFail.RemoveListener(OnTargetKill);
         }
 
-        private void Start()
+        private IEnumerator InitializeAgent()
         {
-            if (_startActive)
-            {
-                StartBehaviour();
-            }
+            yield return new WaitForEndOfFrame();
+            _navMeshAgent.enabled = true;
+            //yield return new WaitForEndOfFrame();
+            if (_startActive) StartBehaviour();
+            _initializeCoroutine = null;
         }
 
         [ContextMenu("Start")]
@@ -107,7 +111,12 @@ namespace Ivayami.Enemy
         {
             if (!IsActive)
             {
-                IsActive = true;
+                if (!_navMeshAgent.enabled && _initializeCoroutine == null)
+                {
+                    _initializeCoroutine = StartCoroutine(InitializeAgent());
+                    return;
+                }
+                IsActive = true;                
                 //_navMeshAgent.isStopped = false;
                 StartCoroutine(BehaviourCoroutine());
             }
@@ -248,7 +257,7 @@ namespace Ivayami.Enemy
 
         private void OnAttackAnimationEnd()
         {
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0);
+            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
             if (_targetKilled)
             {
                 _enemyAnimator.Walking(0);
@@ -268,11 +277,11 @@ namespace Ivayami.Enemy
             {
                 if (normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
                 {
-                    _hitboxAttack.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncrease);
+                    _hitboxAttack.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
                     return;
                 }
             }
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0);
+            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
         }
 
         private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine(Vector3 finalPos, /*bool stayInPath, bool autoStartBehaviour,*/ float durationInPlace)

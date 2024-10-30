@@ -22,6 +22,8 @@ namespace Ivayami.Player {
         private float _stressRelieveDelayTimer;
         private bool _pauseStressRelieve = false;
 
+        public float MaxStress => _stressMax;
+
         [Header("Fail")]
 
         [SerializeField] private float _restartDelay;
@@ -32,6 +34,9 @@ namespace Ivayami.Player {
         [Header("Cache")]
 
         private const string FAIL_BLOCK_KEY = "FailState";
+#if UNITY_EDITOR
+        private bool _isAutoRegenActive = true;
+#endif
 
         private void Start() {
             Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
@@ -47,6 +52,9 @@ namespace Ivayami.Player {
         }
 
         private void Update() {
+#if UNITY_EDITOR
+            if (!_isAutoRegenActive) return;
+#endif
             if (!_pauseStressRelieve) {
                 if (_stressRelieveDelayTimer > 0) _stressRelieveDelayTimer -= Time.deltaTime;
                 else if (_stressCurrent > 20f) RelieveStressAuto();
@@ -120,5 +128,11 @@ namespace Ivayami.Player {
             PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
         }
 
+#if UNITY_EDITOR
+        public void UpdateAutoRegenerateStress(bool isActive)
+        {
+            _isAutoRegenActive = isActive;
+        }
+#endif
     }
 }
