@@ -27,12 +27,14 @@ public static class PlayerTerminalCommands
         PlayerStress.Instance.AddStress(amount);
     }
 
+#if UNITY_EDITOR
     [ConsoleMethod("UpdateAutoRegenStress", "", "isActive")]
     public static void UpdateAutoRegenStress(bool isActive)
     {
         PlayerStress.Instance.UpdateAutoRegenerateStress(isActive);
         Debug.Log($"Auto Regen is now {isActive}");
     }
+#endif
 
     [ConsoleMethod("GiveItem", "", "itemID")]
     public static void GiveItem(string itemID)
