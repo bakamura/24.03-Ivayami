@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using Cinemachine;
 using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
+using Ivayami.UI;
 
 namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -16,6 +17,7 @@ namespace Ivayami.Player {
         [SerializeField] private InputActionReference _interactInput;
         [SerializeField] private InputActionReference _abilityInput;
         [SerializeField] private InputActionReference _changeAbilityInput;
+        [SerializeField] private InputActionReference _useHealthItemInput;
         [SerializeField] private InputActionReference[] _pauseInputs;
         private InputActionMap _actionMapCurrent;
 
@@ -73,6 +75,7 @@ namespace Ivayami.Player {
             _interactInput.action.canceled += Interact;
             _abilityInput.action.started += Ability;
             _changeAbilityInput.action.started += ChangeAbility;
+            _useHealthItemInput.action.started += UseHealthItem;
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable();
 
             onInteractLong.AddListener((interacting) => Interacting = interacting);
@@ -81,7 +84,7 @@ namespace Ivayami.Player {
             _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
-        }
+        }        
 
         private void Start() {
             //_cam = PlayerCamera.Instance.MainCamera;
@@ -214,6 +217,17 @@ namespace Ivayami.Player {
             return false;
         }
         #endregion
+
+        private void UseHealthItem(InputAction.CallbackContext obj)
+        {
+            InventoryItem item = PlayerInventory.Instance.CheckInventoryFor(PlayerInventory.Instance.HealthItem.name).Item;
+            if (item)
+            {
+                PlayerStress.Instance.ReliveStressByItem();
+                PlayerInventory.Instance.RemoveFromInventory(item);
+                InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite, "-1");
+            }
+        }
 
         public void ChangeInputMap(string mapId) {
             _actionMapCurrent?.Disable();

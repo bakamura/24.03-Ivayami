@@ -29,7 +29,7 @@ namespace Ivayami.Puzzle {
             _interactableSounds = GetComponent<InteractableSounds>();
 
             if (!PlayerInventory.Instance) return;
-            gameObject.SetActive(PlayerInventory.Instance.CheckInventoryFor(_readable.name) == null);
+            gameObject.SetActive(PlayerInventory.Instance.CheckInventoryFor(_readable.name).Item == null);
         }
 
         public PlayerActions.InteractAnimation Interact() {

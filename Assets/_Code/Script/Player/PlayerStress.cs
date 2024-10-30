@@ -19,10 +19,12 @@ namespace Ivayami.Player {
         [SerializeField] private float _stressMax;
         private float _stressCurrent;
         [SerializeField] private float _stressRelieveDelay;
+        [SerializeField, Range(0, 1), Tooltip("Stress relive based on current stress value")] private float _stressRelieveOnItemUsed;
         private float _stressRelieveDelayTimer;
         private bool _pauseStressRelieve = false;
 
         public float MaxStress => _stressMax;
+        public float StressCurrent => _stressCurrent;
 
         [Header("Fail")]
 
@@ -125,7 +127,12 @@ namespace Ivayami.Player {
             onSceneLoaded.AddListener(() => SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport());
             SceneController.Instance.LoadScene("BaseTerrain", onSceneLoaded);
             SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
-            PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
+            PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
+        }
+
+        public void ReliveStressByItem()
+        {
+            AddStress(_stressCurrent * -_stressRelieveOnItemUsed);
         }
 
 #if UNITY_EDITOR
