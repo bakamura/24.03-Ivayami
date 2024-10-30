@@ -70,6 +70,7 @@ namespace Ivayami.Enemy
         private WaitForSeconds _endGoToLastTargetDelay;
         private Coroutine _rotateCoroutine;
         private Coroutine _initializeCoroutine;
+        private Coroutine _chaseStressCoroutine;
         private Quaternion _initialRotation;
         private Vector3 _lastTargetPosition;
         private Vector3 _initialPosition;
@@ -102,15 +103,6 @@ namespace Ivayami.Enemy
             _initialRotation = transform.rotation;
             _baseSpeed = _navMeshAgent.speed;
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
-        }
-
-        private void Update()
-        {
-            if (_isChasing && _directContactWithTarget && _stressIncreaseWhileChasing > 0)
-            {
-                if (_debugLogsEnemyPatrol) Debug.Log($"Chasing Stress added {_stressIncreaseWhileChasing * Time.deltaTime}");
-                PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * Time.deltaTime, _stressMaxWhileChasing);
-            }
         }
 
         private void OnEnable()
@@ -183,13 +175,14 @@ namespace Ivayami.Enemy
                             });
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                             _isChasing = true;
+                            if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());
                             _navMeshAgent.speed = _chaseSpeed;
                             //_enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);
                         }
-                        _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
+                        _navMeshAgent.SetDestination(_hitsCache[0].transform.position);                        
                         _lastTargetPosition = _hitsCache[0].transform.position;
                         if (_debugLogsEnemyPatrol) Debug.Log("Chase Target");
-                        if (_attackTarget && !_isAttacking &&_chaseTargetPatience == _delayToLoseTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance + _currentTargetColliderSizeFactor)
+                        if (_attackTarget && !_isAttacking && _chaseTargetPatience == _delayToLoseTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance + _currentTargetColliderSizeFactor)
                         {
                             //StopMovement(true);
                             //PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
@@ -282,6 +275,20 @@ namespace Ivayami.Enemy
                 yield return delay;
             }
             _rotateCoroutine = null;
+        }
+
+        private IEnumerator ChaseStressCoroutine()
+        {
+            while (_isChasing)
+            {
+                if (_directContactWithTarget && _hitsCache[0].CompareTag("Player"))
+                {
+                    if (_debugLogsEnemyPatrol) Debug.Log($"Chasing Stress added {_stressIncreaseWhileChasing * _behaviourTickFrequency}");
+                    PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * _behaviourTickFrequency, _stressMaxWhileChasing);
+                }
+                yield return _behaviourTickDelay;
+            }
+            _chaseStressCoroutine = null;
         }
 
         private void StopMovement(bool stopNavMeshAgent)
