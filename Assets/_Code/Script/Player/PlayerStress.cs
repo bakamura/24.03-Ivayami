@@ -36,9 +36,7 @@ namespace Ivayami.Player {
         [Header("Cache")]
 
         private const string FAIL_BLOCK_KEY = "FailState";
-#if UNITY_EDITOR
         private bool _isAutoRegenActive = true;
-#endif
 
         private void Start() {
             Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
@@ -135,11 +133,10 @@ namespace Ivayami.Player {
             AddStress(_stressCurrent * -_stressRelieveOnItemUsed);
         }
 
-#if UNITY_EDITOR
         public void UpdateAutoRegenerateStress(bool isActive)
         {
+            if (!IngameDebugConsole.DebugLogManager.Instance) return;
             _isAutoRegenActive = isActive;
         }
-#endif
     }
 }

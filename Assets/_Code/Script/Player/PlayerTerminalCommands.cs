@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using IngameDebugConsole;
 using Ivayami.Player;
+using Ivayami.UI;
 
 public static class PlayerTerminalCommands
 {
@@ -32,6 +33,29 @@ public static class PlayerTerminalCommands
     {
         PlayerStress.Instance.UpdateAutoRegenerateStress(isActive);
         Debug.Log($"Auto Regen is now {isActive}");
+    }
+
+    [ConsoleMethod("ReleasePlayerControls", "")]
+    public static void ReleasePlayerControls()
+    {
+        PlayerMovement.Instance.RemoveAllBlockers();
+        Pause.Instance.RemoveAllBlockers();
+        PlayerActions.Instance.ChangeInputMap("Player");
+        Debug.Log($"Release Player Complete");
+    }
+
+    [ConsoleMethod("ChangePlayerRunSpeed", "", "value")]
+    public static void ChangePlayerRunSpeed(float value)
+    {
+        PlayerMovement.Instance.ChangeRunSpeed(value);
+        Debug.Log($"New run speed {value}");
+    }
+
+    [ConsoleMethod("ChangePlayerGravity", "", "isActive")]
+    public static void ChangePlayerGravity(bool isActive)
+    {
+        PlayerMovement.Instance.UpdatePlayerGravity(isActive);
+        Debug.Log($"No Gravity is now {isActive}");
     }
 
     [ConsoleMethod("GiveItem", "", "itemID")]
