@@ -33,7 +33,8 @@ namespace Ivayami.Player {
 
         [Header("Cache")]
 
-        private const string FAIL_BLOCK_KEY = "FailState";        
+        private const string FAIL_BLOCK_KEY = "FailState";
+        private bool _isAutoRegenActive = true;
 
         private void Start() {
             Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
@@ -49,6 +50,9 @@ namespace Ivayami.Player {
         }
 
         private void Update() {
+#if UNITY_EDITOR
+            if (!_isAutoRegenActive) return;
+#endif
             if (!_pauseStressRelieve) {
                 if (_stressRelieveDelayTimer > 0) _stressRelieveDelayTimer -= Time.deltaTime;
                 else if (_stressCurrent > 20f) RelieveStressAuto();
@@ -120,6 +124,12 @@ namespace Ivayami.Player {
             SceneController.Instance.LoadScene("BaseTerrain", onSceneLoaded);
             SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
             PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
+        }
+
+        public void UpdateAutoRegenerateStress(bool isActive)
+        {
+            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+            _isAutoRegenActive = isActive;
         }
     }
 }

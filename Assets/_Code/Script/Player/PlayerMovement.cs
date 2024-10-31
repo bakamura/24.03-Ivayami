@@ -95,7 +95,8 @@ namespace Ivayami.Player {
         private Quaternion _targetAngle;
 
         private CharacterController _characterController;
-        private Transform _cameraTransform;        
+        private Transform _cameraTransform;
+        private byte _gravityFactor = 1;
 
         private const string INTERACT_BLOCK_KEY = "Interact";
 
@@ -149,7 +150,7 @@ namespace Ivayami.Player {
             _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMax); // Could use _decceleration when above max speed
             _directionCache = (_targetAngle * Vector3.forward).normalized * _speedCurrent;
             _movementCache[0] = _directionCache[0];
-            _movementCache[1] = _characterController.isGrounded ? (Physics.gravity.y / 10f) : Mathf.Clamp(_movementCache[1] + (Physics.gravity.y * Time.deltaTime), -50f, (Physics.gravity.y / 10f));
+            _movementCache[1] = _characterController.isGrounded ? Physics.gravity.y / 10f *_gravityFactor : Mathf.Clamp(_movementCache[1] + (Physics.gravity.y * Time.deltaTime), -50f, Physics.gravity.y / 10f) * _gravityFactor;
             _movementCache[2] = _directionCache[2];
             _characterController.Move(_movementCache * Time.deltaTime);
 
@@ -293,10 +294,24 @@ namespace Ivayami.Player {
             _visualTransform.gameObject.SetActive(isVisible);
         }
 
-#if UNITY_EDITOR
+        public void ChangeRunSpeed(float val)
+        {
+            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+            _movementSpeedRun = val;
+            _movementSpeedMax = _movementSpeedRun;
+        }
+
         public void RemoveAllBlockers() {
+            if (!IngameDebugConsole.DebugLogManager.Instance) return;
             _movementBlock.Clear();
         }
+
+        public void UpdatePlayerGravity(bool isActive)
+        {
+            _gravityFactor = (byte)(isActive ? 1 : 0);
+        }
+
+#if UNITY_EDITOR
 
         private void OnValidate() {
             if(!_characterController)_characterController = GetComponent<CharacterController>();
