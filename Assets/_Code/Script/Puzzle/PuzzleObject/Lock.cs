@@ -97,8 +97,8 @@ namespace Ivayami.Puzzle
             UpdateUIs(false);
             UpdateInputs(false);
             IsActive = !IsActive;
-            _unlockCoroutine = null;
             onActivate?.Invoke();
+            _unlockCoroutine = null;
         }
 
         private void UpdateInputs(bool isActive)
