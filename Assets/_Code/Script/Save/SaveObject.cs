@@ -56,7 +56,7 @@ namespace Ivayami.Save
 
         private static void HandlePlayerDeath()
         {
-            _canSave = false;
+            if (!PlayerStress.Instance.OverrideFailLoadValue) _canSave = false;
         }
 
 #if UNITY_EDITOR
