@@ -2,35 +2,37 @@ using UnityEngine;
 
 namespace Ivayami.Puzzle
 {
-    public class Activable : MonoBehaviour
+    public abstract class Activable : MonoBehaviour
     {
         [Header("PARAMETERS")]
-        [SerializeField, Min(0), Tooltip("If 0 will start active")] protected int _activatosNeededToActivate;
-        [SerializeField] private Activator[] _activators;
+        [SerializeField, Min(0), Tooltip("If 0 will start active")] protected int _activatorsNeededToActivate;
+        [SerializeField] protected Activator[] activators;
         [HideInInspector] public bool IsActive { get; protected set; }
+        protected byte currentActiveAmount;
 
         protected virtual void Awake()
         {
-            for (int i = 0; i < _activators.Length; i++)
+            for (int i = 0; i < activators.Length; i++)
             {
-                _activators[i].onActivate.AddListener(HandleOnActivate);
+                activators[i].onActivate.AddListener(HandleOnActivate);
             }
         }
 
         protected virtual void HandleOnActivate()
         {
-            byte currentActiveAmount = 0;
-            for (int i = 0; i < _activators.Length; i++)
+            currentActiveAmount = 0;
+            for (int i = 0; i < activators.Length; i++)
             {
-                if (_activators[i].IsActive) currentActiveAmount++;
+                if (activators[i].IsActive) currentActiveAmount++;
             }
-            IsActive = currentActiveAmount >= _activatosNeededToActivate;
+            IsActive = currentActiveAmount >= _activatorsNeededToActivate;
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (_activatosNeededToActivate > _activators.Length) _activatosNeededToActivate = _activators.Length;
+            if (activators == null) return;
+            if (_activatorsNeededToActivate > activators.Length) _activatorsNeededToActivate = activators.Length;
         }
 #endif
     }

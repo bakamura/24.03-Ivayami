@@ -7,7 +7,7 @@ namespace Ivayami.Puzzle
     public class InteractableButton : Activator, IInteractable
     {
         private InteractableFeedbacks _interatctableHighlight;
-        public InteractableFeedbacks InteratctableHighlight
+        public InteractableFeedbacks InteratctableFeedbacks
         {
             get
             {

@@ -270,10 +270,18 @@ MonoBehaviour:
   onCrouch:
     m_PersistentCalls:
       m_Calls: []
+  onStaminaUpdate:
+    m_PersistentCalls:
+      m_Calls: []
   _movementSpeedRun: 4.5
   _movementSpeedWalk: 2
   _accelerationDuration: 0.125
   _deccelerationDuration: 0.0625
+  _maxStamina: 100
+  _minStaminaToRun: 0.1
+  _staminaDepletionRate: 0.1
+  _staminaRegenerationRate: 0.1
+  _staminaDepletionStressThreshold: 0.5
   _visualTransform: {fileID: 2181725685440365708}
   _turnSmoothFactor: 0.175
   _walkColliderHeight: 1.75
@@ -373,9 +381,11 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _itemTypeDefaultIcons:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
+  - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
+  - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
+  - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
+  - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
 --- !u!114 &2698996846406536965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1248,7 +1258,7 @@ Animator:
   m_GameObject: {fileID: 1516828375664336438}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: af1b416aff34d0b4eb5bfebf9411abb9, type: 2}
+  m_Controller: {fileID: 9100000, guid: a58a20f9a674fea4886a32367c3ec410, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1294,9 +1304,9 @@ MonoBehaviour:
       Data4: 1145049184
     Path: event:/Player_SFX/Passos_Geral
   _stepSoundRange:
-    Min: 0
-    Max: 0
-  _heavyBreathStressMin: 0
+    Min: 10
+    Max: 25
+  _heavyBreathStressMin: 80
   _heavyBreathSoundRef:
     Guid:
       Data1: -1830491953
@@ -1305,8 +1315,8 @@ MonoBehaviour:
       Data4: 174247552
     Path: "event:/Player_SFX/Respira\xE7\xE3o_Pesada"
   _heavyBreathSoundRange:
-    Min: 0
-    Max: 0
+    Min: 10
+    Max: 25
 --- !u!4 &2181725685440365708 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}

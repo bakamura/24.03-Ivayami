@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using FMODUnity;
+using UnityEngine.EventSystems;
 using Ivayami.Player;
 using Ivayami.UI;
 using Ivayami.Audio;
@@ -50,7 +50,8 @@ namespace Ivayami.Dialogue
             {
                 if (_debug) Debug.Log("Cutscene Pause");
                 _playableDirector.Pause();
-                RuntimeManager.PauseAllEvents(true);
+                Options.Music.setPaused(true);
+                Options.GameplaySfx.setPaused(true);
                 DialogueController.Instance.PauseDialogue(true);
                 _onPause?.Invoke();
             }
@@ -69,6 +70,7 @@ namespace Ivayami.Dialogue
             {
                 _onUnpause?.Invoke();
             }
+            EventSystem.current.SetSelectedGameObject(null);
             _playableDirector.Stop();
             if (_debug) Debug.Log("Cutscene Skip");
             //_onCutsceneEnd?.Invoke();
@@ -82,8 +84,10 @@ namespace Ivayami.Dialogue
             _isPaused = false;
             _playableDirector.Resume();
             DialogueController.Instance.PauseDialogue(false);
-            RuntimeManager.PauseAllEvents(false);
+            Options.Music.setPaused(false);
+            Options.GameplaySfx.setPaused(false);
             _onUnpause?.Invoke();
+            EventSystem.current.SetSelectedGameObject(null);
             if (_debug) Debug.Log("Cutscene Resume");
         }
 
@@ -92,7 +96,8 @@ namespace Ivayami.Dialogue
             PlayerMovement.Instance.UpdateVisualsVisibility(true);
             DialogueController.Instance.StopDialogue();
             DialogueController.Instance.PauseDialogue(false);
-            RuntimeManager.PauseAllEvents(false);
+            Options.Music.setPaused(false);
+            Options.GameplaySfx.setPaused(false);
             PlayerAudioListener.Instance.UpdateAudioSource(true);
             IsPlaying = false;
             UpdateInputs(false);
@@ -115,7 +120,7 @@ namespace Ivayami.Dialogue
         {
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, !isActive);
             PlayerMovement.Instance.UpdateVisualsVisibility(!isActive);
-            Pause.Instance.canPause = !isActive;
+            Pause.Instance.ToggleCanPause(BLOCK_KEY, !isActive);
             PlayerActions.Instance.ChangeInputMap(isActive ? "Menu" : "Player");
             for (int i = 0; i < _pauseCutsceneInputs.Length; i++)
             {

@@ -19,7 +19,13 @@ namespace Ivayami.UI {
             _fadeUI = GetComponentInChildren<Fade>();
         }
 
-        private void Start() {
+        private void OnDestroy() {
+            if (_icon.enabled && Pause.Instance && InputCallbacks.Instance) {
+                _actionIndicator.action.performed -= KeyPressed;
+                Pause.Instance.onPause.RemoveListener(IconDisable);
+                Pause.Instance.onUnpause.RemoveListener(IconEnable);
+                InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisuals);
+            }
         }
 
         public void StartTutorial() {
@@ -30,15 +36,16 @@ namespace Ivayami.UI {
             InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisuals);
         }
 
-        private void UpdateVisuals(bool isGamepad) {
-            _icon.sprite = isGamepad ? _indicatorGamepad : _indicatorKeyboard;
-        }
-
         private void KeyPressed(InputAction.CallbackContext obj) {
             _fadeUI.Close();
             _actionIndicator.action.performed -= KeyPressed;
-            Pause.Instance.onPause.AddListener(IconDisable);
-            Pause.Instance.onUnpause.AddListener(IconEnable);
+            Pause.Instance.onPause.RemoveListener(IconDisable);
+            Pause.Instance.onUnpause.RemoveListener(IconEnable);
+            InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisuals);
+        }
+
+        private void UpdateVisuals(bool isGamepad) {
+            _icon.sprite = isGamepad ? _indicatorGamepad : _indicatorKeyboard;
         }
 
         private void IconEnable() {

@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using Ivayami.Scene;
 using Ivayami.Save;
+using System;
+using System.Collections;
 
 namespace Ivayami.UI {
     public class Map : MonoBehaviour {
@@ -15,17 +17,20 @@ namespace Ivayami.UI {
         [Header("Open Map")]
 
         [SerializeField] private RectTransform _mapRectTranform;
+        [SerializeField] private ScrollRect _mapScrollRect;
         [SerializeField] private InputActionReference _openMapInput;
+        [SerializeField] private InputActionReference _moveMapInput;
+        [SerializeField, Min(1f)] private float _controlDragSensitivity = 5;
         [SerializeField] private Button _openMapBtn;
 
         [Header("Cache")]
-
-        private Transform _cam;
+        private Vector2 _currentInputValue;
+        //private Transform _cam;
 
         private void Awake() {
             _openMapInput.action.performed += OpenMap;
 
-            _cam = Camera.main.transform;
+            //_cam = Camera.main.transform;
         }
 
         public void PointersUpdate() {
@@ -35,7 +40,37 @@ namespace Ivayami.UI {
                 if (goalPosInMap != Vector2.zero) goalPointer.anchoredPosition = goalPosInMap;
             }
             foreach (GameObject blocker in _roadBlockers) {
-                blocker.SetActive(SaveSystem.Instance.Progress.id == 1); // id should be substituted for the blockers save
+                if (int.TryParse(blocker.name.Split('.')[0], out int id)) blocker.SetActive(SaveSystem.Instance.Progress.GetRoadBlockerState(id) == RoadBlocker.State.Discovered);
+                else Debug.LogWarning($"Couldn't get ID of road blocker indicator '{blocker.name}', make sure the object is named like '7.AnyNameReally'");
+            }
+        }
+
+        public void UpdateInputs(bool isActive)
+        {
+            if (isActive)
+            {
+                _moveMapInput.action.performed += MovementMap;
+                StartCoroutine(MoveMapCoroutine());
+            }
+            else
+            {
+                _moveMapInput.action.performed -= MovementMap;
+                StopCoroutine(MoveMapCoroutine());
+            }
+        }
+
+        private void MovementMap(InputAction.CallbackContext obj)
+        {
+            _currentInputValue = obj.ReadValue<Vector2>();
+        }
+
+        private IEnumerator MoveMapCoroutine()
+        {            
+            while (true)
+            {
+                //check value if is greater than controller deadzone
+                if(_currentInputValue != Vector2.zero)_mapRectTranform.anchoredPosition += _currentInputValue * _controlDragSensitivity;
+                yield return null;
             }
         }
 
@@ -47,6 +82,7 @@ namespace Ivayami.UI {
         }
 
         public void RecenterMap() {
+            _mapScrollRect.StopMovement();
             _mapRectTranform.anchoredPosition = Vector2.zero;
         }
 

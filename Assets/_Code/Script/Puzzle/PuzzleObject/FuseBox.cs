@@ -38,7 +38,7 @@ namespace Ivayami.Puzzle
         private InteractableSounds _interactableSounds;
         private static int _colorEmissionVarID = Shader.PropertyToID("_EmissionColor");
 
-        public InteractableFeedbacks InteratctableHighlight { get => _interatctableHighlight; }
+        public InteractableFeedbacks InteratctableFeedbacks { get => _interatctableHighlight; }
 
         private void Awake()
         {

@@ -167,7 +167,6 @@ MonoBehaviour:
   _lookAtPlayerOnStart: 0
   _fixedWalkArea: {fileID: 0}
   _minDistanceFromPathPoint: 0.5
-  _scaleAnimationWithSpeed: 0
   _pathsCallback: []
 --- !u!195 &290970455062275241
 NavMeshAgent:
@@ -176,7 +175,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8419817125631718594}
-  m_Enabled: 1
+  m_Enabled: 0
   m_AgentTypeID: -1372625422
   m_Radius: 0.5
   m_Speed: 5
@@ -239,9 +238,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -6547223059409353530, guid: 370e2723557e5d149b0b1989fe8877af, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -6320207576335365177, guid: 370e2723557e5d149b0b1989fe8877af, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4396642182433536433, guid: 370e2723557e5d149b0b1989fe8877af, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 370e2723557e5d149b0b1989fe8877af, type: 3}
       propertyPath: m_Name
       value: Guia
+      objectReference: {fileID: 0}
+    - target: {fileID: 1630794972795428178, guid: 370e2723557e5d149b0b1989fe8877af, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4491608976532860927, guid: 370e2723557e5d149b0b1989fe8877af, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5797384429611982230, guid: 370e2723557e5d149b0b1989fe8877af, type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -297,3 +320,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73e8af86ccdf6bd4299ede567d8ffef4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _animationScaleWithMovementSpeed: 0
+  _attackAnimationLayer: 0

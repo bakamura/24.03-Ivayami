@@ -22,6 +22,8 @@ namespace Ivayami.Player {
         private float _stressRelieveDelayTimer;
         private bool _pauseStressRelieve = false;
 
+        public float MaxStress => _stressMax;
+
         [Header("Fail")]
 
         [SerializeField] private float _restartDelay;
@@ -32,6 +34,7 @@ namespace Ivayami.Player {
         [Header("Cache")]
 
         private const string FAIL_BLOCK_KEY = "FailState";
+        private bool _isAutoRegenActive = true;
 
         private void Start() {
             Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
@@ -39,12 +42,17 @@ namespace Ivayami.Player {
             onStressChange.AddListener(FailStateCheck);
             onFail.AddListener(() => StartCoroutine(DelayToRespawn()));
             onFailFade.AddListener(ResetStress);
+            onFail.AddListener(() => Pause.Instance.ToggleCanPause(FAIL_BLOCK_KEY, false));
+            onFailFade.AddListener(() => Pause.Instance.ToggleCanPause(FAIL_BLOCK_KEY, true));
             _restartWait = new WaitForSeconds(_restartDelay);
 
             Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");
         }
 
         private void Update() {
+#if UNITY_EDITOR
+            if (!_isAutoRegenActive) return;
+#endif
             if (!_pauseStressRelieve) {
                 if (_stressRelieveDelayTimer > 0) _stressRelieveDelayTimer -= Time.deltaTime;
                 else if (_stressCurrent > 20f) RelieveStressAuto();
@@ -98,23 +106,30 @@ namespace Ivayami.Player {
 
             yield return _restartWait;
 
-            SceneTransition.Instance.Menu.Close();
+            SceneTransition.Instance.OnOpenEnd.AddListener(RespawnFailFade);
+            SceneTransition.Instance.Open();
+        }
 
-            yield return new WaitForSeconds(SceneTransition.Instance.Menu.TransitionDuration);
-
+        private void RespawnFailFade() {
             onFailFade.Invoke();
 
             if (_overrideFailLoad) _overrideFailLoad = false;
-            else SaveSystem.Instance.LoadProgress(SaveSystem.Instance.Progress.id, () => SceneController.Instance.UnloadAllScenes(HandleUnloadAllScenes));
+            else SaveSystem.Instance.LoadProgress(SaveSystem.Instance.Progress.id, () => SceneController.Instance.UnloadAllScenes(ReloadAndReset));
+            SceneTransition.Instance.OnOpenEnd.RemoveListener(RespawnFailFade);
         }
 
-        private void HandleUnloadAllScenes() {
+        private void ReloadAndReset() {
             UnityEvent onSceneLoaded = new UnityEvent();
             onSceneLoaded.AddListener(() => SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport());
-            SceneController.Instance.StartLoad("BaseTerrain", onSceneLoaded);
-            SceneController.Instance.OnAllSceneRequestEnd -= HandleUnloadAllScenes;
+            SceneController.Instance.LoadScene("BaseTerrain", onSceneLoaded);
+            SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
             PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
         }
 
+        public void UpdateAutoRegenerateStress(bool isActive)
+        {
+            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+            _isAutoRegenActive = isActive;
+        }
     }
 }

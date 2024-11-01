@@ -32,14 +32,14 @@ namespace Ivayami.Dialogue
 
         public void MoveRotate(CameraAnimationInfo cameraTransitionInfo)
         {
-            if (_animationCoroutine != null)
-            {
-                StopCoroutine(_animationCoroutine);
-                if (_currentChangeTargetFocus) PlayerCamera.Instance.UpdateCameraControls(true);
-                _animationCoroutine = null;
-                TeleportCameraToPositionAndRotation();
-            }
-            else _dialogueCamera.transform.SetPositionAndRotation(PlayerCamera.Instance.MainCamera.transform.position, PlayerCamera.Instance.MainCamera.transform.rotation);
+            //if (StopAnimationCoroutine())
+            //{
+            //    //if (_currentChangeTargetFocus) PlayerCamera.Instance.UpdateCameraControls(true);
+            //}
+            //else _dialogueCamera.transform.SetPositionAndRotation(PlayerCamera.Instance.MainCamera.transform.position, PlayerCamera.Instance.MainCamera.transform.rotation);
+            if (!StopAnimationCoroutine())
+                _dialogueCamera.transform.SetPositionAndRotation(PlayerCamera.Instance.MainCamera.transform.position, PlayerCamera.Instance.MainCamera.transform.rotation);
+
             _currentChangeTargetFocus = cameraTransitionInfo.ChangeCameraFocus;
             _currentFollowPlayer = cameraTransitionInfo.FollowPlayer;
             _currentPositionCurve = cameraTransitionInfo.PositionCurve;
@@ -47,7 +47,7 @@ namespace Ivayami.Dialogue
             _currentFollow = cameraTransitionInfo.FollowTarget;
             _currentLookAt = cameraTransitionInfo.LookAtTarget;
             _currentDuration = cameraTransitionInfo.Duration;
-            if (_currentChangeTargetFocus) PlayerCamera.Instance.UpdateCameraControls(false);
+            //if (_currentChangeTargetFocus) PlayerCamera.Instance.UpdateCameraControls(false);
             CameraPriotitySetup();
             if (DialogueController.Instance.CurrentDialogue) PlayerAudioListener.Instance.UpdateAudioSource(false);
             _animationCoroutine = StartCoroutine(BlendAnimationCoroutine());
@@ -56,39 +56,41 @@ namespace Ivayami.Dialogue
         private void TeleportCameraToPositionAndRotation()
         {
             Vector3 offset = _currentChangeTargetFocus && _currentFollowPlayer ?
-                Vector3.Distance(_dialogueCamera.transform.position, _currentFollow.transform.position) * -_dialogueCamera.transform.forward : Vector3.zero;
+                Vector3.Distance(_dialogueCamera.transform.position, _currentFollow.position) * (_currentFollow.position - _currentLookAt.position).normalized
+                + PlayerCamera.Instance.CameraAimPoint.localPosition.x * _dialogueCamera.transform.right : Vector3.zero;
             _dialogueCamera.transform.SetPositionAndRotation(_currentFollow.position + offset, _currentChangeTargetFocus ? Quaternion.LookRotation(
                     (_currentLookAt.transform.position - _dialogueCamera.transform.position).normalized) : _currentLookAt.rotation);
         }
 
         private IEnumerator BlendAnimationCoroutine()
         {
-            float count = 0;
             _dialogueCamera.transform.GetPositionAndRotation(out Vector3 initialPosition, out Quaternion initialRotation);
-            Vector3 offset = _currentChangeTargetFocus && _currentFollowPlayer ?
-                Vector3.Distance(_dialogueCamera.transform.position, _currentFollow.transform.position) * -_dialogueCamera.transform.forward : Vector3.zero;
             if (_currentDuration == 0)
             {
                 TeleportCameraToPositionAndRotation();
             }
             else
             {
+                float count = 0;
+                Vector3 offset = Vector3.zero;
+                float distance = Vector3.Distance(_dialogueCamera.transform.position, _currentFollow.position);
+                float xDistance = PlayerCamera.Instance.CameraAimPoint.localPosition.x;
                 while (count < 1)
                 {
+                    if (_currentChangeTargetFocus && _currentFollowPlayer)
+                        offset = distance * (_currentFollow.position - _currentLookAt.position).normalized + xDistance * _dialogueCamera.transform.right;
+
                     _dialogueCamera.transform.SetPositionAndRotation(
                         Vector3.Lerp(initialPosition, _currentFollow.position + offset, _currentPositionCurve.Evaluate(count)),
                         Quaternion.Lerp(initialRotation, _currentChangeTargetFocus ?
-                        Quaternion.LookRotation((_currentLookAt.transform.position - initialPosition).normalized) : _currentLookAt.rotation, _currentRotationCurve.Evaluate(count)));
+                        Quaternion.LookRotation((_currentLookAt.transform.position - _dialogueCamera.transform.position).normalized) : _currentLookAt.rotation, _currentRotationCurve.Evaluate(count)));
                     count += Time.deltaTime / _currentDuration;
                     yield return null;
                 }
-            }
+                TeleportCameraToPositionAndRotation();
+            }            
+            RecalculateCameraOrientation();
             _animationCoroutine = null;
-            if (_currentChangeTargetFocus)
-            {
-                PlayerCamera.Instance.UpdateCameraControls(true);
-                _currentChangeTargetFocus = false;
-            }
         }
 
         private void CameraPriotitySetup()
@@ -106,10 +108,9 @@ namespace Ivayami.Dialogue
             _dialogueCamera.Priority = -999;
             if (_dialogueSetupEventTriggered) DialogueController.Instance.OnDialogueEnd -= HandleOnDialogueEnd;
             _dialogueSetupEventTriggered = false;
-            if (_currentChangeTargetFocus)
+            if (StopAnimationCoroutine())
             {
-                PlayerCamera.Instance.UpdateCameraControls(true);
-                _currentChangeTargetFocus = false;
+                RecalculateCameraOrientation();
             }
             PlayerAudioListener.Instance.UpdateAudioSource(true);
         }
@@ -119,15 +120,33 @@ namespace Ivayami.Dialogue
             HandleOnDialogueEnd();
         }
 
-        private void HandleOnSkipSpeech()
+        private bool StopAnimationCoroutine()
         {
             if (_animationCoroutine != null)
             {
                 StopCoroutine(_animationCoroutine);
                 _animationCoroutine = null;
                 TeleportCameraToPositionAndRotation();
+                return true;
             }
+            return false;
         }
 
+        private void HandleOnSkipSpeech()
+        {
+            StopAnimationCoroutine();
+        }
+
+        private void RecalculateCameraOrientation()
+        {
+            if (_currentChangeTargetFocus)
+            {
+                PlayerCamera.Instance.FreeLookCam.PreviousStateIsValid = false;
+                PlayerCamera.Instance.FreeLookCam.m_XAxis.Value = _dialogueCamera.transform.rotation.eulerAngles.y;
+                PlayerCamera.Instance.FreeLookCam.m_YAxis.Value = .5f;
+                //PlayerCamera.Instance.UpdateCameraControls(true);
+                _currentChangeTargetFocus = false;
+            }
+        }
     }
 }

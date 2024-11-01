@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Ivayami.Player;
 
 namespace Ivayami.Puzzle
 {
@@ -15,16 +16,16 @@ namespace Ivayami.Puzzle
         private SpriteRenderer _icon;
         private Animator _interactionAnimation;
         private Sprite _defaultIcon;
-        //private bool _interactionIconSetupDone;
+        private bool _interactionIconSetupDone;
         private bool _showingInputIcon;
         private static Transform _cameraTransform;
         private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
         private static int PULSE = Animator.StringToHash("pulse");
 
-        private void Awake()
-        {
-            Setup();
-        }
+        //private void Awake()
+        //{
+        //    Setup();
+        //}
 
         private void Update()
         {
@@ -40,54 +41,54 @@ namespace Ivayami.Puzzle
         private void Setup()
         {
             //setup materials
-            //if (_materials == null)
-            //{
-            _materials = new List<Material>();
-            _baseColors = new List<Color>();
-            if (_applyToChildrens)
+            if (_materials == null)
             {
-                Color emissiveColor;
-                foreach (Renderer render in GetComponentsInChildren<Renderer>())
+                _materials = new List<Material>();
+                _baseColors = new List<Color>();
+                if (_applyToChildrens)
                 {
-                    if (render.material.HasColor(_colorVarName))
+                    Color emissiveColor;
+                    foreach (Renderer render in GetComponentsInChildren<Renderer>())
                     {
-                        emissiveColor = render.material.GetColor(_colorVarName);
-                        if (emissiveColor == Color.black)
+                        if (render.material.HasColor(_colorVarName))
                         {
-                            _materials.Add(render.material);
-                            _baseColors.Add(emissiveColor);
+                            emissiveColor = render.material.GetColor(_colorVarName);
+                            if (emissiveColor == Color.black)
+                            {
+                                _materials.Add(render.material);
+                                _baseColors.Add(emissiveColor);
+                            }
                         }
                     }
                 }
-            }
-            else
-            {
-                Renderer renderer = GetComponentInChildren<Renderer>();
-                if (renderer.material.HasColor(_colorVarName))
+                else
                 {
-                    _materials.Add(renderer.material);
-                    _baseColors.Add(renderer.material.GetColor(_colorVarName));
+                    Renderer renderer = GetComponentInChildren<Renderer>();
+                    if (renderer.material.HasColor(_colorVarName))
+                    {
+                        _materials.Add(renderer.material);
+                        _baseColors.Add(renderer.material.GetColor(_colorVarName));
 
+                    }
                 }
             }
-            //}
             //setup popup
-            //if (!_interactionIconSetupDone)
-            //{
-            _icon = GetComponentInChildren<SpriteRenderer>();
-            if (!_cameraTransform && Camera.main) _cameraTransform = Camera.main.transform;
-            if (_icon)
+            if (!_interactionIconSetupDone)
             {
-                _defaultIcon = _icon.sprite;
-                _interactionAnimation = _icon.GetComponentInParent<Animator>();
+                _icon = GetComponentInChildren<SpriteRenderer>();
+                if (!_cameraTransform && PlayerCamera.Instance.MainCamera) _cameraTransform = PlayerCamera.Instance.MainCamera.transform;
+                if (_icon)
+                {
+                    _defaultIcon = _icon.sprite;
+                    _interactionAnimation = _icon.GetComponentInParent<Animator>();
+                }
+                _interactionIconSetupDone = true;
             }
-            //_interactionIconSetupDone = true;
-            //}
         }
 
         public void UpdateFeedbacks(bool isActive, bool forcePopupIconActivationUpdate = false)
         {
-            //Setup();
+            Setup();
             for (int i = 0; i < _materials.Count; i++)
             {
                 _materials[i].SetColor(_colorVarName, isActive ? _highlightedColor : _baseColors[i]);
@@ -115,6 +116,7 @@ namespace Ivayami.Puzzle
 
         private void UpdateVisualIcon(bool isGamepad)
         {
+            Setup();
             _icon.sprite = isGamepad ? _controllerInteractionIcon : _keyboardInteractionIcon;
         }
 
