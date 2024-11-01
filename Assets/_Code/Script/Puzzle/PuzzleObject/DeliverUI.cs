@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
+using Ivayami.Save;
 
 namespace Ivayami.Puzzle
 {
@@ -189,7 +190,8 @@ namespace Ivayami.Puzzle
                 requestIndex++;
                 if (requestIndex == _itemsCache.Count) requestIndex = 0;
             }
-            _itemDisplayName.text = PlayerInventory.Instance.CheckInventoryFor(_currentItemSelected.name) ? _currentItemSelected.DisplayName : null;
+            _itemDisplayName.text = PlayerInventory.Instance.CheckInventoryFor(_currentItemSelected.name) ? 
+                _currentItemSelected.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language).DisplayName : null;
         }
 
         private bool ContainItemTypeInRequest(ItemType itemType)
