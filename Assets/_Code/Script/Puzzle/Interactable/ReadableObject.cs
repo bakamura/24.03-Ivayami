@@ -40,7 +40,6 @@ namespace Ivayami.Puzzle {
             Readable readable = _readable.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
             ReadableUI.Instance.ShowReadable(readable.Title, readable.Content);
 
-            ReadableUI.Instance.CloseBtn.onClick.AddListener(StopReading);
             ReturnAction.Instance.Set(StopReading);
 
             if (_goesToInventory) {
@@ -57,7 +56,6 @@ namespace Ivayami.Puzzle {
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, true);
             _focusCamera.ExitDialogueCamera();
             ReadableUI.Instance.Menu.Close();
-            ReadableUI.Instance.CloseBtn.onClick.RemoveAllListeners();
         }
 
     }
