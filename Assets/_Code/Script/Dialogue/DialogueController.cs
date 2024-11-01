@@ -117,6 +117,7 @@ namespace Ivayami.Dialogue
                 _canvasGroup.blocksRaycasts = true;
                 _currentSpeechIndex = 0;
                 _currentDialogue = dialogue;
+                PlayerStress.Instance.onFail.AddListener(StopDialogue);
                 OnDialogeStart?.Invoke();
                 _writtingCoroutine = StartCoroutine(WrittingCoroutine(true));
             }
@@ -243,6 +244,7 @@ namespace Ivayami.Dialogue
                 if (_debugLogs) Debug.Log($"End of Dialogue {_currentDialogue.name}");
                 if (_writtingCoroutine != null) StopCoroutine(_writtingCoroutine);
                 _writtingCoroutine = null;
+                PlayerStress.Instance.onFail.RemoveListener(StopDialogue);
                 ActivateDialogueEvents(_currentDialogue.onEndEventId);
                 _currentSpeechIndex = 0;
                 Resources.UnloadAsset(_currentDialogue);
@@ -256,7 +258,7 @@ namespace Ivayami.Dialogue
                     _continueInput.action.performed -= HandleContinueDialogue;
                 }
                 LockInput = false;
-                IsPaused = false;
+                IsPaused = false;                
             }
         }
 
