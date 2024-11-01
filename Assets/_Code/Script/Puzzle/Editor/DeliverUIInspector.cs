@@ -6,7 +6,7 @@ namespace Ivayami.Puzzle
     [CustomEditor(typeof(DeliverUI))]
     public class DeliverUIInspector : Editor
     {
-        SerializedProperty navigateUIInput, requestAmountToComplete, skipDeliverUI, deliverAnyItem, itemsRequired, deliverItemOptionsIcon, deliverBtn, onTryDeliver;
+        SerializedProperty navigateUIInput, requestAmountToComplete, skipDeliverUI, deliverAnyItem, itemsRequired, deliverItemOptionsIcon, itemDisplayName, deliverBtn, onTryDeliver;
         public override void OnInspectorGUI()
         {
             GUILayout.Label("INPUTS", EditorStyles.boldLabel);
@@ -19,9 +19,14 @@ namespace Ivayami.Puzzle
             EditorGUILayout.PropertyField(requestAmountToComplete, new GUIContent("Request Amount To complete"));
             if (!deliverAnyItem.boolValue) EditorGUILayout.PropertyField(skipDeliverUI, new GUIContent("Skip Deliver UI"));
             if (!skipDeliverUI.boolValue) EditorGUILayout.PropertyField(deliverAnyItem, new GUIContent("Deliver Any Item"));
+            EditorGUILayout.PropertyField(itemsRequired, new GUIContent("Items Required"));
+            EditorGUILayout.Space(10);
+
+            GUILayout.Label("COMPONENTS", EditorStyles.boldLabel);
+            EditorGUILayout.Space(5);
             EditorGUILayout.PropertyField(deliverBtn, new GUIContent("Deliver Button"));
             EditorGUILayout.PropertyField(deliverItemOptionsIcon, new GUIContent("Deliver Item Options Icon"));
-            EditorGUILayout.PropertyField(itemsRequired, new GUIContent("Items Required"));
+            EditorGUILayout.PropertyField(itemDisplayName, new GUIContent("Item Display Name Text"));
             EditorGUILayout.Space(10);
 
             GUILayout.Label("CALLBACKS", EditorStyles.boldLabel);
@@ -41,6 +46,7 @@ namespace Ivayami.Puzzle
             deliverAnyItem = serializedObject.FindProperty("_deliverAnyItem");
             itemsRequired = serializedObject.FindProperty("_itemsRequired");
             deliverItemOptionsIcon = serializedObject.FindProperty("_deliverItemOptionsIcon");
+            itemDisplayName = serializedObject.FindProperty("_itemDisplayName");
             deliverBtn = serializedObject.FindProperty("_deliverBtn");
             onTryDeliver = serializedObject.FindProperty("_onTryDeliver");
         }
