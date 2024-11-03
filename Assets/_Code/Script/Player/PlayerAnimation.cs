@@ -56,7 +56,6 @@ namespace Ivayami.Player {
         }
 
         private void Crouch(bool isCrouching) {
-            Debug.Log("CROUNCH");
             _animator.SetBool(CROUCH, isCrouching);
         }
 
