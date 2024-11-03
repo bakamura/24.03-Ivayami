@@ -22,10 +22,10 @@ namespace Ivayami.Puzzle
         private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
         private static int PULSE = Animator.StringToHash("pulse");
 
-        //private void Awake()
-        //{
-        //    Setup();
-        //}
+        private void Start()
+        {
+            SetupIcon();
+        }
 
         private void Update()
         {
@@ -38,7 +38,7 @@ namespace Ivayami.Puzzle
             if (InputCallbacks.Instance && _icon && _showingInputIcon) InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisualIcon);
         }
 
-        private void Setup()
+        private void SetupMaterials()
         {
             //setup materials
             if (_materials == null)
@@ -72,6 +72,10 @@ namespace Ivayami.Puzzle
                     }
                 }
             }
+        }
+
+        private void SetupIcon()
+        {
             //setup popup
             if (!_interactionIconSetupDone)
             {
@@ -88,7 +92,8 @@ namespace Ivayami.Puzzle
 
         public void UpdateFeedbacks(bool isActive, bool forcePopupIconActivationUpdate = false)
         {
-            Setup();
+            SetupMaterials();
+            SetupIcon();
             for (int i = 0; i < _materials.Count; i++)
             {
                 _materials[i].SetColor(_colorVarName, isActive ? _highlightedColor : _baseColors[i]);
@@ -116,7 +121,7 @@ namespace Ivayami.Puzzle
 
         private void UpdateVisualIcon(bool isGamepad)
         {
-            Setup();
+            SetupIcon();
             _icon.sprite = isGamepad ? _controllerInteractionIcon : _keyboardInteractionIcon;
         }
 
