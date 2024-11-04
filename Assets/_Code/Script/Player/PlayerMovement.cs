@@ -96,6 +96,7 @@ namespace Ivayami.Player {
 
         private CharacterController _characterController;
         private Transform _cameraTransform;
+        private SkinnedMeshRenderer[] _visualComponents;
         private byte _gravityFactor = 1;
 
         private const string INTERACT_BLOCK_KEY = "Interact";
@@ -121,6 +122,7 @@ namespace Ivayami.Player {
             ResetStamina();           
 
             _characterController = GetComponent<CharacterController>();
+            _visualComponents = _visualTransform.GetComponentsInChildren<SkinnedMeshRenderer>();
             _cameraTransform = Camera.main.transform; //
 
             Logger.Log(LogType.Player, $"{typeof(PlayerMovement).Name} Initialized");
@@ -290,7 +292,9 @@ namespace Ivayami.Player {
         }
 
         public void UpdateVisualsVisibility(bool isVisible) {
-            _visualTransform.gameObject.SetActive(isVisible);
+            for (int i = 0; i < _visualComponents.Length; i++)
+                _visualComponents[i].enabled = isVisible;
+            //_visualTransform.gameObject.SetActive(isVisible);
         }
 
         public void ChangeRunSpeed(float val)

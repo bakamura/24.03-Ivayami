@@ -60,7 +60,7 @@ namespace Ivayami.UI {
 
         private void SetupStorySelection() {
             for (int i = 0; i <= SaveSystem.Instance.Progress.GetEntryProgressOfType("StoryEntry"); i++) if (i >= _storySelectionContainer.childCount)
-                    SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/ENUS/StoryEntry_{i}").GetTranslation(SaveSystem.Instance.Options.Language));
+                    SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/ENUS/StoryEntry_{i}").GetTranslation(SaveSystem.Instance.Options.Language), i == 0);
         }
 
         private void SetupCharactersSelection() {
@@ -87,11 +87,12 @@ namespace Ivayami.UI {
                 }
         }
 
-        private void SetupBtn(Button btn, JournalEntry entry) {
+        private void SetupBtn(Button btn, JournalEntry entry, bool shouldSelect = false) {
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() => DisplayEntry(entry));
             btn.onClick.AddListener(_btnSound.GoForth);
             btn.GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
+            if (shouldSelect) btn.onClick.Invoke();
         }
 
         public void FocusFirstChapter() {

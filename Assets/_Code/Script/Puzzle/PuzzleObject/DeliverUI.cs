@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro;
+using Ivayami.Save;
 
 namespace Ivayami.Puzzle
 {
@@ -19,6 +21,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private ItemRequestData[] _itemsRequired;
         //[SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
         [SerializeField] private Image[] _deliverItemOptionsIcon;
+        [SerializeField] private TMP_Text _itemDisplayName;
         [SerializeField] private Selectable _deliverBtn;
         [SerializeField] private UnityEvent<bool> _onTryDeliver;
 
@@ -82,7 +85,7 @@ namespace Ivayami.Puzzle
             {
                 for (int i = 0; i < _currentRequests.Count; i++)
                 {
-                    if (PlayerInventory.Instance.CheckInventoryFor(_currentRequests[i].Item.name).Item)
+                    if (PlayerInventory.Instance.CheckInventoryFor(_currentRequests[i].Item.name))
                     {
                         deliverAchived = true;
                         OnDeliver?.Invoke(_currentRequests[i].Item);
@@ -94,7 +97,7 @@ namespace Ivayami.Puzzle
             {
                 _lockSounds.PlaySound(LockPuzzleSounds.SoundTypes.ConfirmOption);
                 bool isInRequestList = _deliverAnyItem ? true : _currentRequests.Find(x => x.Item == _currentItemSelected).Item;
-                if (isInRequestList && PlayerInventory.Instance.CheckInventoryFor(_currentItemSelected.name).Item)
+                if (isInRequestList && PlayerInventory.Instance.CheckInventoryFor(_currentItemSelected.name))
                 {
                     RemoveItemFromRequestList(_currentItemSelected);
                     ConstrainValueToArraySize(ref _currentRequestIndex, _itemsCache.Count);
@@ -149,7 +152,7 @@ namespace Ivayami.Puzzle
             {
                 _currentRequestIndex = 0;
                 //select only the items that match with items requests types
-                _itemsCache = PlayerInventory.Instance.CheckInventory().Where(x => ContainItemTypeInRequest(x.Item.Type)).Select(x => x.Item).ToList();
+                _itemsCache = PlayerInventory.Instance.CheckInventory().Where(x => ContainItemTypeInRequest(x.Type)).ToList();
                 //add any missing items
                 for (int i = 0; i < _currentRequests.Count; i++)
                 {
@@ -177,7 +180,7 @@ namespace Ivayami.Puzzle
                 if (requestIndex < _itemsCache.Count)
                 {
                     _deliverItemOptionsIcon[iconsIndex].enabled = true;
-                    _deliverItemOptionsIcon[iconsIndex].sprite = PlayerInventory.Instance.CheckInventoryFor(_itemsCache[requestIndex].name).Item ?
+                    _deliverItemOptionsIcon[iconsIndex].sprite = PlayerInventory.Instance.CheckInventoryFor(_itemsCache[requestIndex].name) ? 
                         _itemsCache[requestIndex].Sprite : PlayerInventory.Instance.ItemTypeDefaultIcons[_itemsCache[requestIndex].Type];
                     if (iconsIndex == Mathf.FloorToInt(_deliverItemOptionsIcon.Length / 2)
                         && !_currentItemSelected) _currentItemSelected = _itemsCache[requestIndex];
@@ -187,6 +190,8 @@ namespace Ivayami.Puzzle
                 requestIndex++;
                 if (requestIndex == _itemsCache.Count) requestIndex = 0;
             }
+            _itemDisplayName.text = PlayerInventory.Instance.CheckInventoryFor(_currentItemSelected.name) ? 
+                _currentItemSelected.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language).DisplayName : null;
         }
 
         private bool ContainItemTypeInRequest(ItemType itemType)

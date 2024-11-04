@@ -23,6 +23,7 @@ namespace Ivayami.Puzzle {
         private WaitForSeconds _delayChangeCamera;
         private Animator _objectAnimator;
         private Coroutine _hideCoroutine;
+        private const string BLOCK_KEY = "hidingSpot";
 
         private void Awake() {
             InteratctableFeedbacks = GetComponent<InteractableFeedbacks>();
@@ -48,6 +49,7 @@ namespace Ivayami.Puzzle {
         private IEnumerator HideRoutine() {
             PlayerStress.Instance.onFail.AddListener(OnPlayerDeath);
             PlayerActions.Instance.ChangeInputMap("Menu");
+            Pause.Instance.ToggleCanPause(BLOCK_KEY, false);
             _hidingCam.StartMovement();
             PlayerMovement.Instance.SetPosition(_animationPoint.position);
             PlayerMovement.Instance.SetTargetAngle(_animationPoint.eulerAngles.y);
@@ -67,6 +69,7 @@ namespace Ivayami.Puzzle {
             PlayerStress.Instance.onFail.RemoveListener(OnPlayerDeath);
             PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
             PlayerActions.Instance.ChangeInputMap("Player");
+            Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
             InteratctableFeedbacks.UpdateFeedbacks(true, true);
             PlayerAnimation.Instance.GoToIdle();
 
@@ -79,8 +82,12 @@ namespace Ivayami.Puzzle {
             _objectAnimator.speed = 0;
             PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
             PlayerActions.Instance.ChangeInputMap("Player");
-            StopCoroutine(_hideCoroutine);
-            _hideCoroutine = null;
+            Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
+            if (_hideCoroutine != null)
+            {
+                StopCoroutine(_hideCoroutine);
+                _hideCoroutine = null;
+            }
             _hiddenCam.ExitDialogueCamera();
             _hidingCam.ExitDialogueCamera();
         }

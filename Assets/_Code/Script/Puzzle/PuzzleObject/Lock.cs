@@ -84,7 +84,12 @@ namespace Ivayami.Puzzle
                 else
                 {
                     _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
-                    if (_deliveryUI.SkipDeliverUI) _interatctableFeedbacks.UpdateFeedbacks(true, true);
+                    if (_deliveryUI.SkipDeliverUI)
+                    {
+                        _interatctableFeedbacks.UpdateFeedbacks(true, true);
+                        UpdateUIs(false);
+                        UpdateInputs(false);
+                    }
                     _onInteractionFailed?.Invoke();
                 }
             }
@@ -97,8 +102,8 @@ namespace Ivayami.Puzzle
             UpdateUIs(false);
             UpdateInputs(false);
             IsActive = !IsActive;
-            _unlockCoroutine = null;
             onActivate?.Invoke();
+            _unlockCoroutine = null;
         }
 
         private void UpdateInputs(bool isActive)
@@ -138,7 +143,7 @@ namespace Ivayami.Puzzle
             else _deliveryUI.UpdateUI(isActive);
         }
 
-        public void CancelInteraction()
+        private void CancelInteraction()
         {
             UpdateUIs(false);
             UpdateInputs(false);

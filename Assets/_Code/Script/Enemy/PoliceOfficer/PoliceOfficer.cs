@@ -198,6 +198,8 @@ namespace Ivayami.Enemy
                             _navMeshAgent.speed = _currentMovementData.WalkSpeed;
                             if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(point.Point.Position.x, 0, point.Point.Position.z)) <= _navMeshAgent.stoppingDistance)
                             {
+                                _navMeshAgent.velocity = Vector3.zero;
+                                _enemyAnimator.Walking(0);
                                 yield return new WaitForSeconds(point.Point.DelayToNextPoint);
                                 _navMeshAgent.SetDestination(_currenWalkArea.GoToNextPoint(ID).Point.Position);
                             }
