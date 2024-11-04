@@ -35,6 +35,7 @@ namespace Ivayami.Puzzle {
         public PlayerActions.InteractAnimation Interact() {
             PlayerActions.Instance.ChangeInputMap("Menu");
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, false);
+            InteratctableFeedbacks.UpdateFeedbacks(false, true);
             _focusCamera.StartMovement();
 
             Readable readable = _readable.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
@@ -53,6 +54,7 @@ namespace Ivayami.Puzzle {
 
         public void StopReading() {
             PlayerActions.Instance.ChangeInputMap("Player");
+            InteratctableFeedbacks.UpdateFeedbacks(true, true);
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, true);
             _focusCamera.ExitDialogueCamera();
             ReadableUI.Instance.Menu.Close();

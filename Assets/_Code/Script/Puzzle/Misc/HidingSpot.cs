@@ -83,8 +83,11 @@ namespace Ivayami.Puzzle {
             PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
             PlayerActions.Instance.ChangeInputMap("Player");
             Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
-            StopCoroutine(_hideCoroutine);
-            _hideCoroutine = null;
+            if (_hideCoroutine != null)
+            {
+                StopCoroutine(_hideCoroutine);
+                _hideCoroutine = null;
+            }
             _hiddenCam.ExitDialogueCamera();
             _hidingCam.ExitDialogueCamera();
         }
