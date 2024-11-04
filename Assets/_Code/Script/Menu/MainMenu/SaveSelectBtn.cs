@@ -51,6 +51,7 @@ namespace Ivayami.UI {
 
         private void TeleportPlayer() {
             SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
+            PlayerActions.Instance.ChangeInputMap("Player");
             SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayer;
         }
 
