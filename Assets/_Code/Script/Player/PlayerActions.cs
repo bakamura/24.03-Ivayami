@@ -220,7 +220,7 @@ namespace Ivayami.Player {
 
         private void UseHealthItem(InputAction.CallbackContext obj)
         {
-            InventoryItem item = PlayerInventory.Instance.CheckInventoryFor(PlayerInventory.Instance.HealthItem.name).Item;
+            InventoryItem item = PlayerInventory.Instance.CheckInventoryFor(PlayerInventory.Instance.HealthItemId).Item;
             if (item)
             {
                 PlayerStress.Instance.ReliveStressByItem();

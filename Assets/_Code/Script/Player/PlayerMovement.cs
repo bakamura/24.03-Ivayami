@@ -118,7 +118,7 @@ namespace Ivayami.Player {
             _acceleration = Time.fixedDeltaTime / _accelerationDuration;
             _decceleration = Time.fixedDeltaTime / _deccelerationDuration;
             _movementSpeedMax = _movementSpeedRun;
-            _movementCache = Physics.gravity;
+            _movementCache = Physics.gravity;            
             ResetStamina();           
 
             _characterController = GetComponent<CharacterController>();
@@ -129,6 +129,7 @@ namespace Ivayami.Player {
         }
 
         private void Start() {
+            _maxStressCurrent = PlayerStress.Instance.MaxStress;
             SceneController.Instance.OnAllSceneRequestEnd += RemoveCrouch;
             PlayerActions.Instance.onInteract.AddListener((animation) => BlockMovementFor(INTERACT_BLOCK_KEY, PlayerAnimation.Instance.GetInteractAnimationDuration(animation)));
             PlayerStress.Instance.onStressChange.AddListener(OnStressChange);

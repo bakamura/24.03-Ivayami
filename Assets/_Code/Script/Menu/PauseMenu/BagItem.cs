@@ -20,7 +20,7 @@ namespace Ivayami.UI {
             bool isValid = item.Item;
             _icon.sprite = isValid ? item.Item.Sprite : null;
             _icon.color = isValid ? Color.white : new Color(0, 0, 0, 0);
-            _textAmount.text = isValid ? item.Amount.ToString() : null;
+            _textAmount.text = isValid && item.Amount > 1 ? item.Amount.ToString() : null;
         }
 
         public void DisplayInfo() {

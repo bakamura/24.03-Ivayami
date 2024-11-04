@@ -13,7 +13,7 @@ namespace Ivayami.Player {
 
         private List<InventoryItemStack> _itemList = new List<InventoryItemStack>();
         [SerializeField] private Sprite[] _itemTypeDefaultIcons;
-        [field: SerializeField] public InventoryItem HealthItem { get; private set; }
+        [field: SerializeField] public string HealthItemId { get; private set; }
         public Dictionary<ItemType, Sprite> ItemTypeDefaultIcons { get; private set; } = new Dictionary<ItemType, Sprite>();
 
         private int _checkInventoryIndexCache;
@@ -28,10 +28,6 @@ namespace Ivayami.Player {
             {
                 Item = item;
                 Amount = amount;
-            }
-            public void SetAmount(int value)
-            {
-                Amount = value;
             }
         }
 
@@ -53,13 +49,13 @@ namespace Ivayami.Player {
         public void AddToInventory(InventoryItem item, bool shouldEmphasize = false) {
             _checkInventoryIndexCache = _itemList.FindIndex((inventoryItem) => inventoryItem.Item.name == item.name);
             if (_checkInventoryIndexCache == -1) _itemList.Add(new InventoryItemStack(item, 1));
-            else _itemList[_checkInventoryIndexCache].SetAmount(_itemList[_checkInventoryIndexCache].Amount + 1);
+            else _itemList[_checkInventoryIndexCache] = new InventoryItemStack(_itemList[_checkInventoryIndexCache].Item, _itemList[_checkInventoryIndexCache].Amount + 1);
             onInventoryUpdate.Invoke(CheckInventory());
             InventoryItem itemTranslation = item.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
             if (shouldEmphasize) ItemEmphasisDisplay.Instance.DisplayItem(item.Sprite, itemTranslation.DisplayName, itemTranslation.Description);
             else InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite, itemTranslation.DisplayName);
 
-            Logger.Log(LogType.Player, $"Inventory Add: {item.DisplayName} ({item.name}) / {item.Type}. Current owned {_itemList[_checkInventoryIndexCache].Amount}");
+            Logger.Log(LogType.Player, $"Inventory Add: {item.DisplayName} ({item.name}) / {item.Type}. Current owned {_itemList[_checkInventoryIndexCache == -1 ? 0 : _checkInventoryIndexCache].Amount}");
         }
 
         public void RemoveFromInventory(InventoryItem item) {
@@ -68,7 +64,7 @@ namespace Ivayami.Player {
             if (_checkInventoryIndexCache == -1) return;
             else
             {
-                _itemList[_checkInventoryIndexCache].SetAmount(_itemList[_checkInventoryIndexCache].Amount - 1);
+                _itemList[_checkInventoryIndexCache] = new InventoryItemStack(_itemList[_checkInventoryIndexCache].Item, _itemList[_checkInventoryIndexCache].Amount - 1);
                 if (_itemList[_checkInventoryIndexCache].Amount <= 0)
                 {
                     itemRemoved = true;
