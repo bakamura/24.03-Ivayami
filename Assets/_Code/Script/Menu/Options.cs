@@ -33,6 +33,10 @@ namespace Ivayami.UI {
 
         [SerializeField] private TMP_Dropdown _languageDropdown;
 
+        [Space(16)]
+
+        [SerializeField] private Toggle _invertCameraToggle;
+
         public static Bus Music { get; private set; }
         public static Bus Sfx { get; private set; }
         public static Bus GameplaySfx { get; private set; }
@@ -90,6 +94,8 @@ namespace Ivayami.UI {
             _cameraSensitivitySliderX.value = SaveSystem.Instance.Options.cameraSensitivityX;
             _cameraSensitivitySliderY.value = SaveSystem.Instance.Options.cameraSensitivityY;
             _languageDropdown.SetValueWithoutNotify(SaveSystem.Instance.Options.language);
+            _invertCameraToggle.isOn = SaveSystem.Instance.Options.invertCamera;
+            InvertCamera(SaveSystem.Instance.Options.invertCamera);
         }
 
         public void ParametersApplySave() {
@@ -102,6 +108,12 @@ namespace Ivayami.UI {
         private void ControlSensitivityUpdate(bool isGamepad) {
             PlayerCamera.Instance.SetSensitivityX(SaveSystem.Instance.Options.cameraSensitivityX * (isGamepad ? _gamepadCameraSensitivityMultiplierX : _mouseCameraSensitivityMultiplierX));
             PlayerCamera.Instance.SetSensitivityY(SaveSystem.Instance.Options.cameraSensitivityY * (isGamepad ? _gamepadCameraSensitivityMultiplierY : _mouseCameraSensitivityMultiplierY));
+        }
+
+        public void InvertCamera(bool isActive)
+        {
+            SaveSystem.Instance.Options.invertCamera = isActive;
+            PlayerCamera.Instance.InvertCamera(!isActive);
         }
 
         public void SaveOptions() {
