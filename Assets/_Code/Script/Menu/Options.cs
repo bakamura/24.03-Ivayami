@@ -9,8 +9,6 @@ using Ivayami.Player;
 using Ivayami.Puzzle;
 using FMOD.Studio;
 using FMODUnity;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Processors;
 
 namespace Ivayami.UI {
     public class Options : MonoBehaviour {
