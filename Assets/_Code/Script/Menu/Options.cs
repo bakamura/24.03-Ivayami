@@ -9,6 +9,8 @@ using Ivayami.Player;
 using Ivayami.Puzzle;
 using FMOD.Studio;
 using FMODUnity;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Processors;
 
 namespace Ivayami.UI {
     public class Options : MonoBehaviour {
@@ -18,7 +20,7 @@ namespace Ivayami.UI {
         [Header("UI")]
 
         [SerializeField] private Slider _musicSlider;
-        [SerializeField] private Slider _sfxSlider;
+        [SerializeField] private Slider _sfxSlider;        
 
         [Space(16)]
 
@@ -36,6 +38,9 @@ namespace Ivayami.UI {
         [Space(16)]
 
         [SerializeField] private Toggle _invertCameraToggle;
+
+        [Space(16)]
+        [SerializeField] private Slider _deadzoneSlider;
 
         public static Bus Music { get; private set; }
         public static Bus Sfx { get; private set; }
@@ -95,7 +100,7 @@ namespace Ivayami.UI {
             _cameraSensitivitySliderY.value = SaveSystem.Instance.Options.cameraSensitivityY;
             _languageDropdown.SetValueWithoutNotify(SaveSystem.Instance.Options.language);
             _invertCameraToggle.isOn = SaveSystem.Instance.Options.invertCamera;
-            InvertCamera(SaveSystem.Instance.Options.invertCamera);
+            _deadzoneSlider.value = SaveSystem.Instance.Options.cameraDeadzone;
         }
 
         public void ParametersApplySave() {
@@ -103,6 +108,8 @@ namespace Ivayami.UI {
             PlayerCamera.Instance.SetSensitivityX(SaveSystem.Instance.Options.cameraSensitivityX * _mouseCameraSensitivityMultiplierX);
             PlayerCamera.Instance.SetSensitivityY(SaveSystem.Instance.Options.cameraSensitivityY * _mouseCameraSensitivityMultiplierY);
             ChangeLanguage(SaveSystem.Instance.Options.language);
+            InvertCamera(SaveSystem.Instance.Options.invertCamera);
+            PlayerMovement.Instance.ChangeStickDeadzone(SaveSystem.Instance.Options.cameraDeadzone);
         }
 
         private void ControlSensitivityUpdate(bool isGamepad) {
@@ -114,6 +121,12 @@ namespace Ivayami.UI {
         {
             SaveSystem.Instance.Options.invertCamera = isActive;
             PlayerCamera.Instance.InvertCamera(!isActive);
+        }
+
+        public void ChangeCameraDeadzone(float deadzoneRange)
+        {
+            SaveSystem.Instance.Options.cameraDeadzone = deadzoneRange;
+            PlayerMovement.Instance.ChangeStickDeadzone(deadzoneRange);
         }
 
         public void SaveOptions() {
