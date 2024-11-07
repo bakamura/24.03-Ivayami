@@ -35,5 +35,10 @@ namespace Ivayami.Player {
             InputProvider.enabled = isActive;
         }
 
+        public void InvertCamera(bool isActive)
+        {
+            FreeLookCam.m_YAxis.m_InvertInput = isActive;
+        }
+
     }
 }

@@ -5,6 +5,7 @@ using TMPro;
 using Ivayami.Player;
 using Ivayami.Save;
 using Ivayami.Audio;
+using System.Collections;
 
 namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
@@ -29,8 +30,12 @@ namespace Ivayami.UI {
 
         private void Start() {
             Menu menu = GetComponent<Menu>();
-            menu.OnOpenStart.AddListener(() => _shouldResetToStory = true);
-            menu.OnCloseStart.AddListener(() => _shouldResetToStory = false);
+            menu.OnOpenStart.AddListener(() => {
+                _shouldResetToStory = true;
+                });
+            menu.OnCloseStart.AddListener(() => {
+                _shouldResetToStory = false;
+            });
         }
 
         public void ChangeAnimation() {
@@ -44,6 +49,12 @@ namespace Ivayami.UI {
             SetupAberrationsSelection();
 
             Resources.UnloadUnusedAssets();
+            StartCoroutine(ResetToSToryCoroutine());
+        }
+
+        private IEnumerator ResetToSToryCoroutine()
+        {
+            yield return new WaitForEndOfFrame();
             if (_shouldResetToStory) _chapterBtn.onClick.Invoke();
         }
 

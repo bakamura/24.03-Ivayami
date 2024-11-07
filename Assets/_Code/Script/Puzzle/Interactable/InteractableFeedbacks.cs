@@ -77,6 +77,7 @@ namespace Ivayami.Puzzle
         private void SetupIcon()
         {
             //setup popup
+            if (!PlayerCamera.Instance) return;
             if (!_interactionIconSetupDone)
             {
                 _icon = GetComponentInChildren<SpriteRenderer>();

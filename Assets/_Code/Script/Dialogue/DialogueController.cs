@@ -146,7 +146,7 @@ namespace Ivayami.Dialogue
             else
             {
                 _currentSpeechIndex++;
-                if (_canvasGroup.alpha > 0) _dialogueSounds.PlaySound(DialogueSounds.SoundTypes.ContinueDialogue);
+                if (_canvasGroup.alpha > 0 && !CutsceneController.IsPlaying) _dialogueSounds.PlaySound(DialogueSounds.SoundTypes.ContinueDialogue);
                 //end of current dialogue
                 if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
                 {

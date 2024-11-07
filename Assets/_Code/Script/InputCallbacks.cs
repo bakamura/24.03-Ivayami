@@ -1,7 +1,7 @@
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-namespace Ivayami.Puzzle {
+namespace Ivayami.Player {
     public class InputCallbacks : MonoSingleton<InputCallbacks> {
 
         private UnityEvent<bool> _onChangeControls = new UnityEvent<bool>();
