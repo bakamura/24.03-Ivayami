@@ -10,9 +10,7 @@ namespace Ivayami.Puzzle {
 
         [SerializeField] private TextMeshProUGUI _title;
         [SerializeField] private TextMeshProUGUI _content;
-
-        [field: SerializeField] public Button CloseBtn { get; private set; }
-
+        
         protected override void Awake() {
             base.Awake();
 

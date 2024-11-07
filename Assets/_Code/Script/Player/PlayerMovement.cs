@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Ivayami.Scene;
+using Ivayami.Save;
 
 namespace Ivayami.Player {
     public class PlayerMovement : MonoSingleton<PlayerMovement> {
@@ -47,6 +48,7 @@ namespace Ivayami.Player {
         private float _maxStressCurrent;
         public bool CanMove {  get { return _movementBlock.Count <= 0; } }
         private bool _canRun = true;
+        private bool _holdToRun;
 
         [Header("Rotation")]
 
@@ -95,7 +97,10 @@ namespace Ivayami.Player {
         private Quaternion _targetAngle;
 
         private CharacterController _characterController;
-        private Transform _cameraTransform;        
+        private Transform _cameraTransform;
+        private SkinnedMeshRenderer[] _visualComponents;
+        private byte _gravityFactor = 1;
+        private float _stickDeadzone = .125f;
 
         private const string INTERACT_BLOCK_KEY = "Interact";
 
@@ -120,6 +125,7 @@ namespace Ivayami.Player {
             ResetStamina();           
 
             _characterController = GetComponent<CharacterController>();
+            _visualComponents = _visualTransform.GetComponentsInChildren<SkinnedMeshRenderer>();
             _cameraTransform = Camera.main.transform; //
 
             Logger.Log(LogType.Player, $"{typeof(PlayerMovement).Name} Initialized");
@@ -129,6 +135,7 @@ namespace Ivayami.Player {
             SceneController.Instance.OnAllSceneRequestEnd += RemoveCrouch;
             PlayerActions.Instance.onInteract.AddListener((animation) => BlockMovementFor(INTERACT_BLOCK_KEY, PlayerAnimation.Instance.GetInteractAnimationDuration(animation)));
             PlayerStress.Instance.onStressChange.AddListener(OnStressChange);
+            InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateHoldToRun);
             _maxStressCurrent = PlayerStress.Instance.MaxStress;
         }        
 
@@ -139,7 +146,9 @@ namespace Ivayami.Player {
         }
 
         private void MoveDirection(InputAction.CallbackContext input) {
-            _inputCache = input.ReadValue<Vector2>();
+            Vector2 value = input.ReadValue<Vector2>();
+            if(value.magnitude > _stickDeadzone) _inputCache = value;
+            else _inputCache = Vector2.zero;
 
             Logger.Log(LogType.Player, $"Movement Input Change: {input.ReadValue<Vector2>()}");
         }
@@ -149,7 +158,7 @@ namespace Ivayami.Player {
             _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMax); // Could use _decceleration when above max speed
             _directionCache = (_targetAngle * Vector3.forward).normalized * _speedCurrent;
             _movementCache[0] = _directionCache[0];
-            _movementCache[1] = _characterController.isGrounded ? (Physics.gravity.y / 10f) : Mathf.Clamp(_movementCache[1] + (Physics.gravity.y * Time.deltaTime), -50f, (Physics.gravity.y / 10f));
+            _movementCache[1] = _characterController.isGrounded ? Physics.gravity.y / 10f *_gravityFactor : Mathf.Clamp(_movementCache[1] + (Physics.gravity.y * Time.deltaTime), -50f, Physics.gravity.y / 10f) * _gravityFactor;
             _movementCache[2] = _directionCache[2];
             _characterController.Move(_movementCache * Time.deltaTime);
 
@@ -290,13 +299,58 @@ namespace Ivayami.Player {
         }
 
         public void UpdateVisualsVisibility(bool isVisible) {
-            _visualTransform.gameObject.SetActive(isVisible);
+            for (int i = 0; i < _visualComponents.Length; i++)
+                _visualComponents[i].enabled = isVisible;
+            //_visualTransform.gameObject.SetActive(isVisible);
+        }
+
+        public void ChangeRunSpeed(float val)
+        {
+            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+            _movementSpeedRun = val;
+            _movementSpeedMax = _movementSpeedRun;
+        }
+
+        public void RemoveAllBlockers() {
+            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+            _movementBlock.Clear();
+        }
+
+        public void UpdatePlayerGravity(bool isActive)
+        {
+            _gravityFactor = (byte)(isActive ? 1 : 0);
+        }
+
+        public void ChangeStickDeadzone(float value)
+        {
+            _stickDeadzone = Mathf.Clamp(value, 0.1f, .5f);
+        }
+
+        public void ChangeHoldToRun(bool isActive)
+        {
+            _holdToRun = isActive;
+            if (isActive)
+            {
+                _walkToggleInput.action.canceled += ToggleWalkInput;
+                if (_running) ToggleWalk();
+            }
+            else _walkToggleInput.action.canceled -= ToggleWalkInput;
+        }
+
+        private void UpdateHoldToRun(bool isGamepad)
+        {
+            if (!SaveSystem.Instance || SaveSystem.Instance.Options == null) return;
+            if (isGamepad && SaveSystem.Instance.Options.holdToRun && _holdToRun)
+            {
+                ChangeHoldToRun(false);
+            }
+            else if(!isGamepad && SaveSystem.Instance.Options.holdToRun && !_holdToRun)
+            {
+                ChangeHoldToRun(true);
+            }
         }
 
 #if UNITY_EDITOR
-        public void RemoveAllBlockers() {
-            _movementBlock.Clear();
-        }
 
         private void OnValidate() {
             if(!_characterController)_characterController = GetComponent<CharacterController>();

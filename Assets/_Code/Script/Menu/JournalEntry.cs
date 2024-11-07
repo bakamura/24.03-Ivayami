@@ -35,7 +35,7 @@ namespace Ivayami.UI {
 
         public JournalEntry GetTranslation(LanguageTypes language) {
             if (language == LanguageTypes.ENUS) return this;
-            JournalEntry entry = Resources.LoadAll<JournalEntry>($"JournalEntry/{language}/").First(text => text.name == name);
+            JournalEntry entry = Resources.LoadAll<JournalEntry>($"Journal/{Category}Entry/{language}").First(text => text.name == name);
             Resources.UnloadUnusedAssets();
             if (entry != null) return entry;
             else {
