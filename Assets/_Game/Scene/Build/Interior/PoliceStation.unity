@@ -4243,6 +4243,7 @@ GameObject:
   m_Component:
   - component: {fileID: 105667823}
   - component: {fileID: 105667824}
+  - component: {fileID: 105667825}
   m_Layer: 0
   m_Name: ObjectToBlockCrouchSpot
   m_TagString: Untagged
@@ -4288,6 +4289,41 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &105667825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 105667822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3ebbfea1ed71774c94f30b6a77477ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audiosData:
+  - AudioReference:
+      Guid:
+        Data1: -1823012100
+        Data2: 1250484415
+        Data3: 503891120
+        Data4: 881268531
+      Path: event:/Player_SFX/Empurrando_objeto
+    AllowFadeOut: 0
+    AttenuationRange:
+      Min: 0
+      Max: 0
+    OnAudioEnd:
+      m_PersistentCalls:
+        m_Calls: []
+    DrawGizmos: 0
+    MinRangGizmoColor: {r: 0, g: 0, b: 0, a: 0}
+    MaxRangGizmoColor: {r: 0, g: 0, b: 0, a: 0}
+  _playOnStart: 0
+  _replayAudioOnEnd: 0
+  _replayIntervalRange:
+    Min: 0
+    Max: 0
 --- !u!1001 &118438022
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -82994,6 +83030,18 @@ MonoBehaviour:
   _onExecute:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 105667825}
+        m_TargetAssemblyTypeName: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 105667824}
         m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
         m_MethodName: set_enabled
