@@ -279,9 +279,10 @@ namespace Ivayami.Dialogue
                     if (_dialogueEventsList[i].TriggerEvent(eventID))
                     {
                         if (_debugLogs) Debug.Log($"Dialogue Event {eventID} Triggered");
-                        break;
+                        return;                           
                     }
                 }
+                Debug.LogWarning($"The event {eventID} coudln't be found");
             }
         }
 
