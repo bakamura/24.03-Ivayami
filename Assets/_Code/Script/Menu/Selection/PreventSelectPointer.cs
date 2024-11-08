@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Ivayami.Puzzle;
+using Ivayami.Player;
 
 namespace Ivayami.UI {
     public class PreventSelectPointer : MonoSingleton<PreventSelectPointer> {

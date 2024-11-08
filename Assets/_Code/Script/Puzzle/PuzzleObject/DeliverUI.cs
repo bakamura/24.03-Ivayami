@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro;
+using Ivayami.Save;
 
 namespace Ivayami.Puzzle
 {
@@ -15,10 +17,11 @@ namespace Ivayami.Puzzle
         [SerializeField] private InputActionReference _navigateUIInput;
         [SerializeField] private byte _requestAmountToComplete = 1;
         [SerializeField] private bool _skipDeliverUI;
-        [SerializeField, Tooltip("Will auto use any item")] private bool _deliverAnyItem;
+        [SerializeField] private bool _deliverAnyItem;
         [SerializeField] private ItemRequestData[] _itemsRequired;
         //[SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
         [SerializeField] private Image[] _deliverItemOptionsIcon;
+        [SerializeField] private TMP_Text _itemDisplayName;
         [SerializeField] private Selectable _deliverBtn;
         [SerializeField] private UnityEvent<bool> _onTryDeliver;
 
@@ -177,7 +180,7 @@ namespace Ivayami.Puzzle
                 if (requestIndex < _itemsCache.Count)
                 {
                     _deliverItemOptionsIcon[iconsIndex].enabled = true;
-                    _deliverItemOptionsIcon[iconsIndex].sprite = PlayerInventory.Instance.CheckInventoryFor(_itemsCache[requestIndex].name) ?
+                    _deliverItemOptionsIcon[iconsIndex].sprite = PlayerInventory.Instance.CheckInventoryFor(_itemsCache[requestIndex].name) ? 
                         _itemsCache[requestIndex].Sprite : PlayerInventory.Instance.ItemTypeDefaultIcons[_itemsCache[requestIndex].Type];
                     if (iconsIndex == Mathf.FloorToInt(_deliverItemOptionsIcon.Length / 2)
                         && !_currentItemSelected) _currentItemSelected = _itemsCache[requestIndex];
@@ -187,6 +190,8 @@ namespace Ivayami.Puzzle
                 requestIndex++;
                 if (requestIndex == _itemsCache.Count) requestIndex = 0;
             }
+            _itemDisplayName.text = PlayerInventory.Instance.CheckInventoryFor(_currentItemSelected.name) ? 
+                _currentItemSelected.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language).DisplayName : null;
         }
 
         private bool ContainItemTypeInRequest(ItemType itemType)
