@@ -29,6 +29,14 @@ namespace Ivayami.Dialogue
             events = serializedObject.FindProperty("_events");
         }
 
+        private void OnDestroy()
+        {
+            if (target == null)
+            {
+                HandleComponentDestroy();
+            }
+        }
+
         private void HandleEventsValuesUpdate(bool updateCurrentValues)
         {
             DialogueEvents instance = (DialogueEvents)target;
@@ -132,6 +140,15 @@ namespace Ivayami.Dialogue
                 }
             }
         }
+
+        private void HandleComponentDestroy()
+        {
+            for (int i = 0; i < _previousIDs.Count; i++)
+            {
+                RemoveEventIDFromDialogeOrSpeech(_previousIDs[i]);
+            }
+        }
+
     }
 }
 #endif
