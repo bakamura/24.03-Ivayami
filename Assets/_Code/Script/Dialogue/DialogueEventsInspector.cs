@@ -8,14 +8,14 @@ namespace Ivayami.Dialogue
     [CustomEditor(typeof(DialogueEvents))]
     public class DialogueEventsInspector : Editor
     {
-        SerializedProperty debugLogs, events;
+        SerializedProperty /*debugLogs,*/ events;
         private static Dialogue[] _dialogueAssets;
         private List<string> _previousIDs = new List<string>();
         public override void OnInspectorGUI()
         {
             if (_dialogueAssets == null) UpdateDialoguesList();
 
-            EditorGUILayout.PropertyField(debugLogs, new GUIContent("Debug Log"));
+            //EditorGUILayout.PropertyField(debugLogs, new GUIContent("Debug Log"));
             EditorGUILayout.PropertyField(events, new GUIContent("Events"));
 
             HandleEventsValuesUpdate(false);
@@ -25,7 +25,7 @@ namespace Ivayami.Dialogue
 
         private void OnEnable()
         {
-            debugLogs = serializedObject.FindProperty("_debugLogs");
+            //debugLogs = serializedObject.FindProperty("_debugLogs");
             events = serializedObject.FindProperty("_events");
         }
 

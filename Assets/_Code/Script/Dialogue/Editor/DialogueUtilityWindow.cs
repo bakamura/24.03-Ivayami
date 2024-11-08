@@ -60,7 +60,7 @@ namespace Ivayami.Dialogue
             }
         }
 
-        [MenuItem("Ivayami/DialogueUtilities")]
+        [MenuItem("Ivayami/DialogueUtilities/UtilityWindow")]
         private static void ShowWindow()
         {
             var window = GetWindow<DialogueUtilityWindow>();

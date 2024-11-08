@@ -258,7 +258,7 @@ namespace Ivayami.Dialogue
                     _continueInput.action.performed -= HandleContinueDialogue;
                 }
                 LockInput = false;
-                IsPaused = false;                
+                IsPaused = false;
             }
         }
 
@@ -266,12 +266,14 @@ namespace Ivayami.Dialogue
         {
             if (_dialogueEventsList.Contains(dialogueEvents)) _dialogueEventsList.Remove(dialogueEvents);
             else _dialogueEventsList.Add(dialogueEvents);
+
         }
 
         private void ActivateDialogueEvents(string eventID)
         {
             if (!string.IsNullOrEmpty(eventID))
             {
+                CheckForDuplicatedEventIDs(eventID);
                 for (int i = 0; i < _dialogueEventsList.Count; i++)
                 {
                     if (_dialogueEventsList[i].TriggerEvent(eventID))
@@ -281,6 +283,24 @@ namespace Ivayami.Dialogue
                     }
                 }
             }
+        }
+
+        private void CheckForDuplicatedEventIDs(string eventId)
+        {
+            if (!_debugLogs) return;
+            string messageResult = null;
+            int i;
+            byte count = 0;
+            for (i = 0; i < _dialogueEventsList.Count; i++)
+            {
+                if (_dialogueEventsList[i].CheckForEvent(eventId))
+                {
+                    messageResult += $"{ _dialogueEventsList[i].name} in scene {GameObject.GetScene(_dialogueEventsList[i].gameObject.GetInstanceID()).name}, ";
+                    count++;
+                }
+            }
+            if (count <= 1) return;
+            Debug.LogWarning($"The dialogue event {eventId} has duplicates in: {messageResult}. Please make sure the event id is always unique");
         }
 
         public void PauseDialogue(bool isPaused)
