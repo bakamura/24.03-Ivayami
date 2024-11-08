@@ -79,18 +79,26 @@ namespace Ivayami.Dialogue
         //assumes that there will be no duplicate ID in the Dialoge Assets
         private void RemoveEventIDFromDialogeOrSpeech(string eventID)
         {
+            bool objectRecorded;
             for (int i = 0; i < _dialogueAssets.Length; i++)
             {
+                objectRecorded = false;
                 if (_dialogueAssets[i].onEndEventId == eventID)
                 {
+                    if (!objectRecorded) Undo.RecordObject(_dialogueAssets[i], "EndEventId");
+                    objectRecorded = true;
                     _dialogueAssets[i].onEndEventId = null;
+                    EditorUtility.SetDirty(_dialogueAssets[i]);
                     //return;
                 }
                 for (int a = 0; a < _dialogueAssets[i].dialogue.Length; a++)
                 {
                     if (_dialogueAssets[i].dialogue[a].EventId == eventID)
                     {
+                        if (!objectRecorded) Undo.RecordObject(_dialogueAssets[i], "SpeechEventId");
+                        objectRecorded = true;
                         _dialogueAssets[i].dialogue[a].EventId = null;
+                        EditorUtility.SetDirty(_dialogueAssets[i]);
                         //return;
                     }
                 }
@@ -99,18 +107,26 @@ namespace Ivayami.Dialogue
 
         private void UpdateEventIDFromDialogeOrSpeech(string previousID, string currentID)
         {
+            bool objectRecorded;
             for (int i = 0; i < _dialogueAssets.Length; i++)
             {
+                objectRecorded = false;
                 if (_dialogueAssets[i].onEndEventId == previousID && !string.IsNullOrEmpty(_dialogueAssets[i].onEndEventId))
                 {
+                    if (!objectRecorded) Undo.RecordObject(_dialogueAssets[i], "EndEventId");
+                    objectRecorded = true;
                     _dialogueAssets[i].onEndEventId = currentID;
+                    EditorUtility.SetDirty(_dialogueAssets[i]);
                     //return;
                 }
                 for (int a = 0; a < _dialogueAssets[i].dialogue.Length; a++)
                 {
                     if (_dialogueAssets[i].dialogue[a].EventId == previousID && !string.IsNullOrEmpty(_dialogueAssets[i].dialogue[a].EventId))
                     {
+                        if (!objectRecorded) Undo.RecordObject(_dialogueAssets[i], "SpeechEventId");
+                        objectRecorded = true;
                         _dialogueAssets[i].dialogue[a].EventId = currentID;
+                        EditorUtility.SetDirty(_dialogueAssets[i]);
                         //return;
                     }
                 }
