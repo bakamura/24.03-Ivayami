@@ -2850,6 +2850,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: ae64266a2a1c91d459a510928c26b124, type: 2}
   _dialogueName: TalkMarcosAfterDiscoverHoleEntrance
   _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!1 &74785441 stripped
 GameObject:
@@ -4042,38 +4043,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 5.334326, y: 5.662402, z: 0.48760128}
   m_Center: {x: -14.073659, y: -0.13983202, z: -9.588541}
---- !u!1 &95917829
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 95917830}
-  m_Layer: 0
-  m_Name: SceneLoaders
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 125
-  m_IsActive: 1
---- !u!4 &95917830
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 95917829}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 987367839}
-  m_Father: {fileID: 1904800122}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &97619149
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5242,6 +5211,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: f3a76528e5a43144f92cfc3897fb5326, type: 2}
   _dialogueName: DiscussPlanWithFriend
   _activateOnce: 1
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!65 &139933632
 BoxCollider:
@@ -24443,6 +24413,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: ab1adf4ff51498645b51ac9a5414d0d2, type: 2}
   _dialogueName: OfficerTalk
   _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!1001 &620325198
 PrefabInstance:
@@ -30995,6 +30966,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: 6d9093bc6bd300442b4e3f7e1897b0fe, type: 2}
   _dialogueName: TalkMarcosBeforeDiscoverHoleEntrance
   _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!1 &772474744 stripped
 GameObject:
@@ -42998,62 +42970,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 44907efe4f6c793468210d5ca084f6aa, type: 3}
   m_PrefabInstance: {fileID: 983271635}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &987367838
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 987367839}
-  - component: {fileID: 987367840}
-  m_Layer: 0
-  m_Name: UnloadPoliceStation
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 125
-  m_IsActive: 1
---- !u!4 &987367839
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 987367838}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 95917830}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &987367840
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 987367838}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _sceneId: PoliceStation
-  _onSceneLoad:
-    m_PersistentCalls:
-      m_Calls: []
-  _onSceneUnload:
-    m_PersistentCalls:
-      m_Calls: []
-  _onAllScenesRequestEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  _drawGizmos: 0
-  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1001 &990561971
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55914,6 +55830,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: a47676129579bac43987e06b37d1f935, type: 2}
   _dialogueName: DiscoverHoleWithoutFriend
   _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 0
 --- !u!1001 &1224938512
 PrefabInstance:
@@ -59736,19 +59653,7 @@ MonoBehaviour:
   _teleportTarget: {fileID: 0}
   _onTeleportEnd:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 987367840}
-        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
-        m_MethodName: UnloadScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   _gizmoSize: 0.2
 --- !u!4 &1310424701
@@ -67085,19 +66990,7 @@ MonoBehaviour:
   _teleportTarget: {fileID: 0}
   _onTeleportEnd:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 987367840}
-        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
-        m_MethodName: UnloadScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   _gizmoSize: 0.2
 --- !u!1001 &1465496066
@@ -67944,6 +67837,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: bc29424290a2f5740887ee85f24a2a47, type: 2}
   _dialogueName: TryOpenCrowbarDoor
   _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!1 &1500424287
 GameObject:
@@ -71199,6 +71093,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: 2271056a300c8ae46aeec93e0776ad6e, type: 2}
   _dialogueName: LockedOfficerInRoom
   _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!1001 &1558623652
 PrefabInstance:
@@ -86407,7 +86302,6 @@ Transform:
   - {fileID: 1324094523}
   - {fileID: 1207933048}
   - {fileID: 2007879733}
-  - {fileID: 95917830}
   - {fileID: 1670179397}
   - {fileID: 5897530}
   - {fileID: 1451696739}
@@ -92404,6 +92298,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: 9bb993798f7f57143bb55705addd8724, type: 2}
   _dialogueName: DiscoverHoleWithFriend
   _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 0
 --- !u!1001 &2054066475
 PrefabInstance:
