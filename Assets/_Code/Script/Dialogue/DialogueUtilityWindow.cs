@@ -19,6 +19,8 @@ namespace Ivayami.Dialogue
         private SearchType _currentSearchType;
         private string _objectNameToSelect;
         private string[] _filesCache;
+        private SearchType _previousSearchType;
+        private int _currentDropdownIndex;
         private enum SearchType
         {
             Event,
@@ -68,6 +70,7 @@ namespace Ivayami.Dialogue
 
         private void OnGUI()
         {
+            _previousSearchType = _currentSearchType;
             _currentSearchType = (SearchType)EditorGUILayout.EnumPopup("Search Type", _currentSearchType);
             _filter = EditorGUILayout.TextField("Search", _filter);
 
@@ -76,6 +79,11 @@ namespace Ivayami.Dialogue
             if (!string.IsNullOrEmpty(_filter) && GUI.Button(_buttonRect, "Search"))
             {
                 UpdateSearchResult();
+            }
+            else if (string.IsNullOrEmpty(_filter) || _previousSearchType != _currentSearchType)
+            {
+                _dialoguesSearchCache.Clear();
+                _sceneSearchCache.Clear();
             }
             DrawSearchResult();
         }
@@ -160,6 +168,7 @@ namespace Ivayami.Dialogue
                 case SearchType.Event:
                     string[] keys = _sceneSearchCache.Keys.ToArray();
                     DialogueSearchInfo info;
+                    SceneSearchInfo[] differentObjectsFound;
                     for (int i = 0; i < _sceneSearchCache.Keys.Count; i++)
                     {
                         //draw dialogue data
@@ -175,11 +184,20 @@ namespace Ivayami.Dialogue
                             //    }
                             //}
                             info = _dialoguesSearchCache.Where(x => x.EventId.Contains(_sceneSearchCache[keys[i]][a].EventId)).FirstOrDefault();
-                            if (info.Dialogue) temp = DrawDialogueResult(temp, info);
+                            if (info.Dialogue)
+                            {
+                                temp = DrawDialogueResult(temp, info);
+                            }
                         }
                         //draw scene data
-                        //assuming it will always be 1 Object with Dialogue Events per scene
-                        temp = DrawSceneResult(temp, _sceneSearchCache[keys[i]][0]);
+                        differentObjectsFound = _sceneSearchCache[keys[i]].Where(x => x.EventId.Contains(_sceneSearchCache[keys[i]][0].EventId)).ToArray();
+                        //draw all objects inside scene that contais the event id
+                        for (int a = 0; a < differentObjectsFound.Length; a++)
+                        {
+                            temp = DrawSceneResult(temp, differentObjectsFound[a]);
+                        }
+                        //draw the Go to scene btn and autoSelectObject dropdown
+                        temp = DrawSceneButton(temp, _sceneSearchCache[keys[i]]);
                     }
                     break;
                 case SearchType.Filter:
@@ -193,9 +211,6 @@ namespace Ivayami.Dialogue
 
         private Rect DrawSceneResult(Rect rect, SceneSearchInfo info)
         {
-            float baseXPos = rect.x;
-            //for (int i = 0; i < _sceneSearchCache.Count; i++)
-            //{
             rect.width /= 2;
             rect.y += rect.height * 1.1f;
             EditorGUILayout.BeginHorizontal();
@@ -203,24 +218,30 @@ namespace Ivayami.Dialogue
             rect.x += rect.width * 1.1f;
             EditorGUI.LabelField(rect, $"Object Name: {info.ObjectName}");
             EditorGUILayout.EndHorizontal();
-            rect.x = baseXPos;
+            return new Rect(_buttonRect.x, rect.y, _buttonRect.width, _buttonRect.height);
+        }
+
+        private Rect DrawSceneButton(Rect rect, List<SceneSearchInfo> infos)
+        {
             rect.y += rect.height * 1.1f;
-            rect.width *= 2;
+            EditorGUI.LabelField(rect, "Object To Select On Open Scene");
+            rect.y += rect.height * 1.1f;
+            _currentDropdownIndex = EditorGUI.Popup(rect, _currentDropdownIndex, infos.Select(x => x.ObjectName).ToArray());
+            rect.y += rect.height * 1.1f;
             if (GUI.Button(rect, "Go To Scene"))
             {
-                _objectNameToSelect = info.ObjectName;
+                _objectNameToSelect = infos[_currentDropdownIndex].ObjectName;
                 EditorSceneManager.sceneOpened += HandleOnLoadScene;
                 for (int a = 0; a < _filesCache.Length; a++)
                 {
-                    if (_filesCache[a].Contains(info.SceneName))
+                    if (_filesCache[a].Contains(infos[0].SceneName))
                     {
                         EditorSceneManager.OpenScene(_filesCache[a]);
                         break;
                     }
                 }
             }
-            //}
-            return new Rect(_buttonRect.x, rect.y,_buttonRect.width, _buttonRect.height);
+            return new Rect(_buttonRect.x, rect.y, _buttonRect.width, _buttonRect.height);
         }
 
         private Rect DrawDialogueResult(Rect rect, DialogueSearchInfo info)

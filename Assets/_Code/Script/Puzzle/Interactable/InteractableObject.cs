@@ -8,7 +8,7 @@ namespace Ivayami.Puzzle
     [RequireComponent(typeof(InteractableSounds))]
     public class InteractableObject : MonoBehaviour, IInteractable
     {
-        [SerializeField] private InventoryItem[] _itens;
+        [SerializeField, Tooltip("The items that will be given to the player on Interact")] private InventoryItem[] _itens;
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private bool _isLongInteraction;
 
