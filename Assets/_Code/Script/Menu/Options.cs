@@ -19,6 +19,7 @@ namespace Ivayami.UI {
 
         [SerializeField] private Slider _musicSlider;
         [SerializeField] private Slider _sfxSlider;        
+        [SerializeField] private Slider _deadzoneSlider;
 
         [Space(16)]
 
@@ -36,9 +37,7 @@ namespace Ivayami.UI {
         [Space(16)]
 
         [SerializeField] private Toggle _invertCameraToggle;
-
-        [Space(16)]
-        [SerializeField] private Slider _deadzoneSlider;
+        [SerializeField] private Toggle _holdToRunToggle;
 
         public static Bus Music { get; private set; }
         public static Bus Sfx { get; private set; }
@@ -90,24 +89,26 @@ namespace Ivayami.UI {
         }
 
         public void ParametersUpdate() {
-            _musicSlider.value = SaveSystem.Instance.Options.musicVol;
-            Music.setVolume(_musicSlider.value);
-            _sfxSlider.value = SaveSystem.Instance.Options.sfxVol;
-            Sfx.setVolume(_sfxSlider.value);
-            _cameraSensitivitySliderX.value = SaveSystem.Instance.Options.cameraSensitivityX;
-            _cameraSensitivitySliderY.value = SaveSystem.Instance.Options.cameraSensitivityY;
+            _musicSlider.SetValueWithoutNotify(SaveSystem.Instance.Options.musicVol);
+            _sfxSlider.SetValueWithoutNotify(SaveSystem.Instance.Options.sfxVol);
+            _cameraSensitivitySliderX.SetValueWithoutNotify(SaveSystem.Instance.Options.cameraSensitivityX);
+            _cameraSensitivitySliderY.SetValueWithoutNotify(SaveSystem.Instance.Options.cameraSensitivityY);
+            _deadzoneSlider.SetValueWithoutNotify(SaveSystem.Instance.Options.cameraDeadzone);
             _languageDropdown.SetValueWithoutNotify(SaveSystem.Instance.Options.language);
-            _invertCameraToggle.isOn = SaveSystem.Instance.Options.invertCamera;
-            _deadzoneSlider.value = SaveSystem.Instance.Options.cameraDeadzone;
+            _invertCameraToggle.SetIsOnWithoutNotify(SaveSystem.Instance.Options.invertCamera);
+            _holdToRunToggle.SetIsOnWithoutNotify(SaveSystem.Instance.Options.holdToRun);
         }
 
-        public void ParametersApplySave() {
+        private void ParametersApplySave() {
             ParametersUpdate();
-            PlayerCamera.Instance.SetSensitivityX(SaveSystem.Instance.Options.cameraSensitivityX * _mouseCameraSensitivityMultiplierX);
-            PlayerCamera.Instance.SetSensitivityY(SaveSystem.Instance.Options.cameraSensitivityY * _mouseCameraSensitivityMultiplierY);
-            ChangeLanguage(SaveSystem.Instance.Options.language);
-            InvertCamera(SaveSystem.Instance.Options.invertCamera);
+            Music.setVolume(_musicSlider.value);
+            Sfx.setVolume(_sfxSlider.value);
+            PlayerCamera.Instance.SetSensitivityX(SaveSystem.Instance.Options.cameraSensitivityX * (InputCallbacks.Instance.IsGamepad ? _gamepadCameraSensitivityMultiplierX : _mouseCameraSensitivityMultiplierX));
+            PlayerCamera.Instance.SetSensitivityY(SaveSystem.Instance.Options.cameraSensitivityY * (InputCallbacks.Instance.IsGamepad ? _gamepadCameraSensitivityMultiplierY : _mouseCameraSensitivityMultiplierY));
             PlayerMovement.Instance.ChangeStickDeadzone(SaveSystem.Instance.Options.cameraDeadzone);
+            ChangeLanguage(SaveSystem.Instance.Options.language);
+            PlayerCamera.Instance.InvertCamera(!SaveSystem.Instance.Options.invertCamera);
+            PlayerMovement.Instance.ChangeHoldToRun(SaveSystem.Instance.Options.holdToRun);
         }
 
         private void ControlSensitivityUpdate(bool isGamepad) {
@@ -125,6 +126,12 @@ namespace Ivayami.UI {
         {
             SaveSystem.Instance.Options.cameraDeadzone = deadzoneRange;
             PlayerMovement.Instance.ChangeStickDeadzone(deadzoneRange);
+        }
+
+        public void ToggleToRun(bool isActive)
+        {
+            SaveSystem.Instance.Options.holdToRun = isActive;
+            PlayerMovement.Instance.ChangeHoldToRun(isActive);
         }
 
         public void SaveOptions() {

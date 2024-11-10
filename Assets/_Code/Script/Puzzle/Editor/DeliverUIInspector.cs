@@ -16,9 +16,9 @@ namespace Ivayami.Puzzle
 
             GUILayout.Label("CONFIGURATIONS", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
-            EditorGUILayout.PropertyField(requestAmountToComplete, new GUIContent("Request Amount To complete"));
-            if (!deliverAnyItem.boolValue) EditorGUILayout.PropertyField(skipDeliverUI, new GUIContent("Skip Deliver UI"));
-            if (!skipDeliverUI.boolValue) EditorGUILayout.PropertyField(deliverAnyItem, new GUIContent("Deliver Any Item"));
+            EditorGUILayout.PropertyField(requestAmountToComplete, new GUIContent("Request Amount To complete", "The amount of request needed for the DeliverUI to be completed"));
+            if (!deliverAnyItem.boolValue) EditorGUILayout.PropertyField(skipDeliverUI, new GUIContent("Skip Deliver UI", "The Deliver UI will not show instead will automaticaly try to use the items defined in ItemsRequired list"));
+            if (!skipDeliverUI.boolValue) EditorGUILayout.PropertyField(deliverAnyItem, new GUIContent("Deliver Any Item", "Will auto use any item that in not in the ItemsRequired list"));
             EditorGUILayout.PropertyField(itemsRequired, new GUIContent("Items Required"));
             EditorGUILayout.Space(10);
 

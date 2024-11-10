@@ -1,7 +1,7 @@
-using Ivayami.Puzzle;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Ivayami.Player;
 
 namespace Ivayami.UI {
     [RequireComponent(typeof(Fade))]

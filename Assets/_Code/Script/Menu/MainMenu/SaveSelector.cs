@@ -39,7 +39,21 @@ namespace Ivayami.UI {
         }
 
         private void SaveSelectBtnUpdate(SaveProgress[] progressSaves) {
-            for (int i = 0; i < _saveSelectBtns.Length; i++) _saveSelectBtns[i].Setup(i < progressSaves.Length ? progressSaves[i] : null, (byte)i);
+            bool foundSave;
+            for (int i = 0; i < _saveSelectBtns.Length; i++)
+            {
+                foundSave = false;
+                for(int a = 0; a < progressSaves.Length; a++)
+                {
+                    if(progressSaves[a].id == i)
+                    {
+                        foundSave = true;
+                        _saveSelectBtns[i].Setup(progressSaves[a], progressSaves[a].id);
+                        break;
+                    }
+                }
+                if (!foundSave) _saveSelectBtns[i].Setup(null, (byte)i);
+            }
         }
 
         public void DisplaySaveInfo(int saveId) {
@@ -55,5 +69,11 @@ namespace Ivayami.UI {
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, true);
         }
 
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (_saveSelectBtns.Length > SaveSystem.MaxSaveSlots) System.Array.Resize(ref _saveSelectBtns, SaveSystem.MaxSaveSlots);
+        }
+#endif
     }
 }
