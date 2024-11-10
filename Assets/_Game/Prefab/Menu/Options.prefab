@@ -1171,9 +1171,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1744490919358384299}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
-        m_MethodName: GoForth
+        m_MethodName: GoBack
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1210,7 +1210,7 @@ MonoBehaviour:
   _onSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1744490919358384299}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: ChangeSelected
         m_Mode: 1
@@ -1816,7 +1816,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1744490919358384299}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: ChangeSelected
         m_Mode: 1
@@ -1843,7 +1843,7 @@ MonoBehaviour:
   _onSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1744490919358384299}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: ChangeSelected
         m_Mode: 1
@@ -2430,6 +2430,7 @@ RectTransform:
   - {fileID: 8153193764790904576}
   - {fileID: 4794164575289167107}
   - {fileID: 1300325192074431171}
+  - {fileID: 6096461612427933224}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2792,7 +2793,7 @@ MonoBehaviour:
   _onSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1744490919358384299}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: ChangeSelected
         m_Mode: 1
@@ -2825,7 +2826,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: InvertCamera
+          m_StringArgument: HoldToRun
           m_BoolArgument: 0
         m_CallState: 2
   _onPointerEnter:
@@ -3340,7 +3341,7 @@ MonoBehaviour:
   _onSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1744490919358384299}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: ChangeSelected
         m_Mode: 1
@@ -3790,7 +3791,7 @@ MonoBehaviour:
   _onSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1744490919358384299}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: ChangeSelected
         m_Mode: 1
@@ -5874,6 +5875,71 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &7123929554032053259
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6096461612427933224}
+  - component: {fileID: 1744490919358384299}
+  m_Layer: 0
+  m_Name: UiSfx
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6096461612427933224
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7123929554032053259}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -68.874084, y: -88.4812, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8618537437151312191}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1744490919358384299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7123929554032053259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0372a9483900bb940ad7dab61d8220c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _changeSelectedReference:
+    Guid:
+      Data1: -269092351
+      Data2: 1299826899
+      Data3: 518056599
+      Data4: -1999218231
+    Path: event:/UI_SFX/Change_Selection_New
+  _goForthReference:
+    Guid:
+      Data1: 1302587890
+      Data2: 1159833711
+      Data3: 1190972594
+      Data4: -1036044377
+    Path: event:/UI_SFX/Go_Forth_new
+  _goBackReference:
+    Guid:
+      Data1: 1117018146
+      Data2: 1204333525
+      Data3: -832887924
+      Data4: 1568550617
+    Path: event:/UI_SFX/Go_Back_New
 --- !u!1 &7546050769520786597
 GameObject:
   m_ObjectHideFlags: 0
@@ -5994,7 +6060,7 @@ MonoBehaviour:
   _onSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1744490919358384299}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: ChangeSelected
         m_Mode: 1
@@ -6183,7 +6249,7 @@ MonoBehaviour:
   _onSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1744490919358384299}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: ChangeSelected
         m_Mode: 1
@@ -6901,7 +6967,7 @@ MonoBehaviour:
   _onSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1744490919358384299}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: ChangeSelected
         m_Mode: 1
@@ -6934,7 +7000,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: HoldToRun
+          m_StringArgument: Language
           m_BoolArgument: 0
         m_CallState: 2
   _onPointerEnter:
@@ -7292,7 +7358,7 @@ MonoBehaviour:
   _onSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1744490919358384299}
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: ChangeSelected
         m_Mode: 1
