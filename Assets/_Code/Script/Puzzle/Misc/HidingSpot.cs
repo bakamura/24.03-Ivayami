@@ -4,7 +4,6 @@ using Ivayami.UI;
 using System.Collections;
 using Ivayami.Dialogue;
 using UnityEngine.InputSystem;
-using System;
 
 namespace Ivayami.Puzzle {
     public class HidingSpot : MonoBehaviour, IInteractable {
