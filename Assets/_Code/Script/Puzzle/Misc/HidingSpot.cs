@@ -3,11 +3,15 @@ using Ivayami.Player;
 using Ivayami.UI;
 using System.Collections;
 using Ivayami.Dialogue;
+using UnityEngine.InputSystem;
+using System;
 
 namespace Ivayami.Puzzle {
     public class HidingSpot : MonoBehaviour, IInteractable {
 
         public InteractableFeedbacks InteratctableFeedbacks { get; private set; }
+        [Header("Inputs")]
+        [SerializeField] private InputActionReference _exitInput;
 
         [Header("View")]
         [SerializeField] private CameraAnimationInfo _hidingCam;
@@ -36,7 +40,7 @@ namespace Ivayami.Puzzle {
         }
 
         public PlayerActions.InteractAnimation Interact() {
-            if (PlayerMovement.Instance.hidingState == PlayerMovement.HidingState.None) {
+            if (PlayerMovement.Instance.hidingState == PlayerMovement.HidingState.None) {                
                 _hideCoroutine = StartCoroutine(HideRoutine());
                 return PlayerActions.InteractAnimation.EnterLocker;
             }
@@ -62,10 +66,12 @@ namespace Ivayami.Puzzle {
             _hiddenCam.StartMovement();
             PlayerMovement.Instance.hidingState = _hiddenType; 
             ReturnAction.Instance.Set(Exit);
+            _exitInput.action.started += HandleExit;
             _hideCoroutine = null;
-        }
+        }        
 
         public void Exit() {
+            _exitInput.action.started -= HandleExit;
             PlayerStress.Instance.onFail.RemoveListener(OnPlayerDeath);
             PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
             PlayerActions.Instance.ChangeInputMap("Player");
@@ -92,5 +98,9 @@ namespace Ivayami.Puzzle {
             _hidingCam.ExitDialogueCamera();
         }
 
+        private void HandleExit(InputAction.CallbackContext obj)
+        {
+            Exit();
+        }
     }
 }
