@@ -2,7 +2,6 @@ using Ivayami.Player;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
-using Ivayami.UI;
 using System;
 
 namespace Ivayami.Puzzle
