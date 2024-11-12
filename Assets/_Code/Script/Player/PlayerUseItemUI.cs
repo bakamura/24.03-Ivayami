@@ -23,11 +23,6 @@ namespace Ivayami.Player
             _itemInDisplay = GetComponentInChildren<BagItem>();
             _fade = GetComponent<Fade>();            
         }
-
-        private void Start()
-        {
-            _itemInDisplay.SetItemDisplay(PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[_currentSelectedIndex].name));
-        }
         /// <summary>
         /// Open And Closes the UI
         /// </summary>
@@ -57,7 +52,8 @@ namespace Ivayami.Player
         {
             PlayerAnimation.Instance.UseMP3(_isActive);
             if(_isActive) _fade.Open();
-            else _fade.Close();            
+            else _fade.Close();
+            _itemInDisplay.SetItemDisplay(PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[_currentSelectedIndex].name));
         }
 
         private void HandleConfirmOption(InputAction.CallbackContext context)
