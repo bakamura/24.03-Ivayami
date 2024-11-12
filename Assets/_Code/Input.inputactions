@@ -105,10 +105,19 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ConsumeHealthItem",
+                    "name": "ConsumeItem",
                     "type": "Button",
                     "id": "07187096-879a-43ed-890e-42df0e065407",
                     "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "NavigateUseItemUI",
+                    "type": "PassThrough",
+                    "id": "3d2e04b1-5b58-4506-8512-a615c83eeed5",
+                    "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -463,7 +472,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard + Mouse",
-                    "action": "ConsumeHealthItem",
+                    "action": "ConsumeItem",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -474,9 +483,75 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "ConsumeHealthItem",
+                    "action": "ConsumeItem",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "MouseWheel",
+                    "id": "c3e6be8a-0a86-4722-9452-e63ee8a633b8",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NavigateUseItemUI",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Up",
+                    "id": "20258d73-7202-4aa2-ab95-2c04dc78159b",
+                    "path": "<Mouse>/scroll/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "NavigateUseItemUI",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Down",
+                    "id": "c21a2d3c-2328-43dc-8d80-f764f79a5bd0",
+                    "path": "<Mouse>/scroll/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "NavigateUseItemUI",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "GamepadButtons",
+                    "id": "0c4d2296-b541-45f1-88cf-9a4bba15c8d3",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NavigateUseItemUI",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "27f835bc-8022-4370-bf01-1fa66979b339",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "NavigateUseItemUI",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "497becf4-f72f-4f7f-81f2-8f24d6a4e0d3",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "NavigateUseItemUI",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },

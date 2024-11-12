@@ -13,7 +13,6 @@ namespace Ivayami.Player {
 
         private List<InventoryItemStack> _itemList = new List<InventoryItemStack>();
         [SerializeField] private Sprite[] _itemTypeDefaultIcons;
-        [field: SerializeField] public string HealthItemId { get; private set; }
         public Dictionary<ItemType, Sprite> ItemTypeDefaultIcons { get; private set; } = new Dictionary<ItemType, Sprite>();
 
         private int _checkInventoryIndexCache;

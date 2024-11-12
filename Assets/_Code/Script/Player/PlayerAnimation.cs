@@ -24,6 +24,7 @@ namespace Ivayami.Player {
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
         private static int HOLDING = Animator.StringToHash("Holding");
         private static int GETUP = Animator.StringToHash("GetUp");
+        private static int USEMP3 = Animator.StringToHash("UseMP3");
 
         private Animator _animator;
 
@@ -95,6 +96,11 @@ namespace Ivayami.Player {
                 _animator.SetLayerWeight(2, 1 - (currentValue / _startTiredAnimThreshold));
             }
             else _animator.SetLayerWeight(2, 0);
+        }
+
+        public void UseMP3(bool isActive)
+        {
+            _animator.SetBool(USEMP3, isActive);
         }
 
     }

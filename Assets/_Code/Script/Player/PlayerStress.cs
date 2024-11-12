@@ -19,7 +19,6 @@ namespace Ivayami.Player {
         [SerializeField] private float _stressMax;
         private float _stressCurrent;
         [SerializeField] private float _stressRelieveDelay;
-        [SerializeField, Range(0, 1), Tooltip("Stress relive based on current stress value")] private float _stressRelieveOnItemUsed;
         private float _stressRelieveDelayTimer;
         private bool _pauseStressRelieve = false;
 
@@ -128,11 +127,6 @@ namespace Ivayami.Player {
             SceneController.Instance.LoadScene("BaseTerrain", onSceneLoaded);
             SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
             PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
-        }
-
-        public void ReliveStressByItem()
-        {
-            AddStress(_stressCurrent * -_stressRelieveOnItemUsed);
         }
 
         public void UpdateAutoRegenerateStress(bool isActive)
