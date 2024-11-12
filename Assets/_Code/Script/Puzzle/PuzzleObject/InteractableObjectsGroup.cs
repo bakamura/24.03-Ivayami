@@ -104,7 +104,7 @@ namespace Ivayami.Puzzle
 
         private void UpdateUI(bool isActive)
         {
-            _canvasGroup.alpha = isActive ? 1 : 0;
+            //_canvasGroup.alpha = isActive ? 1 : 0;
             _canvasGroup.blocksRaycasts = isActive;
             _canvasGroup.interactable = isActive;
             if (isActive)
