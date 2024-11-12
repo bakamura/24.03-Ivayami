@@ -26,7 +26,7 @@ namespace Ivayami.Puzzle
             EditorGUILayout.PropertyField(onCancelInteraction, new GUIContent("On Cancel Interaction"));
 
             if (Application.isPlaying && GUILayout.Button("SaveUIChangesDuringPlay")) Save();
-            if (!Application.isPlaying && GUILayout.Button("LoadUIChangesDuringPlay")) Load();
+            if (!Application.isPlaying && File.Exists($"{Application.persistentDataPath}/ChangesDuringPlay") && GUILayout.Button("LoadUIChangesDuringPlay")) Load();
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -41,7 +41,6 @@ namespace Ivayami.Puzzle
 
         private void Save()
         {
-            if (!Application.isPlaying) return;
             InteractableObjectsGroup instance = target as InteractableObjectsGroup;
             Button[] btns = instance.GetComponentInChildren<CanvasGroup>().GetComponentsInChildren<Button>();
             ButtonChanges changes = new ButtonChanges();
@@ -57,7 +56,6 @@ namespace Ivayami.Puzzle
         }
         private void Load()
         {
-            if (Application.isPlaying || !File.Exists($"{Application.persistentDataPath}/ChangesDuringPlay")) return;
             InteractableObjectsGroup instance = target as InteractableObjectsGroup;
             Button[] btns = instance.GetComponentInChildren<CanvasGroup>().GetComponentsInChildren<Button>();
             ButtonChanges changes = JsonUtility.FromJson<ButtonChanges>(File.ReadAllText($"{Application.persistentDataPath}/ChangesDuringPlay"));
