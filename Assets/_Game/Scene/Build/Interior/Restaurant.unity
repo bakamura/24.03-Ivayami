@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1971556980}
-  m_IndirectSpecularColor: {r: 0.040684536, g: 0.04780908, b: 0.0629266, a: 1}
+  m_IndirectSpecularColor: {r: 0.040639684, g: 0.047823314, b: 0.06296477, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -3622,18 +3622,6 @@ MonoBehaviour:
     unityEvent:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
-          m_MethodName: LockInput
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
         - m_Target: {fileID: 1060351133}
           m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
           m_MethodName: FadeIn
@@ -13293,6 +13281,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: fa67943ef27800144ae2d9bc1bd0e032, type: 2}
   _dialogueName: 2.CollectKeyInTrash
   _activateOnce: 1
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!65 &408115510
 BoxCollider:
@@ -18791,19 +18780,7 @@ MonoBehaviour:
   _teleportTarget: {fileID: 0}
   _onTeleportEnd:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1868306011}
-        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
-        m_MethodName: UnloadScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   _gizmoSize: 0.2
 --- !u!1001 &594658638
@@ -21049,6 +21026,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: 01ccfe216d487584188dd2207eaed01d, type: 2}
   _dialogueName: 1.RestaurantOwner
   _activateOnce: 1
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!1001 &660819286
 PrefabInstance:
@@ -26709,7 +26687,6 @@ Transform:
   - {fileID: 238531083}
   - {fileID: 73618038}
   - {fileID: 1731560639}
-  - {fileID: 1812801788}
   - {fileID: 1390374423}
   - {fileID: 1920328848}
   - {fileID: 952565101}
@@ -30041,6 +30018,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: 4511f63d38b180a45bdb3cd6a1045deb, type: 2}
   _dialogueName: RestaurantOwnerBeforeCollectKey
   _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!1 &860573416 stripped
 GameObject:
@@ -31132,6 +31110,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: 4273cdc4c2037ce4b8c972fcbfba9e35, type: 2}
   _dialogueName: 3.RestaurantExit
   _activateOnce: 1
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!4 &909629488
 Transform:
@@ -35688,6 +35667,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: f1874465077daf84fbb60e83873e7ac7, type: 2}
   _dialogueName: RestaurantOwnerAfterCollectKey
   _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!4 &1031448661
 Transform:
@@ -55097,7 +55077,7 @@ Animator:
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 22100000, guid: 1fe37e0124621aa4f8415b8fced138e3, type: 2}
-  m_CullingMode: 0
+  m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
@@ -56913,7 +56893,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1602334074}
+      addedObject: {fileID: 1602334078}
   m_SourcePrefab: {fileID: 100100000, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
 --- !u!4 &1602334072 stripped
 Transform:
@@ -56925,8 +56905,8 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
   m_PrefabInstance: {fileID: 1602334071}
   m_PrefabAsset: {fileID: 0}
---- !u!136 &1602334074
-CapsuleCollider:
+--- !u!65 &1602334078
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -56943,11 +56923,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.4
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
+  serializedVersion: 3
+  m_Size: {x: 1.7859049, y: 2.3733368, z: 1.8244934}
+  m_Center: {x: 0.036313176, y: 0.6866684, z: -0.31581116}
 --- !u!1001 &1605474792
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -64392,38 +64370,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2669645b32624b34bad4251cdccfcc81, type: 3}
   m_PrefabInstance: {fileID: 1483680983}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1812801787
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1812801788}
-  m_Layer: 0
-  m_Name: SceneLoaders
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
---- !u!4 &1812801788
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1812801787}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1868306012}
-  m_Father: {fileID: 811883833}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1813420574
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -65861,6 +65807,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: e48ab910482ab124ca85fbb3551922a7, type: 2}
   _dialogueName: RestaurantOwnerGettingOut
   _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!4 &1855362149
 Transform:
@@ -65965,62 +65912,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c675d0f176b6d8141be079c735fe0f8d, type: 3}
   m_PrefabInstance: {fileID: 1861452162}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1868306010
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1868306012}
-  - component: {fileID: 1868306011}
-  m_Layer: 0
-  m_Name: Restaurant
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
---- !u!114 &1868306011
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1868306010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _sceneId: Restaurant
-  _onSceneLoad:
-    m_PersistentCalls:
-      m_Calls: []
-  _onSceneUnload:
-    m_PersistentCalls:
-      m_Calls: []
-  _onAllScenesRequestEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  _drawGizmos: 0
-  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
---- !u!4 &1868306012
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1868306010}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1812801788}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1877368169
 GameObject:
   m_ObjectHideFlags: 0
