@@ -21,7 +21,7 @@ namespace Ivayami.Puzzle
             });
             ButtonEventsCustom events = GetComponent<ButtonEventsCustom>();
             events.OnSelectSelectable.AddListener((call) => puzzleGroup.SetCurrentSelected(this));
-            events.OnPointerEnterSelectable.AddListener((call) => puzzleGroup.SetCurrentSelected(this));
+            events.OnPointerEnterSelectable.AddListener((call) => Button.Select());
         }
     }
 }
