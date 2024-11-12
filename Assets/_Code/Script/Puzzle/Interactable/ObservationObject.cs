@@ -47,11 +47,13 @@ namespace Ivayami.Puzzle
             if (isActive)
             {
                 _exitInput.action.performed += HandleExitInput;
+                PlayerMovement.Instance.ToggleMovement(nameof(ObservationObject), false);
                 PlayerActions.Instance.ChangeInputMap("Menu");
             }
             else
             {
                 _exitInput.action.performed -= HandleExitInput;
+                PlayerMovement.Instance.ToggleMovement(nameof(ObservationObject), true);
                 PlayerActions.Instance.ChangeInputMap("Player");
             }
         }

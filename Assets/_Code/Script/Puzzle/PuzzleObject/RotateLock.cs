@@ -33,13 +33,13 @@ namespace Ivayami.Puzzle
                 //Cursor.lockState = CursorLockMode.Locked;
                 navegationUIInput.action.performed += HandleNavigateUI;
                 _lock.InteratctableFeedbacks.UpdateFeedbacks(false, true);
-                _currentBtn.InteratctableHighlight.UpdateFeedbacks(true);
+                _currentBtn.InteratctableFeedbacks.UpdateFeedbacks(true);
             }
             else
             {
                 //Cursor.lockState = CursorLockMode.None;
                 navegationUIInput.action.performed -= HandleNavigateUI;
-                _currentBtn.InteratctableHighlight.UpdateFeedbacks(false);
+                _currentBtn.InteratctableFeedbacks.UpdateFeedbacks(false);
             }
         }
 
@@ -85,9 +85,9 @@ namespace Ivayami.Puzzle
 
         public void SetCurrentSelected(RotateLockButton btn)
         {
-            if (_currentBtn) _currentBtn.InteratctableHighlight.UpdateFeedbacks(false);
+            if (_currentBtn) _currentBtn.InteratctableFeedbacks.UpdateFeedbacks(false);
             _currentBtn = btn;
-            _currentBtn.InteratctableHighlight.UpdateFeedbacks(true);
+            _currentBtn.InteratctableFeedbacks.UpdateFeedbacks(true);
         }
 
         //private void OnValidate()
