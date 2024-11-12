@@ -8,7 +8,7 @@ namespace Ivayami.Puzzle
 {
     [RequireComponent(typeof(InteractableFeedbacks))]
     public class InteractableObjectsGroup : MonoBehaviour, IInteractable
-    {        
+    {
         [SerializeField] private InputActionReference _cancelInteractionInput;
         [SerializeField] private ButtonData[] _options;
 
@@ -111,7 +111,7 @@ namespace Ivayami.Puzzle
             {
                 if (!_currentBtn) _options[0].PuzzleButton.Button.Select();
                 else _currentBtn.Button.Select();
-            }               
+            }
         }
 
         private void HandleCancelInteraction(InputAction.CallbackContext obj)
@@ -128,7 +128,7 @@ namespace Ivayami.Puzzle
             _onCancelInteraction?.Invoke();
         }
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR        
         private void OnValidate()
         {
             if (_options == null) return;
