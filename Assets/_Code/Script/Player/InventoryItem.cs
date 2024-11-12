@@ -8,7 +8,7 @@ namespace Ivayami.Player {
         [field: SerializeField] public string DisplayName { get; protected set; }
         [field: SerializeField] public string Description { get; private set; }
         [field: SerializeField] public ItemType Type { get; protected set; }
-        [field : SerializeField] public ItemUsageAction UsageAction { get; protected set; }
+        [field : SerializeField, Tooltip("Only supported when the item type is Consumable")] public ItemUsageAction UsageAction { get; protected set; }
         [field: SerializeField] public Sprite Sprite { get; private set; }
         [field: SerializeField] public GameObject Model { get; private set; }
 
