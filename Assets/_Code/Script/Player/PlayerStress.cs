@@ -23,6 +23,7 @@ namespace Ivayami.Player {
         private bool _pauseStressRelieve = false;
 
         public float MaxStress => _stressMax;
+        public float StressCurrent => _stressCurrent;
 
         [Header("Fail")]
 
@@ -125,7 +126,7 @@ namespace Ivayami.Player {
             onSceneLoaded.AddListener(() => SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport());
             SceneController.Instance.LoadScene("BaseTerrain", onSceneLoaded);
             SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
-            PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
+            PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
         }
 
         public void UpdateAutoRegenerateStress(bool isActive)
