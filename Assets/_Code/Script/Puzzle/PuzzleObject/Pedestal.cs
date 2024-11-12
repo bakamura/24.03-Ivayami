@@ -6,15 +6,17 @@ using UnityEngine.InputSystem;
 
 namespace Ivayami.Puzzle
 {
-    [RequireComponent(typeof(InteractableFeedbacks), typeof(ActivatorAnimated), typeof(InteractableSounds))]
+    [RequireComponent(typeof(InteractableFeedbacks), typeof(InteractableSounds))]
     public class Pedestal : Activator, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
         [SerializeField] private DeliverUI _deliverUI;
         [SerializeField] private Transform _itemVisualPosition;
         [SerializeField] private InventoryItem _itemToStart;
+        [SerializeField] private UnityEvent _onItemCollected;
         [SerializeField] private UnityEvent _onDeliverUIOpen;
-        [SerializeField] private UnityEvent _onCancelInteraction;
+        [SerializeField] private UnityEvent _onExitInteraction;
+
         private ActivatorAnimated _activatorAnimated;
         private InteractableFeedbacks _interactableFeedbacks;
         private InteractableSounds _interactableSounds;
@@ -38,6 +40,8 @@ namespace Ivayami.Puzzle
             }
         }
 
+        public void ForceInteract() => Interact();
+
         public PlayerActions.InteractAnimation Interact()
         {
             if (_currentItem)
@@ -47,6 +51,7 @@ namespace Ivayami.Puzzle
                 _deliverUI.RevertItemDeliver(_currentItem);
                 DeactivatePedestal();
                 _currentItem = null;
+                _onItemCollected?.Invoke();
             }
             else
             {
@@ -68,7 +73,7 @@ namespace Ivayami.Puzzle
             _cancelInteractionInput.action.performed -= HandleExitInteraction;
             _deliverUI.UpdateUI(false);
             _interactableFeedbacks.UpdateFeedbacks(true, true);
-            _onCancelInteraction?.Invoke();
+            _onExitInteraction?.Invoke();
         }
 
         private void HandleItemDeliver(InventoryItem item)
