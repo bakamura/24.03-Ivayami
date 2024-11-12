@@ -17,7 +17,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private InputActionReference _navigateUIInput;
         [SerializeField] private byte _requestAmountToComplete = 1;
         [SerializeField] private bool _skipDeliverUI;
-        [SerializeField, Tooltip("Will auto use any item")] private bool _deliverAnyItem;
+        [SerializeField] private bool _deliverAnyItem;
         [SerializeField] private ItemRequestData[] _itemsRequired;
         //[SerializeField, Tooltip("Needs to always contain an odd number off child objects")] private RectTransform _deliverOptionsContainer;
         [SerializeField] private Image[] _deliverItemOptionsIcon;

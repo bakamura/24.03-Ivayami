@@ -7,12 +7,13 @@ namespace Ivayami.Dialogue
         [SerializeField] private Dialogue _dialogue;
         [SerializeField, ReadOnly] private string _dialogueName;
         [SerializeField] private bool _activateOnce;
+        [SerializeField] private bool _deactivateObjectOnFirstActivate;
         [SerializeField] private bool _lockPlayerInput;
         private bool _activated;
 
         private void Start()
         {
-            if (_dialogue) Resources.UnloadAsset(_dialogue);            
+            if (_dialogue) Resources.UnloadAsset(_dialogue);
         }
 
         [ContextMenu("StartDialogue")]
@@ -48,6 +49,7 @@ namespace Ivayami.Dialogue
         private void OnTriggerEnter(Collider other)
         {
             StartDialogue();
+            if (_deactivateObjectOnFirstActivate && _activateOnce && _activated) gameObject.SetActive(false);
         }
 
 #if UNITY_EDITOR
