@@ -104,7 +104,7 @@ namespace Ivayami.Puzzle
 
         private void UpdateUI(bool isActive)
         {
-            //_canvasGroup.alpha = isActive ? 1 : 0;
+            _canvasGroup.alpha = isActive ? 1 : 0;
             _canvasGroup.blocksRaycasts = isActive;
             _canvasGroup.interactable = isActive;
             if (isActive)
@@ -136,6 +136,18 @@ namespace Ivayami.Puzzle
             {
                 if (_options[i].InteractableObject && !_options[i].InteractableObject.TryGetComponent<IInteractable>(out _))
                     _options[i].InteractableObject = null;
+            }
+        }
+
+        public void UpdateButtonsArray()
+        {
+            InteractableObjectsGroupButton[] btns = _canvasGroup.GetComponentsInChildren<InteractableObjectsGroupButton>();
+            if (btns == null) return;
+            if (_options == null) _options = new ButtonData[btns.Length];
+            else Array.Resize(ref _options, btns.Length);
+            for (int i = 0; i < _options.Length; i++)
+            {
+                _options[i].PuzzleButton = btns[i];
             }
         }
 #endif
