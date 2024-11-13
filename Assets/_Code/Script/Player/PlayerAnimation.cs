@@ -17,14 +17,16 @@ namespace Ivayami.Player {
         private static int MOVE_X = Animator.StringToHash("MoveX");
         private static int MOVE_Y = Animator.StringToHash("MoveY");
         private static int CROUCH = Animator.StringToHash("Crouch");
-        private static Dictionary<PlayerActions.InteractAnimation, int> INTERACT_DICTIONARY = new Dictionary<PlayerActions.InteractAnimation, int> {
-            { PlayerActions.InteractAnimation.Default, Animator.StringToHash("Interact") },
-            { PlayerActions.InteractAnimation.EnterLocker, Animator.StringToHash("EnterLocker") },
-        };
+        private static int INTERACT = Animator.StringToHash("Interact");
+        //private static Dictionary<PlayerActions.InteractAnimation, int> INTERACT_DICTIONARY = new Dictionary<PlayerActions.InteractAnimation, int> {
+        //    { PlayerActions.InteractAnimation.Default, Animator.StringToHash("Interact") },
+        //    { PlayerActions.InteractAnimation.EnterLocker, Animator.StringToHash("EnterLocker") },
+        //};
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
         private static int HOLDING = Animator.StringToHash("Holding");
         private static int GETUP = Animator.StringToHash("GetUp");
         private static int USEMP3 = Animator.StringToHash("UseMP3");
+        private static int INTERACT_INDEX = Animator.StringToHash("InteractIndex");
 
         private Animator _animator;
 
@@ -61,12 +63,14 @@ namespace Ivayami.Player {
         }
 
         private void Interact(PlayerActions.InteractAnimation animation) {
-            if (INTERACT_DICTIONARY.ContainsKey(animation))
-                _animator.SetTrigger(INTERACT_DICTIONARY[animation]);            
-            else _animator.SetTrigger(INTERACT_DICTIONARY[PlayerActions.InteractAnimation.Default]);
+            _animator.SetFloat(INTERACT_INDEX, (int)animation);
+            _animator.SetTrigger(INTERACT);
+            //if (INTERACT_DICTIONARY.ContainsKey(animation))
+            //    _animator.SetTrigger(INTERACT_DICTIONARY[animation]);            
+            //else _animator.SetTrigger(INTERACT_DICTIONARY[PlayerActions.InteractAnimation.Default]);
         }
 
-        private void InteractLong(bool isInteracting) {
+        public void InteractLong(bool isInteracting) {
             _animator.SetBool(INTERACT_LONG, isInteracting);
         }
 
@@ -102,6 +106,5 @@ namespace Ivayami.Player {
         {
             _animator.SetBool(USEMP3, isActive);
         }
-
     }
 }

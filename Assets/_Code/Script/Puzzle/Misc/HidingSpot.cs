@@ -20,6 +20,7 @@ namespace Ivayami.Puzzle {
 
         [SerializeField] private Transform _animationPoint;
         [SerializeField] private PlayerMovement.HidingState _hiddenType;
+        [SerializeField] private PlayerActions.InteractAnimation _interactionType;
 
         [Header("Cache")]
 
@@ -36,13 +37,13 @@ namespace Ivayami.Puzzle {
 
         private void Start() {
             if (!PlayerActions.Instance || !PlayerAnimation.Instance) return;
-            _delayChangeCamera = new WaitForSeconds(PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.EnterLocker) - _hidingCam.Duration);
+            _delayChangeCamera = new WaitForSeconds(PlayerAnimation.Instance.GetInteractAnimationDuration(_interactionType) - _hidingCam.Duration);
         }
 
         public PlayerActions.InteractAnimation Interact() {
             if (PlayerMovement.Instance.hidingState == PlayerMovement.HidingState.None) {                
                 _hideCoroutine = StartCoroutine(HideRoutine());
-                return PlayerActions.InteractAnimation.EnterLocker;
+                return _interactionType;
             }
             else {
                 Debug.LogWarning($"Trying to interact with '{name}' while already hidden");
@@ -53,7 +54,8 @@ namespace Ivayami.Puzzle {
         private IEnumerator HideRoutine() {
             PlayerStress.Instance.onFail.AddListener(OnPlayerDeath);
             PlayerActions.Instance.ChangeInputMap("Menu");
-            Pause.Instance.ToggleCanPause(BLOCK_KEY, false);            
+            Pause.Instance.ToggleCanPause(BLOCK_KEY, false);
+            PlayerAnimation.Instance.InteractLong(true);
             _hidingCam.StartMovement();
             PlayerMovement.Instance.SetPosition(_animationPoint.position);
             PlayerMovement.Instance.SetTargetAngle(_animationPoint.eulerAngles.y);
@@ -73,23 +75,6 @@ namespace Ivayami.Puzzle {
             _hideCoroutine = null;
         }        
 
-        public void Exit() {
-            if (_inputActive)
-            {
-                _exitInput.action.started -= HandleExit;
-                PlayerMovement.Instance.ToggleMovement(nameof(HidingSpot), true);
-            }
-            _inputActive = false;
-            PlayerStress.Instance.onFail.RemoveListener(OnPlayerDeath);
-            PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
-            PlayerActions.Instance.ChangeInputMap("Player");
-            Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
-            InteratctableFeedbacks.UpdateFeedbacks(true, true);
-            PlayerAnimation.Instance.GoToIdle();
-
-            _hiddenCam.ExitDialogueCamera();
-        }
-
         private void OnPlayerDeath()
         {
             if (_inputActive)
@@ -103,6 +88,7 @@ namespace Ivayami.Puzzle {
             PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
             PlayerActions.Instance.ChangeInputMap("Player");
             Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
+            PlayerAnimation.Instance.InteractLong(false);
             if (_hideCoroutine != null)
             {
                 StopCoroutine(_hideCoroutine);
@@ -115,6 +101,25 @@ namespace Ivayami.Puzzle {
         private void HandleExit(InputAction.CallbackContext obj)
         {
             Exit();
+        }
+
+        public void Exit()
+        {
+            if (_inputActive)
+            {
+                _exitInput.action.started -= HandleExit;
+                PlayerMovement.Instance.ToggleMovement(nameof(HidingSpot), true);
+            }
+            _inputActive = false;
+            PlayerStress.Instance.onFail.RemoveListener(OnPlayerDeath);
+            PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
+            PlayerActions.Instance.ChangeInputMap("Player");
+            Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
+            InteratctableFeedbacks.UpdateFeedbacks(true, true);
+            PlayerAnimation.Instance.GoToIdle();
+            PlayerAnimation.Instance.InteractLong(false);
+
+            _hiddenCam.ExitDialogueCamera();
         }
     }
 }

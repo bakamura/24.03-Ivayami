@@ -42,6 +42,7 @@ namespace Ivayami.Player {
         public enum InteractAnimation {
             Default,
             EnterLocker,
+            EnterTrash,
             PullRope,
             PullLever,
             PushButton
@@ -65,6 +66,7 @@ namespace Ivayami.Player {
         //private RaycastHit _blockerHitCache;
         private IInteractable _interactableClosestCache;
         private WaitForSeconds _interactableCheckWait;
+        private InteractAnimation _interactAnimationCache;
 
         private const string INTERACT_LONG_BLOCK_KEY = "InteractLong";
 
@@ -93,20 +95,21 @@ namespace Ivayami.Player {
         }
 
         private void Interact(InputAction.CallbackContext input) {
-            if (PlayerMovement.Instance.CanMove) {
-                if (input.phase == InputActionPhase.Started) {
-                    if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
-                        InteractAnimation animation = InteractableTarget.Interact();
+            //if (PlayerMovement.Instance.CanMove) {
+                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove) {
+                    if (InteractableTarget != null /*&& InteractableTarget != Friend.Instance?.InteractableLongCurrent*/) {
+                        _interactAnimationCache = InteractableTarget.Interact();
                         Vector3 directionToInteractable = InteractableTarget.gameObject.transform.position - transform.position;
                         PlayerMovement.Instance.SetTargetAngle(Mathf.Atan2(directionToInteractable[0], directionToInteractable[2]) * Mathf.Rad2Deg, false);
                         if (InteractableTarget is IInteractableLong) {
                             PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
                             onInteractLong?.Invoke(true);
+                            onInteract?.Invoke(_interactAnimationCache);
 
                             Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
                         }
                         else {
-                            onInteract?.Invoke(animation);
+                            onInteract?.Invoke(_interactAnimationCache);
 
                             Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
                         }
@@ -114,13 +117,18 @@ namespace Ivayami.Player {
                     else Logger.Log(LogType.Player, $"Interact: No Target");
                 }
                 else if (input.phase == InputActionPhase.Canceled && Interacting) {
-                    if (InteractableTarget is IInteractableLong) PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, true);
+                if (InteractableTarget is IInteractableLong)
+                {
+                    PlayerMovement.Instance.BlockMovementFor("Wait Animation End", PlayerAnimation.Instance.GetInteractAnimationDuration(_interactAnimationCache));
+                    PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, true);
+                    Interacting = false;
+                }
                     (InteractableTarget as IInteractableLong).InteractStop();
                     onInteractLong?.Invoke(false);
 
                     Logger.Log(LogType.Player, $"Stop Interact Long with: {InteractableTarget.gameObject.name}");
                 }
-            }
+            //}
         }
 
         private IEnumerator InteractObjectDetect() {
