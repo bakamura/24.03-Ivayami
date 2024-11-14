@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using Cinemachine;
 using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
+using Ivayami.UI;
 
 namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -16,6 +17,7 @@ namespace Ivayami.Player {
         [SerializeField] private InputActionReference _interactInput;
         [SerializeField] private InputActionReference _abilityInput;
         [SerializeField] private InputActionReference _changeAbilityInput;
+        [SerializeField] private InputActionReference _useHealthItemInput;
         [SerializeField] private InputActionReference[] _pauseInputs;
         private InputActionMap _actionMapCurrent;
 
@@ -40,6 +42,7 @@ namespace Ivayami.Player {
         public enum InteractAnimation {
             Default,
             EnterLocker,
+            EnterTrash,
             PullRope,
             PullLever,
             PushButton
@@ -63,6 +66,7 @@ namespace Ivayami.Player {
         //private RaycastHit _blockerHitCache;
         private IInteractable _interactableClosestCache;
         private WaitForSeconds _interactableCheckWait;
+        private InteractAnimation _interactAnimationCache;
 
         private const string INTERACT_LONG_BLOCK_KEY = "InteractLong";
 
@@ -73,6 +77,7 @@ namespace Ivayami.Player {
             _interactInput.action.canceled += Interact;
             _abilityInput.action.started += Ability;
             _changeAbilityInput.action.started += ChangeAbility;
+            _useHealthItemInput.action.started += UseHealthItem;
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable();
 
             onInteractLong.AddListener((interacting) => Interacting = interacting);
@@ -81,7 +86,7 @@ namespace Ivayami.Player {
             _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
-        }
+        }        
 
         private void Start() {
             //_cam = PlayerCamera.Instance.MainCamera;
@@ -90,20 +95,21 @@ namespace Ivayami.Player {
         }
 
         private void Interact(InputAction.CallbackContext input) {
-            if (PlayerMovement.Instance.CanMove) {
-                if (input.phase == InputActionPhase.Started) {
-                    if (InteractableTarget != null && InteractableTarget != Friend.Instance?.InteractableLongCurrent) {
-                        InteractAnimation animation = InteractableTarget.Interact();
+            //if (PlayerMovement.Instance.CanMove) {
+                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove) {
+                    if (InteractableTarget != null /*&& InteractableTarget != Friend.Instance?.InteractableLongCurrent*/) {
+                        _interactAnimationCache = InteractableTarget.Interact();
                         Vector3 directionToInteractable = InteractableTarget.gameObject.transform.position - transform.position;
                         PlayerMovement.Instance.SetTargetAngle(Mathf.Atan2(directionToInteractable[0], directionToInteractable[2]) * Mathf.Rad2Deg, false);
                         if (InteractableTarget is IInteractableLong) {
                             PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
                             onInteractLong?.Invoke(true);
+                            onInteract?.Invoke(_interactAnimationCache);
 
                             Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
                         }
                         else {
-                            onInteract?.Invoke(animation);
+                            onInteract?.Invoke(_interactAnimationCache);
 
                             Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
                         }
@@ -111,13 +117,18 @@ namespace Ivayami.Player {
                     else Logger.Log(LogType.Player, $"Interact: No Target");
                 }
                 else if (input.phase == InputActionPhase.Canceled && Interacting) {
-                    if (InteractableTarget is IInteractableLong) PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, true);
+                if (InteractableTarget is IInteractableLong)
+                {
+                    PlayerMovement.Instance.BlockMovementFor("Wait Animation End", PlayerAnimation.Instance.GetInteractAnimationDuration(_interactAnimationCache));
+                    PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, true);
+                    Interacting = false;
+                }
                     (InteractableTarget as IInteractableLong).InteractStop();
                     onInteractLong?.Invoke(false);
 
                     Logger.Log(LogType.Player, $"Stop Interact Long with: {InteractableTarget.gameObject.name}");
                 }
-            }
+            //}
         }
 
         private IEnumerator InteractObjectDetect() {
@@ -214,6 +225,11 @@ namespace Ivayami.Player {
             return false;
         }
         #endregion
+
+        private void UseHealthItem(InputAction.CallbackContext obj)
+        {
+            if (PlayerUseItemUI.Instance) PlayerUseItemUI.Instance.UpdateUI();
+        }
 
         public void ChangeInputMap(string mapId) {
             _actionMapCurrent?.Disable();

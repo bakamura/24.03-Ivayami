@@ -274,7 +274,7 @@ namespace Ivayami.Player {
                 _speedCurrent = 0f;
                 onMovement?.Invoke(Vector2.zero);
             }
-            Logger.Log(LogType.Player, $"Movement Blockers {(canMove ? "Increase" : "Decrease")} to: {_movementBlock.Count}");
+            Logger.Log(LogType.Player, $"Movement Blockers {(canMove ? "Decrease" : "Increase")} to: {_movementBlock.Count}");
         }
 
         public void BlockMovementFor(string key, float seconds) {

@@ -11,7 +11,7 @@ namespace Ivayami.Puzzle
         [SerializeField, Min(0)] private int _optionsAmount;
         [SerializeField] private InteractableFeedbacks _interactableFeedback;
         [SerializeField] private ButtonDetails _buttonDetails;
-        public InteractableFeedbacks InteratctableHighlight => _interactableFeedback;
+        public InteractableFeedbacks InteratctableFeedbacks => _interactableFeedback;
         public Button Button { get; private set; }
         public Transform ButtonVisualTransform => _interactableFeedback.transform;
 
