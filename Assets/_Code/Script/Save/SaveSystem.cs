@@ -33,7 +33,7 @@ namespace Ivayami.Save {
             SavePoint.onSaveGame.AddListener(SaveProgress);
             PlayerInventory.Instance.onInventoryUpdate.AddListener((inventory) => {
                 Progress.inventory = new string[inventory.Length];
-                for(int i = 0; i < inventory.Length; i++) Progress.inventory[i] = inventory[i].name;
+                for(int i = 0; i < inventory.Length; i++) Progress.inventory[i] = JsonUtility.ToJson(new SaveProgress.ItemData(inventory[i]));
             });
         }
 
