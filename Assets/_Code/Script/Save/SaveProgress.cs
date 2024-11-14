@@ -98,6 +98,7 @@ namespace Ivayami.Save {
 
         public ItemData[] GetItemsData()
         {
+            if (inventory == null) return null;
             ItemData[] items = new ItemData[inventory.Length];
             for(int i = 0; i < items.Length; i++)
             {
