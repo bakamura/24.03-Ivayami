@@ -65,7 +65,7 @@ namespace Ivayami.Puzzle
         private void HandleExitInteraction(InputAction.CallbackContext obj)
         {
             ExitInteraction();
-            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.InteractReturn);            
+            _interactableSounds.PlaySound(InteractableSounds.SoundTypes.InteractReturn);
         }
 
         private void ExitInteraction()
@@ -80,6 +80,8 @@ namespace Ivayami.Puzzle
         {
             if (_currentItemVisual) Destroy(_currentItemVisual);
             _currentItemVisual = Instantiate(item.Model, _itemVisualPosition);
+            _currentItemVisual.transform.localScale = item.Model.transform.lossyScale;            
+            _currentItemVisual.transform.localRotation = Quaternion.Euler(-_itemVisualPosition.transform.localRotation.eulerAngles.x, 0, -_itemVisualPosition.transform.localRotation.eulerAngles.z);
             _currentItem = item;
             IsActive = true;
             ExitInteraction();
