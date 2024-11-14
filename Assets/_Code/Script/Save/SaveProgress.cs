@@ -17,6 +17,25 @@ namespace Ivayami.Save {
         public int[] roadBlockersState;
         public SerializableDictionary<string, string> saveObjects = new SerializableDictionary<string, string>();
 
+        [Serializable]
+        public class ItemData
+        {
+            public string ID;
+            public int Amount;
+
+            public ItemData(string id, int amount)
+            {
+                ID = id;
+                Amount = amount;
+            }
+
+            public ItemData(Ivayami.Player.PlayerInventory.InventoryItemStack itemStack)
+            {
+                ID = itemStack.Item.name;
+                Amount = itemStack.Amount;
+            }
+        }
+
         public SaveProgress(byte id) {
             this.id = id;
         }
@@ -75,6 +94,16 @@ namespace Ivayami.Save {
                 //data = null;
                 //return data;
             }
+        }
+
+        public ItemData[] GetItemsData()
+        {
+            ItemData[] items = new ItemData[inventory.Length];
+            for(int i = 0; i < items.Length; i++)
+            {
+                items[i] = JsonUtility.FromJson<ItemData>(inventory[i]);
+            }
+            return items;
         }
     }
 }

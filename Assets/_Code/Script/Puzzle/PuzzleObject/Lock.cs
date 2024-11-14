@@ -55,6 +55,8 @@ namespace Ivayami.Puzzle
             _unlockWait = new WaitForSeconds(_unlockDelay);
         }
 
+        public void ForceInteract() => Interact();
+
         [ContextMenu("Interact")]
         public PlayerActions.InteractAnimation Interact()
         {
@@ -120,6 +122,7 @@ namespace Ivayami.Puzzle
                         _clickInput.action.performed += HandleConfirmUI;
                     }
                 }
+                PlayerMovement.Instance.ToggleMovement(nameof(Lock), false);
                 PlayerActions.Instance.ChangeInputMap("Menu");
             }
             else
@@ -134,6 +137,7 @@ namespace Ivayami.Puzzle
                         _clickInput.action.performed -= HandleConfirmUI;
                     }
                 }
+                PlayerMovement.Instance.ToggleMovement(nameof(Lock), true);
                 PlayerActions.Instance.ChangeInputMap("Player");
             }
         }
