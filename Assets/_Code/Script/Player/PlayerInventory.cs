@@ -1,6 +1,4 @@
-#if UNITY_EDITOR
 using System;
-#endif
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -11,13 +9,26 @@ using Ivayami.Save;
 namespace Ivayami.Player {
     public class PlayerInventory : MonoSingleton<PlayerInventory> {
 
-        public UnityEvent<InventoryItem[]> onInventoryUpdate = new UnityEvent<InventoryItem[]>();
+        public UnityEvent<InventoryItemStack[]> onInventoryUpdate = new UnityEvent<InventoryItemStack[]>();
 
-        private List<InventoryItem> _itemList = new List<InventoryItem>();
+        private List<InventoryItemStack> _itemList = new List<InventoryItemStack>();
         [SerializeField] private Sprite[] _itemTypeDefaultIcons;
         public Dictionary<ItemType, Sprite> ItemTypeDefaultIcons { get; private set; } = new Dictionary<ItemType, Sprite>();
 
         private int _checkInventoryIndexCache;
+
+        [Serializable]
+        public struct InventoryItemStack
+        {
+            public InventoryItem Item;
+            public int Amount;
+
+            public InventoryItemStack(InventoryItem item, int amount)
+            {
+                Item = item;
+                Amount = amount;
+            }
+        }
 
         protected override void Awake() {
             base.Awake();
@@ -25,42 +36,57 @@ namespace Ivayami.Player {
             for (int i = 0; i < _itemTypeDefaultIcons.Length; i++) ItemTypeDefaultIcons.Add((ItemType)i, _itemTypeDefaultIcons[i]);
         }
 
-        public InventoryItem[] CheckInventory() {
+        public InventoryItemStack[] CheckInventory() {
             return _itemList.ToArray();
         }
 
-        public InventoryItem CheckInventoryFor(string itemId) {
-            _checkInventoryIndexCache = _itemList.FindIndex((inventoryItem) => inventoryItem.name == itemId);
-            return _checkInventoryIndexCache == -1 ? null : _itemList[_checkInventoryIndexCache];
+        public InventoryItemStack CheckInventoryFor(string itemId) {
+            _checkInventoryIndexCache = _itemList.FindIndex((inventoryItem) => inventoryItem.Item.name == itemId);
+            return _checkInventoryIndexCache == -1 ? new InventoryItemStack() : _itemList[_checkInventoryIndexCache];
         }
 
         public void AddToInventory(InventoryItem item, bool shouldEmphasize = false) {
-            _itemList.Add(item);
+            _checkInventoryIndexCache = _itemList.FindIndex((inventoryItem) => inventoryItem.Item.name == item.name);
+            if (_checkInventoryIndexCache == -1) _itemList.Add(new InventoryItemStack(item, 1));
+            else _itemList[_checkInventoryIndexCache] = new InventoryItemStack(_itemList[_checkInventoryIndexCache].Item, _itemList[_checkInventoryIndexCache].Amount + 1);
             onInventoryUpdate.Invoke(CheckInventory());
             InventoryItem itemTranslation = item.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
             if (shouldEmphasize) ItemEmphasisDisplay.Instance.DisplayItem(item.Sprite, itemTranslation.DisplayName, itemTranslation.Description);
             else InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite, itemTranslation.DisplayName);
 
-            Logger.Log(LogType.Player, $"Inventory Add: {item.DisplayName} ({item.name}) / {item.Type}");
+            Logger.Log(LogType.Player, $"Inventory Add: {item.DisplayName} ({item.name}) / {item.Type}. Current owned {_itemList[_checkInventoryIndexCache == -1 ? 0 : _checkInventoryIndexCache].Amount}");
         }
 
         public void RemoveFromInventory(InventoryItem item) {
-            _itemList.Remove(item);
+            _checkInventoryIndexCache = _itemList.FindIndex((inventoryItem) => inventoryItem.Item.name == item.name);
+            bool itemRemoved = false;
+            if (_checkInventoryIndexCache == -1) return;
+            else
+            {
+                _itemList[_checkInventoryIndexCache] = new InventoryItemStack(_itemList[_checkInventoryIndexCache].Item, _itemList[_checkInventoryIndexCache].Amount - 1);
+                if (_itemList[_checkInventoryIndexCache].Amount <= 0)
+                {
+                    itemRemoved = true;
+                    _itemList.RemoveAt(_checkInventoryIndexCache);
+                }
+            }
             onInventoryUpdate.Invoke(CheckInventory());
 
-            Logger.Log(LogType.Player, $"Inventory Remove: {item.DisplayName} ({item.name}) / {item.Type}");
+            Logger.Log(LogType.Player, $"Inventory Remove: {item.DisplayName} ({item.name}) / {item.Type}. Current owned {(itemRemoved ? 0 : _itemList[_checkInventoryIndexCache].Amount)}");
         }
 
-        public void LoadInventory(string[] itemNames) {
+        public void LoadInventory(SaveProgress.ItemData[] itemsData) {
             _itemList.Clear();
-            if (itemNames?.Length > 0) {
+            if (itemsData?.Length > 0) {
                 InventoryItem[] itemAssets = Resources.LoadAll<InventoryItem>($"Items/ENUS");
                 InventoryItem iterator;
-                foreach (string itemName in itemNames) {
-                    iterator = itemAssets.First(asset => asset.name == itemName);
-                    if (iterator != null) _itemList.Add(iterator);
-                    else new ReadableItem(itemName);
+                for(int i = 0; i < itemsData.Length; i++)
+                {
+                    iterator = itemAssets.First(asset => asset.name == itemsData[i].ID);
+                    if (iterator) _itemList.Add(new InventoryItemStack(iterator, itemsData[i].Amount));
+                    //else new ReadableItem(itemsData[i].ID);
                 }
+                Resources.UnloadUnusedAssets();
             }
         }
 
