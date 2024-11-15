@@ -7,7 +7,6 @@ using UnityEngine.InputSystem;
 using Cinemachine;
 using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
-using Ivayami.UI;
 
 namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -99,7 +98,7 @@ namespace Ivayami.Player {
                 if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove) {
                     if (InteractableTarget != null /*&& InteractableTarget != Friend.Instance?.InteractableLongCurrent*/) {
                         _interactAnimationCache = InteractableTarget.Interact();
-                        Vector3 directionToInteractable = InteractableTarget.gameObject.transform.position - transform.position;
+                        Vector3 directionToInteractable = InteractableTarget.InteratctableFeedbacks.IconPosition - transform.position;
                         PlayerMovement.Instance.SetTargetAngle(Mathf.Atan2(directionToInteractable[0], directionToInteractable[2]) * Mathf.Rad2Deg, false);
                         if (InteractableTarget is IInteractableLong) {
                             PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
