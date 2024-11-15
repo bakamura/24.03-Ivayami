@@ -24,7 +24,7 @@ namespace Ivayami.Puzzle
         }
         private InteractableSounds m_interactableSounds;
 
-        public InteractableFeedbacks InteratctableHighlight
+        public InteractableFeedbacks InteratctableFeedbacks
         {
             get
             {
@@ -36,7 +36,7 @@ namespace Ivayami.Puzzle
         public PlayerActions.InteractAnimation Interact()
         {
             UpdateInputs(true);
-            InteratctableHighlight.UpdateFeedbacks(false, true);
+            InteratctableFeedbacks.UpdateFeedbacks(false, true);
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             _onInteract?.Invoke();
             return PlayerActions.InteractAnimation.Default;
@@ -47,11 +47,13 @@ namespace Ivayami.Puzzle
             if (isActive)
             {
                 _exitInput.action.performed += HandleExitInput;
+                PlayerMovement.Instance.ToggleMovement(nameof(ObservationObject), false);
                 PlayerActions.Instance.ChangeInputMap("Menu");
             }
             else
             {
                 _exitInput.action.performed -= HandleExitInput;
+                PlayerMovement.Instance.ToggleMovement(nameof(ObservationObject), true);
                 PlayerActions.Instance.ChangeInputMap("Player");
             }
         }
@@ -59,7 +61,7 @@ namespace Ivayami.Puzzle
         private void HandleExitInput(InputAction.CallbackContext context)
         {
             UpdateInputs(false);
-            InteratctableHighlight.UpdateFeedbacks(true, true);
+            InteratctableFeedbacks.UpdateFeedbacks(true, true);
             _onExitInteraction?.Invoke();
         }
     }

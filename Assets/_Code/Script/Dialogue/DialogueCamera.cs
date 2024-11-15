@@ -87,7 +87,8 @@ namespace Ivayami.Dialogue
                     count += Time.deltaTime / _currentDuration;
                     yield return null;
                 }
-            }
+                TeleportCameraToPositionAndRotation();
+            }            
             RecalculateCameraOrientation();
             _animationCoroutine = null;
         }

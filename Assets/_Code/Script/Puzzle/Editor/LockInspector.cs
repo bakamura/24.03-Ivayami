@@ -8,15 +8,13 @@ namespace Ivayami.Puzzle
     public class LockInspector : Editor
     {
         SerializedProperty cancelInteractionInput, interactionType, confirmInput, clickInput, unlockDelay,
-            itemsRequired, requestAmountToComplete, skipDeliverUI, deliverItemsUI, deliverOptions,/*deliverOptionsContainer,*/ navigateUIInput, deliverBtn, /*onItemDeliverFailed,*/
-            passwordUI,
+            passwordUI, deliveryUI,
             onInteract, onCancelInteraction, onActivate, onInteractionFailed;
         public override void OnInspectorGUI()
         {
             GUILayout.Label("INPUTS", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
             EditorGUILayout.PropertyField(cancelInteractionInput, new GUIContent("Cancel Interaction Input"));
-            EditorGUILayout.PropertyField(navigateUIInput, new GUIContent("Navigate UI Input"));
             EditorGUILayout.PropertyField(confirmInput, new GUIContent("Confirm Input"));
             EditorGUILayout.PropertyField(clickInput, new GUIContent("Click Input"));
             EditorGUILayout.Space(10);
@@ -29,14 +27,7 @@ namespace Ivayami.Puzzle
             {
                 case Lock.InteractionTypes.RequireItems:
                     EditorGUI.indentLevel++;
-                    EditorGUILayout.PropertyField(requestAmountToComplete, new GUIContent("Requests Required To Complete"));
-                    EditorGUILayout.PropertyField(skipDeliverUI, new GUIContent("Skip Deliver UI"));
-                    EditorGUILayout.PropertyField(itemsRequired, new GUIContent("Items Required To Unlock"));
-                    EditorGUILayout.PropertyField(deliverItemsUI, new GUIContent("Deliver Item UI"));
-                    //EditorGUILayout.PropertyField(deliverOptionsContainer, new GUIContent("Items Icons Container"));
-                    EditorGUILayout.PropertyField(deliverOptions, new GUIContent("Deliver Item Icons"));
-                    EditorGUILayout.PropertyField(deliverBtn, new GUIContent("Deliver Button"));
-                    //EditorGUILayout.PropertyField(onItemDeliverFailed, new GUIContent("On Item Deliver Failed"));
+                    EditorGUILayout.PropertyField(deliveryUI, new GUIContent("Deliver UI"));
                     break;
                 case Lock.InteractionTypes.RequirePassword:
                     EditorGUI.indentLevel++;
@@ -50,8 +41,8 @@ namespace Ivayami.Puzzle
             EditorGUILayout.Space(5);
             EditorGUILayout.PropertyField(onInteract, new GUIContent("On Interact"));
             EditorGUILayout.PropertyField(onCancelInteraction, new GUIContent("On Cancel Interaction"));
-            EditorGUILayout.PropertyField(onActivate, new GUIContent("On Interaction Complete"));
-            EditorGUILayout.PropertyField(onInteractionFailed, new GUIContent("On Interaction Failed"));
+            EditorGUILayout.PropertyField(onActivate, new GUIContent("On Puzzle Complete"));
+            EditorGUILayout.PropertyField(onInteractionFailed, new GUIContent("On Puzzle Failed"));
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -60,19 +51,11 @@ namespace Ivayami.Puzzle
         {
             cancelInteractionInput = serializedObject.FindProperty("_cancelInteractionInput");
             interactionType = serializedObject.FindProperty("_interactionType");
-            requestAmountToComplete = serializedObject.FindProperty("_requestAmountToComplete");
-            skipDeliverUI = serializedObject.FindProperty("_skipDeliverUI");
             unlockDelay = serializedObject.FindProperty("_unlockDelay");
             confirmInput = serializedObject.FindProperty("_confirmInput");
             clickInput = serializedObject.FindProperty("_clickInput");
-            itemsRequired = serializedObject.FindProperty("_itemsRequired");
-            deliverItemsUI = serializedObject.FindProperty("_deliverItemsUI");
-            //deliverOptionsContainer = serializedObject.FindProperty("_deliverOptionsContainer");
-            deliverOptions = serializedObject.FindProperty("_deliverOptions");
-            navigateUIInput = serializedObject.FindProperty("_navigateUIInput");
-            deliverBtn = serializedObject.FindProperty("_deliverBtn");
-            //onItemDeliverFailed = serializedObject.FindProperty("_onItemDeliverFailed");
             passwordUI = serializedObject.FindProperty("_passwordUI");
+            deliveryUI = serializedObject.FindProperty("_deliveryUI");
             onInteract = serializedObject.FindProperty("_onInteract");
             onCancelInteraction = serializedObject.FindProperty("_onCancelInteraction");
             onActivate = serializedObject.FindProperty("onActivate");

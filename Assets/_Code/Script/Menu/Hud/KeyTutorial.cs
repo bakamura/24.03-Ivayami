@@ -1,7 +1,7 @@
-using Ivayami.Puzzle;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Ivayami.Player;
 
 namespace Ivayami.UI {
     [RequireComponent(typeof(Fade))]
@@ -19,11 +19,8 @@ namespace Ivayami.UI {
             _fadeUI = GetComponentInChildren<Fade>();
         }
 
-        private void Start() {
-        }
-
         private void OnDestroy() {
-            if (_icon.enabled) {
+            if (_icon.enabled && Pause.Instance && InputCallbacks.Instance) {
                 _actionIndicator.action.performed -= KeyPressed;
                 Pause.Instance.onPause.RemoveListener(IconDisable);
                 Pause.Instance.onUnpause.RemoveListener(IconEnable);

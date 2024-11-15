@@ -35,7 +35,7 @@ namespace Ivayami.UI {
 
         private void EnterSaveWaitFadeIn() {
             SaveSystem.Instance.LoadProgress(_id, () => {
-                PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
+                PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
 
                 SaveSelector.Instance.MainMenuUnloader.UnloadScene();
                 if (_isFirstTime) {
@@ -51,6 +51,7 @@ namespace Ivayami.UI {
 
         private void TeleportPlayer() {
             SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
+            PlayerActions.Instance.ChangeInputMap("Player");
             SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayer;
         }
 

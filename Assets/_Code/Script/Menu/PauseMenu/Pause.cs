@@ -61,5 +61,11 @@ namespace Ivayami.UI {
             Logger.Log(LogType.UI, $"Puase blockers {(canPause ? "Increase" : "Decrease")} to: {_pauseBlocker.Count}");
         }
 
+        public void RemoveAllBlockers()
+        {
+            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+            _pauseBlocker.Clear();
+        }
+
     }
 }

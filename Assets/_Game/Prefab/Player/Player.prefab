@@ -270,10 +270,18 @@ MonoBehaviour:
   onCrouch:
     m_PersistentCalls:
       m_Calls: []
+  onStaminaUpdate:
+    m_PersistentCalls:
+      m_Calls: []
   _movementSpeedRun: 4.5
   _movementSpeedWalk: 2
   _accelerationDuration: 0.125
   _deccelerationDuration: 0.0625
+  _maxStamina: 100
+  _minStaminaToRun: 0.1
+  _staminaDepletionRate: 0.1
+  _staminaRegenerationRate: 0.1
+  _staminaDepletionStressThreshold: 0.5
   _visualTransform: {fileID: 2181725685440365708}
   _turnSmoothFactor: 0.175
   _walkColliderHeight: 1.75
@@ -306,6 +314,7 @@ MonoBehaviour:
   _interactInput: {fileID: -960142445056486336, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _abilityInput: {fileID: -5270376362144915007, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _changeAbilityInput: {fileID: -4199026391873933470, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
+  _useHealthItemInput: {fileID: -3194707390766011132, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _pauseInputs:
   - {fileID: -289706603977083587, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   - {fileID: -1037600358843939453, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
@@ -373,6 +382,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _itemTypeDefaultIcons:
+  - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
+  - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
   - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
   - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
   - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
@@ -1248,7 +1259,7 @@ Animator:
   m_GameObject: {fileID: 1516828375664336438}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: af1b416aff34d0b4eb5bfebf9411abb9, type: 2}
+  m_Controller: {fileID: 9100000, guid: a58a20f9a674fea4886a32367c3ec410, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1271,9 +1282,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9afca3879bb863e4abdb04d0a4c00609, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _startTiredAnimThreshold: 0.1
   _interactAnimations:
   - {fileID: 1701519168366769839, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
   - {fileID: 4866158927099243651, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+  - {fileID: -5374507017704117377, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
 --- !u!114 &1145761265743361691
 MonoBehaviour:
   m_ObjectHideFlags: 0

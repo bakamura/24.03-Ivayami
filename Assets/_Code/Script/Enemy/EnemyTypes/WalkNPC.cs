@@ -12,7 +12,7 @@ namespace Ivayami.Enemy
         [SerializeField] private bool _lookAtPlayerOnStart;
         [SerializeField] private EnemyWalkArea _fixedWalkArea;
         [SerializeField, Min(0f)] private float _minDistanceFromPathPoint;
-        [SerializeField] private EnemyWalkArea.PathCallback[] _pathsCallback;
+        [SerializeField, Tooltip("Does Not suport the RandomPoints option in the PatrolBehaviour")] private EnemyWalkArea.PathCallback[] _pathsCallback;
 
         private WaitForSeconds _delay = new WaitForSeconds(_tick);
         private EnemyAnimator _animator;
@@ -30,6 +30,7 @@ namespace Ivayami.Enemy
         {
             if (_navMeshAgent) return;
             _navMeshAgent = GetComponent<NavMeshAgent>();
+            _navMeshAgent.enabled = true;
             _animator = GetComponentInChildren<EnemyAnimator>();
             if (_fixedWalkArea)
             {

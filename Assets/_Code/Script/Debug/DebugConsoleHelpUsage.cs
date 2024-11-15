@@ -1,0 +1,50 @@
+using UnityEngine;
+using IngameDebugConsole;
+using UnityEngine.InputSystem;
+using Ivayami.Player;
+using System.Linq;
+
+namespace Ivayami.debug
+{
+    public sealed class DebugConsoleHelpUsage : MonoBehaviour
+    {
+        private PlayerInput _playerInput;
+        private InputActionMap _previousMap;
+        private InputActionMap _menuMap;
+        private CursorLockMode _previousMode;
+
+        void Start()
+        {
+            if (!PlayerActions.Instance) return;
+            _playerInput = PlayerActions.Instance.GetComponent<PlayerInput>();
+            _menuMap = _playerInput.actions.actionMaps.FirstOrDefault(x => x.name == "Menu");
+            DebugLogManager.Instance.OnLogWindowShown += HandleWindowShow;
+            DebugLogManager.Instance.OnLogWindowHidden += HandleWindowClose;
+        }
+
+        private void HandleWindowClose()
+        {
+            for (int i = 1; i <= 5; i++)
+            {
+                _menuMap.actions[i].Disable();
+            }
+            _previousMap.Enable();
+            Cursor.lockState = _previousMode;
+        }
+
+        private void HandleWindowShow()
+        {
+            _previousMap = _playerInput.currentActionMap;
+            _previousMode = Cursor.lockState;
+            foreach (InputActionMap map in _playerInput.actions.actionMaps)
+            {
+                map.Disable();
+            }
+            for (int i = 1; i <= 5; i++)
+            {
+                _menuMap.actions[i].Enable();
+            }
+            Cursor.lockState = CursorLockMode.None;
+        }
+    }
+}

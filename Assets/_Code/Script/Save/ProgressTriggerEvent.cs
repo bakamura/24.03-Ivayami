@@ -39,6 +39,7 @@ namespace Ivayami.Save
 
         public void TryTrigger()
         {
+            if (!SaveSystem.Instance || SaveSystem.Instance.Progress == null) return;
             for (int i = 0; i < _progressConditions.Length; i++)
             {
                 if (!SaveSystem.Instance.Progress.gameProgress.ContainsKey(_progressConditions[i].AreaProgress.Id) ||
