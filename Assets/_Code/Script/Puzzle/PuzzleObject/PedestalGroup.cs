@@ -5,9 +5,9 @@ namespace Ivayami.Puzzle
 {
     public class PedestalGroup : Activable
     {
+        [SerializeField] private bool _resetAllPedestalsOnFail = true;
         [SerializeField] private UnityEvent _onActivate;
         [SerializeField] private UnityEvent _onFailActivate;
-        [SerializeField] private bool _resetAllPedestalsOnFail = true;
         private Pedestal[] _pedestals;
 
         protected override void Awake()
