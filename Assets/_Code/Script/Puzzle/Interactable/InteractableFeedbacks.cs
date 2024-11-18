@@ -21,6 +21,7 @@ namespace Ivayami.Puzzle
         private static Transform _cameraTransform;
         private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
         private static int PULSE = Animator.StringToHash("pulse");
+        public Vector3 IconPosition {  get { return _icon.gameObject.transform.position; } }
 
         private void Start()
         {
