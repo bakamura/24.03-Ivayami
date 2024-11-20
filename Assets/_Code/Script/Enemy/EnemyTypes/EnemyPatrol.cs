@@ -169,9 +169,9 @@ namespace Ivayami.Enemy
                         {
                             if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
                             //StopMovement(true);
-                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, false, () =>
+                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, () =>
                             {
-                                _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing, false);
+                                _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
                             });
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                             _isChasing = true;
@@ -237,7 +237,7 @@ namespace Ivayami.Enemy
                         {
                             if (_canWalkPath)
                             {
-                                _enemySounds.PlaySound(EnemySounds.SoundTypes.IdleScreams, false);
+                                _enemySounds.PlaySound(EnemySounds.SoundTypes.IdleScreams);
                                 _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
                                 if (_debugLogsEnemyPatrol) Debug.Log("Patroling");
                                 if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
