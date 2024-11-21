@@ -148,6 +148,7 @@ namespace Ivayami.Enemy
                 IsActive = false;
                 _isChasing = false;
                 StopMovement(false);
+                isStressAreaActive = false;
             }
         }
 
