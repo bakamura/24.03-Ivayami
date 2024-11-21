@@ -1,7 +1,8 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Ivayami.UI;
-using UnityEngine.UI;
 
 namespace Ivayami.Puzzle {
     public class ReadableUI : MonoSingleton<ReadableUI> {
@@ -10,20 +11,53 @@ namespace Ivayami.Puzzle {
 
         [SerializeField] private TextMeshProUGUI _title;
         [SerializeField] private TextMeshProUGUI _content;
-        
+        private List<TextMeshProUGUI> _contents = new List<TextMeshProUGUI>();
+        private int _pageCurrent;
+
         protected override void Awake() {
             base.Awake();
 
             Menu = GetComponent<Menu>();
+            _contents.Add(_content);
         }
 
         public void ShowReadable(string title, string content) {
+            StartCoroutine(ShowReadableRoutine(title, content));
+        }
+
+        private IEnumerator ShowReadableRoutine(string title, string content) {
             _title.text = title;
-            _content.text = content;
-            float preferredHeight = LayoutUtility.GetPreferredHeight(_content.rectTransform);
-            _content.rectTransform.sizeDelta = new Vector2(_content.rectTransform.sizeDelta.x, LayoutUtility.GetPreferredHeight(_content.rectTransform));
-            _content.rectTransform.anchoredPosition = Vector2.zero;
+            int contentIndex = 0;
+            int overflowIndex;
+            while (content.Length > 0) {
+                if (_contents.Count <= contentIndex) _contents.Add(Instantiate(_content, _content.transform.parent));
+                _contents[contentIndex].text = content;
+
+                yield return null;
+
+                overflowIndex = _contents[contentIndex].firstOverflowCharacterIndex;
+                if (overflowIndex > 0) {
+                    content = content.Substring(overflowIndex);
+                    _contents[contentIndex].text = _contents[contentIndex].text.Substring(0, overflowIndex);
+                }
+            }
+
+            ChangePage(0);
             Menu.Open();
+        }
+
+        private void ChangePage(int pageToOpen) {
+            _contents[_pageCurrent].gameObject.SetActive(false);
+            _pageCurrent = pageToOpen;
+            _contents[_pageCurrent].gameObject.SetActive(true);
+        }
+
+        public void PageNext() {
+            if(_pageCurrent + 1 < _contents.Count) ChangePage(_pageCurrent + 1);
+        }
+
+        public void PagePrevious() {
+            if(_pageCurrent > 0) ChangePage(_pageCurrent - 1);
         }
 
     }
