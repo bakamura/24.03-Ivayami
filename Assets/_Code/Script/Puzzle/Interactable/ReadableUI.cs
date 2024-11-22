@@ -36,9 +36,10 @@ namespace Ivayami.Puzzle {
                 yield return null;
 
                 overflowIndex = _contents[contentIndex].firstOverflowCharacterIndex;
-                if (overflowIndex > 0) {
-                    content = content.Substring(overflowIndex);
+                content = overflowIndex > 0 ? content.Substring(overflowIndex) : string.Empty;
+                if (content.Length > 0) {
                     _contents[contentIndex].text = _contents[contentIndex].text.Substring(0, overflowIndex);
+                    contentIndex++;
                 }
             }
 
@@ -53,11 +54,11 @@ namespace Ivayami.Puzzle {
         }
 
         public void PageNext() {
-            if(_pageCurrent + 1 < _contents.Count) ChangePage(_pageCurrent + 1);
+            if (_pageCurrent + 1 < _contents.Count) ChangePage(_pageCurrent + 1);
         }
 
         public void PagePrevious() {
-            if(_pageCurrent > 0) ChangePage(_pageCurrent - 1);
+            if (_pageCurrent > 0) ChangePage(_pageCurrent - 1);
         }
 
     }
