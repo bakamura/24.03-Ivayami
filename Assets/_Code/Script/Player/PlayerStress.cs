@@ -22,6 +22,9 @@ namespace Ivayami.Player {
         private float _stressRelieveDelayTimer;
         private bool _pauseStressRelieve = false;
 
+        public float MaxStress => _stressMax;
+        public float StressCurrent => _stressCurrent;
+
         [Header("Fail")]
 
         [SerializeField] private float _restartDelay;
@@ -29,9 +32,12 @@ namespace Ivayami.Player {
         private bool _failState = false;
         private bool _overrideFailLoad = false;
 
+        public bool OverrideFailLoadValue => _overrideFailLoad;
+
         [Header("Cache")]
 
         private const string FAIL_BLOCK_KEY = "FailState";
+        private bool _isAutoRegenActive = true;
 
         private void Start() {
             Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
@@ -47,6 +53,9 @@ namespace Ivayami.Player {
         }
 
         private void Update() {
+#if UNITY_EDITOR
+            if (!_isAutoRegenActive) return;
+#endif
             if (!_pauseStressRelieve) {
                 if (_stressRelieveDelayTimer > 0) _stressRelieveDelayTimer -= Time.deltaTime;
                 else if (_stressCurrent > 20f) RelieveStressAuto();
@@ -117,8 +126,13 @@ namespace Ivayami.Player {
             onSceneLoaded.AddListener(() => SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport());
             SceneController.Instance.LoadScene("BaseTerrain", onSceneLoaded);
             SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
-            PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
+            PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
         }
 
+        public void UpdateAutoRegenerateStress(bool isActive)
+        {
+            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+            _isAutoRegenActive = isActive;
+        }
     }
 }

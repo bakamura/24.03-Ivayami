@@ -5,6 +5,7 @@ namespace Ivayami.Puzzle
 {
     public class PedestalGroup : Activable
     {
+        [SerializeField] private bool _resetAllPedestalsOnFail = true;
         [SerializeField] private UnityEvent _onActivate;
         [SerializeField] private UnityEvent _onFailActivate;
         private Pedestal[] _pedestals;
@@ -28,7 +29,7 @@ namespace Ivayami.Puzzle
                 {
                     if (!_pedestals[i].DeliverUI.CheckRequestsCompletion())
                     {
-                        DeactivateAllPedestals();
+                        if (_resetAllPedestalsOnFail) DeactivateAllPedestals();
                         _onFailActivate?.Invoke();
                         return;
                     }

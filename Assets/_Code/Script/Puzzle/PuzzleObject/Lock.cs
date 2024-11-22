@@ -55,6 +55,8 @@ namespace Ivayami.Puzzle
             _unlockWait = new WaitForSeconds(_unlockDelay);
         }
 
+        public void ForceInteract() => Interact();
+
         [ContextMenu("Interact")]
         public PlayerActions.InteractAnimation Interact()
         {
@@ -84,7 +86,12 @@ namespace Ivayami.Puzzle
                 else
                 {
                     _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
-                    if (_deliveryUI.SkipDeliverUI) _interatctableFeedbacks.UpdateFeedbacks(true, true);
+                    if (_deliveryUI.SkipDeliverUI)
+                    {
+                        _interatctableFeedbacks.UpdateFeedbacks(true, true);
+                        UpdateUIs(false);
+                        UpdateInputs(false);
+                    }
                     _onInteractionFailed?.Invoke();
                 }
             }
@@ -97,8 +104,8 @@ namespace Ivayami.Puzzle
             UpdateUIs(false);
             UpdateInputs(false);
             IsActive = !IsActive;
-            _unlockCoroutine = null;
             onActivate?.Invoke();
+            _unlockCoroutine = null;
         }
 
         private void UpdateInputs(bool isActive)
@@ -115,6 +122,7 @@ namespace Ivayami.Puzzle
                         _clickInput.action.performed += HandleConfirmUI;
                     }
                 }
+                PlayerMovement.Instance.ToggleMovement(nameof(Lock), false);
                 PlayerActions.Instance.ChangeInputMap("Menu");
             }
             else
@@ -129,6 +137,7 @@ namespace Ivayami.Puzzle
                         _clickInput.action.performed -= HandleConfirmUI;
                     }
                 }
+                PlayerMovement.Instance.ToggleMovement(nameof(Lock), true);
                 PlayerActions.Instance.ChangeInputMap("Player");
             }
         }
@@ -138,7 +147,7 @@ namespace Ivayami.Puzzle
             else _deliveryUI.UpdateUI(isActive);
         }
 
-        public void CancelInteraction()
+        private void CancelInteraction()
         {
             UpdateUIs(false);
             UpdateInputs(false);

@@ -41,8 +41,8 @@ namespace Ivayami.Puzzle
             EditorGUILayout.Space(5);
             EditorGUILayout.PropertyField(onInteract, new GUIContent("On Interact"));
             EditorGUILayout.PropertyField(onCancelInteraction, new GUIContent("On Cancel Interaction"));
-            EditorGUILayout.PropertyField(onActivate, new GUIContent("On Interaction Complete"));
-            EditorGUILayout.PropertyField(onInteractionFailed, new GUIContent("On Interaction Failed"));
+            EditorGUILayout.PropertyField(onActivate, new GUIContent("On Puzzle Complete"));
+            EditorGUILayout.PropertyField(onInteractionFailed, new GUIContent("On Puzzle Failed"));
 
             serializedObject.ApplyModifiedProperties();
         }

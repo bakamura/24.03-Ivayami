@@ -117,6 +117,7 @@ namespace Ivayami.Dialogue
                 _canvasGroup.blocksRaycasts = true;
                 _currentSpeechIndex = 0;
                 _currentDialogue = dialogue;
+                PlayerStress.Instance.onFail.AddListener(StopDialogue);
                 OnDialogeStart?.Invoke();
                 _writtingCoroutine = StartCoroutine(WrittingCoroutine(true));
             }
@@ -145,7 +146,7 @@ namespace Ivayami.Dialogue
             else
             {
                 _currentSpeechIndex++;
-                if (_canvasGroup.alpha > 0) _dialogueSounds.PlaySound(DialogueSounds.SoundTypes.ContinueDialogue);
+                if (_canvasGroup.alpha > 0 && !CutsceneController.IsPlaying) _dialogueSounds.PlaySound(DialogueSounds.SoundTypes.ContinueDialogue);
                 //end of current dialogue
                 if (_currentSpeechIndex == _currentDialogue.dialogue.Length)
                 {
@@ -243,6 +244,7 @@ namespace Ivayami.Dialogue
                 if (_debugLogs) Debug.Log($"End of Dialogue {_currentDialogue.name}");
                 if (_writtingCoroutine != null) StopCoroutine(_writtingCoroutine);
                 _writtingCoroutine = null;
+                PlayerStress.Instance.onFail.RemoveListener(StopDialogue);
                 ActivateDialogueEvents(_currentDialogue.onEndEventId);
                 _currentSpeechIndex = 0;
                 Resources.UnloadAsset(_currentDialogue);
@@ -264,21 +266,42 @@ namespace Ivayami.Dialogue
         {
             if (_dialogueEventsList.Contains(dialogueEvents)) _dialogueEventsList.Remove(dialogueEvents);
             else _dialogueEventsList.Add(dialogueEvents);
+
         }
 
         private void ActivateDialogueEvents(string eventID)
         {
             if (!string.IsNullOrEmpty(eventID))
             {
+                CheckForDuplicatedEventIDs(eventID);
                 for (int i = 0; i < _dialogueEventsList.Count; i++)
                 {
                     if (_dialogueEventsList[i].TriggerEvent(eventID))
                     {
                         if (_debugLogs) Debug.Log($"Dialogue Event {eventID} Triggered");
-                        break;
+                        return;                           
                     }
                 }
+                Debug.LogWarning($"The event {eventID} coudln't be found");
             }
+        }
+
+        private void CheckForDuplicatedEventIDs(string eventId)
+        {
+            if (!_debugLogs) return;
+            string messageResult = null;
+            int i;
+            byte count = 0;
+            for (i = 0; i < _dialogueEventsList.Count; i++)
+            {
+                if (_dialogueEventsList[i].CheckForEvent(eventId))
+                {
+                    messageResult += $"{ _dialogueEventsList[i].name} in scene {GameObject.GetScene(_dialogueEventsList[i].gameObject.GetInstanceID()).name}, ";
+                    count++;
+                }
+            }
+            if (count <= 1) return;
+            Debug.LogWarning($"The dialogue event {eventId} has duplicates in: {messageResult}. Please make sure the event id is always unique");
         }
 
         public void PauseDialogue(bool isPaused)

@@ -101,6 +101,7 @@ MonoBehaviour:
   _dialogue: {fileID: 11400000, guid: 3672e044091023249b2d238d8f3fb513, type: 2}
   _dialogueName: FailUnlockPassageway
   _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
 --- !u!1 &8035977064443931449
 GameObject:
@@ -294,8 +295,32 @@ PrefabInstance:
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
+      propertyPath: _interactSoundReference.Path
+      value: event:/UI_SFX/Madeira_Arrancando
+      objectReference: {fileID: 0}
+    - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
       propertyPath: _actionSuccessSoundReference.Path
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
+      propertyPath: _interactReturnSoundReference.Path
+      value: event:/UI_SFX/Madeira_Arrancando
+      objectReference: {fileID: 0}
+    - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
+      propertyPath: _interactSoundReference.Guid.Data1
+      value: 1990227564
+      objectReference: {fileID: 0}
+    - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
+      propertyPath: _interactSoundReference.Guid.Data2
+      value: 1307869725
+      objectReference: {fileID: 0}
+    - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
+      propertyPath: _interactSoundReference.Guid.Data3
+      value: 104304556
+      objectReference: {fileID: 0}
+    - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
+      propertyPath: _interactSoundReference.Guid.Data4
+      value: 1831616978
       objectReference: {fileID: 0}
     - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
       propertyPath: _actionSuccessSoundReference.Guid.Data1
@@ -312,6 +337,22 @@ PrefabInstance:
     - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
       propertyPath: _actionSuccessSoundReference.Guid.Data4
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
+      propertyPath: _interactReturnSoundReference.Guid.Data1
+      value: 1990227564
+      objectReference: {fileID: 0}
+    - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
+      propertyPath: _interactReturnSoundReference.Guid.Data2
+      value: 1307869725
+      objectReference: {fileID: 0}
+    - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
+      propertyPath: _interactReturnSoundReference.Guid.Data3
+      value: 104304556
+      objectReference: {fileID: 0}
+    - target: {fileID: 5980301430324776567, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
+      propertyPath: _interactReturnSoundReference.Guid.Data4
+      value: 1831616978
       objectReference: {fileID: 0}
     - target: {fileID: 8045251863135039931, guid: 9aac85ff052b48641a18a0f9e0623740, type: 3}
       propertyPath: _hidePlayerModel
@@ -444,14 +485,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_LightProbeUsage
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_Name
       value: Plank_3
@@ -513,14 +546,6 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_LightProbeUsage
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_Name
@@ -584,14 +609,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_LightProbeUsage
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_Name
       value: Plank_4
@@ -653,14 +670,6 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_LightProbeUsage
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_Name
@@ -724,14 +733,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_LightProbeUsage
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_Name
       value: Plank_3
@@ -793,14 +794,6 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_LightProbeUsage
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_Name
@@ -1812,6 +1805,30 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4338086903085964026, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
+      propertyPath: m_Size.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4338086903085964026, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
+      propertyPath: m_Size.y
+      value: 1.3985751
+      objectReference: {fileID: 0}
+    - target: {fileID: 4338086903085964026, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
+      propertyPath: m_Size.z
+      value: 0.08546326
+      objectReference: {fileID: 0}
+    - target: {fileID: 4338086903085964026, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
+      propertyPath: m_Center.x
+      value: 0.02377735
+      objectReference: {fileID: 0}
+    - target: {fileID: 4338086903085964026, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
+      propertyPath: m_Center.y
+      value: 0.64885557
+      objectReference: {fileID: 0}
+    - target: {fileID: 4338086903085964026, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
+      propertyPath: m_Center.z
+      value: 0.00032073268
+      objectReference: {fileID: 0}
     - target: {fileID: 4461527524309455278, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2166,7 +2183,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7900531684030502157, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 7900531684030502157, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -2405,37 +2422,13 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8332880486768564562, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5764049921302473026}
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7819979270802992687, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4205967250448605627}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
 --- !u!1 &3260146689383728630 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7819979270802992687, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
   m_PrefabInstance: {fileID: 4735670878988364761}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &4205967250448605627
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3260146689383728630}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 2, y: 1.3985751, z: 0.08546326}
-  m_Center: {x: 0.02377735, y: 0.64885557, z: 0.00032073268}
 --- !u!4 &3273334985601802252 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7842248274548624341, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
@@ -2505,14 +2498,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_LightProbeUsage
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_Name
       value: Plank_7
@@ -2574,14 +2559,6 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_LightProbeUsage
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_Name
@@ -2645,14 +2622,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_LightProbeUsage
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_Name
       value: Plank_7
@@ -2714,14 +2683,6 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_CastShadows
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -7511558181221131132, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
-      propertyPath: m_LightProbeUsage
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 50c9152e35a201f448a6eff4f47fb250, type: 3}
       propertyPath: m_Name
