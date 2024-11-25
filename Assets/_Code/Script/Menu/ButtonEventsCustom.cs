@@ -12,7 +12,7 @@ namespace Ivayami.UI
 
         public void OnSelect(BaseEventData eventData)
         {
-            OnSelectSelectable?.Invoke(eventData);
+            if (KeepSelection.Instance.CanTriggerSelectEvent(gameObject)) OnSelectSelectable?.Invoke(eventData);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
