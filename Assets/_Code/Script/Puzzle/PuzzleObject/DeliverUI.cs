@@ -8,7 +8,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 using Ivayami.Save;
-using System.Collections;
 
 namespace Ivayami.Puzzle
 {
@@ -155,10 +154,10 @@ namespace Ivayami.Puzzle
             }
         }
 
-        private void HandleDeliverInput(InputAction.CallbackContext obj)
-        {
-            DeliverItem();
-        }
+        //private void HandleDeliverInput(InputAction.CallbackContext obj)
+        //{
+        //    DeliverItem();
+        //}
 
         private void UpdateDeliverItemUI(bool isActive)
         {

@@ -118,7 +118,7 @@ namespace Ivayami.UI {
             PlayerCamera.Instance.SetSensitivityX(SaveSystem.Instance.Options.cameraSensitivityX * (InputCallbacks.Instance.IsGamepad ? _gamepadCameraSensitivityMultiplierX : _mouseCameraSensitivityMultiplierX));
             PlayerCamera.Instance.SetSensitivityY(SaveSystem.Instance.Options.cameraSensitivityY * (InputCallbacks.Instance.IsGamepad ? _gamepadCameraSensitivityMultiplierY : _mouseCameraSensitivityMultiplierY));
             PlayerMovement.Instance.ChangeStickDeadzone(SaveSystem.Instance.Options.cameraDeadzone);
-            ChangeLanguage(SaveSystem.Instance.Options.language);
+            OnChangeLanguage.Invoke((LanguageTypes)SaveSystem.Instance.Options.language);
             PlayerCamera.Instance.InvertCamera(!SaveSystem.Instance.Options.invertCamera);
             PlayerMovement.Instance.ChangeHoldToRun(SaveSystem.Instance.Options.holdToRun);
         }
