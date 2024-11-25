@@ -16,7 +16,7 @@ namespace Ivayami.Puzzle
     public class DeliverUI : MonoBehaviour
     {
         [SerializeField] private InputActionReference _navigateUIInput;
-        [SerializeField] private InputActionReference _deliverInput;
+        //[SerializeField] private InputActionReference _deliverInput;
         [SerializeField] private byte _requestAmountToComplete = 1;
         [SerializeField] private bool _skipDeliverUI;
         [SerializeField] private bool _deliverAnyItem;
@@ -121,25 +121,25 @@ namespace Ivayami.Puzzle
             if (isActive)
             {
                 _navigateUIInput.action.performed += HandleNavigateUI;
-                _deliverInput.action.started += HandleDeliverInput;
+                //_deliverInput.action.started += HandleDeliverInput;
                 PlayerMovement.Instance.ToggleMovement(nameof(DeliverUI), false);
                 PlayerActions.Instance.ChangeInputMap("Menu");
-                StartCoroutine(ActivateInputCoroutine());
+                //StartCoroutine(ActivateInputCoroutine());
             }
             else
             {
                 _navigateUIInput.action.performed -= HandleNavigateUI;
-                _deliverInput.action.started -= HandleDeliverInput;
+                //_deliverInput.action.started -= HandleDeliverInput;
                 PlayerMovement.Instance.ToggleMovement(nameof(DeliverUI), true);
                 PlayerActions.Instance.ChangeInputMap("Player");
             }
         }        
 
-        private IEnumerator ActivateInputCoroutine()
-        {
-            yield return new WaitForEndOfFrame();
-            _deliverInput.action.Enable();
-        }
+        //private IEnumerator ActivateInputCoroutine()
+        //{
+        //    yield return new WaitForEndOfFrame();
+        //    _deliverInput.action.Enable();
+        //}
 
         private void HandleNavigateUI(InputAction.CallbackContext context)
         {
