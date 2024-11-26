@@ -8,7 +8,7 @@ namespace Ivayami.UI {
 
         [Serializable]
         public class LanguageComponent {
-            [field: SerializeField] public TextMeshProUGUI Tmp { get; private set; }
+            [field: SerializeField] public TMP_Text Tmp { get; private set; }
             public string Id;
         }
 
