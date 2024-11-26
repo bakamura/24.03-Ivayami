@@ -134,7 +134,7 @@ namespace Ivayami.Enemy
                 //_navMeshAgent.isStopped = true;
                 _navMeshAgent.velocity = Vector3.zero;
                 _enemyAnimator.Walking(0);
-                isStressAreaActive = true;
+                isStressAreaActive = false;
             }
         }
 
@@ -152,7 +152,7 @@ namespace Ivayami.Enemy
                         _navMeshAgent.isStopped = true;
                         _navMeshAgent.velocity = Vector3.zero;
                         _enemyAnimator.Walking(0);
-                        _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, true);
+                        _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
                         //PlayerStress.Instance.SetStressMin(98);
                         _enemyAnimator.TargetDetected(HandleTargetDetected);
                     }

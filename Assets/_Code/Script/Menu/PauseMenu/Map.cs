@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using Ivayami.Scene;
 using Ivayami.Save;
-using System;
 using System.Collections;
 
 namespace Ivayami.UI {

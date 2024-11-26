@@ -36,7 +36,9 @@ namespace Ivayami.Audio
         private TimelineInfo _timelineInfo = new TimelineInfo();
         private EVENT_CALLBACK _audioEndCallback;
         private Coroutine _delayToReplayCoroutine;
+        private Coroutine _updateCoroutine;
         private bool _hasDoneSetup;
+        private const float _updateTick = .2f;
 
         private class TimelineInfo
         {
@@ -46,21 +48,7 @@ namespace Ivayami.Audio
         private void Start()
         {
             if (_playOnStart) Play();
-        }
-
-        private void Update()
-        {
-            if (_timelineInfo.HasEnded)
-            {
-                _timelineInfo.HasEnded = false;
-                _currentSounData.OnAudioEnd?.Invoke();
-                if (_replayAudioOnEnd)
-                {
-                    StopReplayCoroutine();
-                    _delayToReplayCoroutine = StartCoroutine(ReplayDelayCoroutine());
-                }
-            }
-        }
+        }        
 
         #region Behaviour
         [ContextMenu("Play")]
@@ -74,11 +62,12 @@ namespace Ivayami.Audio
                 _timelineHandle = GCHandle.Alloc(_timelineInfo);
                 _currentSounData.AudioInstance.setUserData(GCHandle.ToIntPtr(_timelineHandle));
                 PlayOneShot(_currentSounData.AudioInstance, _currentSounData.AllowFadeOut, _currentSounData.AttenuationRange, _audioEndCallback);
+                StartUpdateCoroutine();
             }
             else PlayOneShot(_currentSounData.AudioInstance, _currentSounData.AllowFadeOut, _currentSounData.AttenuationRange);
         }
 
-        [ContextMenu("Pause")]
+        //[ContextMenu("Pause")]
         public void Pause(bool isPaused)
         {
             if (!_currentSounData.AudioInstance.isValid()) return;
@@ -92,6 +81,7 @@ namespace Ivayami.Audio
         {
             _currentSounData.AudioInstance.getPlaybackState(out PLAYBACK_STATE state);
             if (state == PLAYBACK_STATE.PLAYING) _currentSounData.AudioInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            StopUpdateCoroutine();
         }
 
         private void Setup()
@@ -103,6 +93,42 @@ namespace Ivayami.Audio
                     _audiosData[i].AudioInstance = InstantiateEvent(_audiosData[i].AudioReference);
                 }
                 _hasDoneSetup = true;
+            }
+        }
+
+        private IEnumerator UpdateCoroutine()
+        {
+            WaitForSeconds delay = new WaitForSeconds(_updateTick);
+            while (true)
+            {
+                if (_timelineInfo.HasEnded)
+                {
+                    _timelineInfo.HasEnded = false;
+                    _currentSounData.OnAudioEnd?.Invoke();
+                    if (_replayAudioOnEnd)
+                    {
+                        StopReplayCoroutine();
+                        _delayToReplayCoroutine = StartCoroutine(ReplayDelayCoroutine());
+                    }
+                }
+                yield return delay;
+            }
+        }
+
+        private void StopUpdateCoroutine()
+        {
+            if (_updateCoroutine != null)
+            {
+                StopCoroutine(_updateCoroutine);
+                _updateCoroutine = null;
+            }
+        }
+
+        private void StartUpdateCoroutine()
+        {
+            if (_updateCoroutine == null)
+            {
+                _updateCoroutine = StartCoroutine(UpdateCoroutine());
             }
         }
         #endregion
@@ -134,23 +160,27 @@ namespace Ivayami.Audio
                 StopCoroutine(_delayToReplayCoroutine);
                 _delayToReplayCoroutine = null;
             }
-        }
+        }        
 
         private IEnumerator ReplayDelayCoroutine()
         {
             yield return new WaitForSeconds(UnityEngine.Random.Range(_replayIntervalRange.Min, _replayIntervalRange.Max));
             Play();
             _delayToReplayCoroutine = null;
-        }
+        }       
         #endregion
 
         private void OnDisable()
         {
+            Stop();
             StopReplayCoroutine();
             if (_audiosData == null) return;
             for (int i = 0; i < _audiosData.Length; i++)
             {
-                if (_audiosData[i].AudioInstance.isValid()) _audiosData[i].AudioInstance.release();
+                if (_audiosData[i].AudioInstance.isValid())
+                {
+                    _audiosData[i].AudioInstance.release();
+                }
             }
             _hasDoneSetup = false;
         }

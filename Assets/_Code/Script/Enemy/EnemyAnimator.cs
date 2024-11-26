@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using Ivayami.Audio;
 
 namespace Ivayami.Enemy
 {
@@ -36,6 +37,15 @@ namespace Ivayami.Enemy
             }
         }
         private Animator m_animator;
+        private EnemySounds _enemySound
+        {
+            get
+            {
+                if (!m_enemySound) m_enemySound = GetComponentInParent<EnemySounds>();
+                return m_enemySound;
+            }
+        }
+        private EnemySounds m_enemySound;
         private Coroutine _waitAnimationEndCoroutine;
         /// <param name="onAnimationEnd">
         /// will only activate once
@@ -97,6 +107,11 @@ namespace Ivayami.Enemy
         public void Chasing(bool isChasing)
         {
             _animator.SetBool(CHASING_BOOL, isChasing);
+        }
+
+        public void PlayStepSound()
+        {
+            _enemySound.PlaySound(EnemySounds.SoundTypes.Steps);
         }
 
         private void StartAnimationEvent(int stateHash, int layer, Action onAnimationEnd, Action<float> currentAnimationStepCallback = null)

@@ -37,6 +37,7 @@ Transform:
   - {fileID: 390044384124605844}
   - {fileID: 6667009634981938415}
   - {fileID: 9032739491569459459}
+  - {fileID: 3908853135489818981}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &3471369442984901316
@@ -72,10 +73,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11a7a1e6e63c80341bc588f737f946a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _exitInput: {fileID: -960142445056486336, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _hidingCam: {fileID: 7880257863241592394}
   _hiddenCam: {fileID: 7385412397014094977}
   _animationPoint: {fileID: 6667009634981938415}
   _hiddenType: 1
+  _interactionType: 1
+  _onInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1679981795381860759}
+        m_TargetAssemblyTypeName: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &3322574412256390223
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,6 +141,73 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1568046202851811063}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!1 &1585225078568191856
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3908853135489818981}
+  - component: {fileID: 1679981795381860759}
+  m_Layer: 0
+  m_Name: SoundEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3908853135489818981
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1585225078568191856}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.064, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1568046202851811063}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1679981795381860759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1585225078568191856}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3ebbfea1ed71774c94f30b6a77477ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audiosData:
+  - AudioReference:
+      Guid:
+        Data1: 1710727801
+        Data2: 1296915953
+        Data3: -946570049
+        Data4: 1522870957
+      Path: event:/Player_SFX/Entrando no armario
+    AllowFadeOut: 0
+    AttenuationRange:
+      Min: 0
+      Max: 0
+    OnAudioEnd:
+      m_PersistentCalls:
+        m_Calls: []
+    DrawGizmos: 0
+    MinRangGizmoColor: {r: 0, g: 0, b: 0, a: 0}
+    MaxRangGizmoColor: {r: 0, g: 0, b: 0, a: 0}
+  _playOnStart: 0
+  _replayAudioOnEnd: 0
+  _replayIntervalRange:
+    Min: 0
+    Max: 0
 --- !u!1 &2312769958420738220
 GameObject:
   m_ObjectHideFlags: 0
