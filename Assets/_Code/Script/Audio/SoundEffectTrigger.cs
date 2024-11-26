@@ -172,12 +172,15 @@ namespace Ivayami.Audio
 
         private void OnDisable()
         {
+            Stop();
             StopReplayCoroutine();
-            StopUpdateCoroutine();
             if (_audiosData == null) return;
             for (int i = 0; i < _audiosData.Length; i++)
             {
-                if (_audiosData[i].AudioInstance.isValid()) _audiosData[i].AudioInstance.release();
+                if (_audiosData[i].AudioInstance.isValid())
+                {
+                    _audiosData[i].AudioInstance.release();
+                }
             }
             _hasDoneSetup = false;
         }
