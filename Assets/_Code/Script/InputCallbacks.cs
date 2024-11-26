@@ -18,7 +18,7 @@ namespace Ivayami.Player {
 
 
         /// <summary>
-        /// Callback when 'Gamepad == true'
+        /// Callback 'true' when 'isGamepad == true'
         /// </summary>
         public void SubscribeToOnChangeControls(UnityAction<bool> action) {
             _onChangeControls.AddListener(action);

@@ -4,6 +4,7 @@ using Ivayami.UI;
 using System.Collections;
 using Ivayami.Dialogue;
 using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 namespace Ivayami.Puzzle {
     public class HidingSpot : MonoBehaviour, IInteractable {
@@ -21,6 +22,9 @@ namespace Ivayami.Puzzle {
         [SerializeField] private Transform _animationPoint;
         [SerializeField] private PlayerMovement.HidingState _hiddenType;
         [SerializeField] private PlayerActions.InteractAnimation _interactionType;
+
+        [Header("Callbacks")]
+        [SerializeField] private UnityEvent _onInteract;
 
         [Header("Cache")]
 
@@ -41,7 +45,8 @@ namespace Ivayami.Puzzle {
         }
 
         public PlayerActions.InteractAnimation Interact() {
-            if (PlayerMovement.Instance.hidingState == PlayerMovement.HidingState.None) {                
+            if (PlayerMovement.Instance.hidingState == PlayerMovement.HidingState.None) {
+                _onInteract?.Invoke();
                 _hideCoroutine = StartCoroutine(HideRoutine());
                 return _interactionType;
             }

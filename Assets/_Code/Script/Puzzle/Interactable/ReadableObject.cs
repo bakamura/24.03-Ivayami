@@ -4,6 +4,7 @@ using Ivayami.UI;
 using Ivayami.Dialogue;
 using Ivayami.Save;
 using Ivayami.Audio;
+using UnityEngine.Events;
 
 namespace Ivayami.Puzzle {
     [RequireComponent(typeof(InteractableSounds))]
@@ -16,6 +17,9 @@ namespace Ivayami.Puzzle {
 
         [SerializeField] private Readable _readable;
         [SerializeField] private bool _goesToInventory;
+
+        [Header("Callbacks")]
+        [SerializeField] private UnityEvent _onInteract;
 
         [Header("Animation")]
 
@@ -49,6 +53,7 @@ namespace Ivayami.Puzzle {
             }
 
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
+            _onInteract?.Invoke();
             return PlayerActions.InteractAnimation.Default;
         }
 
