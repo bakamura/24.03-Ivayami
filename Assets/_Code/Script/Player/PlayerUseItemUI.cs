@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using Ivayami.Player;
+using Ivayami.Save;
 
 namespace Ivayami.UI
 {
@@ -23,6 +24,7 @@ namespace Ivayami.UI
         [SerializeField] private InputActionReference _navigateUIInput;
         [SerializeField] private InputActionReference _confirmOptionInput;
         [SerializeField] private InventoryItem[] _possibleOptions;
+        [SerializeField] private UiText _translation;
 
         private UseItemUIIcon _itemInDisplay;
         private Fade _fade;
@@ -78,7 +80,8 @@ namespace Ivayami.UI
 
         private void HandleConfirmOption(InputAction.CallbackContext context)
         {
-            if (!PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[_currentSelectedIndex].name).Item)
+            PlayerInventory.InventoryItemStack stack = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[_currentSelectedIndex].name);
+            if (!stack.Item)
             {
                 _onNotRequiredItem?.Invoke();
                 UpdateUI();
@@ -99,7 +102,9 @@ namespace Ivayami.UI
 
             _currentItemActionCoroutine = StartCoroutine(_possibleOptions[_currentSelectedIndex].UsageAction.ExecuteAtion(HandleItemActionEnd));
             PlayerInventory.Instance.RemoveFromInventory(_possibleOptions[_currentSelectedIndex]);
-            InfoUpdateIndicator.Instance.DisplayUpdate(_possibleOptions[_currentSelectedIndex].Sprite, "-1");
+            InfoUpdateIndicator.Instance.DisplayUpdate(_possibleOptions[_currentSelectedIndex].Sprite, $"1 " +
+                $"{stack.Item.GetTranslation(SaveSystem.Instance.Options.Language).DisplayName} " +
+                $"{_translation.GetTranslation(SaveSystem.Instance.Options.Language).GetText("ItemUsed")}");
             _isActive = false;
             UpdateInputs();
             UpdateVisuals();
