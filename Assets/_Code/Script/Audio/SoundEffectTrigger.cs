@@ -55,6 +55,7 @@ namespace Ivayami.Audio
         public void Play()
         {
             Setup();
+            Stop();
             _currentSounData = _audiosData[UnityEngine.Random.Range(0, _audiosData.Length - 1)];
             if (_replayAudioOnEnd || _currentSounData.OnAudioEnd.GetPersistentEventCount() > 0)
             {
@@ -82,6 +83,7 @@ namespace Ivayami.Audio
             _currentSounData.AudioInstance.getPlaybackState(out PLAYBACK_STATE state);
             if (state == PLAYBACK_STATE.PLAYING) _currentSounData.AudioInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
             StopUpdateCoroutine();
+            _currentSounData.OnAudioEnd?.Invoke();
         }
 
         private void Setup()
@@ -172,12 +174,15 @@ namespace Ivayami.Audio
 
         private void OnDisable()
         {
+            Stop();
             StopReplayCoroutine();
-            StopUpdateCoroutine();
             if (_audiosData == null) return;
             for (int i = 0; i < _audiosData.Length; i++)
             {
-                if (_audiosData[i].AudioInstance.isValid()) _audiosData[i].AudioInstance.release();
+                if (_audiosData[i].AudioInstance.isValid())
+                {
+                    _audiosData[i].AudioInstance.release();
+                }
             }
             _hasDoneSetup = false;
         }

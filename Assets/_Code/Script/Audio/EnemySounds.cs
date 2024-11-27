@@ -99,7 +99,7 @@ namespace Ivayami.Audio
                     if (_currentSoundData[i].CanBeStoped)
                     {
                         if (_debugLog) UnityEngine.Debug.Log($"Stopping Enemy sound {_currentSoundData[i].SoundType} to play sound {soundType}");
-                        if(state == PLAYBACK_STATE.PLAYING) _currentSoundData[i].AudioInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                        if (state == PLAYBACK_STATE.PLAYING) _currentSoundData[i].AudioInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
                         PlayAudioEventCallback(i, true);
                     }
                 }
@@ -203,18 +203,25 @@ namespace Ivayami.Audio
 
         private void ReleaseAllEvents()
         {
+            PLAYBACK_STATE state;
             if (_audiosData != null)
             {
                 for (int i = 0; i < _audiosData.Length; i++)
                 {
-                    if (_audiosData[i].AudioInstance.isValid()) _audiosData[i].AudioInstance.release();
+                    if (!_audiosData[i].AudioInstance.isValid()) return;
+                    _audiosData[i].AudioInstance.getPlaybackState(out state);
+                    if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _audiosData[i].AudioInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                    _audiosData[i].AudioInstance.release();
                 }
             }
             if (_currentSoundData != null)
             {
                 for (int i = 0; i < _currentSoundData.Count; i++)
                 {
-                    if (_currentSoundData[i].AudioInstance.isValid()) _currentSoundData[i].AudioInstance.release();
+                    if (!_currentSoundData[i].AudioInstance.isValid()) return;
+                    _currentSoundData[i].AudioInstance.getPlaybackState(out state);
+                    if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _currentSoundData[i].AudioInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                    _currentSoundData[i].AudioInstance.release();
                 }
             }
             _hasDoneSetup = false;

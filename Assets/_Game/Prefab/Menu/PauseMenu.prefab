@@ -3241,6 +3241,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2864555608788893912}
   - component: {fileID: 2760392860986239448}
+  - component: {fileID: 1698058924460950126}
+  - component: {fileID: 7945555730529755013}
   m_Layer: 5
   m_Name: EntryDisplay
   m_TagString: Untagged
@@ -3285,6 +3287,75 @@ MonoBehaviour:
   _currentMenu: {fileID: 0}
   _delayToOpen: -1
   _setMenuBtnSelectedOnStart: 0
+--- !u!225 &1698058924460950126
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2499873719533822716}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &7945555730529755013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2499873719533822716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactable: 0
+  <OnTransitionStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnTransitionEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  _transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _transitionDuration: 0.125
+  <InitialSelected>k__BackingField: {fileID: 0}
 --- !u!1 &2503576290004175838
 GameObject:
   m_ObjectHideFlags: 0
@@ -4680,10 +4751,10 @@ RectTransform:
   - {fileID: 6619356416574905352}
   m_Father: {fileID: 3564108349134042508}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -40}
-  m_SizeDelta: {x: -998.4, y: -135}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -20}
+  m_SizeDelta: {x: -998.4, y: 135}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5814529158597326138
 CanvasRenderer:
@@ -7069,6 +7140,30 @@ MonoBehaviour:
   <OnOpenEnd>k__BackingField:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 8388032248132812493}
+        m_TargetAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+        m_MethodName: Open
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7945555730529755013}
+        m_TargetAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+        m_MethodName: Open
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 4966016387854258672}
         m_TargetAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
         m_MethodName: Open
@@ -7084,6 +7179,30 @@ MonoBehaviour:
   <OnCloseStart>k__BackingField:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 8388032248132812493}
+        m_TargetAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+        m_MethodName: Close
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7945555730529755013}
+        m_TargetAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+        m_MethodName: Close
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 4966016387854258672}
         m_TargetAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
         m_MethodName: Close
@@ -8023,7 +8142,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 16.95
+  m_fontSize: 30
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -10649,6 +10768,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3600437847663932317}
+  - component: {fileID: 1570098989168991633}
+  - component: {fileID: 8388032248132812493}
   m_Layer: 5
   m_Name: EntrySelection
   m_TagString: Untagged
@@ -10680,6 +10801,75 @@ RectTransform:
   m_AnchoredPosition: {x: -243.75, y: 0}
   m_SizeDelta: {x: -537.5, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &1570098989168991633
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8762699768097217012}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &8388032248132812493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8762699768097217012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _interactable: 0
+  <OnTransitionStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnTransitionEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnOpenEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseStart>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <OnCloseEnd>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  _transitionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _transitionDuration: 0.125
+  <InitialSelected>k__BackingField: {fileID: 0}
 --- !u!1 &8966116929314077887
 GameObject:
   m_ObjectHideFlags: 0
@@ -13150,7 +13340,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8123929994967619772, guid: 187e861f151bd864996c2305e988bacb, type: 3}
       propertyPath: _languageComponents.Array.size
-      value: 5
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8123929994967619772, guid: 187e861f151bd864996c2305e988bacb, type: 3}
       propertyPath: _languageComponents.Array.data[0].Id
@@ -13174,7 +13364,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8123929994967619772, guid: 187e861f151bd864996c2305e988bacb, type: 3}
       propertyPath: _languageComponents.Array.data[5].Id
-      value: Options
+      value: InvertCamera
+      objectReference: {fileID: 0}
+    - target: {fileID: 8123929994967619772, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _languageComponents.Array.data[6].Id
+      value: StickDeadzone
+      objectReference: {fileID: 0}
+    - target: {fileID: 8123929994967619772, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _languageComponents.Array.data[7].Id
+      value: HoldToRun
       objectReference: {fileID: 0}
     - target: {fileID: 8123929994967619772, guid: 187e861f151bd864996c2305e988bacb, type: 3}
       propertyPath: _languageComponents.Array.data[0].<Tmp>k__BackingField
@@ -13199,7 +13397,15 @@ PrefabInstance:
     - target: {fileID: 8123929994967619772, guid: 187e861f151bd864996c2305e988bacb, type: 3}
       propertyPath: _languageComponents.Array.data[5].<Tmp>k__BackingField
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 2392347492049662607}
+    - target: {fileID: 8123929994967619772, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _languageComponents.Array.data[6].<Tmp>k__BackingField
+      value: 
+      objectReference: {fileID: 3715852131425832602}
+    - target: {fileID: 8123929994967619772, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _languageComponents.Array.data[7].<Tmp>k__BackingField
+      value: 
+      objectReference: {fileID: 3303619829578763712}
     - target: {fileID: 8212724620621416186, guid: 187e861f151bd864996c2305e988bacb, type: 3}
       propertyPath: _uiText
       value: 
@@ -13341,6 +13547,17 @@ PrefabInstance:
       addedObject: {fileID: 7128049870461879148}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+--- !u!114 &2392347492049662607 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1771154367923973005, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+  m_PrefabInstance: {fileID: 4154347305410484482}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2419165148189528489 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1744490919358384299, guid: 187e861f151bd864996c2305e988bacb, type: 3}
@@ -13368,9 +13585,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0eb8845d8c1713b4bacd1bf43008d2c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3303619829578763712 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1477150331055723714, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+  m_PrefabInstance: {fileID: 4154347305410484482}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3579924680402980783 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 579071381711689389, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+  m_PrefabInstance: {fileID: 4154347305410484482}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3715852131425832602 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 735897696905467800, guid: 187e861f151bd864996c2305e988bacb, type: 3}
   m_PrefabInstance: {fileID: 4154347305410484482}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
