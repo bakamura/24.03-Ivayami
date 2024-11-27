@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.DualShock;
+using UnityEngine.InputSystem.iOS;
+using UnityEngine.InputSystem.Switch;
+using UnityEngine.InputSystem.XInput;
 
 namespace Ivayami.Player {
     public class InputCallbacks : MonoSingleton<InputCallbacks> {
@@ -8,22 +12,27 @@ namespace Ivayami.Player {
         private UnityEvent<bool> _onChangeControls = new UnityEvent<bool>();
 
         private PlayerInput _playerInput;
-        public bool IsGamepad { get { return _playerInput.currentControlScheme == "Gamepad"; } }
+        public bool IsGamepad { get; private set; }
         public GamepadType GamepadCurrent { get; private set; }
 
         public enum GamepadType {
             NotGamepad,
             XBox,
             DualShock,
-            DualSense
+            DualSense,
+            ProController
         }
 
         protected override void Awake() {
             base.Awake();
 
+            InputSystem.onDeviceChange += (device, deviceChange) => {
+                IsGamepad = device is Gamepad;
+                GamepadCurrent = IsGamepad ? GetGamepadType(Gamepad.current) : GamepadType.NotGamepad;
+                Debug.Log($"Gamepad current is '{GamepadCurrent.ToString()}'");
+            };
             _playerInput = GetComponent<PlayerInput>();
             _playerInput.onControlsChanged += (playerInput) => {
-                GamepadCurrent = IsGamepad ? StringToGamepadType(Gamepad.current.displayName) : GamepadType.NotGamepad;
                 _onChangeControls.Invoke(playerInput.currentControlScheme == "Gamepad");
             };
         }
@@ -40,14 +49,13 @@ namespace Ivayami.Player {
             _onChangeControls.RemoveListener(action);
         }
 
-        public GamepadType StringToGamepadType(string str) {
-            str = str.ToLower();
-            Debug.Log($"Gamepad named '{str}' connected");
-            if (str.Contains("xbox")) return GamepadType.XBox;
-            if (str.Contains("dualshock")) return GamepadType.DualShock;
-            if (str.Contains("dualsense")) return GamepadType.DualSense;
-            Debug.LogError($"Non-identified Gamepad '{str}'");
-            return GamepadType.XBox;
+        public GamepadType GetGamepadType(Gamepad gamepad) {
+            if (gamepad is XInputController) return GamepadType.XBox;
+            if (gamepad is DualShockGamepad) return GamepadType.DualShock;
+            if (gamepad is DualSenseGamepadHID || gamepad is DualSenseGampadiOS) return GamepadType.DualSense;
+            if (gamepad is SwitchProControllerHID) return GamepadType.ProController;
+            Debug.LogError($"Non-identified Gamepad '{gamepad.name}'");
+            return GamepadType.DualShock;
         }
 
     }
