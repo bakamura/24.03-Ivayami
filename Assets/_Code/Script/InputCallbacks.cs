@@ -13,6 +13,7 @@ namespace Ivayami.Player {
 
         private PlayerInput _playerInput;
         public ControlType ControlTypeCurrent { get; private set; }
+        public bool IsGamepad { get { return ControlTypeCurrent != ControlType.Keyboard; } }
 
         public enum ControlType {
             Keyboard,

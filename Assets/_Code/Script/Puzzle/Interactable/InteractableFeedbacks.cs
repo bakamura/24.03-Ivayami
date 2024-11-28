@@ -8,9 +8,8 @@ namespace Ivayami.Puzzle
     {
         [SerializeField] private Color _highlightedColor = new Color(0.03921569f, 0.03921569f, 0.03921569f, 1);
         [SerializeField] private bool _applyToChildrens = true;
-        [SerializeField] private Sprite _controllerInteractionIcon;
-        [SerializeField] private Sprite _keyboardInteractionIcon;
-
+        [SerializeField] private Sprite[] _interactionIcons;
+        
         private List<Material> _materials;
         private List<Color> _baseColors;
         private SpriteRenderer _icon;
@@ -104,10 +103,7 @@ namespace Ivayami.Puzzle
             {
                 _showingInputIcon = isActive;
                 if (forcePopupIconActivationUpdate) _icon.enabled = isActive;
-                if (isActive)
-                {
-                    InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisualIcon);
-                }
+                if (isActive) InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisualIcon);
                 else
                 {
                     InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisualIcon);
@@ -121,10 +117,10 @@ namespace Ivayami.Puzzle
             _interactionAnimation.Play(PULSE, 0);
         }
 
-        private void UpdateVisualIcon(bool isGamepad)
+        private void UpdateVisualIcon(InputCallbacks.ControlType controlType)
         {
             SetupIcon();
-            _icon.sprite = isGamepad ? _controllerInteractionIcon : _keyboardInteractionIcon;
+            _icon.sprite = _interactionIcons[(int)controlType];
         }
 
         //private void OnValidate()
