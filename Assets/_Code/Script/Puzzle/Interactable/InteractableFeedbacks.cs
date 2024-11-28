@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Ivayami.Player;
 using Ivayami.UI;
-using System;
+using Ivayami.Player;
 
 namespace Ivayami.Puzzle
 {
@@ -10,7 +9,7 @@ namespace Ivayami.Puzzle
     {
         [SerializeField] private Color _highlightedColor = new Color(0.03921569f, 0.03921569f, 0.03921569f, 1);
         [SerializeField] private bool _applyToChildrens = true;
-        [SerializeField] private Sprite[] _interactionIcons;
+        private static Sprite[] _interactionIcons;
         
         private List<Material> _materials;
         private List<Color> _baseColors;
@@ -23,6 +22,10 @@ namespace Ivayami.Puzzle
         private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
         private static int PULSE = Animator.StringToHash("pulse");
         public Vector3 IconPosition {  get { return _icon.gameObject.transform.position; } }
+
+        private void Awake() {
+            if(_interactionIcons == null) _interactionIcons = Resources.Load<InputIcons>("InputIcons/InteractablePopup").Icons;
+        }
 
         private void Start()
         {
@@ -136,12 +139,6 @@ namespace Ivayami.Puzzle
         //    }
         //}
 
-#if UNITY_EDITOR
-        private void OnValidate() {
-            int enumSize = Enum.GetNames(typeof(InputCallbacks.ControlType)).Length;
-            if (_interactionIcons.Length != enumSize) Array.Resize(ref _interactionIcons, enumSize);
-        }
-#endif
 
     }
 }

@@ -9,7 +9,7 @@ namespace Ivayami.UI {
     public class KeyTutorial : MonoBehaviour {
 
         [SerializeField] private InputActionReference _actionIndicator;
-        [SerializeField] private Sprite[] _indicators;
+        [SerializeField] private InputIcons _indicators;
 
         private Image _icon;
         private Fade _fadeUI;
@@ -45,7 +45,7 @@ namespace Ivayami.UI {
         }
 
         private void UpdateVisuals(InputCallbacks.ControlType controlType) {
-            _icon.sprite = _indicators[(int)controlType];
+            _icon.sprite = _indicators.Icons[(int)controlType];
         }
 
         private void IconEnable() {
@@ -55,13 +55,6 @@ namespace Ivayami.UI {
         private void IconDisable() {
             _icon.enabled = false;
         }
-
-#if UNITY_EDITOR
-        private void OnValidate() {
-            int enumSize = Enum.GetNames(typeof(InputCallbacks.ControlType)).Length;
-            if (_indicators.Length != enumSize) Array.Resize(ref _indicators, enumSize);
-        }
-#endif
 
     }
 }
