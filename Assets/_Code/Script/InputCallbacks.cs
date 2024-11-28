@@ -9,14 +9,14 @@ using UnityEngine.InputSystem.XInput;
 namespace Ivayami.Player {
     public class InputCallbacks : MonoSingleton<InputCallbacks> {
 
-        private UnityEvent<bool> _onChangeControls = new UnityEvent<bool>();
+        private UnityEvent<ControlType> _onChangeControls = new UnityEvent<ControlType>();
 
         private PlayerInput _playerInput;
-        public bool IsGamepad { get; private set; }
-        public GamepadType GamepadCurrent { get; private set; }
+        public ControlType ControlTypeCurrent { get; private set; }
 
-        public enum GamepadType {
-            NotGamepad,
+        public enum ControlType {
+            Keyboard,
+            GamepadNotIdentified,
             XBox,
             DualShock,
             DualSense,
@@ -27,35 +27,35 @@ namespace Ivayami.Player {
             base.Awake();
 
             InputSystem.onDeviceChange += (device, deviceChange) => {
-                IsGamepad = device is Gamepad;
-                GamepadCurrent = IsGamepad ? GetGamepadType(Gamepad.current) : GamepadType.NotGamepad;
-                Debug.Log($"Gamepad current is '{GamepadCurrent.ToString()}'");
+                ControlTypeCurrent = GetControlType(Gamepad.current);
+                Debug.Log($"Control type is '{ControlTypeCurrent}'");
             };
             _playerInput = GetComponent<PlayerInput>();
             _playerInput.onControlsChanged += (playerInput) => {
-                _onChangeControls.Invoke(playerInput.currentControlScheme == "Gamepad");
+                _onChangeControls.Invoke(ControlTypeCurrent);
             };
         }
 
         /// <summary>
         /// Callback 'true' when 'isGamepad == true'
         /// </summary>
-        public void SubscribeToOnChangeControls(UnityAction<bool> action) {
+        public void SubscribeToOnChangeControls(UnityAction<ControlType> action) {
             _onChangeControls.AddListener(action);
-            action.Invoke(_playerInput.currentControlScheme == "Gamepad");
+            action.Invoke(ControlTypeCurrent);
         }
 
-        public void UnsubscribeToOnChangeControls(UnityAction<bool> action) {
+        public void UnsubscribeToOnChangeControls(UnityAction<ControlType> action) {
             _onChangeControls.RemoveListener(action);
         }
 
-        public GamepadType GetGamepadType(Gamepad gamepad) {
-            if (gamepad is XInputController) return GamepadType.XBox;
-            if (gamepad is DualShockGamepad) return GamepadType.DualShock;
-            if (gamepad is DualSenseGamepadHID || gamepad is DualSenseGampadiOS) return GamepadType.DualSense;
-            if (gamepad is SwitchProControllerHID) return GamepadType.ProController;
-            Debug.LogError($"Non-identified Gamepad '{gamepad.name}'");
-            return GamepadType.DualShock;
+        public ControlType GetControlType(Gamepad gamepad) {
+            if (!(gamepad is Gamepad)) return ControlType.Keyboard;
+            if (gamepad is XInputController) return ControlType.XBox;
+            if (gamepad is DualShockGamepad) return ControlType.DualShock;
+            if (gamepad is DualSenseGamepadHID || gamepad is DualSenseGampadiOS) return ControlType.DualSense;
+            if (gamepad is SwitchProControllerHID) return ControlType.ProController;
+            Debug.LogWarning($"Non-identified Gamepad '{gamepad.name}'");
+            return ControlType.GamepadNotIdentified;
         }
 
     }

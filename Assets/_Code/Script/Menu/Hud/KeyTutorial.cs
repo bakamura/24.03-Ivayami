@@ -2,14 +2,14 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Ivayami.Player;
+using System;
 
 namespace Ivayami.UI {
     [RequireComponent(typeof(Fade))]
     public class KeyTutorial : MonoBehaviour {
 
         [SerializeField] private InputActionReference _actionIndicator;
-        [SerializeField] private Sprite _indicatorKeyboard;
-        [SerializeField] private Sprite _indicatorGamepad;
+        [SerializeField] private Sprite[] _indicators;
 
         private Image _icon;
         private Fade _fadeUI;
@@ -44,8 +44,8 @@ namespace Ivayami.UI {
             InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisuals);
         }
 
-        private void UpdateVisuals(bool isGamepad) {
-            _icon.sprite = isGamepad ? _indicatorGamepad : _indicatorKeyboard;
+        private void UpdateVisuals(InputCallbacks.ControlType controlType) {
+            _icon.sprite = _indicators[(int)controlType];
         }
 
         private void IconEnable() {
@@ -55,6 +55,13 @@ namespace Ivayami.UI {
         private void IconDisable() {
             _icon.enabled = false;
         }
+
+#if UNITY_EDITOR
+        private void OnValidate() {
+            int enumSize = Enum.GetNames(typeof(InputCallbacks.ControlType)).Length;
+            if (_indicators.Length != enumSize) Array.Resize(ref _indicators, enumSize);
+        }
+#endif
 
     }
 }
