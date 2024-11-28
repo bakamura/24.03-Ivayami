@@ -96,6 +96,7 @@
 	<object class="MixerBusEffectChain" id="{79844a31-ee61-4d88-b0d3-2ae6989d397e}">
 		<relationship name="effects">
 			<destination>{5c24954e-760f-4a38-9725-22c71dd34e08}</destination>
+			<destination>{c0174ae9-07e4-4bd3-aff9-84c2696ebe6a}</destination>
 			<destination>{d684e59f-3c01-47f1-86cb-6aadd5d0d9f3}</destination>
 			<destination>{e05aab26-f4ef-45be-a3bd-0de9b61ab82c}</destination>
 			<destination>{b797d300-3863-4496-bfb7-7b5717833640}</destination>
@@ -112,32 +113,52 @@
 	</object>
 	<object class="MixerBusFader" id="{f92cae72-a6d7-41e7-b8ff-055d6e95e06d}" />
 	<object class="MixerBusFader" id="{5c24954e-760f-4a38-9725-22c71dd34e08}" />
+	<object class="CompressorEffect" id="{c0174ae9-07e4-4bd3-aff9-84c2696ebe6a}">
+		<property name="threshold">
+			<value>-12</value>
+		</property>
+		<property name="ratio">
+			<value>2</value>
+		</property>
+		<property name="attackTime">
+			<value>0.100000001</value>
+		</property>
+		<property name="releaseTime">
+			<value>5000</value>
+		</property>
+	</object>
 	<object class="ThreeEQEffect" id="{d684e59f-3c01-47f1-86cb-6aadd5d0d9f3}">
 		<property name="lowGain">
-			<value>-7.5</value>
-		</property>
-		<property name="midGain">
 			<value>-9</value>
 		</property>
+		<property name="midGain">
+			<value>-17.5</value>
+		</property>
 		<property name="lowCrossover">
-			<value>440</value>
+			<value>700</value>
 		</property>
 		<property name="highCrossover">
-			<value>3200</value>
+			<value>4600</value>
+		</property>
+		<property name="crossoverSlope">
+			<value>2</value>
 		</property>
 	</object>
 	<object class="SFXReverbEffect" id="{e05aab26-f4ef-45be-a3bd-0de9b61ab82c}">
 		<property name="decayTime">
-			<value>1400</value>
+			<value>1700</value>
 		</property>
 		<property name="earlyDelay">
 			<value>10.5</value>
 		</property>
+		<property name="HFDecayRatio">
+			<value>64.5</value>
+		</property>
 		<property name="lowShelfGain">
-			<value>-7.5</value>
+			<value>-12</value>
 		</property>
 		<property name="wetLevel">
-			<value>0</value>
+			<value>2</value>
 		</property>
 	</object>
 	<object class="SpatialiserEffect" id="{b797d300-3863-4496-bfb7-7b5717833640}" />
