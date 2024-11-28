@@ -8,7 +8,7 @@ namespace Ivayami.UI {
     public class UiText : ScriptableObject {
 
         [SerializeField] private string[] _keys;
-        [SerializeField] private string[] _values;
+        [SerializeField, TextArea] private string[] _values;
         private Dictionary<string, string> _dictionary;
 #if UNITY_EDITOR
         public string[] Keys { get { return _keys; } }
