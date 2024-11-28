@@ -27,13 +27,14 @@ namespace Ivayami.Player {
         protected override void Awake() {
             base.Awake();
 
-            InputSystem.onDeviceChange += (device, deviceChange) => {
-                ControlTypeCurrent = GetControlType(Gamepad.current);
-                Debug.Log($"Control type is '{ControlTypeCurrent}'");
-            };
+            //InputSystem.onDeviceChange += (device, deviceChange) => {
+            //};
             _playerInput = GetComponent<PlayerInput>();
             _playerInput.onControlsChanged += (playerInput) => {
+                ControlTypeCurrent = GetControlType(Gamepad.current);
                 _onChangeControls.Invoke(ControlTypeCurrent);
+                
+                Debug.Log($"Control type is '{ControlTypeCurrent}'");
             };
         }
 
