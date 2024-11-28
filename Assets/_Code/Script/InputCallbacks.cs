@@ -31,7 +31,7 @@ namespace Ivayami.Player {
             //};
             _playerInput = GetComponent<PlayerInput>();
             _playerInput.onControlsChanged += (playerInput) => {
-                ControlTypeCurrent = GetControlType(Gamepad.current);
+                ControlTypeCurrent = GetControlType(playerInput.currentControlScheme != "Gamepad" ? null : Gamepad.current);
                 _onChangeControls.Invoke(ControlTypeCurrent);
                 
                 Debug.Log($"Control type is '{ControlTypeCurrent}'");
