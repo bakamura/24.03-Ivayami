@@ -34639,7 +34639,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 1982490996}
     m_Modifications:
     - target: {fileID: 2396565779021411876, guid: 2ce0d8f76a1fc474bb40b817af4009b1, type: 3}
       propertyPath: m_LocalPosition.x
@@ -34699,11 +34699,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7107697441884427328, guid: 2ce0d8f76a1fc474bb40b817af4009b1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 84.4435
+      value: 0.89334106
       objectReference: {fileID: 0}
     - target: {fileID: 7107697441884427328, guid: 2ce0d8f76a1fc474bb40b817af4009b1, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 80.974434
+      value: 11.574432
       objectReference: {fileID: 0}
     - target: {fileID: 7107697441884427328, guid: 2ce0d8f76a1fc474bb40b817af4009b1, type: 3}
       propertyPath: m_LocalRotation.w
@@ -34742,6 +34742,16 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ce0d8f76a1fc474bb40b817af4009b1, type: 3}
+--- !u!4 &983384828 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7107697441884427328, guid: 2ce0d8f76a1fc474bb40b817af4009b1, type: 3}
+  m_PrefabInstance: {fileID: 983384827}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &983384829 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8856244446301556258, guid: 2ce0d8f76a1fc474bb40b817af4009b1, type: 3}
+  m_PrefabInstance: {fileID: 983384827}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &983409882
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -44822,6 +44832,7 @@ Transform:
   - {fileID: 1575032864}
   - {fileID: 272780125}
   - {fileID: 1525041408}
+  - {fileID: 1982490996}
   m_Father: {fileID: 811883833}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1284552498
@@ -55162,7 +55173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a430758e5d3add458125794bb7b3531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: ExitDoors_299446
+  _id: ExitDoors_Restaurant_1692808
   _saveOnDisable: 0
   _objectsToSave:
   - {fileID: 1514563585}
@@ -57944,7 +57955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a430758e5d3add458125794bb7b3531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: StorageDoorSave_642126
+  _id: StorageDoorSave_Restaurant_1692910
   _saveOnDisable: 0
   _objectsToSave:
   - {fileID: 823268700}
@@ -60210,7 +60221,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a430758e5d3add458125794bb7b3531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: KeySaver_609666
+  _id: KeySaver_Restaurant_1693046
   _saveOnDisable: 0
   _objectsToSave:
   - {fileID: 408115507}
@@ -72397,6 +72408,55 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2669645b32624b34bad4251cdccfcc81, type: 3}
+--- !u!1 &1982490995
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1982490996}
+  - component: {fileID: 1982490997}
+  m_Layer: 0
+  m_Name: battery
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1982490996
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982490995}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 983384828}
+  m_Father: {fileID: 1280623627}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1982490997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982490995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a430758e5d3add458125794bb7b3531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _id: battery_Restaurant_1757938
+  _saveOnDisable: 0
+  _objectsToSave:
+  - {fileID: 983384829}
 --- !u!1001 &1982967780
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -77693,4 +77753,3 @@ SceneRoots:
   m_Roots:
   - {fileID: 1253285990}
   - {fileID: 811883833}
-  - {fileID: 983384827}
