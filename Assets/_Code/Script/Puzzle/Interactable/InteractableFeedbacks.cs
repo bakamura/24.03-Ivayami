@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Ivayami.Player;
+using Ivayami.UI;
+using System;
 
 namespace Ivayami.Puzzle
 {
@@ -133,5 +135,13 @@ namespace Ivayami.Puzzle
         //        sprite.enabled = false;
         //    }
         //}
+
+#if UNITY_EDITOR
+        private void OnValidate() {
+            int enumSize = Enum.GetNames(typeof(InputCallbacks.ControlType)).Length;
+            if (_interactionIcons.Length != enumSize) Array.Resize(ref _interactionIcons, enumSize);
+        }
+#endif
+
     }
 }

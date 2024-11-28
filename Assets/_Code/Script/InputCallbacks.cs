@@ -27,8 +27,7 @@ namespace Ivayami.Player {
         protected override void Awake() {
             base.Awake();
 
-            //InputSystem.onDeviceChange += (device, deviceChange) => {
-            //};
+            //InputSystem.onDeviceChange += (device, deviceChange) => ;
             _playerInput = GetComponent<PlayerInput>();
             _playerInput.onControlsChanged += (playerInput) => {
                 ControlTypeCurrent = GetControlType(playerInput.currentControlScheme != "Gamepad" ? null : Gamepad.current);
