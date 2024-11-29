@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.DualShock;
-using UnityEngine.InputSystem.iOS;
+//using UnityEngine.InputSystem.iOS;
 using UnityEngine.InputSystem.Switch;
 using UnityEngine.InputSystem.XInput;
 
@@ -33,7 +33,7 @@ namespace Ivayami.Player {
                 ControlTypeCurrent = GetControlType(playerInput.currentControlScheme != "Gamepad" ? null : Gamepad.current);
                 _onChangeControls.Invoke(ControlTypeCurrent);
                 
-                Debug.Log($"Control type is '{ControlTypeCurrent}'");
+                //Debug.Log($"Control type is '{ControlTypeCurrent}'");
             };
         }
 
@@ -53,7 +53,7 @@ namespace Ivayami.Player {
             if (!(gamepad is Gamepad)) return ControlType.Keyboard;
             if (gamepad is XInputController) return ControlType.XBox;
             if (gamepad is DualShockGamepad) return ControlType.DualShock;
-            if (gamepad is DualSenseGamepadHID || gamepad is DualSenseGampadiOS) return ControlType.DualSense;
+            if (gamepad is DualSenseGamepadHID /*|| gamepad is DualSenseGampadiOS*/) return ControlType.DualSense;
             if (gamepad is SwitchProControllerHID) return ControlType.ProController;
             Debug.LogWarning($"Non-identified Gamepad '{gamepad.name}'");
             return ControlType.GamepadNotIdentified;

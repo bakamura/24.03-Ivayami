@@ -170,10 +170,11 @@ namespace Ivayami.Enemy
                         {
                             if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
                             //StopMovement(true);
-                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, () =>
-                            {
-                                _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
-                            });
+                            _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
+                            //_enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, () =>
+                            //{
+                            //    _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
+                            //});
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                             _isChasing = true;
                             if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());

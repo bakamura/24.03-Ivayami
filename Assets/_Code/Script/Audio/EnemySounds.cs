@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using AOT;
 
 namespace Ivayami.Audio
 {
@@ -278,7 +279,7 @@ namespace Ivayami.Audio
             data.CallbackData.UnityCallback?.Invoke();
             return result;
         }
-
+        [MonoPInvokeCallback(typeof(RESULT))]
         private static RESULT HandleOnAudioEnd(EVENT_CALLBACK_TYPE type, IntPtr instancePtr, IntPtr parameterPtr)
         {
             EventInstance instance = new EventInstance(instancePtr);

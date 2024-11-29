@@ -32,18 +32,25 @@ namespace Ivayami.UI
         private int _currentSelectedIndex;
         private bool _isActive;
 
+        public bool IsActive => _isActive;
+
         protected override void Awake()
         {
             base.Awake();
             _itemInDisplay = GetComponentInChildren<UseItemUIIcon>();
             _fade = GetComponent<Fade>();
         }
+
+        private void Start()
+        {
+            PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
+        }
         /// <summary>
         /// Open And Closes the UI
         /// </summary>
-        public void UpdateUI()
+        public void UpdateUI(bool isActive)
         {
-            _isActive = !_isActive;
+            _isActive = isActive;
             if (_isActive) _onShowUI?.Invoke();
             UpdateInputs();
             UpdateVisuals();
@@ -84,19 +91,19 @@ namespace Ivayami.UI
             if (!stack.Item)
             {
                 _onNotRequiredItem?.Invoke();
-                UpdateUI();
+                UpdateUI(false);
                 return;
             }
             else if (_currentItemActionCoroutine != null)
             {
                 _onAlreadyHealing?.Invoke();
-                UpdateUI();
+                UpdateUI(false);
                 return;
             }
             else if (PlayerStress.Instance.StressCurrent == 0)
             {
                 _onNotEnoughStressToHeal?.Invoke();
-                UpdateUI();
+                UpdateUI(false);
                 return;
             }
 
@@ -133,6 +140,11 @@ namespace Ivayami.UI
         {
             _currentItemActionCoroutine = null;
             _onHealEnd?.Invoke();
+        }
+
+        private void HandleInputMapChange(string mapId)
+        {
+            if (mapId != "Player" && IsActive) UpdateUI(false);
         }
     }
 }

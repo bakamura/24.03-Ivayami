@@ -6,8 +6,7 @@ using PSX;
 
 public class PsxScaler : MonoBehaviour {
 
-    //[Tooltip("In a Full HD Screen [1920x1080]")]
-    //[SerializeField] private Vector2 _basePixelation;
+    [SerializeField] private float _heightPixelation;
     [SerializeField] private float _ditheringScaleBase;
     [SerializeField, Min(0f)] private float _windowResizeCheckInterval;
     private WaitForSeconds _windowResizeCheckWait;
@@ -17,7 +16,7 @@ public class PsxScaler : MonoBehaviour {
     private Dithering _dithering;
 
     private void Awake() {
-        //_pixelation = GetComponent<Volume>().profile.components.FirstOrDefault(component => component.GetType() == typeof(Pixelation)) as Pixelation;
+        _pixelation = GetComponent<Volume>().profile.components.FirstOrDefault(component => component.GetType() == typeof(Pixelation)) as Pixelation;
         _dithering = GetComponent<Volume>().profile.components.FirstOrDefault(component => component.GetType() == typeof(Dithering)) as Dithering;
         ReScale();
 
@@ -27,8 +26,8 @@ public class PsxScaler : MonoBehaviour {
 
     private void ReScale() {
         _windowSizePrevious = new Vector2Int(Screen.width, Screen.height);
-        //_pixelation.widthPixelation.Override(_basePixelation.x * _windowSizePrevious.y / 1080f); // was '_windowSizePrevious.x / 1920f', changed so its based only on height scale for consistent appearance
-        //_pixelation.heightPixelation.Override(_basePixelation.y * _windowSizePrevious.y / 1080f);
+        _pixelation.widthPixelation.Override(_heightPixelation);
+        _pixelation.heightPixelation.Override(_heightPixelation * Screen.width / Screen.height);
         _dithering.ditherScale.Override(_ditheringScaleBase * _windowSizePrevious.y / 1080f);
     }
 
