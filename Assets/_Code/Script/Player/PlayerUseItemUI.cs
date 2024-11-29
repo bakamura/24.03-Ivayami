@@ -144,7 +144,7 @@ namespace Ivayami.UI
 
         private void HandleInputMapChange(string mapId)
         {
-            if (mapId != "Player") UpdateUI(false);
+            if (mapId != "Player" && IsActive) UpdateUI(false);
         }
     }
 }
