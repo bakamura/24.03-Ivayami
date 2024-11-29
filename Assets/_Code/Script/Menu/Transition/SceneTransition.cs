@@ -31,7 +31,7 @@ namespace Ivayami.UI {
         private void Start() {
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
             Close();
-            SceneController.Instance.OnLoadScene += (sceneName) => SetLoadingIconState(true);
+            SceneController.Instance.OnStartLoadAnyScene += () => SetLoadingIconState(true);
         }
 
         public void SetDuration(float durationSeconds) {
