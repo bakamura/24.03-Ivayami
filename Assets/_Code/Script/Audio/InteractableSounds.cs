@@ -83,41 +83,41 @@ namespace Ivayami.Audio
 
         private void OnDisable()
         {
-            PLAYBACK_STATE state;
+            //PLAYBACK_STATE state;
             if (_interactSoundInstance.isValid())
             {
-                _interactSoundInstance.getPlaybackState(out state);
-                if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _interactSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                //_interactSoundInstance.getPlaybackState(out state);
+                //if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _interactSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
                 _interactSoundInstance.release();
             }
             if (_interactReturnSoundInstance.isValid())
             {
-                _interactReturnSoundInstance.getPlaybackState(out state);
-                if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _interactReturnSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                //_interactReturnSoundInstance.getPlaybackState(out state);
+                //if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _interactReturnSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
                 _interactReturnSoundInstance.release();
             }
             if (_activateSoundInstance.isValid())
             {
-                _activateSoundInstance.getPlaybackState(out state);
-                if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _activateSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                //_activateSoundInstance.getPlaybackState(out state);
+                //if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _activateSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
                 _activateSoundInstance.release();
             }
             if (_deactivateSoundInstance.isValid())
             {
-                _deactivateSoundInstance.getPlaybackState(out state);
-                if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _deactivateSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                //_deactivateSoundInstance.getPlaybackState(out state);
+                //if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _deactivateSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
                 _deactivateSoundInstance.release();
             }
             if (_actionFailedSoundInstance.isValid())
             {
-                _actionFailedSoundInstance.getPlaybackState(out state);
-                if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _actionFailedSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                //_actionFailedSoundInstance.getPlaybackState(out state);
+                //if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _actionFailedSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
                 _actionFailedSoundInstance.release();
             }
             if (_actionSuccessSoundInstance.isValid())
             {
-                _actionSuccessSoundInstance.getPlaybackState(out state);
-                if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _actionSuccessSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                //_actionSuccessSoundInstance.getPlaybackState(out state);
+                //if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _actionSuccessSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
                 _actionSuccessSoundInstance.release();
             }
             _hasDoneSetup = false;
