@@ -44,6 +44,7 @@ namespace Ivayami.UI
         private void Start()
         {
             PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
+            PlayerStress.Instance.onFail.AddListener(() => { if (IsActive) UpdateUI(false); });
         }
         /// <summary>
         /// Open And Closes the UI
