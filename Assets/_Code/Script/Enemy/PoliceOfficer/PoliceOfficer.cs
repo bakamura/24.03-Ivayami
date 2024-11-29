@@ -153,7 +153,7 @@ namespace Ivayami.Enemy
                         _navMeshAgent.velocity = Vector3.zero;
                         _enemyAnimator.Walking(0);
                         _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
-                        //PlayerStress.Instance.SetStressMin(98);
+                        PlayerStress.Instance.AddStress(100, 79);
                         _enemyAnimator.TargetDetected(HandleTargetDetected);
                     }
                     _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
