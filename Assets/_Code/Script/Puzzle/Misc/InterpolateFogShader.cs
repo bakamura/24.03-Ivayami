@@ -18,6 +18,7 @@ namespace Ivayami.Puzzle
         [ContextMenu("Start")]
         public void StartLerp()
         {
+            if (!gameObject.activeInHierarchy) return;
             GetMaterialInstance();
             StopLerp();
             _initialValue = _fogMaterial.GetVector(PARAMETER);
@@ -26,6 +27,7 @@ namespace Ivayami.Puzzle
         [ContextMenu("Stop")]
         public void StopLerp()
         {
+            if (!gameObject.activeInHierarchy) return;
             if (_interpolationCoroutine != null)
             {
                 StopCoroutine(_interpolationCoroutine);
