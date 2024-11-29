@@ -28,6 +28,7 @@ namespace Ivayami.Player {
         public UnityEvent<IInteractable> onInteractTargetChange = new UnityEvent<IInteractable>();
         public UnityEvent<string> onAbility = new UnityEvent<string>();
         public UnityEvent<sbyte> onAbilityChange = new UnityEvent<sbyte>();
+        public UnityEvent<string> onActionMapChange = new UnityEvent<string>();
 
         [Header("Interact")]
 
@@ -228,7 +229,7 @@ namespace Ivayami.Player {
 
         private void UseHealthItem(InputAction.CallbackContext obj)
         {
-            if (PlayerUseItemUI.Instance) PlayerUseItemUI.Instance.UpdateUI();
+            if (PlayerUseItemUI.Instance) PlayerUseItemUI.Instance.UpdateUI(!PlayerUseItemUI.Instance.IsActive);
         }
 
         public void ChangeInputMap(string mapId) {
@@ -236,6 +237,7 @@ namespace Ivayami.Player {
             _actionMapCurrent = mapId != null ? _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId) : null;
             _actionMapCurrent?.Enable();
             Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId == "Player" ? CursorLockMode.Locked : CursorLockMode.None;
+            if(_actionMapCurrent != null) onActionMapChange?.Invoke(_actionMapCurrent.name);
         }
 
 #if UNITY_EDITOR
