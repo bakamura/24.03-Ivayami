@@ -6,6 +6,7 @@ using FMOD;
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using AOT;
 
 namespace Ivayami.Audio
 {
@@ -139,6 +140,7 @@ namespace Ivayami.Audio
         #endregion
 
         #region Callback
+        [MonoPInvokeCallback(typeof(RESULT))]
         private static RESULT HandleOnAudioEnd(EVENT_CALLBACK_TYPE type, IntPtr instancePtr, IntPtr parameterPtr)
         {
             EventInstance instance = new EventInstance(instancePtr);
