@@ -81,9 +81,12 @@ namespace Ivayami.Audio
         public void Stop()
         {
             _currentSounData.AudioInstance.getPlaybackState(out PLAYBACK_STATE state);
-            if (state == PLAYBACK_STATE.PLAYING) _currentSounData.AudioInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            if (state == PLAYBACK_STATE.PLAYING)
+            {
+                _currentSounData.AudioInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                _currentSounData.OnAudioEnd?.Invoke();
+            }
             StopUpdateCoroutine();
-            _currentSounData.OnAudioEnd?.Invoke();
         }
 
         private void Setup()
