@@ -53,7 +53,7 @@ namespace Ivayami.Player {
             _restartWait = new WaitForSeconds(_restartDelay);
 
             Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");
-            EstimateRelieveDuration(); //
+            //EstimateRelieveDuration(); //
         }
 
         private void Update() {
