@@ -18,6 +18,9 @@ namespace Ivayami.Player {
 
         [SerializeField] private float _stressMax;
         private float _stressCurrent;
+        [SerializeField] private float _stressRelieveMinValue;
+        [Tooltip("I can't really explain, but the higher the value the faster it relieves")]
+        [SerializeField] private float _stressRelieveFactor;
         [SerializeField] private float _stressRelieveDelay;
         private float _stressRelieveDelayTimer;
         private bool _pauseStressRelieve = false;
@@ -50,6 +53,7 @@ namespace Ivayami.Player {
             _restartWait = new WaitForSeconds(_restartDelay);
 
             Logger.Log(LogType.Player, $"{typeof(PlayerStress).Name} Initialized");
+            EstimateRelieveDuration(); //
         }
 
         private void Update() {
@@ -79,7 +83,7 @@ namespace Ivayami.Player {
         }
 
         private float StressRelieveFormula(float intake) {
-            if (intake > 20) return -0.0001f * Mathf.Pow(intake + 65f, 2f); // Tweak / Modularize values later
+            if (intake > _stressRelieveMinValue) return -0.0001f * Mathf.Pow(intake + _stressRelieveFactor, 2f); // Tweak / Modularize values later
             else return 0;
         }
 
@@ -137,5 +141,18 @@ namespace Ivayami.Player {
             if (!IngameDebugConsole.DebugLogManager.Instance) return;
             _isAutoRegenActive = isActive;
         }
+
+#if UNITY_EDITOR
+        private void EstimateRelieveDuration() {
+            _stressCurrent = 100;
+            int i = 0;
+            while (_stressCurrent > 40) {
+                _stressCurrent -= StressRelieveFormula(_stressCurrent);
+                i++;
+            }
+            Debug.Log($"Estimated time to relieve stress{i}");
+        }
+#endif
+
     }
 }
