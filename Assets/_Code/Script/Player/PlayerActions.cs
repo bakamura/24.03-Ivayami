@@ -21,6 +21,8 @@ namespace Ivayami.Player {
         [SerializeField] private InputActionReference[] _pauseInputs;
         private InputActionMap _actionMapCurrent;
 
+        public InputActionMap CurrentActionMap => _actionMapCurrent;
+
         [Header("Events")]
 
         public UnityEvent<InteractAnimation> onInteract = new UnityEvent<InteractAnimation>();
