@@ -13,24 +13,41 @@ MonoBehaviour:
   m_Name: LockedOfficerInRoom
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Marcos
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Marcos
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - announcerName: Marcos
       content: Yes it worked!
-    - LanguageType: 1
-      announcerName: Marcos
+    - announcerName: Marcos
       content: "A\xEA, deu certo!"
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Marcos
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Marcos
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - announcerName: Marcos
       content: Now let's get out of here!
-    - LanguageType: 1
-      announcerName: Marcos
+    - announcerName: Marcos
       content: Vambora daqui!
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

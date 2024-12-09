@@ -13,16 +13,26 @@ MonoBehaviour:
   m_Name: RestaurantOwnerBeforeCollectKey
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Restaurant's Owner
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Restaurant's Owner
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - announcerName: Restaurant's Owner
       content: The <#e35540>key</color> is back there, at the pantry. Did you find
         the <#e35540>note</color>?
-    - LanguageType: 1
-      announcerName: Dono do Restaurante
+    - announcerName: Dono do Restaurante
       content: "A <#e35540>chave</color> t\xE1 ali atr\xE1s, na dispensa. C\xEA achou
         a <#e35540>nota</color>?"
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

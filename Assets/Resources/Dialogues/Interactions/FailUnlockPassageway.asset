@@ -13,15 +13,25 @@ MonoBehaviour:
   m_Name: FailUnlockPassageway
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Cynthia
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - announcerName: Cynthia
       content: Those boards seem loose, but I can't get them off with my hands only!
-    - LanguageType: 1
-      announcerName: Cynthia
+    - announcerName: Cynthia
       content: "Essas t\xE1buas parecem meio soltas, mas eu n\xE3o consigo tirar
         s\xF3 com as m\xE3os!"
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

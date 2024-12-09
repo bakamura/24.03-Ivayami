@@ -13,14 +13,24 @@ MonoBehaviour:
   m_Name: DiscoverHoleWithoutFriend
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - announcerName: 
       content: (Why there is a hole in this wall?)
-    - LanguageType: 1
-      announcerName: Cynthia
+    - announcerName: 
       content: (Por que tem um buraco na parede?)
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 1
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

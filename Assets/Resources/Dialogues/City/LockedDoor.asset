@@ -13,14 +13,24 @@ MonoBehaviour:
   m_Name: LockedDoor
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Cynthia
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - announcerName: Cynthia
       content: (The door is locked)
-    - LanguageType: 1
-      announcerName: Cynthia
+    - announcerName: Cynthia
       content: "(A porta est\xE1 trancada)"
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

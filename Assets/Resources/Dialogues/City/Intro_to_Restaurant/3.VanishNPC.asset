@@ -13,14 +13,24 @@ MonoBehaviour:
   m_Name: 3.VanishNPC
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Cynthia
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - announcerName: Cynthia
       content: Uh... where did she go..?
-    - LanguageType: 1
-      announcerName: Cynthia
+    - announcerName: Cynthia
       content: Ahn... Pra onde ela foi?
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 2
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

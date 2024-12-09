@@ -13,34 +13,58 @@ MonoBehaviour:
   m_Name: CarInteraction
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Cynthia
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - announcerName: Cynthia
       content: What happened?...Where is everyone?!
-    - LanguageType: 1
-      announcerName: Cynthia
+    - announcerName: Cynthia
       content: "O que aconteceu?...Cad\xEA todo mundo?!"
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Cynthia
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - announcerName: Cynthia
       content: Joca must be seeing red...
-    - LanguageType: 1
-      announcerName: Cynthia
+    - announcerName: Cynthia
       content: O Joca deve estar uma fera...
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Cynthia
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - announcerName: Cynthia
       content: I have to find them!
-    - LanguageType: 1
-      announcerName: Cynthia
+    - announcerName: Cynthia
       content: Tenho que achar eles!
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []
