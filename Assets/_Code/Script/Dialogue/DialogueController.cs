@@ -8,6 +8,7 @@ using Ivayami.Player;
 using Ivayami.Audio;
 using UnityEngine.UI;
 using Ivayami.Save;
+using UnityEngine.Localization.Settings;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
 
@@ -39,6 +40,7 @@ namespace Ivayami.Dialogue
         private int _currentShowingChars = 0;
         private sbyte _currentSpeechIndex;
         private float _currentFixedDurationInSpeech;
+        private const string _dialogueTableName = "Dialogues";
         [Serializable]
         private struct DialogueLayout
         {
@@ -166,9 +168,9 @@ namespace Ivayami.Dialogue
             if (eraseCurrentContent)
             {
                 _continueDialogueIcon.SetActive(false);
-                _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].announcerName;
+                _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].AnnouncerName.GetLocalizedString();//_currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].announcerName;
                 _speechTextComponent.maxVisibleCharacters = 0;
-                _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content;
+                _speechTextComponent.text = LocalizationSettings.StringDatabase.GetLocalizedString(_dialogueTableName, $"{_currentDialogue.name}/Speech_{_currentSpeechIndex}");
                 _currentCharIndex = 0;
                 _currentShowingChars = 0;
                 _currentFixedDurationInSpeech = 0;
@@ -231,7 +233,6 @@ namespace Ivayami.Dialogue
             StopCoroutine(_writtingCoroutine);
             _currentShowingChars = _currentDialogueCharArray.Length;
             _speechTextComponent.maxVisibleCharacters = _currentShowingChars;
-            //_announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].announcerName;
             if (LockInput) _continueDialogueIcon.SetActive(true);
             OnSkipSpeech?.Invoke();
             _writtingCoroutine = null;
@@ -279,7 +280,7 @@ namespace Ivayami.Dialogue
                     if (_dialogueEventsList[i].TriggerEvent(eventID))
                     {
                         if (_debugLogs) Debug.Log($"Dialogue Event {eventID} Triggered");
-                        return;                           
+                        return;
                     }
                 }
                 Debug.LogWarning($"The event {eventID} coudln't be found");

@@ -58,7 +58,7 @@ namespace Ivayami.Localization
                         {
                             for(int a = 0; a < dialogues[i].dialogue.Length; a++)
                             {
-                                table.AddEntry($"{dialogues[i].name}/Announcer_{a}", dialogues[i].dialogue[a].Speeches[index].announcerName);
+                                //table.AddEntry($"{dialogues[i].name}/Announcer_{a}", dialogues[i].dialogue[a].Speeches[index].announcerName);
                                 table.AddEntry($"{dialogues[i].name}/Speech_{a}", dialogues[i].dialogue[a].Speeches[index].content);
                             }
                         }
