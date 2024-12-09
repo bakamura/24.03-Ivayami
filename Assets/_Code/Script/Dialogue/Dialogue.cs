@@ -15,8 +15,8 @@ namespace Ivayami.Dialogue
         public struct DialogueEvent
         {
             public LocalizedString AnnouncerName;
-            public Speech[] Speeches;
 #if UNITY_EDITOR
+            public Speech[] Speeches;
             public string FilterTags;
 #endif
             public string EventId;
@@ -47,6 +47,10 @@ namespace Ivayami.Dialogue
                 {
                     if (dialogue[i].Speeches == null) dialogue[i].Speeches = new Speech[languagesCount];
                     Array.Resize(ref dialogue[i].Speeches, languagesCount);
+                    for (int a = 0; a < dialogue[i].Speeches.Length; a++)
+                    {
+                        dialogue[i].Speeches[a].Language = LocalizationSettings.AvailableLocales.Locales[a].LocaleName;
+                    }
                 }
             }
             _previousSize = dialogue.Length;
