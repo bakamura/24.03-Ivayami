@@ -14,8 +14,6 @@ namespace Ivayami.Localization
     {
         [SerializeField] private TableType _tableType;
 
-        private SerializedObject _instance;
-        private SerializedProperty tableType;
         private const string _dialogueTableName = "Dialogues";
         private const string _itemTableName = "Items";
         private const string _uiTableName = "UI";
@@ -26,27 +24,22 @@ namespace Ivayami.Localization
             UI
         }
 
-        [MenuItem("Ivayami/Localization/TableUpdate")]
+        [MenuItem("Ivayami/Localization/Table Update")]
         private static void ShowWindow()
         {
-            EditorWindow.GetWindow(typeof(LocalizationToolWindow));
+            var window = GetWindow<LocalizationToolWindow>();
+            window.titleContent = new GUIContent("Tables Update");
+            window.Show();
         }
 
         private void OnGUI()
         {
-            EditorGUILayout.PropertyField(tableType, new GUIContent("TableType"));
-            _instance.ApplyModifiedProperties();
+            _tableType = (TableType)EditorGUILayout.EnumPopup("Table Type", _tableType);
 
             if (GUILayout.Button("Update Table"))
             {
                 UpdateLocalizationTable();
             }
-        }
-
-        private void OnEnable()
-        {
-            _instance = new SerializedObject(this);
-            tableType = _instance.FindProperty("_tableType");
         }
 
         private void UpdateLocalizationTable()
@@ -58,10 +51,6 @@ namespace Ivayami.Localization
                     //places in alphabetic order
                     dialogues = dialogues.OrderBy(x => x.ID).ToArray();
                     LocalizationEditorSettings.GetStringTableCollection(_dialogueTableName).ClearAllEntries();
-                    //foreach (StringTable table in LocalizationEditorSettings.GetStringTableCollection(_dialogueTableName).StringTables)
-                    //{
-                    //    table.Clear();
-                    //}
                     byte index = 0;
                     foreach (StringTable table in LocalizationEditorSettings.GetStringTableCollection(_dialogueTableName).StringTables)
                     {
