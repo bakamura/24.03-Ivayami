@@ -15,13 +15,13 @@ namespace Ivayami.Localization
 
         private const string _dialogueTableName = "Dialogues";
         private const string _itemTableName = "Items";
-        private const string _uiTableName = "UI";
+        //private const string _uiTableName = "UI";
         private const string _journalTableName = "Journal";
         private enum TableType
         {
             Dialogue,
             Item,
-            UI,
+            //UI,
             Journal
         }
 
@@ -99,8 +99,6 @@ namespace Ivayami.Localization
                     }
                     Debug.Log("Item Table Updated");
                     break;
-                case TableType.UI:
-                    break;
                 case TableType.Journal:
                     JournalEntry[] entries = Resources.LoadAll<JournalEntry>("Journal");
                     //places in alphabetic order
@@ -125,6 +123,8 @@ namespace Ivayami.Localization
                     }
                     Debug.Log("Journal Table Updated");
                     break;
+                //case TableType.UI:
+                //    break;
             }
         }
     }

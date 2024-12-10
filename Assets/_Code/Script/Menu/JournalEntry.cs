@@ -65,33 +65,5 @@ namespace Ivayami.UI {
             }
         }
 #endif
-
-        //[ContextMenu("FIX")]
-        //private void FixRef()
-        //{
-        //    JournalEntry[] assetsEN = Resources.LoadAll<JournalEntry>("Journal/StoryEntry/ENUS");
-        //    JournalEntry[] assetsPTBR = Resources.LoadAll<JournalEntry>("Journal/StoryEntry/PTBR");
-        //    for (int i = 0; i < assetsEN.Length; i++)
-        //    {
-        //        assetsEN[i].DisplayTexts = new EntryContent[LocalizationSettings.AvailableLocales.Locales.Count];
-        //        assetsEN[i].DisplayTexts[0].Name = assetsEN[i].DisplayName;
-        //        assetsEN[i].DisplayTexts[0].Descriptions = new string[assetsEN[i]._text.Length];
-        //        for (int a = 0; a < assetsEN[i]._text.Length; a++)
-        //        {
-        //            assetsEN[i].DisplayTexts[a].Language = LocalizationSettings.AvailableLocales.Locales[a].LocaleName;
-        //            assetsEN[i].DisplayTexts[0].Descriptions[a] = assetsEN[i]._text[a];
-        //        }
-        //    }
-        //    for (int i = 0; i < assetsEN.Length; i++)
-        //    {
-        //        assetsEN[i].DisplayTexts[1].Name = assetsPTBR[i].DisplayName;
-        //        assetsEN[i].DisplayTexts[1].Descriptions = new string[assetsPTBR[i]._text.Length];
-        //        for (int a = 0; a < assetsEN[i]._text.Length; a++)
-        //        {
-        //            assetsEN[i].DisplayTexts[1].Descriptions[a] = assetsPTBR[i]._text[a];
-        //        }
-        //        UnityEditor.EditorUtility.SetDirty(assetsEN[i]);
-        //    }
-        //}
     }
 }
