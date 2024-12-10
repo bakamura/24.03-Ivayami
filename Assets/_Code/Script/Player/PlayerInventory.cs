@@ -79,7 +79,7 @@ namespace Ivayami.Player {
         public void LoadInventory(SaveProgress.ItemData[] itemsData) {
             _itemList.Clear();
             if (itemsData?.Length > 0) {
-                InventoryItem[] itemAssets = Resources.LoadAll<InventoryItem>($"Items/ENUS");
+                InventoryItem[] itemAssets = Resources.LoadAll<InventoryItem>($"Items");
                 InventoryItem iterator;
                 for(int i = 0; i < itemsData.Length; i++)
                 {
