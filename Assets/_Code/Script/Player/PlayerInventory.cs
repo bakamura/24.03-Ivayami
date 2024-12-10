@@ -55,7 +55,7 @@ namespace Ivayami.Player {
                 item.GetDisplayDescription());
             else InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite, item.GetDisplayName());
 
-            Logger.Log(LogType.Player, $"Inventory Add: {item.DisplayTexts[0].Name} ({item.name}) / {item.Type}. Current owned {_itemList[_checkInventoryIndexCache == -1 ? 0 : _checkInventoryIndexCache].Amount}");
+            Logger.Log(LogType.Player, $"Inventory Add: {item.GetDisplayName()} ({item.name}) / {item.Type}. Current owned {_itemList[_checkInventoryIndexCache == -1 ? 0 : _checkInventoryIndexCache].Amount}");
         }
 
         public void RemoveFromInventory(InventoryItem item) {
@@ -73,7 +73,7 @@ namespace Ivayami.Player {
             }
             onInventoryUpdate.Invoke(CheckInventory());
 
-            Logger.Log(LogType.Player, $"Inventory Remove: {item.DisplayTexts[0].Name} ({item.name}) / {item.Type}. Current owned {(itemRemoved ? 0 : _itemList[_checkInventoryIndexCache].Amount)}");
+            Logger.Log(LogType.Player, $"Inventory Remove: {item.GetDisplayName()} ({item.name}) / {item.Type}. Current owned {(itemRemoved ? 0 : _itemList[_checkInventoryIndexCache].Amount)}");
         }
 
         public void LoadInventory(SaveProgress.ItemData[] itemsData) {

@@ -174,7 +174,7 @@ namespace Ivayami.Dialogue
                 _currentCharIndex = 0;
                 _currentShowingChars = 0;
                 _currentFixedDurationInSpeech = 0;
-                _currentDialogueCharArray = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content.ToCharArray();
+                _currentDialogueCharArray = _speechTextComponent.text.ToCharArray();
                 if (CutsceneController.IsPlaying || !LockInput)
                 {
                     _dialogueBackground.sprite = _dialogueVariations[1].Background;

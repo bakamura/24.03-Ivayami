@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using Ivayami.Puzzle;
 
 namespace Ivayami.UI {
     [RequireComponent(typeof(Menu))]
@@ -34,6 +35,14 @@ namespace Ivayami.UI {
                     break;
                 }
             }
+
+            StartCoroutine(FitEntryText(entry.GetDisplayDescription()));
+        }
+
+        public void DisplayEntry(Readable entry)
+        {
+            foreach (TextMeshProUGUI entryNote in _entryNotes) entryNote.text = string.Empty;
+            _menuGroup.CloseCurrent();
 
             StartCoroutine(FitEntryText(entry.GetDisplayDescription()));
         }

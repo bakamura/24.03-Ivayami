@@ -1,8 +1,7 @@
 using Ivayami.Save;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
-using Ivayami.Puzzle;
+//using Ivayami.Puzzle;
 
 namespace Ivayami.UI {
     [CreateAssetMenu(menuName = "Texts/JournalyEntry")]
@@ -37,19 +36,19 @@ namespace Ivayami.UI {
 
         public string GetDisplayDescription()
         {
-            return LocalizationSettings.StringDatabase.GetLocalizedString("Journal", $"{name}/Description_{(_progressType != null ? DisplayTexts[SaveSystem.Instance.Options.language].Descriptions.Take(SaveSystem.Instance.Progress.GetEntryProgressOfType(_progressType.Id)).ToArray() : "")}");
+            return LocalizationSettings.StringDatabase.GetLocalizedString("Journal", $"{name}/Description_{(_progressType != null ? SaveSystem.Instance.Progress.GetEntryProgressOfType(_progressType.Id) : 0)}");
         }
 
-        public JournalEntry(Readable readable) {
-            DisplayTexts = new EntryContent[readable.DisplayTexts.Length];
-            for(int i = 0; i < readable.DisplayTexts.Length; i++)
-            {
-                DisplayTexts[i].Name = readable.DisplayTexts[i].Name;
-                DisplayTexts[i].Descriptions = new string[1];
-                DisplayTexts[i].Descriptions[0] = readable.DisplayTexts[i].Description;
-            }
-            Images = new Sprite[0];
-        }
+        //public JournalEntry(Readable readable) {
+        //    DisplayTexts = new EntryContent[readable.DisplayTexts.Length];
+        //    for(int i = 0; i < readable.DisplayTexts.Length; i++)
+        //    {
+        //        DisplayTexts[i].Name = readable.DisplayTexts[i].Name;
+        //        DisplayTexts[i].Descriptions = new string[1];
+        //        DisplayTexts[i].Descriptions[0] = readable.DisplayTexts[i].Description;
+        //    }
+        //    Images = new Sprite[0];
+        //}
 
 #if UNITY_EDITOR
         private void OnValidate()

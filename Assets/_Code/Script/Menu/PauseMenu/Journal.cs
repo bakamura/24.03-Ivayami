@@ -6,6 +6,7 @@ using Ivayami.Player;
 using Ivayami.Save;
 using Ivayami.Audio;
 using System.Collections;
+using Ivayami.Puzzle;
 
 namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
@@ -86,7 +87,7 @@ namespace Ivayami.UI {
         private void SetupDocumentsSelection() {
             ReadableItem[] documentItems = PlayerInventory.Instance.CheckInventory().OfType<ReadableItem>().ToArray();
             for (int i = 0; i < documentItems.Length; i++)
-                SetupBtn(i >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(i).GetComponentInChildren<Button>(), documentItems[i].JournalEntry);
+                SetupBtn(i >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(i).GetComponentInChildren<Button>(), documentItems[i].Entry);
         }
 
         private void SetupAberrationsSelection() {
@@ -99,6 +100,15 @@ namespace Ivayami.UI {
         }
 
         private void SetupBtn(Button btn, JournalEntry entry, bool shouldSelect = false) {
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => DisplayEntry(entry));
+            btn.onClick.AddListener(_btnSound.GoForth);
+            btn.GetComponent<TextMeshProUGUI>().text = entry.GetDisplayName();
+            if (shouldSelect) btn.onClick.Invoke();
+        }
+
+        private void SetupBtn(Button btn, Readable entry, bool shouldSelect = false)
+        {
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() => DisplayEntry(entry));
             btn.onClick.AddListener(_btnSound.GoForth);
@@ -163,5 +173,14 @@ namespace Ivayami.UI {
             else Debug.LogError($"'{entry.name}' tried using journal preset {entry.TemplateID} which is doesn't exist!");
         }
 
+        private void DisplayEntry(Readable entry)
+        {
+            if (entry == null)
+            {
+                Debug.LogWarning("Description Not Found");
+                return;
+            }
+            _presets[0].DisplayEntry(entry);
+        }
     }
 }
