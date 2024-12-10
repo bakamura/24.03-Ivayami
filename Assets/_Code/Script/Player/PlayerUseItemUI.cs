@@ -111,7 +111,7 @@ namespace Ivayami.UI
             _currentItemActionCoroutine = StartCoroutine(_possibleOptions[_currentSelectedIndex].UsageAction.ExecuteAtion(HandleItemActionEnd));
             PlayerInventory.Instance.RemoveFromInventory(_possibleOptions[_currentSelectedIndex]);
             InfoUpdateIndicator.Instance.DisplayUpdate(_possibleOptions[_currentSelectedIndex].Sprite, $"1 " +
-                $"{stack.Item.GetTranslation(SaveSystem.Instance.Options.Language).DisplayName} " +
+                $"{stack.Item.GetDisplayName()} " +
                 $"{_translation.GetTranslation(SaveSystem.Instance.Options.Language).GetText("ItemUsed")}");
             _isActive = false;
             UpdateInputs();

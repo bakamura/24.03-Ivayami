@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.Localization;
-using Ivayami.Dialogue;
 using Ivayami.Player;
 using UnityEngine.Localization.Tables;
 using System.Linq;
+using Ivayami.Puzzle;
 
 namespace Ivayami.Localization
 {
@@ -72,8 +70,10 @@ namespace Ivayami.Localization
                     break;
                 case TableType.Item:
                     InventoryItem[] items = Resources.LoadAll<InventoryItem>("Items");
+                    Readable[] readables = Resources.LoadAll<Readable>("Readable");
                     //places in alphabetic order
                     items = items.OrderBy(x => x.name).ToArray();
+                    readables = readables.OrderBy(x => x.name).ToArray();
                     LocalizationEditorSettings.GetStringTableCollection(_itemTableName).ClearAllEntries();
                     foreach (StringTable table in LocalizationEditorSettings.GetStringTableCollection(_itemTableName).StringTables)
                     {
@@ -81,6 +81,11 @@ namespace Ivayami.Localization
                         {
                             table.AddEntry($"{items[i].name}/Name", items[i].DisplayTexts[index].Name);
                             table.AddEntry($"{items[i].name}/Description", items[i].DisplayTexts[index].Description);
+                        }
+                        for(int i = 0; i < readables.Length; i++)
+                        {
+                            table.AddEntry($"{readables[i].name}/Name", readables[i].DisplayTexts[index].Name);
+                            table.AddEntry($"{readables[i].name}/Description", readables[i].DisplayTexts[index].Description);
                         }
                         index++;
                     }

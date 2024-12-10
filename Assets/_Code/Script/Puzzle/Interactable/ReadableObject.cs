@@ -42,8 +42,7 @@ namespace Ivayami.Puzzle {
             InteratctableFeedbacks.UpdateFeedbacks(false, true);
             _focusCamera.StartMovement();
 
-            Readable readable = _readable.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
-            ReadableUI.Instance.ShowReadable(readable.Title, readable.Content);
+            ReadableUI.Instance.ShowReadable(_readable.GetDisplayName(), _readable.GetDisplayDescription());
 
             ReturnAction.Instance.Set(StopReading);
 
