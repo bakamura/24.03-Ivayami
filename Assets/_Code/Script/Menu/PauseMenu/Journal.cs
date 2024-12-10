@@ -76,7 +76,7 @@ namespace Ivayami.UI {
         }
 
         private void SetupCharactersSelection() {
-            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/CharacterEntry/ENUS");
+            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/CharacterEntry");
             int currentChild = 0;
             for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.GetEntryProgressOfType(entries[i].name) > 0) {
                     SetupBtn(currentChild >= _characterSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _characterSelectionContainer) : _characterSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
@@ -91,7 +91,7 @@ namespace Ivayami.UI {
         }
 
         private void SetupAberrationsSelection() {
-            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/AberrationEntry/ENUS");
+            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/AberrationEntry");
             int currentChild = 0;
             for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.GetEntryProgressOfType(entries[i].name) > 0) {
                     SetupBtn(currentChild >= _aberrationSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _aberrationSelectionContainer) : _aberrationSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
