@@ -44,7 +44,7 @@ namespace Ivayami.debug
         {
             _previousMap = PlayerActions.Instance.CurrentActionMap;
             _previousMode = Cursor.lockState;
-            _previousSelectable = EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>();
+            _previousSelectable = EventSystem.current.currentSelectedGameObject ? EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>() : null;
             foreach (InputActionMap map in _playerInput.actions.actionMaps)
             {
                 map.Disable();

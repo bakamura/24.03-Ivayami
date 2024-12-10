@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Ivayami.Player;
-using Ivayami.Save;
 
 namespace Ivayami.UI {
     public class Bag : MonoSingleton<Bag> {
@@ -12,8 +11,6 @@ namespace Ivayami.UI {
         [SerializeField] private BagItem[] _itemNormalBtns;
         [SerializeField] private BagItem[] _itemSpecialBtns;
         [SerializeField] private TextMeshProUGUI _itemDescriptor;
-
-        //private List<BagItem> _itemBtns = new List<BagItem>();
 
         public void InventoryUpdate() {
             PlayerInventory.InventoryItemStack[] items = PlayerInventory.Instance.CheckInventory();
@@ -29,8 +26,7 @@ namespace Ivayami.UI {
         }
 
         public void DisplayItemInfo(InventoryItem item) {
-            InventoryItem itemTranslation = item?.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
-            _itemDescriptor.text = itemTranslation != null ? $"{itemTranslation.DisplayName}\n{itemTranslation.Description}" : "";
+            _itemDescriptor.text = item ? $"{item.GetDisplayName()}\n{item.GetDisplayDescription()}" : "";
         }
 
     }
