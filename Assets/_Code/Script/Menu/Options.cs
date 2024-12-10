@@ -13,7 +13,7 @@ using UnityEngine.Localization.Settings;
 namespace Ivayami.UI {
     public class Options : MonoBehaviour {
 
-        public static UnityEvent<LanguageTypes> OnChangeLanguage { get; private set; } = new UnityEvent<LanguageTypes>();
+        public static UnityEvent OnChangeLanguage { get; private set; } = new UnityEvent();
 
         [Header("UI")]
 
@@ -93,7 +93,7 @@ namespace Ivayami.UI {
             else if (SaveSystem.Instance.Options.language < 0) SaveSystem.Instance.Options.language = _languageTypesSize - 1;
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[SaveSystem.Instance.Options.language];
             _languageNameText.text = LocalizationSettings.AvailableLocales.Locales[SaveSystem.Instance.Options.language].LocaleName;
-            OnChangeLanguage.Invoke((LanguageTypes)SaveSystem.Instance.Options.language);
+            OnChangeLanguage.Invoke();
         }
 
         //public void ChangeLanguage(Int32 language) {
@@ -121,7 +121,7 @@ namespace Ivayami.UI {
             PlayerCamera.Instance.SetSensitivityY(SaveSystem.Instance.Options.cameraSensitivityY * (InputCallbacks.Instance.IsGamepad ? _gamepadCameraSensitivityMultiplierY : _mouseCameraSensitivityMultiplierY));
             PlayerMovement.Instance.ChangeStickDeadzone(SaveSystem.Instance.Options.cameraDeadzone);
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[SaveSystem.Instance.Options.language];
-            OnChangeLanguage.Invoke((LanguageTypes)SaveSystem.Instance.Options.language);
+            OnChangeLanguage.Invoke();
             PlayerCamera.Instance.InvertCamera(!SaveSystem.Instance.Options.invertCamera);
             PlayerMovement.Instance.ChangeHoldToRun(SaveSystem.Instance.Options.holdToRun);
         }

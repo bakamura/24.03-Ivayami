@@ -7,7 +7,6 @@ using System;
 using Ivayami.Player;
 using Ivayami.Audio;
 using UnityEngine.UI;
-using Ivayami.Save;
 using UnityEngine.Localization.Settings;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
@@ -46,18 +45,6 @@ namespace Ivayami.Dialogue
         {
             public Sprite Background;
             public Vector2 Dimensions;
-        }
-
-        private struct DialogeRef
-        {
-            public int InstanceID;
-            public LanguageTypes LanguageType;
-
-            public DialogeRef(int id, LanguageTypes type)
-            {
-                InstanceID = id;
-                LanguageType = type;
-            }
         }
 
         public bool IsPaused { get; private set; }
