@@ -5,6 +5,7 @@ using Ivayami.Player;
 using UnityEngine.Localization.Tables;
 using System.Linq;
 using Ivayami.Puzzle;
+using Ivayami.UI;
 
 namespace Ivayami.Localization
 {
@@ -15,11 +16,13 @@ namespace Ivayami.Localization
         private const string _dialogueTableName = "Dialogues";
         private const string _itemTableName = "Items";
         private const string _uiTableName = "UI";
+        private const string _journalTableName = "Journal";
         private enum TableType
         {
             Dialogue,
             Item,
-            UI
+            UI,
+            Journal
         }
 
         [MenuItem("Ivayami/Localization/Table Update")]
@@ -97,6 +100,30 @@ namespace Ivayami.Localization
                     Debug.Log("Item Table Updated");
                     break;
                 case TableType.UI:
+                    break;
+                case TableType.Journal:
+                    JournalEntry[] entries = Resources.LoadAll<JournalEntry>("Journal");
+                    //places in alphabetic order
+                    entries = entries.OrderBy(x => x.name).ToArray();
+                    LocalizationEditorSettings.GetStringTableCollection(_journalTableName).ClearAllEntries();
+                    foreach (StringTable table in LocalizationEditorSettings.GetStringTableCollection(_journalTableName).StringTables)
+                    {
+                        for (int i = 0; i < entries.Length; i++)
+                        {
+                            table.AddEntry($"{entries[i].name}/Name", entries[i].DisplayTexts[index].Name);
+                            for (int a = 0; a < entries[i].DisplayTexts[index].Descriptions.Length; a++)
+                            {
+                                table.AddEntry($"{entries[i].name}/Description_{a}", entries[i].DisplayTexts[index].Descriptions[a]);
+                            }
+                        }
+                        index++;
+                    }
+                    EditorUtility.SetDirty(LocalizationEditorSettings.GetStringTableCollection(_journalTableName));
+                    foreach (StringTable table in LocalizationEditorSettings.GetStringTableCollection(_journalTableName).StringTables)
+                    {
+                        EditorUtility.SetDirty(table);
+                    }
+                    Debug.Log("Journal Table Updated");
                     break;
             }
         }

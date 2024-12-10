@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.Localization.Settings;
-using System;
 using Ivayami.Localization;
 
 namespace Ivayami.Player {
@@ -33,7 +32,7 @@ namespace Ivayami.Player {
             int languagesCount = LocalizationSettings.AvailableLocales.Locales.Count;
             if (languagesCount > 0 && DisplayTexts.Length != languagesCount)
             {
-                Array.Resize(ref DisplayTexts, languagesCount);
+                System.Array.Resize(ref DisplayTexts, languagesCount);
                 for(int i = 0; i < DisplayTexts.Length; i++)
                 {
                     DisplayTexts[i].Language = LocalizationSettings.AvailableLocales.Locales[i].LocaleName;

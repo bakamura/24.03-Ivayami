@@ -35,7 +35,7 @@ namespace Ivayami.UI {
                 }
             }
 
-            StartCoroutine(FitEntryText(entry.Text));
+            StartCoroutine(FitEntryText(entry.GetDisplayDescription()));
         }
 
         private IEnumerator FitEntryText(string text) {

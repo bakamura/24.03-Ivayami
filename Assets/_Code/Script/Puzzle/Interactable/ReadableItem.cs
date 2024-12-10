@@ -11,7 +11,7 @@ namespace Ivayami.Player {
             name = readableName;
             Readable readable = Resources.Load<Readable>($"Readable/{readableName}");
             //DisplayTexts = readable.DisplayTexts;
-            JournalEntry = new JournalEntry(readable.GetDisplayName(), readable.GetDisplayDescription());
+            JournalEntry = new JournalEntry(readable);
             Type = ItemType.Document;
             Resources.UnloadUnusedAssets();
         }
