@@ -72,14 +72,7 @@ namespace Ivayami.Scene
         public void LoadMainMenuScene()
         {
             if (!string.IsNullOrEmpty(_mainMenuSceneName))
-            {
-#if UNITY_EDITOR
-                if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))
-                {
-                    OnAllSceneRequestEndDebug += Ivayami.debug.CustomSettingsHandler.OnSceneLoad;
-                    _mainMenuSceneName = Ivayami.debug.CustomSettingsHandler.CurrentSceneName;
-                }
-#endif
+            { 
                 LoadScene(_mainMenuSceneName);
             }
         }

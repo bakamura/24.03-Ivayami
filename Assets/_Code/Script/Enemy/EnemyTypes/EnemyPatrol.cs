@@ -7,7 +7,7 @@ using Ivayami.Audio;
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
-    public class EnemyPatrol : StressEntity, IIluminatedEnemy
+    public class EnemyPatrol : StressEntity
     {
         //[Header("Enemy Parameters")]
         [SerializeField, Min(0f)] private float _minDetectionRange;

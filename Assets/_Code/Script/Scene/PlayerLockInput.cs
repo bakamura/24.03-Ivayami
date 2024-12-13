@@ -26,11 +26,6 @@ namespace Ivayami.Scene {
             Pause.Instance.ToggleCanPause(nameof(PlayerLockInput), true);
         }
 
-#if UNITY_EDITOR
-        private void OnValidate() {
-            Debug.LogWarning($"{name} is using PlayerLockInput, please remove it!");
-        }
-#endif
 
     }
 }
