@@ -59,7 +59,6 @@ namespace Ivayami.Enemy
         private Vector3 _lastTargetPosition;
         private bool _isChasing;
         private bool _directContactWithTarget;
-        private bool _targetKilled;
         private float _halfVisionAngle;
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
@@ -89,13 +88,11 @@ namespace Ivayami.Enemy
         {
             if (!_navMeshAgent.enabled && _initializeCoroutine == null) _initializeCoroutine = StartCoroutine(InitializeAgent());
             if (_startActive && _initializeCoroutine == null) StartBehaviour();
-            PlayerStress.Instance.onFail.AddListener(OnTargetKill);
         }
 
         private void OnDisable()
         {
             StopBehaviour();
-            PlayerStress.Instance.onFail.RemoveListener(OnTargetKill);
         }
 
         private IEnumerator InitializeAgent()
@@ -262,10 +259,9 @@ namespace Ivayami.Enemy
         private void OnAttackAnimationEnd()
         {
             _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
-            if (_targetKilled)
+            if (PlayerStress.Instance && PlayerStress.Instance.FailState)
             {
                 _enemyAnimator.Walking(0);
-                _targetKilled = false;
                 //_enemyAnimator.Chasing(false);
             }
             else
@@ -388,11 +384,6 @@ namespace Ivayami.Enemy
             _isChasing = true;
             _lastTargetPosition = _hitsCache[0].transform.position;
             _navMeshAgent.isStopped = false;
-        }
-
-        private void OnTargetKill()
-        {
-            _targetKilled = true;
         }
         #endregion
         #region Debug
