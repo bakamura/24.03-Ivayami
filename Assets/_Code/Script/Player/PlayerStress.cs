@@ -37,6 +37,8 @@ namespace Ivayami.Player {
 
         public bool OverrideFailLoadValue => _overrideFailLoad;
 
+        public bool FailState => _failState;
+
         [Header("Cache")]
 
         private const string FAIL_BLOCK_KEY = "FailState";
