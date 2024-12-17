@@ -37,7 +37,9 @@ namespace Ivayami.Player {
         [SerializeField] private InteractableDetector _interactableDetector;
         [SerializeField] private LayerMask _interactLayer;
         [SerializeField] private LayerMask _blockLayers;
-        [SerializeField] private float _interactableCheckDelay;
+        [SerializeField, Min(0f)] private float _interactableCheckDelay;
+        private const float _interactCoodlown = .5f;
+        private float _currentInteractCooldown;
 
         public bool Interacting { get; private set; } = false;
         public IInteractable InteractableTarget { get; private set; } // Should be private now?
@@ -63,7 +65,6 @@ namespace Ivayami.Player {
 
         [Header("Cache")]
 
-        //private Camera _cam;
         private CinemachineBrain _brain;
         private RaycastHit _interactableHitCache;
         //private RaycastHit _blockerHitCache;
@@ -86,20 +87,25 @@ namespace Ivayami.Player {
             onInteractLong.AddListener((interacting) => Interacting = interacting);
             _interactableCheckWait = new WaitForSeconds(_interactableCheckDelay);
 
-            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //
+            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //            
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
         }        
 
         private void Start() {
-            //_cam = PlayerCamera.Instance.MainCamera;
+            Dialogue.DialogueController.Instance.OnDialogueEnd += () => _currentInteractCooldown = _interactCoodlown;
             _brain = PlayerCamera.Instance.CinemachineBrain;
             StartCoroutine(InteractObjectDetect());
         }
 
+        private void Update()
+        {
+            if (_currentInteractCooldown > 0) _currentInteractCooldown -= Time.deltaTime;
+        }
+
         private void Interact(InputAction.CallbackContext input) {
             //if (PlayerMovement.Instance.CanMove) {
-                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove) {
+                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _currentInteractCooldown <= 0) {
                     if (InteractableTarget != null /*&& InteractableTarget != Friend.Instance?.InteractableLongCurrent*/) {
                         _interactAnimationCache = InteractableTarget.Interact();
                         Vector3 directionToInteractable = InteractableTarget.InteratctableFeedbacks.IconPosition - transform.position;
@@ -231,7 +237,7 @@ namespace Ivayami.Player {
 
         private void UseHealthItem(InputAction.CallbackContext obj)
         {
-            if (PlayerUseItemUI.Instance) PlayerUseItemUI.Instance.UpdateUI(!PlayerUseItemUI.Instance.IsActive);
+            if (PlayerUseItemUI.Instance && !PlayerStress.Instance.FailState) PlayerUseItemUI.Instance.UpdateUI(!PlayerUseItemUI.Instance.IsActive);
         }
 
         public void ChangeInputMap(string mapId) {
