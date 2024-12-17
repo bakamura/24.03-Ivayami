@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using Ivayami.Player;
 using Ivayami.Save;
+using UnityEngine.Localization;
 
 namespace Ivayami.UI
 {
@@ -24,7 +25,7 @@ namespace Ivayami.UI
         [SerializeField] private InputActionReference _navigateUIInput;
         [SerializeField] private InputActionReference _confirmOptionInput;
         [SerializeField] private InventoryItem[] _possibleOptions;
-        [SerializeField] private UiText _translation;
+        [SerializeField] private LocalizedString _itemUsedText;
 
         private UseItemUIIcon _itemInDisplay;
         private Fade _fade;
@@ -111,8 +112,8 @@ namespace Ivayami.UI
             _currentItemActionCoroutine = StartCoroutine(_possibleOptions[_currentSelectedIndex].UsageAction.ExecuteAtion(HandleItemActionEnd));
             PlayerInventory.Instance.RemoveFromInventory(_possibleOptions[_currentSelectedIndex]);
             InfoUpdateIndicator.Instance.DisplayUpdate(_possibleOptions[_currentSelectedIndex].Sprite, $"1 " +
-                $"{stack.Item.GetTranslation(SaveSystem.Instance.Options.Language).DisplayName} " +
-                $"{_translation.GetTranslation(SaveSystem.Instance.Options.Language).GetText("ItemUsed")}");
+                $"{stack.Item.GetDisplayName()} " +
+                $"{_itemUsedText.GetLocalizedString()}");
             _isActive = false;
             UpdateInputs();
             UpdateVisuals();

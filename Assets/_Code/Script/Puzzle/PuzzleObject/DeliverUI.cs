@@ -208,7 +208,7 @@ namespace Ivayami.Puzzle
                 if (requestIndex == _itemsCache.Count) requestIndex = 0;
             }
             _itemDisplayName.text = PlayerInventory.Instance.CheckInventoryFor(_currentItemSelected.name).Item ? 
-                _currentItemSelected.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language).DisplayName : null;
+                _currentItemSelected.GetDisplayName() : null;
         }
 
         private bool ContainItemTypeInRequest(ItemType itemType)
