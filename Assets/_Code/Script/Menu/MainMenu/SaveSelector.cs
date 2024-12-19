@@ -26,7 +26,7 @@ namespace Ivayami.UI {
         private void Start() {
             StartCoroutine(WaitForSaveOptions());
 
-            Options.OnChangeLanguage.AddListener((language) => SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate));
+            Options.OnChangeLanguage.AddListener(() => SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate));
             PlayerActions.Instance.ChangeInputMap("Menu");
             PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, false);
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, false);

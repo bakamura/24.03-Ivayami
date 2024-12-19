@@ -36,7 +36,7 @@ namespace Ivayami.Puzzle
         private FuseBoxButtonUI _defaultBtn;
         private InteractableFeedbacks _interatctableHighlight;
         private InteractableSounds _interactableSounds;
-        private static int _colorEmissionVarID = Shader.PropertyToID("_EmissionColor");
+        private static readonly int _colorEmissionVarID = Shader.PropertyToID("_EmissionColor");
 
         public InteractableFeedbacks InteratctableFeedbacks { get => _interatctableHighlight; }
 
@@ -239,6 +239,14 @@ namespace Ivayami.Puzzle
         //    }
         //}
 
+        private void OnValidate()
+        {
+            if (_fuseUIParent)
+            {
+                _fuseUIParent.GetComponent<UnityEngine.UI.GridLayoutGroup>().constraintCount = (int)_matrixDimensions.y;
+            }
+        }
+
         public void RepositionFuses()
         {
             sbyte currentX = 0;
@@ -251,7 +259,7 @@ namespace Ivayami.Puzzle
                 leds[i].transform.localPosition = pos;
                 fuses[i].transform.localPosition = pos;
                 currentX++;
-                if (currentX > _matrixDimensions.x)
+                if (currentX >= _matrixDimensions.x)
                 {
                     currentX = 0;
                     currentY++;

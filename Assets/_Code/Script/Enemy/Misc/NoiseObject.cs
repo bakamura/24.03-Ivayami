@@ -12,9 +12,15 @@ namespace Ivayami.Enemy
 #if UNITY_EDITOR
         [SerializeField] private Color _gizmoColor = Color.red;
 #endif
-
         private Collider[] _hitsCache = new Collider[8];
+
         private void OnTriggerEnter(Collider other)
+        {
+            GenerateNoise();
+        }
+
+        [ContextMenu("Noise")]
+        public void GenerateNoise()
         {
             Physics.OverlapSphereNonAlloc(transform.position, _noiseRange, _hitsCache, _noiseTargetLayer);
             for (int i = 0; i < _hitsCache.Length; i++)
