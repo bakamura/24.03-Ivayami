@@ -72,6 +72,7 @@ namespace Ivayami.Save {
         }
 
         public RoadBlocker.State GetRoadBlockerState(int blockerId) {
+            if(roadBlockersState.Length <= blockerId) Array.Resize(ref roadBlockersState, blockerId + 1);
             return (RoadBlocker.State)roadBlockersState[blockerId];
         }
 
