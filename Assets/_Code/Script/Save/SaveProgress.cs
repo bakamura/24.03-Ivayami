@@ -14,7 +14,7 @@ namespace Ivayami.Save {
         public string lastSavePlace;
         public SerializableDictionary<string, int> gameProgress = new SerializableDictionary<string, int>();
         public SerializableDictionary<string, int> entryProgress = new SerializableDictionary<string, int>();
-        public int[] roadBlockersState;
+        public int[] roadBlockersState = new int[5];
         public SerializableDictionary<string, string> saveObjects = new SerializableDictionary<string, string>();
 
         [Serializable]
@@ -29,7 +29,7 @@ namespace Ivayami.Save {
                 Amount = amount;
             }
 
-            public ItemData(Ivayami.Player.PlayerInventory.InventoryItemStack itemStack)
+            public ItemData(Player.PlayerInventory.InventoryItemStack itemStack)
             {
                 ID = itemStack.Item.name;
                 Amount = itemStack.Amount;
