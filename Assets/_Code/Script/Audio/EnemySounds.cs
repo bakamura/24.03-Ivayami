@@ -319,6 +319,7 @@ namespace Ivayami.Audio
             }
             if (_activationArea)
             {
+                _activationArea.radius = 0;
                 for (int i = 0; i < _audiosData.Length; i++)
                 {
                     if (_audiosData[i].AttenuationRange.Max > _activationArea.radius) _activationArea.radius = _audiosData[i].AttenuationRange.Max;
