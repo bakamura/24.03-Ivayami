@@ -48,6 +48,7 @@ namespace Ivayami.Player {
             Default,
             EnterLocker,
             EnterTrash,
+            Seat,
             PullRope,
             PullLever,
             PushButton
@@ -55,7 +56,6 @@ namespace Ivayami.Player {
 
         //[Header("Hand Item")]
 
-        //private GameObject _handItemCurrent;
         [field: SerializeField] public Transform HoldPointLeft { get; private set; }
 
         [Header("Abilities")]
@@ -67,7 +67,6 @@ namespace Ivayami.Player {
 
         private CinemachineBrain _brain;
         private RaycastHit _interactableHitCache;
-        //private RaycastHit _blockerHitCache;
         private IInteractable _interactableClosestCache;
         private WaitForSeconds _interactableCheckWait;
         private InteractAnimation _interactAnimationCache;
