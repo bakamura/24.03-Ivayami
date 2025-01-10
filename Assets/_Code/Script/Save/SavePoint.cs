@@ -40,13 +40,13 @@ namespace Ivayami.Save {
         }
 
         public PlayerActions.InteractAnimation Interact() {
-            if (_canSave) Save();
-            else {
+            if (!_canSave) {
                 onCantSaveGame?.Invoke();
 
                 Logger.Log(LogType.Save, "SavePoint Cannot Save");
                 return PlayerActions.InteractAnimation.Default;
             }
+            Save();
             return PlayerActions.InteractAnimation.Seat;
         }
 
