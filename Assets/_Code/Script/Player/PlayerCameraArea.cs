@@ -45,8 +45,9 @@ namespace Ivayami.Player
 
         private void OnDisable()
         {
-            if (_targetInside)
+            if (_targetInside || _heightInterpolationCoroutine != null || _radiusInterpolationCoroutine != null)
             {
+                StopInterpolationCoroutines();
                 CameraAimReposition.Instance.SetMaxDistance(-1);
                 if (_changeCameraRadius) ResetOrbitValuesInstant();
                 if (_changeCameraHeight) ResetHeightValuesInstant();
@@ -119,6 +120,20 @@ namespace Ivayami.Player
             for (int i = 0; i < PlayerCamera.Instance.FreeLookCam.m_Orbits.Length; i++)
             {
                 PlayerCamera.Instance.FreeLookCam.m_Orbits[i].m_Height = _defaultHeight[i];
+            }
+        }
+
+        private void StopInterpolationCoroutines()
+        {
+            if(_radiusInterpolationCoroutine != null)
+            {
+                StopCoroutine(_radiusInterpolationCoroutine);
+                _radiusInterpolationCoroutine = null;
+            }
+            if(_heightInterpolationCoroutine != null)
+            {
+                StopCoroutine(_heightInterpolationCoroutine);
+                _heightInterpolationCoroutine = null;
             }
         }
 
