@@ -19,6 +19,7 @@ namespace Ivayami.Scene
         public Action OnAllSceneRequestEnd;
         public Action<string> OnLoadScene;
         public Action<string> OnUnloadScene;
+        public Action OnStartLoadAnyScene;
 #if UNITY_EDITOR
         public Action OnAllSceneRequestEndDebug;
 #endif
@@ -91,6 +92,7 @@ namespace Ivayami.Scene
                 Debug.LogWarning($"Tried to Load scene {sceneId} but it is already loaded");
                 return;
             }
+            OnStartLoadAnyScene?.Invoke();
             StartLoad(data, onSceneLoad);
         }
 

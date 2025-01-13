@@ -27,7 +27,7 @@ namespace Ivayami.Puzzle
             EditorGUILayout.PropertyField(onCancelInteraction, new GUIContent("On Cancel Interaction"));
 
             if (Application.isPlaying && GUILayout.Button("SaveUIChangesDuringPlay")) Save();
-            if (!Application.isPlaying && File.Exists($"{Application.persistentDataPath}/ChangesDuringPlay") && GUILayout.Button("LoadUIChangesDuringPlay")) Load();
+            if (!Application.isPlaying && File.Exists($"{Application.persistentDataPath}/ChangesDuringPlay/{nameof(InteractableObjectsGroup)}") && GUILayout.Button("LoadUIChangesDuringPlay")) Load();
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -59,15 +59,15 @@ namespace Ivayami.Puzzle
             changes.CameraPos = cameraTransform.localPosition;
             changes.CameraRot = cameraTransform.localRotation;
 
-            File.WriteAllText($"{Application.persistentDataPath}/ChangesDuringPlay", JsonUtility.ToJson(changes));
+            File.WriteAllText($"{Application.persistentDataPath}/{nameof(InteractableObjectsGroup)}ChangesDuringPlay", JsonUtility.ToJson(changes));
             Debug.Log($"Changes Saved for {nameof(InteractableObjectsGroup)}");
         }
         private void Load()
         {
             InteractableObjectsGroup instance = target as InteractableObjectsGroup;
-            SaveSceneChanges changes = JsonUtility.FromJson<SaveSceneChanges>(File.ReadAllText($"{Application.persistentDataPath}/ChangesDuringPlay"));
-            File.Delete($"{Application.persistentDataPath}/ChangesDuringPlay");
-            
+            SaveSceneChanges changes = JsonUtility.FromJson<SaveSceneChanges>(File.ReadAllText($"{Application.persistentDataPath}/{nameof(InteractableObjectsGroup)}ChangesDuringPlay"));
+            File.Delete($"{Application.persistentDataPath}/{nameof(InteractableObjectsGroup)}ChangesDuringPlay");
+
             Button[] btns = instance.GetComponentInChildren<CanvasGroup>().GetComponentsInChildren<Button>();
             RectTransform temp;
             for (int i = 0; i < changes.ButtonRects.Length; i++)
@@ -80,6 +80,7 @@ namespace Ivayami.Puzzle
             }
             Transform cameraTransform = instance.GetComponentInChildren<CameraAnimationInfo>().GetComponent<Transform>();
             cameraTransform.SetLocalPositionAndRotation(changes.CameraPos, changes.CameraRot);
+            EditorUtility.SetDirty(instance);
             Debug.Log($"Changes Applied for {nameof(InteractableObjectsGroup)}");
         }
     }

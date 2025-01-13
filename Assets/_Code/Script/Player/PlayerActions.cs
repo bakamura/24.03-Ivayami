@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using Cinemachine;
 using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
+using Ivayami.UI;
 
 namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -20,6 +21,8 @@ namespace Ivayami.Player {
         [SerializeField] private InputActionReference[] _pauseInputs;
         private InputActionMap _actionMapCurrent;
 
+        public InputActionMap CurrentActionMap => _actionMapCurrent;
+
         [Header("Events")]
 
         public UnityEvent<InteractAnimation> onInteract = new UnityEvent<InteractAnimation>();
@@ -27,13 +30,16 @@ namespace Ivayami.Player {
         public UnityEvent<IInteractable> onInteractTargetChange = new UnityEvent<IInteractable>();
         public UnityEvent<string> onAbility = new UnityEvent<string>();
         public UnityEvent<sbyte> onAbilityChange = new UnityEvent<sbyte>();
+        public UnityEvent<string> onActionMapChange = new UnityEvent<string>();
 
         [Header("Interact")]
 
         [SerializeField] private InteractableDetector _interactableDetector;
         [SerializeField] private LayerMask _interactLayer;
         [SerializeField] private LayerMask _blockLayers;
-        [SerializeField] private float _interactableCheckDelay;
+        [SerializeField, Min(0f)] private float _interactableCheckDelay;
+        private const float _interactCoodlown = .5f;
+        private float _currentInteractCooldown;
 
         public bool Interacting { get; private set; } = false;
         public IInteractable InteractableTarget { get; private set; } // Should be private now?
@@ -59,7 +65,6 @@ namespace Ivayami.Player {
 
         [Header("Cache")]
 
-        //private Camera _cam;
         private CinemachineBrain _brain;
         private RaycastHit _interactableHitCache;
         //private RaycastHit _blockerHitCache;
@@ -82,20 +87,25 @@ namespace Ivayami.Player {
             onInteractLong.AddListener((interacting) => Interacting = interacting);
             _interactableCheckWait = new WaitForSeconds(_interactableCheckDelay);
 
-            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //
+            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //            
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
         }        
 
         private void Start() {
-            //_cam = PlayerCamera.Instance.MainCamera;
+            Dialogue.DialogueController.Instance.OnDialogueEnd += () => _currentInteractCooldown = _interactCoodlown;
             _brain = PlayerCamera.Instance.CinemachineBrain;
             StartCoroutine(InteractObjectDetect());
         }
 
+        private void Update()
+        {
+            if (_currentInteractCooldown > 0) _currentInteractCooldown -= Time.deltaTime;
+        }
+
         private void Interact(InputAction.CallbackContext input) {
             //if (PlayerMovement.Instance.CanMove) {
-                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove) {
+                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _currentInteractCooldown <= 0) {
                     if (InteractableTarget != null /*&& InteractableTarget != Friend.Instance?.InteractableLongCurrent*/) {
                         _interactAnimationCache = InteractableTarget.Interact();
                         Vector3 directionToInteractable = InteractableTarget.InteratctableFeedbacks.IconPosition - transform.position;
@@ -227,7 +237,7 @@ namespace Ivayami.Player {
 
         private void UseHealthItem(InputAction.CallbackContext obj)
         {
-            if (PlayerUseItemUI.Instance) PlayerUseItemUI.Instance.UpdateUI();
+            if (PlayerUseItemUI.Instance && !PlayerStress.Instance.FailState) PlayerUseItemUI.Instance.UpdateUI(!PlayerUseItemUI.Instance.IsActive);
         }
 
         public void ChangeInputMap(string mapId) {
@@ -235,6 +245,7 @@ namespace Ivayami.Player {
             _actionMapCurrent = mapId != null ? _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId) : null;
             _actionMapCurrent?.Enable();
             Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId == "Player" ? CursorLockMode.Locked : CursorLockMode.None;
+            if(_actionMapCurrent != null) onActionMapChange?.Invoke(_actionMapCurrent.name);
         }
 
 #if UNITY_EDITOR

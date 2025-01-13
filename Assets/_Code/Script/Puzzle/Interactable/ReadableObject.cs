@@ -2,8 +2,8 @@ using UnityEngine;
 using Ivayami.Player;
 using Ivayami.UI;
 using Ivayami.Dialogue;
-using Ivayami.Save;
 using Ivayami.Audio;
+using UnityEngine.Events;
 
 namespace Ivayami.Puzzle {
     [RequireComponent(typeof(InteractableSounds))]
@@ -16,6 +16,9 @@ namespace Ivayami.Puzzle {
 
         [SerializeField] private Readable _readable;
         [SerializeField] private bool _goesToInventory;
+
+        [Header("Callbacks")]
+        [SerializeField] private UnityEvent _onInteract;
 
         [Header("Animation")]
 
@@ -38,8 +41,7 @@ namespace Ivayami.Puzzle {
             InteratctableFeedbacks.UpdateFeedbacks(false, true);
             _focusCamera.StartMovement();
 
-            Readable readable = _readable.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
-            ReadableUI.Instance.ShowReadable(readable.Title, readable.Content);
+            ReadableUI.Instance.ShowReadable(_readable.GetDisplayName(), _readable.GetDisplayDescription());
 
             ReturnAction.Instance.Set(StopReading);
 
@@ -49,6 +51,7 @@ namespace Ivayami.Puzzle {
             }
 
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
+            _onInteract?.Invoke();
             return PlayerActions.InteractAnimation.Default;
         }
 

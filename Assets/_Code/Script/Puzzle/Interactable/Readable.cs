@@ -1,23 +1,38 @@
-using System.Linq;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
+using Ivayami.Localization;
 
 namespace Ivayami.Puzzle {
     [CreateAssetMenu(menuName = "Texts/Readable")]
     public class Readable : ScriptableObject {
 
-        [field: SerializeField] public string Title { get; private set; }
-        [field: SerializeField, TextArea(1, 50)] public string Content { get; private set; }
-
-        public Readable GetTranslation(LanguageTypes language) {
-            if (language == LanguageTypes.ENUS) return this;
-            Readable readable = Resources.LoadAll<Readable>($"Readable/{language}/").First(text => text.name == name);
-            Resources.UnloadUnusedAssets();
-            if (readable != null) return readable;
-            else {
-                Debug.LogError($"No translation {language} found of '{name}' (Readable)");
-                return this;
-            }
+#if UNITY_EDITOR
+        public TextContent[] DisplayTexts;
+#endif
+        public string GetDisplayName()
+        {
+            return LocalizationSettings.StringDatabase.GetLocalizedString("Items", $"{name}/Name");
         }
 
+        public string GetDisplayDescription()
+        {
+            return LocalizationSettings.StringDatabase.GetLocalizedString("Items", $"{name}/Description");
+        }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (DisplayTexts == null || DisplayTexts.Length == 0) return;
+            int languagesCount = LocalizationSettings.AvailableLocales.Locales.Count;
+            if (languagesCount > 0 && DisplayTexts.Length != languagesCount)
+            {
+                System.Array.Resize(ref DisplayTexts, languagesCount);
+                for (int i = 0; i < DisplayTexts.Length; i++)
+                {
+                    DisplayTexts[i].Language = LocalizationSettings.AvailableLocales.Locales[i].LocaleName;
+                }
+            }
+        }
+#endif
     }
 }

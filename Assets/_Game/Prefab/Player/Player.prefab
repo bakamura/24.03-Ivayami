@@ -333,6 +333,9 @@ MonoBehaviour:
   onAbilityChange:
     m_PersistentCalls:
       m_Calls: []
+  onActionMapChange:
+    m_PersistentCalls:
+      m_Calls: []
   _interactableDetector: {fileID: 4052400842519943186}
   _interactLayer:
     serializedVersion: 2
@@ -341,6 +344,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 9
   _interactableCheckDelay: 0.0625
+  _interactCoodlown: 0.5
   <HoldPointLeft>k__BackingField: {fileID: 4298343874824075682}
 --- !u!114 &3867884800636623034
 MonoBehaviour:
@@ -364,6 +368,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _stressMax: 100
+  _stressRelieveMinValue: 40
+  _stressRelieveFactor: 65
   _stressRelieveDelay: 4
   _restartDelay: 4
 --- !u!114 &448502037161999707
@@ -486,8 +492,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.25, y: 2, z: 0.75}
-  m_Center: {x: 0, y: 0, z: 0.375}
+  m_Size: {x: 1.25, y: 2, z: 0.95015854}
+  m_Center: {x: 0, y: 0, z: 0.47507927}
 --- !u!114 &4052400842519943186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1307,19 +1313,19 @@ MonoBehaviour:
       Data4: 1145049184
     Path: event:/Player_SFX/Passos_Geral
   _stepSoundRange:
-    Min: 10
-    Max: 25
-  _heavyBreathStressMin: 80
+    Min: 0
+    Max: 0
+  _heavyBreathStressMin: 75
   _heavyBreathSoundRef:
     Guid:
-      Data1: -1830491953
-      Data2: 1092083875
-      Data3: 35800223
-      Data4: 174247552
-    Path: "event:/Player_SFX/Respira\xE7\xE3o_Pesada"
+      Data1: 737776370
+      Data2: 1225279868
+      Data3: -735275854
+      Data4: 67989903
+    Path: "event:/Player_SFX/Respira\xE7\xE3o_Player"
   _heavyBreathSoundRange:
-    Min: 10
-    Max: 25
+    Min: 0
+    Max: 0
 --- !u!4 &2181725685440365708 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}

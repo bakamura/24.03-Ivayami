@@ -13,16 +13,24 @@ MonoBehaviour:
   m_Name: TryOpenCrowbarDoor
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
-      content: I shouldn't open this now, it's gonna draw attention and this cannot
-        happen!
-    - LanguageType: 1
-      announcerName: Cynthia
-      content: "Eu n\xE3o deveria abrir isso agora, vai chamar aten\xE7\xE3o e isso
-        n\xE3o pode acontecer!"
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Cynthia
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - Language: English (en)
+      content: (I can't open it anymore, it got stuck!)
+    - Language: Portuguese (pt)
+      content: "(Eu n\xE3o consigo mais abrir, acho que emperrou!)"
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

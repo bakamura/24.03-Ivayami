@@ -1,3 +1,4 @@
+using Ivayami.UI;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -9,7 +10,7 @@ public class ButtonEvents : MonoBehaviour, ISelectHandler, IPointerEnterHandler,
     [SerializeField] private UnityEvent<PointerEventData> _onPointerExit = new UnityEvent<PointerEventData>();
 
     public void OnSelect(BaseEventData eventData) {
-        _onSelect?.Invoke(eventData);
+        if (KeepSelection.Instance.CanTriggerSelectEvent(gameObject)) _onSelect?.Invoke(eventData);
     }
 
     public void OnPointerEnter(PointerEventData eventData) {
@@ -17,6 +18,6 @@ public class ButtonEvents : MonoBehaviour, ISelectHandler, IPointerEnterHandler,
     }
 
     public void OnPointerExit(PointerEventData eventData) {
-        _onPointerExit?.Invoke(eventData);        
+        _onPointerExit?.Invoke(eventData);
     }
 }

@@ -7,13 +7,13 @@ namespace Ivayami.Puzzle
     [CustomEditor(typeof(DeliverUI))]
     public class DeliverUIInspector : Editor
     {
-        SerializedProperty navigateUIInput, deliverInput, requestAmountToComplete, skipDeliverUI, deliverAnyItem, itemsRequired, deliverItemOptionsIcon, itemDisplayName, deliverBtn, onTryDeliver;
+        SerializedProperty navigateUIInput, /*deliverInput,*/ requestAmountToComplete, skipDeliverUI, deliverAnyItem, itemsRequired, deliverItemOptionsIcon, itemDisplayName, deliverBtn, onTryDeliver;
         public override void OnInspectorGUI()
         {
             GUILayout.Label("INPUTS", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
             EditorGUILayout.PropertyField(navigateUIInput, new GUIContent("Navigate UI Input"));
-            EditorGUILayout.PropertyField(deliverInput, new GUIContent("Deliver Item Input"));
+            //EditorGUILayout.PropertyField(deliverInput, new GUIContent("Deliver Item Input"));
             EditorGUILayout.Space(10);
 
             GUILayout.Label("CONFIGURATIONS", EditorStyles.boldLabel);
@@ -43,7 +43,7 @@ namespace Ivayami.Puzzle
         private void OnEnable()
         {
             navigateUIInput = serializedObject.FindProperty("_navigateUIInput");
-            deliverInput = serializedObject.FindProperty("_deliverInput");
+            //deliverInput = serializedObject.FindProperty("_deliverInput");
             requestAmountToComplete = serializedObject.FindProperty("_requestAmountToComplete");
             skipDeliverUI = serializedObject.FindProperty("_skipDeliverUI");
             deliverAnyItem = serializedObject.FindProperty("_deliverAnyItem");
