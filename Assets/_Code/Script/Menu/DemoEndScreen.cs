@@ -12,7 +12,7 @@ namespace Ivayami.UI {
         }
 
         public void Show() {
-            GetComponent<Fade>().Open();
+            GetComponent<MenuGroup>().CloseCurrentThenOpen(GetComponent<Fade>());
             Pause.Instance.ToggleCanPause(PAUSE_KEY, false);
             PlayerActions.Instance.ChangeInputMap("Menu");
         }
