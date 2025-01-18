@@ -612,9 +612,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2239299858304221093}
-        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
-        m_MethodName: FadeIn
+      - m_Target: {fileID: 1928482418141344334}
+        m_TargetAssemblyTypeName: Ivayami.UI.DemoEndScreen, Assembly-CSharp
+        m_MethodName: GoToMainMenu
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -635,18 +635,6 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 9194682258544087730}
-        m_TargetAssemblyTypeName: Ivayami.UI.PauseRef, Assembly-CSharp
-        m_MethodName: TogglePause
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &8712670058320379287
 MonoBehaviour:
@@ -1054,9 +1042,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Thank you for playing the Demo!
-
-'
+  m_text: Thank you for playing the Demo!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 59049b73a932e2a49a413e9ed278206c, type: 2}
   m_sharedMaterial: {fileID: -5203075912951416359, guid: 59049b73a932e2a49a413e9ed278206c, type: 2}
@@ -1369,6 +1355,111 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
+--- !u!1 &7008584497570319942
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3191430520194264132}
+  - component: {fileID: 8492816859738718172}
+  - component: {fileID: 6094756450670771106}
+  m_Layer: 5
+  m_Name: TransitionToMainMenu
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &3191430520194264132
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7008584497570319942}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5099725016340389012}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &8492816859738718172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7008584497570319942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sceneId: MainMenu
+  _onSceneLoad:
+    m_PersistentCalls:
+      m_Calls: []
+  _onSceneUnload:
+    m_PersistentCalls:
+      m_Calls: []
+  _onAllScenesRequestEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6094756450670771106}
+        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
+        m_MethodName: FadeOut
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1928482418141344334}
+        m_TargetAssemblyTypeName: Ivayami.UI.DemoEndScreen, Assembly-CSharp
+        m_MethodName: DestroyThis
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _drawGizmos: 0
+  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!114 &6094756450670771106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7008584497570319942}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _delayToFadeOut: 0
+  _beforeFade:
+    m_PersistentCalls:
+      m_Calls: []
+  _afterFade:
+    m_PersistentCalls:
+      m_Calls: []
+  _duration: 2.5
 --- !u!1 &7269635471504093166
 GameObject:
   m_ObjectHideFlags: 0
@@ -1766,8 +1857,7 @@ GameObject:
   - component: {fileID: 1271094260271134865}
   - component: {fileID: 7987799469125529232}
   - component: {fileID: 2700202614314763707}
-  - component: {fileID: 2229926640995261172}
-  - component: {fileID: 9194682258544087730}
+  - component: {fileID: 1928482418141344334}
   m_Layer: 5
   m_Name: DemoEndScreen
   m_TagString: Untagged
@@ -1788,6 +1878,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3373391798702456498}
+  - {fileID: 3191430520194264132}
   - {fileID: 3220041056916374835}
   - {fileID: 8076473685036399954}
   - {fileID: 7605052246353660965}
@@ -1819,7 +1910,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 99
+  m_SortingOrder: 8
   m_TargetDisplay: 0
 --- !u!114 &3007924863506543333
 MonoBehaviour:
@@ -1969,7 +2060,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ac010c787d31734aad8652c77a23e61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2229926640995261172
+--- !u!114 &1928482418141344334
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1978,22 +2069,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 8922078417926384316}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 120bfc0403c2bc648af3aae4b3b1f0ca, type: 3}
+  m_Script: {fileID: 11500000, guid: 00e9b3730a5814742983850a0d14f115, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &9194682258544087730
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8922078417926384316}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b145aa4cbb526746853e2bcaf0d2383, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _key: DemoEndScreen
+  _unloadFadeIn: {fileID: 2239299858304221093}
 --- !u!1 &8944843610913485220
 GameObject:
   m_ObjectHideFlags: 0
@@ -2003,11 +2082,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3373391798702456498}
-  - component: {fileID: 2743594729112852265}
+  - component: {fileID: 2397285585399609212}
   - component: {fileID: 2239299858304221093}
-  - component: {fileID: 7513205149591931128}
   m_Layer: 5
-  m_Name: TransitionToMainMenu
+  m_Name: UnloadScenes
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2032,7 +2110,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &2743594729112852265
+--- !u!114 &2397285585399609212
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2044,29 +2122,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneId: MainMenu
+  _sceneId: 
   _onSceneLoad:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7513205149591931128}
-        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
-        m_MethodName: FadeOut
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   _onSceneUnload:
     m_PersistentCalls:
       m_Calls: []
   _onAllScenesRequestEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2743594729112852265}
+      - m_Target: {fileID: 8492816859738718172}
         m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
         m_MethodName: LoadScene
         m_Mode: 1
@@ -2099,7 +2165,7 @@ MonoBehaviour:
   _afterFade:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2743594729112852265}
+      - m_Target: {fileID: 2397285585399609212}
         m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
         m_MethodName: UnloadAllScenes
         m_Mode: 1
@@ -2112,26 +2178,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   _duration: 1
---- !u!114 &7513205149591931128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8944843610913485220}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _delayToFadeOut: 0
-  _beforeFade:
-    m_PersistentCalls:
-      m_Calls: []
-  _afterFade:
-    m_PersistentCalls:
-      m_Calls: []
-  _duration: 2.5
 --- !u!1001 &400378059077075614
 PrefabInstance:
   m_ObjectHideFlags: 0
