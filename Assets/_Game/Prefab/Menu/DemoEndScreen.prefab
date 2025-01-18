@@ -1407,12 +1407,6 @@ MonoBehaviour:
   _sceneId: MainMenu
   _onSceneLoad:
     m_PersistentCalls:
-      m_Calls: []
-  _onSceneUnload:
-    m_PersistentCalls:
-      m_Calls: []
-  _onAllScenesRequestEnd:
-    m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6094756450670771106}
         m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
@@ -1426,18 +1420,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1928482418141344334}
-        m_TargetAssemblyTypeName: Ivayami.UI.DemoEndScreen, Assembly-CSharp
-        m_MethodName: DestroyThis
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  _onSceneUnload:
+    m_PersistentCalls:
+      m_Calls: []
+  _onAllScenesRequestEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _drawGizmos: 0
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &6094756450670771106
@@ -1455,7 +1443,19 @@ MonoBehaviour:
   _delayToFadeOut: 0
   _beforeFade:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1928482418141344334}
+        m_TargetAssemblyTypeName: Ivayami.UI.DemoEndScreen, Assembly-CSharp
+        m_MethodName: DestroyThis
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _afterFade:
     m_PersistentCalls:
       m_Calls: []
