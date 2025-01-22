@@ -6,17 +6,9 @@ namespace Ivayami.Puzzle
     [RequireComponent(typeof(InteractableFeedbacks))]
     public sealed class RotatingPuzzleObject : MonoBehaviour
     {
+        [SerializeField] private GameObject _itemInDisplay;
         private InteractableFeedbacks _interatctableFeedbacks;
         private bool _hasItem;
-        private GameObject m_itemInDisplay;
-        private GameObject _itemInDisplay
-        {
-            get
-            {
-                if (!m_itemInDisplay) m_itemInDisplay = GetComponentInChildren<Transform>().gameObject;
-                return m_itemInDisplay;
-            }
-        }
 
         public byte Index { get; set; }
         public InteractableFeedbacks InteratctableFeedbacks
