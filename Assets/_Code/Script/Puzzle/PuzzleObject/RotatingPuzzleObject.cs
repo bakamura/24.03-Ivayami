@@ -10,7 +10,7 @@ namespace Ivayami.Puzzle
         private InteractableFeedbacks _interatctableFeedbacks;
         private bool _hasItem;
 
-        public byte Index { get; set; }
+        public sbyte Index;
         public InteractableFeedbacks InteratctableFeedbacks
         {
             get
@@ -36,7 +36,7 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public bool IsCorrect(byte index)
+        public bool IsCorrect(sbyte index)
         {
             return index == Index && _hasItem;
         }

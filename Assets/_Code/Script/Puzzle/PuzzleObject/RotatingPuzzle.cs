@@ -24,9 +24,12 @@ namespace Ivayami.Puzzle
 
         private sbyte _currentPuzzleLayer;
         private sbyte _currentPuzzleObjectSelectedIndex;
-        private List<RotatingPuzzleObject[]> _puzzleObjects;
+        private float _currentInputCooldown;
+        private const float _inputCooldown = .1f;
         private InteractableFeedbacks _interatctableFeedbacks;
         private RotatingPuzzleObject _currentSelected;
+        private List<RotatingPuzzleObject[]> _puzzleObjects;
+        private byte[] _totalPuzzleObjectsInLayer;
         private Dictionary<int, Coroutine> _rotationAnimations = new Dictionary<int, Coroutine>();
 
         [Serializable]
@@ -44,7 +47,6 @@ namespace Ivayami.Puzzle
         private struct RotatingObjectData
         {
             public Transform Transform;
-            //public float InitialBaseAngle;
 #if UNITY_EDITOR
             public Color DebugColor;
             [Min(0)] public int DebugTextSize;
@@ -65,15 +67,16 @@ namespace Ivayami.Puzzle
         {
             if (_puzzleObjects == null)
             {
+                _totalPuzzleObjectsInLayer = new byte[_rotatingObjects.Length];
                 _puzzleObjects = new List<RotatingPuzzleObject[]>();
                 for (int i = 0; i < _rotatingObjects.Length; i++)
                 {
-                    //_rotatingObjects[i].InitialBaseAngle = _rotatingObjects[i].Transform.eulerAngles.y;
                     _puzzleObjects.Add(_rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPuzzleObject>());
                     RotatingPuzzleObject[] totalAmountPossible = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPuzzleObject>(true);
+                    _totalPuzzleObjectsInLayer[i] = (byte)totalAmountPossible.Length;
                     for (int a = 0; a < totalAmountPossible.Length; a++)
                     {
-                        if (totalAmountPossible[a].gameObject.activeSelf) totalAmountPossible[a].Index = (byte)i;
+                        if (totalAmountPossible[a].gameObject.activeSelf) totalAmountPossible[a].Index = (sbyte)a;                        
                     }
                 }
             }
@@ -98,6 +101,8 @@ namespace Ivayami.Puzzle
 
         private void HandleNavigationUI(InputAction.CallbackContext obj)
         {
+            if (Time.time - _currentInputCooldown < _inputCooldown) return;
+            _currentInputCooldown = Time.time;
             Vector2 input = obj.ReadValue<Vector2>();
             if (Mathf.Abs(input.y) == 1)
             {
@@ -117,6 +122,7 @@ namespace Ivayami.Puzzle
         private void HandleConfirmInput(InputAction.CallbackContext obj)
         {
             _currentSelected.UpdateItem(_itemUsed);
+            CheckForSolutionsCompleted();
         }
 
         private void LoopValueByArraySize(ref sbyte valueToConstrain, int arraySize)
@@ -149,7 +155,7 @@ namespace Ivayami.Puzzle
                 _confirmInput.action.started -= HandleConfirmInput;
                 PlayerActions.Instance.ChangeInputMap("Player");
             }
-        }        
+        }
 
         private void SetCurrentSelected(RotatingPuzzleObject selected)
         {
@@ -171,11 +177,11 @@ namespace Ivayami.Puzzle
         {
             float count = 0;
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
-            float initialAngle = _rotatingObjects[rotatingObjectIndex].Transform.eulerAngles.y;
+            float initialAngle = _rotatingObjects[rotatingObjectIndex].Transform.localEulerAngles.y;
             while (count < 1)
             {
                 count += Time.fixedDeltaTime;
-                _rotatingObjects[rotatingObjectIndex].Transform.localEulerAngles = new Vector3(0, Mathf.LerpAngle(initialAngle, initialAngle + _rotationAmount/*(_rotationAmount - _rotatingObjects[rotatingObjectIndex].InitialBaseAngle)*/, count), 0);
+                _rotatingObjects[rotatingObjectIndex].Transform.localEulerAngles = new Vector3(0, Mathf.LerpAngle(initialAngle, initialAngle + _rotationAmount, count), 0);
                 yield return delay;
             }
             _rotationAnimations.Remove(rotatingObjectIndex);
@@ -185,19 +191,21 @@ namespace Ivayami.Puzzle
 
         private void UpdatePuzzleObjectsIndex(int rotatingObjectIndex)
         {
+            sbyte factor = (sbyte)(_rotationAmount > 0 ? -1 : 1);
             for (int i = 0; i < _puzzleObjects[rotatingObjectIndex].Length; i++)
             {
-                if (_puzzleObjects[rotatingObjectIndex][i].Index + 1 >= _puzzleObjects[rotatingObjectIndex].Length) _puzzleObjects[rotatingObjectIndex][i].Index = 0;
-                else _puzzleObjects[rotatingObjectIndex][i].Index++;
+                _puzzleObjects[rotatingObjectIndex][i].Index += factor;
+                LoopValueByArraySize(ref _puzzleObjects[rotatingObjectIndex][i].Index, _totalPuzzleObjectsInLayer[rotatingObjectIndex]);
             }
         }
 
         private void CheckForSolutionsCompleted()
         {
             bool foundMatchingPuzzleObjectIndex = false;
-            bool puzzleSolutionCompleted = false;
+            byte puzzleSolutionsCompleted;
             for (int currentSolutionIndex = 0; currentSolutionIndex < _solutions.Length; currentSolutionIndex++)
             {
+                puzzleSolutionsCompleted = 0;
                 for (int puzzleLayer = 0; puzzleLayer < _solutions[currentSolutionIndex].PuzzleLayer.Length; puzzleLayer++)
                 {
                     for (int puzzleObjectIndexToMatch = 0; puzzleObjectIndexToMatch < _solutions[currentSolutionIndex].PuzzleLayer[puzzleLayer].Solution.Length; puzzleObjectIndexToMatch++)
@@ -205,7 +213,7 @@ namespace Ivayami.Puzzle
                         for (int puzzleObjectIndex = 0; puzzleObjectIndex < _puzzleObjects[puzzleLayer].Length; puzzleObjectIndex++)
                         {
                             foundMatchingPuzzleObjectIndex = false;
-                            if (_puzzleObjects[puzzleLayer][puzzleObjectIndex].IsCorrect(_solutions[currentSolutionIndex].PuzzleLayer[puzzleLayer].Solution[puzzleObjectIndexToMatch]))
+                            if (_puzzleObjects[puzzleLayer][puzzleObjectIndex].IsCorrect((sbyte)_solutions[currentSolutionIndex].PuzzleLayer[puzzleLayer].Solution[puzzleObjectIndexToMatch]))
                             {
                                 foundMatchingPuzzleObjectIndex = true;
                                 break;
@@ -213,10 +221,11 @@ namespace Ivayami.Puzzle
                         }
                         if (!foundMatchingPuzzleObjectIndex) break;
                     }
-                    if (!foundMatchingPuzzleObjectIndex) break;
-                    if (puzzleLayer == _solutions[currentSolutionIndex].PuzzleLayer.Length - 1) puzzleSolutionCompleted = true;
+                    if (_solutions[currentSolutionIndex].PuzzleLayer[puzzleLayer].Solution.Length == 0) puzzleSolutionsCompleted++;
+                    else if (!foundMatchingPuzzleObjectIndex) break;
+                    else puzzleSolutionsCompleted++;
                 }
-                if (puzzleSolutionCompleted)
+                if (puzzleSolutionsCompleted == _solutions[currentSolutionIndex].PuzzleLayer.Length)
                 {
                     _solutions[currentSolutionIndex].OnActivate?.Invoke();
                     return;
@@ -231,7 +240,7 @@ namespace Ivayami.Puzzle
             RotatingPuzzleObject[] puzzleObjects;
             GUIStyle style = new GUIStyle("LargeLabel");
             Color guiColor;
-            for(int i = 0; i< _rotatingObjects.Length; i++)
+            for (int i = 0; i < _rotatingObjects.Length; i++)
             {
                 if (_rotatingObjects[i].Transform)
                 {
@@ -253,10 +262,10 @@ namespace Ivayami.Puzzle
         {
             if (_rotatingObjects == null || _solutions == null) return;
             int size;
-            for(int i = 0; i < _solutions.Length; i++)
+            for (int i = 0; i < _solutions.Length; i++)
             {
                 if (_solutions[i].PuzzleLayer.Length != _rotatingObjects.Length) Array.Resize(ref _solutions[i].PuzzleLayer, _rotatingObjects.Length);
-                for(int a = 0; a < _solutions[i].PuzzleLayer.Length; a++)
+                for (int a = 0; a < _solutions[i].PuzzleLayer.Length; a++)
                 {
                     if (_rotatingObjects[i].Transform)
                     {
