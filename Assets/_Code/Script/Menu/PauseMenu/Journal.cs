@@ -5,6 +5,8 @@ using TMPro;
 using Ivayami.Player;
 using Ivayami.Save;
 using Ivayami.Audio;
+using System.Collections;
+using Ivayami.Puzzle;
 
 namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
@@ -23,8 +25,19 @@ namespace Ivayami.UI {
         [SerializeField] private MenuGroup _displayMenuGroup;
         [SerializeField] private MenuGroup _noEntriesMenuGroup;
         [SerializeField] private Menu _noEntriesMenu;
+        private bool _shouldResetToStory;
 
         private static int _containerChange = Animator.StringToHash("Forward");
+
+        private void Start() {
+            Menu menu = GetComponent<Menu>();
+            menu.OnOpenStart.AddListener(() => {
+                _shouldResetToStory = true;
+                });
+            menu.OnCloseStart.AddListener(() => {
+                _shouldResetToStory = false;
+            });
+        }
 
         public void ChangeAnimation() {
             _containerAnimator.SetTrigger(_containerChange);
@@ -37,7 +50,13 @@ namespace Ivayami.UI {
             SetupAberrationsSelection();
 
             Resources.UnloadUnusedAssets();
-            _chapterBtn.onClick.Invoke();
+            StartCoroutine(ResetToSToryCoroutine());
+        }
+
+        private IEnumerator ResetToSToryCoroutine()
+        {
+            yield return new WaitForEndOfFrame();
+            if (_shouldResetToStory) _chapterBtn.onClick.Invoke();
         }
 
         public void ResetSelections() {
@@ -53,11 +72,11 @@ namespace Ivayami.UI {
 
         private void SetupStorySelection() {
             for (int i = 0; i <= SaveSystem.Instance.Progress.GetEntryProgressOfType("StoryEntry"); i++) if (i >= _storySelectionContainer.childCount)
-                    SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/ENUS/StoryEntry_{i}").GetTranslation(SaveSystem.Instance.Options.Language));
+                    SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/StoryEntry_{i}"));
         }
 
         private void SetupCharactersSelection() {
-            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/CharacterEntry/ENUS");
+            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/CharacterEntry");
             int currentChild = 0;
             for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.GetEntryProgressOfType(entries[i].name) > 0) {
                     SetupBtn(currentChild >= _characterSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _characterSelectionContainer) : _characterSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
@@ -68,11 +87,11 @@ namespace Ivayami.UI {
         private void SetupDocumentsSelection() {
             ReadableItem[] documentItems = PlayerInventory.Instance.CheckInventory().OfType<ReadableItem>().ToArray();
             for (int i = 0; i < documentItems.Length; i++)
-                SetupBtn(i >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(i).GetComponentInChildren<Button>(), documentItems[i].JournalEntry);
+                SetupBtn(i >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(i).GetComponentInChildren<Button>(), documentItems[i].Entry);
         }
 
         private void SetupAberrationsSelection() {
-            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/AberrationEntry/ENUS");
+            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/AberrationEntry");
             int currentChild = 0;
             for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.GetEntryProgressOfType(entries[i].name) > 0) {
                     SetupBtn(currentChild >= _aberrationSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _aberrationSelectionContainer) : _aberrationSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
@@ -80,11 +99,21 @@ namespace Ivayami.UI {
                 }
         }
 
-        private void SetupBtn(Button btn, JournalEntry entry) {
+        private void SetupBtn(Button btn, JournalEntry entry, bool shouldSelect = false) {
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() => DisplayEntry(entry));
             btn.onClick.AddListener(_btnSound.GoForth);
-            btn.GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
+            btn.GetComponent<TextMeshProUGUI>().text = entry.GetDisplayName();
+            if (shouldSelect) btn.onClick.Invoke();
+        }
+
+        private void SetupBtn(Button btn, Readable entry, bool shouldSelect = false)
+        {
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => DisplayEntry(entry));
+            btn.onClick.AddListener(_btnSound.GoForth);
+            btn.GetComponent<TextMeshProUGUI>().text = entry.GetDisplayName();
+            if (shouldSelect) btn.onClick.Invoke();
         }
 
         public void FocusFirstChapter() {
@@ -144,5 +173,14 @@ namespace Ivayami.UI {
             else Debug.LogError($"'{entry.name}' tried using journal preset {entry.TemplateID} which is doesn't exist!");
         }
 
+        private void DisplayEntry(Readable entry)
+        {
+            if (entry == null)
+            {
+                Debug.LogWarning("Description Not Found");
+                return;
+            }
+            _presets[0].DisplayEntry(entry);
+        }
     }
 }

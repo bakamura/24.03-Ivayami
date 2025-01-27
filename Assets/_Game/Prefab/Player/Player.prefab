@@ -270,10 +270,18 @@ MonoBehaviour:
   onCrouch:
     m_PersistentCalls:
       m_Calls: []
+  onStaminaUpdate:
+    m_PersistentCalls:
+      m_Calls: []
   _movementSpeedRun: 4.5
   _movementSpeedWalk: 2
   _accelerationDuration: 0.125
   _deccelerationDuration: 0.0625
+  _maxStamina: 100
+  _minStaminaToRun: 0.1
+  _staminaDepletionRate: 0.1
+  _staminaRegenerationRate: 0.1
+  _staminaDepletionStressThreshold: 0.5
   _visualTransform: {fileID: 2181725685440365708}
   _turnSmoothFactor: 0.175
   _walkColliderHeight: 1.75
@@ -306,6 +314,7 @@ MonoBehaviour:
   _interactInput: {fileID: -960142445056486336, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _abilityInput: {fileID: -5270376362144915007, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _changeAbilityInput: {fileID: -4199026391873933470, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
+  _useHealthItemInput: {fileID: -3194707390766011132, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _pauseInputs:
   - {fileID: -289706603977083587, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   - {fileID: -1037600358843939453, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
@@ -322,6 +331,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   onAbilityChange:
+    m_PersistentCalls:
+      m_Calls: []
+  onActionMapChange:
     m_PersistentCalls:
       m_Calls: []
   _interactableDetector: {fileID: 4052400842519943186}
@@ -355,6 +367,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _stressMax: 100
+  _stressRelieveMinValue: 40
+  _stressRelieveFactor: 65
   _stressRelieveDelay: 4
   _restartDelay: 4
 --- !u!114 &448502037161999707
@@ -373,6 +387,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   _itemTypeDefaultIcons:
+  - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
+  - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
   - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
   - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
   - {fileID: 21300000, guid: 31d6ce25c0fbf994e990b897b26144bf, type: 3}
@@ -475,8 +491,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.25, y: 2, z: 0.75}
-  m_Center: {x: 0, y: 0, z: 0.375}
+  m_Size: {x: 1.25, y: 2, z: 0.95015854}
+  m_Center: {x: 0, y: 0, z: 0.47507927}
 --- !u!114 &4052400842519943186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1248,7 +1264,7 @@ Animator:
   m_GameObject: {fileID: 1516828375664336438}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: af1b416aff34d0b4eb5bfebf9411abb9, type: 2}
+  m_Controller: {fileID: 9100000, guid: a58a20f9a674fea4886a32367c3ec410, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1271,9 +1287,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9afca3879bb863e4abdb04d0a4c00609, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _startTiredAnimThreshold: 0.1
   _interactAnimations:
   - {fileID: 1701519168366769839, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
   - {fileID: 4866158927099243651, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+  - {fileID: -5374507017704117377, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+  - {fileID: -1443209977815985297, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
 --- !u!114 &1145761265743361691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1294,19 +1313,19 @@ MonoBehaviour:
       Data4: 1145049184
     Path: event:/Player_SFX/Passos_Geral
   _stepSoundRange:
-    Min: 10
-    Max: 25
-  _heavyBreathStressMin: 80
+    Min: 0
+    Max: 0
+  _heavyBreathStressMin: 75
   _heavyBreathSoundRef:
     Guid:
-      Data1: -1830491953
-      Data2: 1092083875
-      Data3: 35800223
-      Data4: 174247552
-    Path: "event:/Player_SFX/Respira\xE7\xE3o_Pesada"
+      Data1: 737776370
+      Data2: 1225279868
+      Data3: -735275854
+      Data4: 67989903
+    Path: "event:/Player_SFX/Respira\xE7\xE3o_Player"
   _heavyBreathSoundRange:
-    Min: 10
-    Max: 25
+    Min: 0
+    Max: 0
 --- !u!4 &2181725685440365708 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}

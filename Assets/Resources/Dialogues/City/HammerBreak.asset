@@ -13,14 +13,24 @@ MonoBehaviour:
   m_Name: HammerBreak
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Cynthia
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - Language: English (en)
       content: Oh no, the hammer is broken...
-    - LanguageType: 1
-      announcerName: Cynthia
+    - Language: Portuguese (pt)
       content: "Ah n\xE3o, o martelo quebrou..."
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

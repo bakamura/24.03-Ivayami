@@ -3,7 +3,6 @@ using UnityEngine.Playables;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
-using FMODUnity;
 using Ivayami.Player;
 using Ivayami.UI;
 using Ivayami.Audio;
@@ -51,7 +50,8 @@ namespace Ivayami.Dialogue
             {
                 if (_debug) Debug.Log("Cutscene Pause");
                 _playableDirector.Pause();
-                RuntimeManager.PauseAllEvents(true);
+                Options.Music.setPaused(true);
+                Options.GameplaySfx.setPaused(true);
                 DialogueController.Instance.PauseDialogue(true);
                 _onPause?.Invoke();
             }
@@ -84,7 +84,8 @@ namespace Ivayami.Dialogue
             _isPaused = false;
             _playableDirector.Resume();
             DialogueController.Instance.PauseDialogue(false);
-            RuntimeManager.PauseAllEvents(false);
+            Options.Music.setPaused(false);
+            Options.GameplaySfx.setPaused(false);
             _onUnpause?.Invoke();
             EventSystem.current.SetSelectedGameObject(null);
             if (_debug) Debug.Log("Cutscene Resume");
@@ -95,7 +96,8 @@ namespace Ivayami.Dialogue
             PlayerMovement.Instance.UpdateVisualsVisibility(true);
             DialogueController.Instance.StopDialogue();
             DialogueController.Instance.PauseDialogue(false);
-            RuntimeManager.PauseAllEvents(false);
+            Options.Music.setPaused(false);
+            Options.GameplaySfx.setPaused(false);
             PlayerAudioListener.Instance.UpdateAudioSource(true);
             IsPlaying = false;
             UpdateInputs(false);

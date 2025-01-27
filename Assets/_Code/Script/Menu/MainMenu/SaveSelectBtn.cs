@@ -3,6 +3,7 @@ using TMPro;
 using Ivayami.Save;
 using Ivayami.Scene;
 using Ivayami.Player;
+using UnityEngine.Localization;
 
 namespace Ivayami.UI {
     public class SaveSelectBtn : MonoBehaviour {
@@ -11,7 +12,8 @@ namespace Ivayami.UI {
 
         [SerializeField] private TextMeshProUGUI _statusText;
         [SerializeField] private TextMeshProUGUI _dateText;
-        [SerializeField] private UiText _uiText;
+        [SerializeField] private LocalizedString _newGameString;
+        [SerializeField] private LocalizedString _continueGameString;
         private byte _id;
         private bool _isFirstTime;
         public Sprite PlaceImage { get; private set; }
@@ -19,12 +21,11 @@ namespace Ivayami.UI {
 
         public void Setup(SaveProgress progress, byte id) {
             _id = id;
-            UiText uiText = _uiText.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
             _isFirstTime = progress == null;
-            _statusText.text = uiText.GetText(_isFirstTime ? "NewGame" : "Continue");
+            _statusText.text = _isFirstTime ? _newGameString.GetLocalizedString() : _continueGameString.GetLocalizedString();
             _dateText.text = _isFirstTime ? "" : progress.lastPlayedDate;
             // Show Playtime
-            PlaceName = uiText.GetText(_isFirstTime ? "NewGameMessage" : progress.lastSavePlace);
+            PlaceName = _isFirstTime ? "NewGameMessage" : progress.lastSavePlace;
             PlaceImage = _isFirstTime ? null : Resources.Load<Sprite>($"PlacePreview/{progress.lastSavePlace}");
         }
 
@@ -35,7 +36,7 @@ namespace Ivayami.UI {
 
         private void EnterSaveWaitFadeIn() {
             SaveSystem.Instance.LoadProgress(_id, () => {
-                PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.inventory);
+                PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
 
                 SaveSelector.Instance.MainMenuUnloader.UnloadScene();
                 if (_isFirstTime) {
@@ -51,6 +52,7 @@ namespace Ivayami.UI {
 
         private void TeleportPlayer() {
             SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
+            PlayerActions.Instance.ChangeInputMap("Player");
             SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayer;
         }
 

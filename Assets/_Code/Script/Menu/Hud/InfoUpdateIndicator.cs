@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Ivayami.Save;
+using UnityEngine.Localization;
 
 namespace Ivayami.UI {
     public class InfoUpdateIndicator : MonoSingleton<InfoUpdateIndicator> {
@@ -23,9 +23,10 @@ namespace Ivayami.UI {
 
         [Header("?")] // These should probably be external
 
-        [SerializeField] private UiText _infoUpdateText;
         [SerializeField] private DisplayInfo _mapInfo;
+        [SerializeField] private LocalizedString _mapInfoUpdateText;
         [SerializeField] private DisplayInfo _readableInfo;
+        [SerializeField] private LocalizedString _readableInfoUpdateText;
 
         [Header("Cache")]
 
@@ -84,11 +85,11 @@ namespace Ivayami.UI {
         }
 
         public void DisplayMap() {
-            DisplayUpdate(_mapInfo.Sprite, _infoUpdateText.GetTranslation((LanguageTypes) SaveSystem.Instance.Options.language).GetText(_mapInfo.Text));
+            DisplayUpdate(_mapInfo.Sprite, _mapInfoUpdateText.GetLocalizedString());
         }
         
         public void DisplayReadable() {
-            DisplayUpdate(_readableInfo.Sprite, _infoUpdateText.GetTranslation((LanguageTypes) SaveSystem.Instance.Options.language).GetText(_readableInfo.Text));
+            DisplayUpdate(_readableInfo.Sprite, _readableInfoUpdateText.GetLocalizedString());
         }
 
     }

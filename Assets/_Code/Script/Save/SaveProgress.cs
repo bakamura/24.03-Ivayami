@@ -14,8 +14,27 @@ namespace Ivayami.Save {
         public string lastSavePlace;
         public SerializableDictionary<string, int> gameProgress = new SerializableDictionary<string, int>();
         public SerializableDictionary<string, int> entryProgress = new SerializableDictionary<string, int>();
-        public int[] roadBlockersState;
+        public int[] roadBlockersState = new int[5];
         public SerializableDictionary<string, string> saveObjects = new SerializableDictionary<string, string>();
+
+        [Serializable]
+        public class ItemData
+        {
+            public string ID;
+            public int Amount;
+
+            public ItemData(string id, int amount)
+            {
+                ID = id;
+                Amount = amount;
+            }
+
+            public ItemData(Player.PlayerInventory.InventoryItemStack itemStack)
+            {
+                ID = itemStack.Item.name;
+                Amount = itemStack.Amount;
+            }
+        }
 
         public SaveProgress(byte id) {
             this.id = id;
@@ -53,6 +72,7 @@ namespace Ivayami.Save {
         }
 
         public RoadBlocker.State GetRoadBlockerState(int blockerId) {
+            if(roadBlockersState.Length <= blockerId) Array.Resize(ref roadBlockersState, blockerId + 1);
             return (RoadBlocker.State)roadBlockersState[blockerId];
         }
 
@@ -75,6 +95,17 @@ namespace Ivayami.Save {
                 //data = null;
                 //return data;
             }
+        }
+
+        public ItemData[] GetItemsData()
+        {
+            if (inventory == null) return null;
+            ItemData[] items = new ItemData[inventory.Length];
+            for(int i = 0; i < items.Length; i++)
+            {
+                items[i] = JsonUtility.FromJson<ItemData>(inventory[i]);
+            }
+            return items;
         }
     }
 }
