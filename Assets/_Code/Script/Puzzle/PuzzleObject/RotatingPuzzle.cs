@@ -21,6 +21,9 @@ namespace Ivayami.Puzzle
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private UnityEvent _onCancelInteraction;
         [SerializeField] private PuzzleSolutionEvent[] _solutions;
+#if UNITY_EDITOR
+        [SerializeField] private bool _drawGizmos;
+#endif
 
         private sbyte _currentPuzzleLayer;
         private sbyte _currentPuzzleObjectSelectedIndex;
@@ -31,6 +34,9 @@ namespace Ivayami.Puzzle
         private List<RotatingPuzzleObject[]> _puzzleObjects;
         private byte[] _totalPuzzleObjectsInLayer;
         private Dictionary<int, Coroutine> _rotationAnimations = new Dictionary<int, Coroutine>();
+#if UNITY_EDITOR
+        private List<Vector3[]> _debugGizmoPositions;
+#endif
 
         [Serializable]
         private struct SolutionData
@@ -62,6 +68,26 @@ namespace Ivayami.Puzzle
                 return _interatctableFeedbacks;
             }
         }
+#if UNITY_EDITOR
+        private void Awake()
+        {
+            FillDebugGizmoPositions();
+        }
+
+        private void FillDebugGizmoPositions()
+        {
+            _debugGizmoPositions = new List<Vector3[]>();
+            for (int i = 0; i < _rotatingObjects.Length; i++)
+            {
+                RotatingPuzzleObject[] totalAmountPossible = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPuzzleObject>(true);
+                _debugGizmoPositions.Add(new Vector3[totalAmountPossible.Length]);
+                for (int a = 0; a < totalAmountPossible.Length; a++)
+                {
+                    if (totalAmountPossible[a].transform) _debugGizmoPositions[i][a] = totalAmountPossible[a].transform.position;
+                }
+            }
+        }
+#endif
 
         private void Setup()
         {
@@ -76,7 +102,7 @@ namespace Ivayami.Puzzle
                     _totalPuzzleObjectsInLayer[i] = (byte)totalAmountPossible.Length;
                     for (int a = 0; a < totalAmountPossible.Length; a++)
                     {
-                        if (totalAmountPossible[a].gameObject.activeSelf) totalAmountPossible[a].Index = (sbyte)a;                        
+                        if (totalAmountPossible[a].gameObject.activeSelf) totalAmountPossible[a].Index = (sbyte)a;
                     }
                 }
             }
@@ -234,28 +260,41 @@ namespace Ivayami.Puzzle
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
+        private void OnDrawGizmos()
         {
-            if (_rotatingObjects == null) return;
-            RotatingPuzzleObject[] puzzleObjects;
+            if (_rotatingObjects == null || !_drawGizmos) return;
+            if (!Application.isPlaying) FillDebugGizmoPositions();
+            //RotatingPuzzleObject[] puzzleObjects;
             GUIStyle style = new GUIStyle("LargeLabel");
             Color guiColor;
-            for (int i = 0; i < _rotatingObjects.Length; i++)
+            for (int i = 0; i < _debugGizmoPositions.Count; i++)
             {
-                if (_rotatingObjects[i].Transform)
+                for (int a = 0; a < _debugGizmoPositions[i].Length; a++)
                 {
-                    puzzleObjects = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPuzzleObject>(true);
-                    for (int a = 0; a < puzzleObjects.Length; a++)
-                    {
-                        Gizmos.color = _rotatingObjects[i].DebugColor;
-                        style.fontSize = _rotatingObjects[i].DebugTextSize;
-                        guiColor = GUI.contentColor;
-                        GUI.contentColor = _rotatingObjects[i].DebugColor;
-                        UnityEditor.Handles.Label(puzzleObjects[a].transform.position + Vector3.up * _rotatingObjects[i].DebugTextHeight, a.ToString(), style);
-                        GUI.contentColor = guiColor;
-                    }
+                    Gizmos.color = _rotatingObjects[i].DebugColor;
+                    style.fontSize = _rotatingObjects[i].DebugTextSize;
+                    guiColor = GUI.contentColor;
+                    GUI.contentColor = _rotatingObjects[i].DebugColor;
+                    UnityEditor.Handles.Label(_debugGizmoPositions[i][a] + Vector3.up * _rotatingObjects[i].DebugTextHeight, a.ToString(), style);
+                    GUI.contentColor = guiColor;
                 }
             }
+            //for (int i = 0; i < _rotatingObjects.Length; i++)
+            //{
+            //    if (_rotatingObjects[i].Transform)
+            //    {
+            //        puzzleObjects = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPuzzleObject>(true);
+            //        for (int a = 0; a < puzzleObjects.Length; a++)
+            //        {
+            //            Gizmos.color = _rotatingObjects[i].DebugColor;
+            //            style.fontSize = _rotatingObjects[i].DebugTextSize;
+            //            guiColor = GUI.contentColor;
+            //            GUI.contentColor = _rotatingObjects[i].DebugColor;
+            //            UnityEditor.Handles.Label(puzzleObjects[a].transform.position + Vector3.up * _rotatingObjects[i].DebugTextHeight, a.ToString(), style);
+            //            GUI.contentColor = guiColor;
+            //        }
+            //    }
+            //}
         }
 
         private void OnValidate()
