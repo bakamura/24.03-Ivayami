@@ -8,6 +8,7 @@ namespace Ivayami.Save {
 
         public byte id;
         public string lastPlayedDate;
+        public string playtime;
 
         public string[] inventory;
         public int pointId;

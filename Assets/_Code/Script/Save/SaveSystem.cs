@@ -1,7 +1,7 @@
 using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using UnityEngine;
 using Ivayami.Player;
@@ -11,6 +11,7 @@ namespace Ivayami.Save {
 
         public SaveProgress Progress { get; private set; }
         public SaveOptions Options { get; private set; }
+        private DateTime _sessionStart;
 
         public static string ProgressFolderName { get; private set; } = "Save";
         public static string OptionsFileName { get; private set; } = "Configs";
@@ -33,7 +34,7 @@ namespace Ivayami.Save {
             SavePoint.onSaveGame.AddListener(SaveProgress);
             PlayerInventory.Instance.onInventoryUpdate.AddListener((inventory) => {
                 Progress.inventory = new string[inventory.Length];
-                for(int i = 0; i < inventory.Length; i++) Progress.inventory[i] = JsonUtility.ToJson(new SaveProgress.ItemData(inventory[i]));
+                for (int i = 0; i < inventory.Length; i++) Progress.inventory[i] = JsonUtility.ToJson(new SaveProgress.ItemData(inventory[i]));
             });
         }
 
@@ -68,6 +69,7 @@ namespace Ivayami.Save {
 
                 Debug.Log($"No Save of type '{type.Name}' in {savePath}");
             }
+            if (type == typeof(SaveProgress)) _sessionStart = DateTime.Now;
         }
 
         public void LoadSavesProgress(Action<SaveProgress[]> loadSaveCallback) {
@@ -79,7 +81,7 @@ namespace Ivayami.Save {
             int saveId = 0;
             while (saveId < MaxSaveSlots) {
                 if (File.Exists($"{_progressPath}/{ProgressFolderName}_{saveId}.sav")) {
-                    Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/{ProgressFolderName}_{saveId}.sav");                    
+                    Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/{ProgressFolderName}_{saveId}.sav");
                     yield return readTask;
                     Debug.Log($"save file found in {_progressPath}/{ProgressFolderName}_{saveId}");
                     progressSaves.Add(JsonUtility.FromJson<SaveProgress>(Encryption.Decrypt(readTask.Result)));
@@ -92,6 +94,7 @@ namespace Ivayami.Save {
 
         private void SaveProgress() {
             Progress.lastPlayedDate = DateTime.Now.ToString("dd/MM/yy [HH:mm]");
+            PlayTimeUpdate();
             StartCoroutine(WriteSaveRoutine($"{_progressPath}/{ProgressFolderName}_{Progress.id}.sav", typeof(SaveProgress)));
 
             Logger.Log(LogType.Save, $"Writing Progress for save {Progress.id}");
@@ -105,10 +108,8 @@ namespace Ivayami.Save {
 
         private IEnumerator WriteSaveRoutine(string savePath, Type type) {
 
-            if (type == typeof(SaveProgress))
-            {
-                foreach (SaveObject saveObject in _saveObjects)
-                {
+            if (type == typeof(SaveProgress)) {
+                foreach (SaveObject saveObject in _saveObjects) {
                     if (saveObject) saveObject.SaveData();
                 }
                 yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Progress)));
@@ -131,6 +132,13 @@ namespace Ivayami.Save {
         public void UnregisterSaveObject(SaveObject saveObject) {
             if (_saveObjects.Contains(saveObject)) _saveObjects.Remove(saveObject);
             else Debug.LogWarning($"The object {saveObject.name} is already unregistered");
+        }
+
+        private void PlayTimeUpdate() {
+            string[] playtimePrevious = Progress.playtime == null ? new string[] { "0", "0", "0", "0" } : Progress.playtime.Split(new char[] { ':', '.' });
+            TimeSpan playtimeNew = (new TimeSpan(0, int.Parse(playtimePrevious[0]), int.Parse(playtimePrevious[1]), int.Parse(playtimePrevious[2]), int.Parse(playtimePrevious[3]))) + (DateTime.Now - _sessionStart);
+            Progress.playtime = $"{Mathf.FloorToInt((float)playtimeNew.TotalHours)}:{playtimeNew.Minutes}:{playtimeNew.Seconds}.{playtimeNew.Milliseconds}";
+            _sessionStart = DateTime.Now;
         }
 
     }
