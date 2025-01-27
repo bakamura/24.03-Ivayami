@@ -10,7 +10,7 @@ namespace Ivayami.Puzzle
         private InteractableFeedbacks _interatctableFeedbacks;
         private bool _hasItem;
 
-        public sbyte Index;
+        [HideInInspector] public sbyte Index;
         public InteractableFeedbacks InteratctableFeedbacks
         {
             get
