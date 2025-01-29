@@ -20,6 +20,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private InputActionReference _confirmInput;
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private UnityEvent _onCancelInteraction;
+        [SerializeField] private UnityEvent _onNoSolutionMeet;
         [SerializeField] private PuzzleSolutionEvent[] _solutions;
 #if UNITY_EDITOR
         [SerializeField] private bool _drawGizmos;
@@ -257,6 +258,7 @@ namespace Ivayami.Puzzle
                     return;
                 }
             }
+            _onNoSolutionMeet?.Invoke();
         }
 
 #if UNITY_EDITOR
