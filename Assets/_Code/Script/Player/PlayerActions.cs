@@ -76,15 +76,11 @@ namespace Ivayami.Player {
 
             _interactInput.action.started += Interact;
             _interactInput.action.canceled += Interact;
-            _abilityInput.action.started += Ability;
-            _changeAbilityInput.action.started += ChangeAbility;
             _useHealthItemInput.action.started += UseHealthItem;
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable();
 
             onInteractLong.AddListener((interacting) => Interacting = interacting);
             _interactableCheckWait = new WaitForSeconds(_interactableCheckDelay);
-
-            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //            
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
         }        
@@ -163,50 +159,6 @@ namespace Ivayami.Player {
                 yield return _interactableCheckWait;
             }
         }
-
-        #region Abilities (To be removed)
-        private void Ability(InputAction.CallbackContext input) {
-            if (_abilityCurrent >= 0) {
-                if (input.phase == InputActionPhase.Started) {
-                    _abilities[_abilityCurrent].AbilityStart();
-                    onAbility?.Invoke(_abilities[_abilityCurrent].name);
-
-                    Logger.Log(LogType.Player, $"Ability Start: {_abilities[_abilityCurrent].name}");
-                }
-                else if (input.phase == InputActionPhase.Canceled) {
-                    _abilities[_abilityCurrent].AbilityEnd();
-                    onAbility?.Invoke($"{_abilities[_abilityCurrent].name}End");
-
-                    Logger.Log(LogType.Player, $"Ability End: {_abilities[_abilityCurrent].name}");
-                }
-            }
-        }
-
-        private void ChangeAbility(InputAction.CallbackContext input) {
-            switch (input.ReadValue<Vector2>()) {
-                case Vector2 v2 when v2.Equals(Vector2.up):
-                    if (_abilities.Count < 1) return;
-                    _abilityCurrent = 0;
-                    break;
-                case Vector2 v2 when v2.Equals(Vector2.right):
-                    if (_abilities.Count < 2) return;
-                    _abilityCurrent = 1;
-                    break;
-                case Vector2 v2 when v2.Equals(Vector2.down):
-                    if (_abilities.Count < 3) return;
-                    _abilityCurrent = 2;
-                    break;
-                case Vector2 v2 when v2.Equals(Vector2.left):
-                    if (_abilities.Count < 4) return;
-                    _abilityCurrent = 3;
-                    break;
-            }
-            onAbilityChange?.Invoke(_abilityCurrent);
-
-            Logger.Log(LogType.Player, $"Ability Changed to: {_abilities[_abilityCurrent].name}");
-        }
-
-        #endregion
 
         private void UseHealthItem(InputAction.CallbackContext obj)
         {
