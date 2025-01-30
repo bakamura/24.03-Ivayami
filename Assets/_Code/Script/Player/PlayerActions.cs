@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Cinemachine;
-using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
 using Ivayami.UI;
 
@@ -60,7 +59,6 @@ namespace Ivayami.Player {
 
         [Header("Abilities")]
 
-        private List<PlayerAbility> _abilities = new List<PlayerAbility>();
         private sbyte _abilityCurrent;
 
         [Header("Cache")]
@@ -208,30 +206,6 @@ namespace Ivayami.Player {
             Logger.Log(LogType.Player, $"Ability Changed to: {_abilities[_abilityCurrent].name}");
         }
 
-        public void AddAbility(PlayerAbility ability) {
-            PlayerAbility abilityInstance = Instantiate(ability);
-            Quaternion localRotation = abilityInstance.transform.rotation;
-            abilityInstance.transform.parent = HoldPointLeft;
-            abilityInstance.transform.localPosition = Vector3.zero;
-            abilityInstance.transform.localRotation = localRotation;
-            _abilities.Add(abilityInstance);
-
-            Logger.Log(LogType.Player, $"Ability Add: {ability.name}");
-        }
-
-        public void RemoveAbility(PlayerAbility ability) {
-            PlayerAbility abilityInList = _abilities.OrderBy(abilityIterator => abilityIterator.GetType() == ability.GetType()).First();
-            if (_abilityCurrent >= _abilities.FindIndex((abilityIterator) => abilityIterator == abilityInList)) _abilityCurrent--;
-            _abilities.Remove(abilityInList);
-            onAbilityChange?.Invoke(_abilityCurrent); // Update UI etc
-
-            Logger.Log(LogType.Player, $"Ability Remove: {ability.name}");
-        }
-
-        public bool CheckAbility(PlayerAbility abilityChecking) {
-            foreach (PlayerAbility ability in _abilities) if (ability.GetType() == abilityChecking.GetType()) return true;
-            return false;
-        }
         #endregion
 
         private void UseHealthItem(InputAction.CallbackContext obj)
