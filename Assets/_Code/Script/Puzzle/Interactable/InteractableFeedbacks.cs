@@ -9,7 +9,7 @@ namespace Ivayami.Puzzle
     {
         [SerializeField] private Color _highlightedColor = new Color(0.03921569f, 0.03921569f, 0.03921569f, 1);
         [SerializeField] private bool _applyToChildrens = true;
-        private static Sprite[] _interactionIcons;
+        [SerializeField] private InputIcons _interactionIcons;
         
         private List<Material> _materials;
         private List<Color> _baseColors;
@@ -23,9 +23,9 @@ namespace Ivayami.Puzzle
         private static int PULSE = Animator.StringToHash("pulse");
         public Vector3 IconPosition {  get { return _icon.gameObject.transform.position; } }
 
-        private void Awake() {
-            if(_interactionIcons == null) _interactionIcons = Resources.Load<InputIcons>("InputIcons/InteractablePopup").Icons;
-        }
+        //private void Awake() {
+        //    if(_interactionIcons == null) _interactionIcons = Resources.Load<InputIcons>("InputIcons/InteractablePopup").Icons;
+        //}
 
         private void Start()
         {
@@ -125,7 +125,7 @@ namespace Ivayami.Puzzle
         private void UpdateVisualIcon(InputCallbacks.ControlType controlType)
         {
             SetupIcon();
-            _icon.sprite = _interactionIcons[(int)controlType];
+            _icon.sprite = _interactionIcons.Icons[(int)controlType];
         }
 
         //private void OnValidate()

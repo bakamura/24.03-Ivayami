@@ -112,13 +112,13 @@ namespace Ivayami.Puzzle
         {
             if (isActive)
             {
-                _cancelInteractionInput.action.performed += HandleExitInteraction;
+                _cancelInteractionInput.action.started += HandleExitInteraction;
                 if (_interactionType == InteractionTypes.RequirePassword)
                 {
                     _passwordUI.OnCheckPassword += TryUnlock;
                     if (_passwordUI is RotateLock)
                     {
-                        _confirmInput.action.performed += HandleConfirmUI;
+                        _confirmInput.action.started += HandleConfirmUI;
                         _clickInput.action.performed += HandleConfirmUI;
                     }
                 }
@@ -127,13 +127,13 @@ namespace Ivayami.Puzzle
             }
             else
             {
-                _cancelInteractionInput.action.performed -= HandleExitInteraction;
+                _cancelInteractionInput.action.started -= HandleExitInteraction;
                 if (_interactionType == InteractionTypes.RequirePassword)
                 {
                     _passwordUI.OnCheckPassword -= TryUnlock;
                     if (_passwordUI is RotateLock)
                     {
-                        _confirmInput.action.performed -= HandleConfirmUI;
+                        _confirmInput.action.started -= HandleConfirmUI;
                         _clickInput.action.performed -= HandleConfirmUI;
                     }
                 }

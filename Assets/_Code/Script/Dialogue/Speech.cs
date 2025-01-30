@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 
 namespace Ivayami.Dialogue
@@ -5,8 +6,8 @@ namespace Ivayami.Dialogue
     [System.Serializable]
     public struct Speech
     {
-        [EnumToString(3)] public LanguageTypes LanguageType;
-        public string announcerName;
+        [ReadOnly] public string Language;
         [TextArea(1, 50)] public string content;
     }
 }
+#endif

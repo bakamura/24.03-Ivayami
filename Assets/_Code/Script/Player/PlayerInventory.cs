@@ -50,11 +50,12 @@ namespace Ivayami.Player {
             if (_checkInventoryIndexCache == -1) _itemList.Add(new InventoryItemStack(item, 1));
             else _itemList[_checkInventoryIndexCache] = new InventoryItemStack(_itemList[_checkInventoryIndexCache].Item, _itemList[_checkInventoryIndexCache].Amount + 1);
             onInventoryUpdate.Invoke(CheckInventory());
-            InventoryItem itemTranslation = item.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
-            if (shouldEmphasize) ItemEmphasisDisplay.Instance.DisplayItem(item.Sprite, itemTranslation.DisplayName, itemTranslation.Description);
-            else InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite, itemTranslation.DisplayName);
+            if (shouldEmphasize) ItemEmphasisDisplay.Instance.DisplayItem(item.Sprite,
+                item.GetDisplayName(),
+                item.GetDisplayDescription());
+            else InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite, item.GetDisplayName());
 
-            Logger.Log(LogType.Player, $"Inventory Add: {item.DisplayName} ({item.name}) / {item.Type}. Current owned {_itemList[_checkInventoryIndexCache == -1 ? 0 : _checkInventoryIndexCache].Amount}");
+            Logger.Log(LogType.Player, $"Inventory Add: {item.GetDisplayName()} ({item.name}) / {item.Type}. Current owned {_itemList[_checkInventoryIndexCache == -1 ? 0 : _checkInventoryIndexCache].Amount}");
         }
 
         public void RemoveFromInventory(InventoryItem item) {
@@ -72,13 +73,13 @@ namespace Ivayami.Player {
             }
             onInventoryUpdate.Invoke(CheckInventory());
 
-            Logger.Log(LogType.Player, $"Inventory Remove: {item.DisplayName} ({item.name}) / {item.Type}. Current owned {(itemRemoved ? 0 : _itemList[_checkInventoryIndexCache].Amount)}");
+            Logger.Log(LogType.Player, $"Inventory Remove: {item.GetDisplayName()} ({item.name}) / {item.Type}. Current owned {(itemRemoved ? 0 : _itemList[_checkInventoryIndexCache].Amount)}");
         }
 
         public void LoadInventory(SaveProgress.ItemData[] itemsData) {
             _itemList.Clear();
             if (itemsData?.Length > 0) {
-                InventoryItem[] itemAssets = Resources.LoadAll<InventoryItem>($"Items/ENUS");
+                InventoryItem[] itemAssets = Resources.LoadAll<InventoryItem>($"Items");
                 InventoryItem iterator;
                 for(int i = 0; i < itemsData.Length; i++)
                 {

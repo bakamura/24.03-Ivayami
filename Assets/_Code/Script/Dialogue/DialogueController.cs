@@ -7,7 +7,7 @@ using System;
 using Ivayami.Player;
 using Ivayami.Audio;
 using UnityEngine.UI;
-using Ivayami.Save;
+using UnityEngine.Localization.Settings;
 
 //https://docs.unity3d.com/Packages/com.unity.textmeshpro@4.0/manual/RichText.html
 
@@ -39,23 +39,12 @@ namespace Ivayami.Dialogue
         private int _currentShowingChars = 0;
         private sbyte _currentSpeechIndex;
         private float _currentFixedDurationInSpeech;
+        private const string _dialogueTableName = "Dialogues";
         [Serializable]
         private struct DialogueLayout
         {
             public Sprite Background;
             public Vector2 Dimensions;
-        }
-
-        private struct DialogeRef
-        {
-            public int InstanceID;
-            public LanguageTypes LanguageType;
-
-            public DialogeRef(int id, LanguageTypes type)
-            {
-                InstanceID = id;
-                LanguageType = type;
-            }
         }
 
         public bool IsPaused { get; private set; }
@@ -166,13 +155,14 @@ namespace Ivayami.Dialogue
             if (eraseCurrentContent)
             {
                 _continueDialogueIcon.SetActive(false);
-                _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].announcerName;
-                _speechTextComponent.maxVisibleCharacters = 0;
-                _speechTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content;
+                string speechContent = LocalizationSettings.StringDatabase.GetLocalizedString(_dialogueTableName, $"{_currentDialogue.name}/Speech_{_currentSpeechIndex}", fallbackBehavior : FallbackBehavior.DontUseFallback);
+                _announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].AnnouncerName.IsEmpty ? null : _currentDialogue.dialogue[_currentSpeechIndex].AnnouncerName.GetLocalizedString();
+                _speechTextComponent.maxVisibleCharacters = 0;                
+                _speechTextComponent.text = speechContent.Contains("No translation") ? null : speechContent;
                 _currentCharIndex = 0;
                 _currentShowingChars = 0;
                 _currentFixedDurationInSpeech = 0;
-                _currentDialogueCharArray = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].content.ToCharArray();
+                _currentDialogueCharArray = string.IsNullOrEmpty(_speechTextComponent.text) ? null : _speechTextComponent.text.ToCharArray();
                 if (CutsceneController.IsPlaying || !LockInput)
                 {
                     _dialogueBackground.sprite = _dialogueVariations[1].Background;
@@ -187,23 +177,27 @@ namespace Ivayami.Dialogue
                 }
                 ActivateDialogueEvents(_currentDialogue.dialogue[_currentSpeechIndex].EventId);
             }
-            _canvasGroup.alpha = _currentDialogueCharArray.Length > 0 ? 1 : 0;
-            while (_currentCharIndex < _currentDialogueCharArray.Length)
+            bool isArrayValid = _currentDialogueCharArray != null;
+            _canvasGroup.alpha = isArrayValid && _currentDialogueCharArray.Length > 0 ? 1 : 0;
+            if(isArrayValid)
             {
-                if (_currentDialogueCharArray[_currentCharIndex] == '<')
+                while (_currentCharIndex < _currentDialogueCharArray.Length)
                 {
-                    while (_currentDialogueCharArray[_currentCharIndex] != '>')
+                    if (_currentDialogueCharArray[_currentCharIndex] == '<')
                     {
+                        while (_currentDialogueCharArray[_currentCharIndex] != '>')
+                        {
+                            _currentCharIndex++;
+                        }
                         _currentCharIndex++;
                     }
-                    _currentCharIndex++;
-                }
-                else
-                {
-                    _currentShowingChars++;
-                    _currentCharIndex++;
-                    _speechTextComponent.maxVisibleCharacters = _currentShowingChars;
-                    yield return _typeWrittingDelay;
+                    else
+                    {
+                        _currentShowingChars++;
+                        _currentCharIndex++;
+                        _speechTextComponent.maxVisibleCharacters = _currentShowingChars;
+                        yield return _typeWrittingDelay;
+                    }
                 }
             }
 
@@ -229,9 +223,8 @@ namespace Ivayami.Dialogue
         {
             if (_debugLogs) Debug.Log($"Skipping typewrite anim");
             StopCoroutine(_writtingCoroutine);
-            _currentShowingChars = _currentDialogueCharArray.Length;
+            _currentShowingChars = _currentDialogueCharArray != null ? _currentDialogueCharArray.Length : 0;
             _speechTextComponent.maxVisibleCharacters = _currentShowingChars;
-            //_announcerNameTextComponent.text = _currentDialogue.dialogue[_currentSpeechIndex].Speeches[SaveSystem.Instance.Options.language].announcerName;
             if (LockInput) _continueDialogueIcon.SetActive(true);
             OnSkipSpeech?.Invoke();
             _writtingCoroutine = null;
@@ -279,7 +272,7 @@ namespace Ivayami.Dialogue
                     if (_dialogueEventsList[i].TriggerEvent(eventID))
                     {
                         if (_debugLogs) Debug.Log($"Dialogue Event {eventID} Triggered");
-                        return;                           
+                        return;
                     }
                 }
                 Debug.LogWarning($"The event {eventID} coudln't be found");

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Ivayami.Save;
 
 namespace Ivayami.Player {
     public class PlayerAnimation : MonoSingleton<PlayerAnimation> {
@@ -44,6 +43,7 @@ namespace Ivayami.Player {
             PlayerStress.Instance.onFail.AddListener(Fail);
             PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
+            PlayerActions.Instance.onAbility.AddListener(Trigger);
         }
 
         public float GetInteractAnimationDuration(PlayerActions.InteractAnimation animation) {
@@ -74,6 +74,10 @@ namespace Ivayami.Player {
 
         public void Hold(bool isHolding) {
             _animator.SetBool(HOLDING, isHolding);
+        }
+
+        private void Trigger(string abilityName) {
+            _animator.SetTrigger(abilityName);
         }
 
         public void GoToIdle() {

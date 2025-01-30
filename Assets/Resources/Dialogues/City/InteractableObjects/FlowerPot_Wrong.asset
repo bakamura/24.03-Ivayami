@@ -13,14 +13,24 @@ MonoBehaviour:
   m_Name: FlowerPot_Wrong
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Cynthia
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - Language: English (en)
       content: (There's nothing under the flower pot.)
-    - LanguageType: 1
-      announcerName: Cynthia
+    - Language: Portuguese (pt)
       content: "(N\xE3o tem nada embaixo do vaso.)"
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

@@ -2,7 +2,7 @@
 using System;
 
 namespace Ivayami.Save {
-    [System.Serializable]
+    [Serializable]
     public class SaveOptions {
 
         public float musicVol = 0.5f;
@@ -16,7 +16,5 @@ namespace Ivayami.Save {
         public bool holdToRun;
 
         public Int32 language;
-        public LanguageTypes Language { get { return (LanguageTypes)language; } }
-
     }
 }

@@ -26,6 +26,12 @@ namespace Ivayami.Enemy
 
         public bool CanChangeWalkArea => _fixedWalkArea;
 
+        private void Start()
+        {
+            if (PlayerMovement.Instance && _lookAtPlayerOnStart)
+                TryLookAtPlayer();
+        }
+
         private void Setup()
         {
             if (_navMeshAgent) return;
@@ -37,9 +43,7 @@ namespace Ivayami.Enemy
                 if (_fixedWalkArea.MovementData) SetMovementData(_fixedWalkArea.MovementData);
                 SetWalkArea(_fixedWalkArea);
                 _fixedWalkArea.AddEnemyToArea(this, gameObject.name);
-            }
-            if (PlayerMovement.Instance && _lookAtPlayerOnStart)
-                TryLookAtPlayer();
+            }           
         }
         //private void OnTriggerEnter(Collider other)
         //{

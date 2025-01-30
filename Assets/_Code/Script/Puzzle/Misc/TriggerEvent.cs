@@ -24,7 +24,7 @@ namespace Ivayami.Puzzle
         //private bool _isTargetInside;
         private byte _collisionCount;
 
-        private void OnTriggerEnter(Collider other)
+        protected virtual void OnTriggerEnter(Collider other)
         {
             _validTag = string.IsNullOrEmpty(_optionalTag) || other.CompareTag(_optionalTag);
             if (_validTag)

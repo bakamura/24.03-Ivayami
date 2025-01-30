@@ -1,0 +1,25 @@
+using UnityEngine;
+using TMPro;
+
+namespace Ivayami.UI {
+    public class TextPreProcessor : MonoBehaviour, ITextPreprocessor {
+
+        [SerializeField] private TextPreProcessorSettings _settings;
+
+        private void Awake() {
+            GetComponent<TMP_Text>().textPreprocessor = this;
+            Debug.Log("Preprocessor Awake");
+        }
+
+        public string PreprocessText(string text) {
+            string processedText = text;
+            foreach (TextTag tag in _settings.TextTags) {
+                processedText = processedText.Replace($"<{tag.name}>", $"<color=#{ColorUtility.ToHtmlStringRGB(tag.color)}>");
+                processedText = processedText.Replace($"</{tag.name}>", $"</color>");
+                Debug.Log($"Preprocessor check for {tag.name}");
+            }
+            return processedText;
+        }
+    }
+
+}

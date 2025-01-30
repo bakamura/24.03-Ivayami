@@ -92,6 +92,7 @@ namespace Ivayami.Audio
             PLAYBACK_STATE state = PLAYBACK_STATE.STOPPED;
             GetValidSoundEventInList(_currentSoundData, soundType, out SoundEventData currentSound);
             GetValidSoundEventInList(_audiosData, soundType, out SoundEventData newSound);
+            if (newSound == null) return;
             if (currentSound == null && newSound.CanBeStoped && !newSound.CanPlayMultipleTimes)/*(data == null || (data != null && data.SoundType != soundType)*/
             {
                 for (int i = 0; i < _currentSoundData.Count; i++)
@@ -318,6 +319,7 @@ namespace Ivayami.Audio
             }
             if (_activationArea)
             {
+                _activationArea.radius = 0;
                 for (int i = 0; i < _audiosData.Length; i++)
                 {
                     if (_audiosData[i].AttenuationRange.Max > _activationArea.radius) _activationArea.radius = _audiosData[i].AttenuationRange.Max;

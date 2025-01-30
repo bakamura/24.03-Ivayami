@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Cinemachine;
+using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
 using Ivayami.UI;
 
@@ -14,6 +15,8 @@ namespace Ivayami.Player {
         [Header("Inputs")]
 
         [SerializeField] private InputActionReference _interactInput;
+        [SerializeField] private InputActionReference _abilityInput;
+        [SerializeField] private InputActionReference _changeAbilityInput;
         [SerializeField] private InputActionReference _useHealthItemInput;
         [SerializeField] private InputActionReference[] _pauseInputs;
         private InputActionMap _actionMapCurrent;
@@ -25,6 +28,8 @@ namespace Ivayami.Player {
         public UnityEvent<InteractAnimation> onInteract = new UnityEvent<InteractAnimation>();
         public UnityEvent<bool> onInteractLong = new UnityEvent<bool>();
         public UnityEvent<IInteractable> onInteractTargetChange = new UnityEvent<IInteractable>();
+        public UnityEvent<string> onAbility = new UnityEvent<string>();
+        public UnityEvent<sbyte> onAbilityChange = new UnityEvent<sbyte>();
         public UnityEvent<string> onActionMapChange = new UnityEvent<string>();
 
         [Header("Interact")]
@@ -32,7 +37,9 @@ namespace Ivayami.Player {
         [SerializeField] private InteractableDetector _interactableDetector;
         [SerializeField] private LayerMask _interactLayer;
         [SerializeField] private LayerMask _blockLayers;
-        [SerializeField] private float _interactableCheckDelay;
+        [SerializeField, Min(0f)] private float _interactableCheckDelay;
+        private const float _interactCoodlown = .5f;
+        private float _currentInteractCooldown;
 
         public bool Interacting { get; private set; } = false;
         public IInteractable InteractableTarget { get; private set; } // Should be private now?
@@ -41,6 +48,7 @@ namespace Ivayami.Player {
             Default,
             EnterLocker,
             EnterTrash,
+            Seat,
             PullRope,
             PullLever,
             PushButton
@@ -48,16 +56,17 @@ namespace Ivayami.Player {
 
         //[Header("Hand Item")]
 
-        //private GameObject _handItemCurrent;
         [field: SerializeField] public Transform HoldPointLeft { get; private set; }
 
+        [Header("Abilities")]
+
+        private List<PlayerAbility> _abilities = new List<PlayerAbility>();
+        private sbyte _abilityCurrent;
 
         [Header("Cache")]
 
-        //private Camera _cam;
         private CinemachineBrain _brain;
         private RaycastHit _interactableHitCache;
-        //private RaycastHit _blockerHitCache;
         private IInteractable _interactableClosestCache;
         private WaitForSeconds _interactableCheckWait;
         private InteractAnimation _interactAnimationCache;
@@ -69,25 +78,33 @@ namespace Ivayami.Player {
 
             _interactInput.action.started += Interact;
             _interactInput.action.canceled += Interact;
+            _abilityInput.action.started += Ability;
+            _changeAbilityInput.action.started += ChangeAbility;
             _useHealthItemInput.action.started += UseHealthItem;
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable();
 
             onInteractLong.AddListener((interacting) => Interacting = interacting);
             _interactableCheckWait = new WaitForSeconds(_interactableCheckDelay);
 
+            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //            
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
         }        
 
         private void Start() {
-            //_cam = PlayerCamera.Instance.MainCamera;
+            Dialogue.DialogueController.Instance.OnDialogueEnd += () => _currentInteractCooldown = _interactCoodlown;
             _brain = PlayerCamera.Instance.CinemachineBrain;
             StartCoroutine(InteractObjectDetect());
         }
 
+        private void Update()
+        {
+            if (_currentInteractCooldown > 0) _currentInteractCooldown -= Time.deltaTime;
+        }
+
         private void Interact(InputAction.CallbackContext input) {
             //if (PlayerMovement.Instance.CanMove) {
-                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove) {
+                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _currentInteractCooldown <= 0) {
                     if (InteractableTarget != null /*&& InteractableTarget != Friend.Instance?.InteractableLongCurrent*/) {
                         _interactAnimationCache = InteractableTarget.Interact();
                         Vector3 directionToInteractable = InteractableTarget.InteratctableFeedbacks.IconPosition - transform.position;
@@ -149,10 +166,77 @@ namespace Ivayami.Player {
             }
         }
 
+        #region Abilities (To be removed)
+        private void Ability(InputAction.CallbackContext input) {
+            if (_abilityCurrent >= 0) {
+                if (input.phase == InputActionPhase.Started) {
+                    _abilities[_abilityCurrent].AbilityStart();
+                    onAbility?.Invoke(_abilities[_abilityCurrent].name);
+
+                    Logger.Log(LogType.Player, $"Ability Start: {_abilities[_abilityCurrent].name}");
+                }
+                else if (input.phase == InputActionPhase.Canceled) {
+                    _abilities[_abilityCurrent].AbilityEnd();
+                    onAbility?.Invoke($"{_abilities[_abilityCurrent].name}End");
+
+                    Logger.Log(LogType.Player, $"Ability End: {_abilities[_abilityCurrent].name}");
+                }
+            }
+        }
+
+        private void ChangeAbility(InputAction.CallbackContext input) {
+            switch (input.ReadValue<Vector2>()) {
+                case Vector2 v2 when v2.Equals(Vector2.up):
+                    if (_abilities.Count < 1) return;
+                    _abilityCurrent = 0;
+                    break;
+                case Vector2 v2 when v2.Equals(Vector2.right):
+                    if (_abilities.Count < 2) return;
+                    _abilityCurrent = 1;
+                    break;
+                case Vector2 v2 when v2.Equals(Vector2.down):
+                    if (_abilities.Count < 3) return;
+                    _abilityCurrent = 2;
+                    break;
+                case Vector2 v2 when v2.Equals(Vector2.left):
+                    if (_abilities.Count < 4) return;
+                    _abilityCurrent = 3;
+                    break;
+            }
+            onAbilityChange?.Invoke(_abilityCurrent);
+
+            Logger.Log(LogType.Player, $"Ability Changed to: {_abilities[_abilityCurrent].name}");
+        }
+
+        public void AddAbility(PlayerAbility ability) {
+            PlayerAbility abilityInstance = Instantiate(ability);
+            Quaternion localRotation = abilityInstance.transform.rotation;
+            abilityInstance.transform.parent = HoldPointLeft;
+            abilityInstance.transform.localPosition = Vector3.zero;
+            abilityInstance.transform.localRotation = localRotation;
+            _abilities.Add(abilityInstance);
+
+            Logger.Log(LogType.Player, $"Ability Add: {ability.name}");
+        }
+
+        public void RemoveAbility(PlayerAbility ability) {
+            PlayerAbility abilityInList = _abilities.OrderBy(abilityIterator => abilityIterator.GetType() == ability.GetType()).First();
+            if (_abilityCurrent >= _abilities.FindIndex((abilityIterator) => abilityIterator == abilityInList)) _abilityCurrent--;
+            _abilities.Remove(abilityInList);
+            onAbilityChange?.Invoke(_abilityCurrent); // Update UI etc
+
+            Logger.Log(LogType.Player, $"Ability Remove: {ability.name}");
+        }
+
+        public bool CheckAbility(PlayerAbility abilityChecking) {
+            foreach (PlayerAbility ability in _abilities) if (ability.GetType() == abilityChecking.GetType()) return true;
+            return false;
+        }
+        #endregion
 
         private void UseHealthItem(InputAction.CallbackContext obj)
         {
-            if (PlayerUseItemUI.Instance) PlayerUseItemUI.Instance.UpdateUI(!PlayerUseItemUI.Instance.IsActive);
+            if (PlayerUseItemUI.Instance && !PlayerStress.Instance.FailState) PlayerUseItemUI.Instance.UpdateUI(!PlayerUseItemUI.Instance.IsActive);
         }
 
         public void ChangeInputMap(string mapId) {

@@ -56,10 +56,10 @@ namespace Ivayami.Enemy
         private Collider[] _hitsCache = new Collider[1];
         private Coroutine _detectTargetPointOffBehaviourReachedCoroutine;
         private Coroutine _initializeCoroutine;
+        private Coroutine _behaviourCoroutine;
         private Vector3 _lastTargetPosition;
         private bool _isChasing;
         private bool _directContactWithTarget;
-        private bool _targetKilled;
         private float _halfVisionAngle;
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
@@ -89,13 +89,11 @@ namespace Ivayami.Enemy
         {
             if (!_navMeshAgent.enabled && _initializeCoroutine == null) _initializeCoroutine = StartCoroutine(InitializeAgent());
             if (_startActive && _initializeCoroutine == null) StartBehaviour();
-            PlayerStress.Instance.onFail.AddListener(OnTargetKill);
         }
 
         private void OnDisable()
         {
             StopBehaviour();
-            PlayerStress.Instance.onFail.RemoveListener(OnTargetKill);
         }
 
         private IEnumerator InitializeAgent()
@@ -119,7 +117,7 @@ namespace Ivayami.Enemy
                 }
                 IsActive = true;                
                 //_navMeshAgent.isStopped = false;
-                StartCoroutine(BehaviourCoroutine());
+                _behaviourCoroutine = StartCoroutine(BehaviourCoroutine());
             }
         }
         [ContextMenu("Stop")]
@@ -127,7 +125,9 @@ namespace Ivayami.Enemy
         {
             if (IsActive)
             {
-                StopCoroutine(BehaviourCoroutine());
+                StopCoroutine(_behaviourCoroutine);
+                _behaviourCoroutine = null;
+                StopTargetPointReachedCoroutine();
                 IsActive = false;
                 _isChasing = false;
                 //PlayerStress.Instance.SetStressMin(0);
@@ -202,6 +202,11 @@ namespace Ivayami.Enemy
                                 _enemyAnimator.Walking(0);
                                 yield return new WaitForSeconds(point.Point.DelayToNextPoint);
                                 _navMeshAgent.SetDestination(_currenWalkArea.GoToNextPoint(ID).Point.Position);
+                                if (_debugLogPoliceOfficer)
+                                {
+                                    _currenWalkArea.GetCurrentPoint(ID, out point);
+                                    Debug.Log($"Change Patrol Point to {point.CurrentPointIndex}");
+                                }
                             }
                             else
                             {
@@ -215,6 +220,7 @@ namespace Ivayami.Enemy
                 _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude);
                 yield return _behaviourTickDelay;
             }
+            _behaviourCoroutine = null;
         }
 
         private bool CheckForTarget(float halfVisionAngle)
@@ -252,7 +258,6 @@ namespace Ivayami.Enemy
             {
                 if (_debugLogPoliceOfficer) Debug.Log("Attack Target");
                 StopBehaviour();
-                StopTargetPointReachedCoroutine();
                 //_navMeshAgent.isStopped = true;
                 //PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
                 _enemyAnimator.Attack(OnAttackAnimationEnd, OnAnimationStepChange);
@@ -262,10 +267,9 @@ namespace Ivayami.Enemy
         private void OnAttackAnimationEnd()
         {
             _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
-            if (_targetKilled)
+            if (PlayerStress.Instance && PlayerStress.Instance.FailState)
             {
                 _enemyAnimator.Walking(0);
-                _targetKilled = false;
                 //_enemyAnimator.Chasing(false);
             }
             else
@@ -388,11 +392,6 @@ namespace Ivayami.Enemy
             _isChasing = true;
             _lastTargetPosition = _hitsCache[0].transform.position;
             _navMeshAgent.isStopped = false;
-        }
-
-        private void OnTargetKill()
-        {
-            _targetKilled = true;
         }
         #endregion
         #region Debug
