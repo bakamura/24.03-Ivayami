@@ -55,11 +55,14 @@ namespace Ivayami.Localization
                     LocalizationEditorSettings.GetStringTableCollection(_dialogueTableName).ClearAllEntries();
                     foreach (StringTable table in LocalizationEditorSettings.GetStringTableCollection(_dialogueTableName).StringTables)
                     {
-                        for(int i = 0; i < dialogues.Length; i++)
+                        for (int i = 0; i < dialogues.Length; i++)
                         {
-                            for(int a = 0; a < dialogues[i].dialogue.Length; a++)
+                            for (int a = 0; a < dialogues[i].dialogue.Length; a++)
                             {
-                                table.AddEntry($"{dialogues[i].name}/Speech_{a}", dialogues[i].dialogue[a].Speeches[index].content);
+                                if (dialogues[i].dialogue[a].Speeches != null && dialogues[i].dialogue[a].Speeches.Length > 0)
+                                    table.AddEntry($"{dialogues[i].name}/Speech_{a}", dialogues[i].dialogue[a].Speeches[index].content);
+                                else
+                                    Debug.LogWarning($"The dialogue {dialogues[i].name} is empty");
                             }
                         }
                         index++;
@@ -82,13 +85,21 @@ namespace Ivayami.Localization
                     {
                         for (int i = 0; i < items.Length; i++)
                         {
-                            table.AddEntry($"{items[i].name}/Name", items[i].DisplayTexts[index].Name);
-                            table.AddEntry($"{items[i].name}/Description", items[i].DisplayTexts[index].Description);
+                            if (items[i].DisplayTexts != null && items[i].DisplayTexts.Length > 0)
+                            {
+                                table.AddEntry($"{items[i].name}/Name", items[i].DisplayTexts[index].Name);
+                                table.AddEntry($"{items[i].name}/Description", items[i].DisplayTexts[index].Description);
+                            }
+                            else Debug.LogWarning($"The item {items[i].name} is empty");
                         }
-                        for(int i = 0; i < readables.Length; i++)
+                        for (int i = 0; i < readables.Length; i++)
                         {
-                            table.AddEntry($"{readables[i].name}/Name", readables[i].DisplayTexts[index].Name);
-                            table.AddEntry($"{readables[i].name}/Description", readables[i].DisplayTexts[index].Description);
+                            if (items[i].DisplayTexts != null && items[i].DisplayTexts.Length > 0)
+                            {
+                                table.AddEntry($"{readables[i].name}/Name", readables[i].DisplayTexts[index].Name);
+                                table.AddEntry($"{readables[i].name}/Description", readables[i].DisplayTexts[index].Description);
+                            }
+                            else Debug.LogWarning($"The readable {readables[i].name} is empty");
                         }
                         index++;
                     }
@@ -108,11 +119,19 @@ namespace Ivayami.Localization
                     {
                         for (int i = 0; i < entries.Length; i++)
                         {
-                            table.AddEntry($"{entries[i].name}/Name", entries[i].DisplayTexts[index].Name);
-                            for (int a = 0; a < entries[i].DisplayTexts[index].Descriptions.Length; a++)
+                            if (entries[i].DisplayTexts != null && entries[i].DisplayTexts.Length > 0)
                             {
-                                table.AddEntry($"{entries[i].name}/Description_{a}", entries[i].DisplayTexts[index].Descriptions[a]);
+                                table.AddEntry($"{entries[i].name}/Name", entries[i].DisplayTexts[index].Name);
+                                if(entries[i].DisplayTexts[index].Descriptions != null && entries[i].DisplayTexts[index].Descriptions.Length > 0)
+                                {
+                                    for (int a = 0; a < entries[i].DisplayTexts[index].Descriptions.Length; a++)
+                                    {
+                                        table.AddEntry($"{entries[i].name}/Description_{a}", entries[i].DisplayTexts[index].Descriptions[a]);
+                                    }
+                                }
+                                else Debug.LogWarning($"The journal entry {entries[i].name} is empty in the description");
                             }
+                            else Debug.LogWarning($"The journal entry {entries[i].name} is empty");
                         }
                         index++;
                     }
@@ -123,8 +142,8 @@ namespace Ivayami.Localization
                     }
                     Debug.Log("Journal Table Updated");
                     break;
-                //case TableType.UI:
-                //    break;
+                    //case TableType.UI:
+                    //    break;
             }
         }
     }
