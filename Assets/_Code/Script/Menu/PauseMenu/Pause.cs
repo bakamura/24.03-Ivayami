@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Ivayami.Player;
-using Ivayami.Puzzle;
 using Ivayami.Scene;
 using Ivayami.Dialogue;
 
