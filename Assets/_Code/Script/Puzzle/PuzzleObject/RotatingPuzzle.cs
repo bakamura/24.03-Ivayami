@@ -20,6 +20,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private InputActionReference _confirmInput;
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private UnityEvent _onCancelInteraction;
+        [SerializeField] private bool _playNoSolutionEventOnceBySolution;
         [SerializeField] private UnityEvent _onNoSolutionMeet;
         [SerializeField] private PuzzleSolutionEvent[] _solutions;
 #if UNITY_EDITOR
@@ -29,6 +30,7 @@ namespace Ivayami.Puzzle
         private sbyte _currentPuzzleLayer;
         private sbyte _currentPuzzleObjectSelectedIndex;
         private float _currentInputCooldown;
+        private bool _triggerNoSolution;
         private const float _inputCooldown = .1f;
         private InteractableFeedbacks _interatctableFeedbacks;
         private RotatingPuzzleObject _currentSelected;
@@ -255,10 +257,15 @@ namespace Ivayami.Puzzle
                 if (puzzleSolutionsCompleted == _solutions[currentSolutionIndex].PuzzleLayer.Length)
                 {
                     _solutions[currentSolutionIndex].OnActivate?.Invoke();
+                    _triggerNoSolution = false;
                     return;
                 }
             }
-            _onNoSolutionMeet?.Invoke();
+            if ((!_triggerNoSolution && _playNoSolutionEventOnceBySolution) || !_playNoSolutionEventOnceBySolution)
+            {
+                _onNoSolutionMeet?.Invoke();
+                _triggerNoSolution = true;
+            }
         }
 
 #if UNITY_EDITOR
