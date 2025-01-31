@@ -8,6 +8,7 @@ using Cinemachine;
 using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
 using Ivayami.UI;
+using Ivayami.Dialogue;
 
 namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -38,8 +39,10 @@ namespace Ivayami.Player {
         [SerializeField] private LayerMask _interactLayer;
         [SerializeField] private LayerMask _blockLayers;
         [SerializeField, Min(0f)] private float _interactableCheckDelay;
-        private const float _interactCoodlown = .5f;
-        private float _currentInteractCooldown;
+        private const float _interactCoodlown = 1f;
+        //private float _currentInteractCooldown;
+        private HashSet<string> _interactBlock = new HashSet<string>();
+        private Dictionary<string, Coroutine> _interactReleaseDelay = new Dictionary<string, Coroutine>();
 
         public bool Interacting { get; private set; } = false;
         public IInteractable InteractableTarget { get; private set; } // Should be private now?
@@ -92,19 +95,15 @@ namespace Ivayami.Player {
         }        
 
         private void Start() {
-            Dialogue.DialogueController.Instance.OnDialogueEnd += () => _currentInteractCooldown = _interactCoodlown;
+            DialogueController.Instance.OnDialogeStart += () => { if (DialogueController.Instance.LockInput) ToggleInteract("Dialogue", false); };
+            DialogueController.Instance.OnDialogueEnd += () => { if (DialogueController.Instance.LockInput) ToggleInteract("Dialogue", true); };
             _brain = PlayerCamera.Instance.CinemachineBrain;
             StartCoroutine(InteractObjectDetect());
-        }
-
-        private void Update()
-        {
-            if (_currentInteractCooldown > 0) _currentInteractCooldown -= Time.deltaTime;
-        }
+        }        
 
         private void Interact(InputAction.CallbackContext input) {
             //if (PlayerMovement.Instance.CanMove) {
-                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _currentInteractCooldown <= 0) {
+                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _interactBlock.Count == 0) {
                     if (InteractableTarget != null /*&& InteractableTarget != Friend.Instance?.InteractableLongCurrent*/) {
                         _interactAnimationCache = InteractableTarget.Interact();
                         Vector3 directionToInteractable = InteractableTarget.InteratctableFeedbacks.IconPosition - transform.position;
@@ -245,6 +244,32 @@ namespace Ivayami.Player {
             _actionMapCurrent?.Enable();
             Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId == "Player" ? CursorLockMode.Locked : CursorLockMode.None;
             if(_actionMapCurrent != null) onActionMapChange?.Invoke(_actionMapCurrent.name);
+        }
+
+        public void ToggleInteract(string key, bool canInteract, float releaseDelay = _interactCoodlown)
+        {
+            if (canInteract)
+            {
+                if(!_interactBlock.Contains(key)) Debug.LogWarning($"'{key}' tried to unlock interact but key isn't blocking");
+                else
+                {
+                    if (_interactReleaseDelay.ContainsKey(key)) Debug.LogWarning($"The object {key} asked multiple interact releases at the same time");
+                    else _interactReleaseDelay.Add(key, StartCoroutine(ReleaseInteractDelay(key, releaseDelay)));
+                }         
+            }
+            else
+            {
+                if (!_interactBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock interact but key is already blocking");
+            }
+
+            Logger.Log(LogType.Player, $"Interact Blockers {(canInteract ? "Decrease" : "Increase")} to: {_interactBlock.Count}");
+        }
+
+        private IEnumerator ReleaseInteractDelay(string key, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            _interactBlock.Remove(key);
+            _interactReleaseDelay.Remove(key);
         }
 
 #if UNITY_EDITOR

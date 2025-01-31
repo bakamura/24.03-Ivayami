@@ -64,11 +64,13 @@ namespace Ivayami.UI
             {
                 _navigateUIInput.action.performed += HandleNavigateUI;
                 _confirmOptionInput.action.started += HandleConfirmOption;
+                PlayerActions.Instance.ToggleInteract(nameof(PlayerUseItemUI), false);
             }
             else
             {
                 _navigateUIInput.action.performed -= HandleNavigateUI;
                 _confirmOptionInput.action.started -= HandleConfirmOption;
+                PlayerActions.Instance.ToggleInteract(nameof(PlayerUseItemUI), true);
             }
         }
 
