@@ -88,6 +88,10 @@ namespace Ivayami.Player {
             _animator.SetTrigger(GETUP);
         }
 
+        public void GetUpSit() {
+            Trigger("GetUpSit");
+        }
+
         private void Fail() {
             _animator.SetTrigger(FAIL);
         }
