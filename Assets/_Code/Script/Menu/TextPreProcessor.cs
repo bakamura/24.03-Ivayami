@@ -8,7 +8,6 @@ namespace Ivayami.UI {
 
         private void Awake() {
             GetComponent<TMP_Text>().textPreprocessor = this;
-            Debug.Log("Preprocessor Awake");
         }
 
         public string PreprocessText(string text) {
@@ -16,7 +15,6 @@ namespace Ivayami.UI {
             foreach (TextTag tag in _settings.TextTags) {
                 processedText = processedText.Replace($"<{tag.name}>", $"<color=#{ColorUtility.ToHtmlStringRGB(tag.color)}>");
                 processedText = processedText.Replace($"</{tag.name}>", $"</color>");
-                Debug.Log($"Preprocessor check for {tag.name}");
             }
             return processedText;
         }
