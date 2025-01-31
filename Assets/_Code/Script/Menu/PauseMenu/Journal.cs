@@ -71,7 +71,8 @@ namespace Ivayami.UI {
         }
 
         private void SetupStorySelection() {
-            for (int i = 0; i <= SaveSystem.Instance.Progress.GetEntryProgressOfType("StoryEntry"); i++) if (i >= _storySelectionContainer.childCount)
+            int progress = SaveSystem.Instance.Progress.GetEntryProgressOfType("StoryEntry");
+            if (progress > 0) for (int i = 0; i <= progress; i++) if (i >= _storySelectionContainer.childCount)
                     SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/StoryEntry_{i}"));
         }
 

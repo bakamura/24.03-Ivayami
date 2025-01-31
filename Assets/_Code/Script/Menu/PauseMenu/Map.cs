@@ -13,7 +13,7 @@ namespace Ivayami.UI
         [Header("Pointers")]
 
         [SerializeField, Tooltip("Every pointer should be named Pointer_{ProgressNameCaseSensitive}")] private RectTransform[] _goalPointers;
-        [SerializeField, Tooltip("Every blocker should be named Blocker_{tool}_{id}")] private GameObject[] _roadBlockers;
+        [SerializeField, Tooltip("Every blocker should be named {uniqueNumber}_AnyName")] private GameObject[] _roadBlockers;
 
         [Header("Map Components")]
 
@@ -53,8 +53,8 @@ namespace Ivayami.UI
             }
             foreach (GameObject blocker in _roadBlockers)
             {
-                if (int.TryParse(blocker.name.Split('.')[0], out int id)) blocker.SetActive(SaveSystem.Instance.Progress.GetRoadBlockerState(id) == RoadBlocker.State.Discovered);
-                else Debug.LogWarning($"Couldn't get ID of road blocker indicator '{blocker.name}', make sure the object is named like '7.AnyNameReally'");
+                if (int.TryParse(blocker.name.Split('_')[0], out int id)) blocker.SetActive(SaveSystem.Instance.Progress.GetRoadBlockerState(id) == RoadBlocker.State.Discovered);
+                else Debug.LogWarning($"Couldn't get ID of road blocker indicator '{blocker.name}', make sure the object is named like '7_AnyNameReally'");
             }
         }
 
