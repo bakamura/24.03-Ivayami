@@ -82,7 +82,10 @@ namespace Ivayami.Save {
         }
         
         private IEnumerator OnSaveFadeOutEndRoutine() {
-            if (_playerAnimationPoint) PlayerMovement.Instance.transform.position = _playerAnimationPoint.position;
+            if (_playerAnimationPoint) {
+                PlayerMovement.Instance.transform.position = _playerAnimationPoint.position;
+                PlayerMovement.Instance.SetTargetAngle(_playerAnimationPoint.eulerAngles.y);
+            }
             else Debug.LogWarning($"Save point '{name}' has no _playerAnimationPoint referenced");
             
             yield return _delayFadeOutWait;
