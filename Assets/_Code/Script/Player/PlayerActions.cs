@@ -95,7 +95,7 @@ namespace Ivayami.Player {
         }        
 
         private void Start() {
-            DialogueController.Instance.OnDialogeStart += () => { if (DialogueController.Instance.LockInput) ToggleInteract("Dialogue", false); };
+            DialogueController.Instance.OnDialogueStart += () => { if (DialogueController.Instance.LockInput) ToggleInteract("Dialogue", false); };
             DialogueController.Instance.OnDialogueEnd += () => { if (DialogueController.Instance.LockInput) ToggleInteract("Dialogue", true); };
             _brain = PlayerCamera.Instance.CinemachineBrain;
             StartCoroutine(InteractObjectDetect());

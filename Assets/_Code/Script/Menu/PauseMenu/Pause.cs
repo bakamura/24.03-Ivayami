@@ -29,7 +29,7 @@ namespace Ivayami.UI {
             onPause.AddListener(() => ReturnAction.Instance.Set(UnpauseOnBack));
             PlayerStress.Instance.onFail.AddListener(UnpauseIfPaused);
             SceneController.Instance.OnAllSceneRequestEnd += UnpauseIfPaused;
-            DialogueController.Instance.OnDialogeStart += UnpauseIfPaused;
+            DialogueController.Instance.OnDialogueStart += UnpauseIfPaused;
         }
 
         public void PauseGame(bool isPausing) {

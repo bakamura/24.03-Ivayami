@@ -1,8 +1,7 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Events;
 using Ivayami.Player;
-using Ivayami.Save;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.Localization;
 
 namespace Ivayami.UI
@@ -11,11 +10,11 @@ namespace Ivayami.UI
     public class PlayerUseItemUI : MonoSingleton<PlayerUseItemUI>
     {
         [Header("Heal Callbacks")]
-        [SerializeField] private UnityEvent _onHealActivation;
-        [SerializeField] private UnityEvent _onHealEnd;
-        [SerializeField] private UnityEvent _onNotRequiredItem;
-        [SerializeField] private UnityEvent _onAlreadyHealing;
-        [SerializeField] private UnityEvent _onNotEnoughStressToHeal;
+        public UnityEvent OnHealActivation;
+        public UnityEvent OnHealEnd;
+        public UnityEvent OnNotRequiredItem;
+        public UnityEvent OnAlreadyHealing;
+        public UnityEvent OnNotEnoughStressToHeal;
 
         [Header("General Callbacks")]
         [SerializeField] private UnityEvent _onShowUI;
@@ -94,19 +93,19 @@ namespace Ivayami.UI
             PlayerInventory.InventoryItemStack stack = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[_currentSelectedIndex].name);
             if (!stack.Item)
             {
-                _onNotRequiredItem?.Invoke();
+                OnNotRequiredItem?.Invoke();
                 UpdateUI(false);
                 return;
             }
             else if (_currentItemActionCoroutine != null)
             {
-                _onAlreadyHealing?.Invoke();
+                OnAlreadyHealing?.Invoke();
                 UpdateUI(false);
                 return;
             }
             else if (PlayerStress.Instance.StressCurrent == 0)
             {
-                _onNotEnoughStressToHeal?.Invoke();
+                OnNotEnoughStressToHeal?.Invoke();
                 UpdateUI(false);
                 return;
             }
@@ -119,7 +118,7 @@ namespace Ivayami.UI
             _isActive = false;
             UpdateInputs();
             UpdateVisuals();
-            _onHealActivation?.Invoke();
+            OnHealActivation?.Invoke();
         }
 
         private void HandleNavigateUI(InputAction.CallbackContext context)
@@ -143,7 +142,7 @@ namespace Ivayami.UI
         private void HandleItemActionEnd()
         {
             _currentItemActionCoroutine = null;
-            _onHealEnd?.Invoke();
+            OnHealEnd?.Invoke();
         }
 
         private void HandleInputMapChange(string mapId)
