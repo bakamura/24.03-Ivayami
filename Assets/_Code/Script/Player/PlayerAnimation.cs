@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Ivayami.Save;
 
 namespace Ivayami.Player {
     public class PlayerAnimation : MonoSingleton<PlayerAnimation> {
@@ -45,7 +44,6 @@ namespace Ivayami.Player {
             PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
             PlayerActions.Instance.onAbility.AddListener(Trigger);
-            SavePoint.onSaveGame.AddListener(() => Trigger("Seat"));
         }
 
         public float GetInteractAnimationDuration(PlayerActions.InteractAnimation animation) {
@@ -88,6 +86,10 @@ namespace Ivayami.Player {
 
         public void GetUp() {
             _animator.SetTrigger(GETUP);
+        }
+
+        public void GetUpSit() {
+            Trigger("GetUpSit");
         }
 
         private void Fail() {

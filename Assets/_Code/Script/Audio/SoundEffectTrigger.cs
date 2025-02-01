@@ -88,6 +88,7 @@ namespace Ivayami.Audio
                 _currentSounData.OnAudioEnd?.Invoke();
             }
             StopUpdateCoroutine();
+            StopReplayCoroutine();
         }
 
         private void Setup()

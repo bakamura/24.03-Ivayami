@@ -11,10 +11,11 @@ public class RoadBlocker : MonoBehaviour {
 
     [Header("Parameters")]
 
-    private int _id;
+    [SerializeField, Min(0)] private int _id;
     private State _state;
 
     private void Awake() {
+        if (_id <= 0) Debug.LogWarning($"RoadBlocker '{name}' has no ID assigned, please assign an ID other than 0");
         _state = SaveSystem.Instance.Progress.GetRoadBlockerState(_id);
         if (_state == State.Removed) gameObject.SetActive(false);
     }

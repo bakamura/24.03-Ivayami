@@ -79,6 +79,12 @@ namespace Ivayami.Player {
             else if (_stressCurrent == capValue) _stressRelieveDelayTimer = _stressRelieveDelay;
         }
 
+        public void SetStress(float value)
+        {
+            _stressCurrent = Mathf.Clamp(value, 0, _stressMax);
+            AddStress(0);
+        }
+
         private void RelieveStressAuto() {
             _stressCurrent += StressRelieveFormula(/*_stressCurrent*/) * Time.deltaTime;
             onStressChange.Invoke(_stressCurrent);
@@ -133,6 +139,7 @@ namespace Ivayami.Player {
         private void ReloadAndReset() {
             //UnityEvent onSceneLoaded = new UnityEvent();
             //onSceneLoaded.AddListener(() => SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport());
+            //ResetStress();
             SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
             SceneController.Instance.LoadScene("BaseTerrain"/*, onSceneLoaded*/);
             PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());

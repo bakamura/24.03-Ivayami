@@ -50,7 +50,7 @@ namespace Ivayami.Dialogue
         public bool IsPaused { get; private set; }
         public Dialogue CurrentDialogue => _currentDialogue;
         public bool LockInput { get; private set; }
-        public Action OnDialogeStart;
+        public Action OnDialogueStart;
         public Action OnDialogueEnd;
         public Action OnSkipSpeech;
 
@@ -107,7 +107,7 @@ namespace Ivayami.Dialogue
                 _currentSpeechIndex = 0;
                 _currentDialogue = dialogue;
                 PlayerStress.Instance.onFail.AddListener(StopDialogue);
-                OnDialogeStart?.Invoke();
+                OnDialogueStart?.Invoke();
                 _writtingCoroutine = StartCoroutine(WrittingCoroutine(true));
             }
         }

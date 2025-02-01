@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Ivayami.Player;
-using System;
 
 namespace Ivayami.UI {
     [RequireComponent(typeof(Fade))]
@@ -20,11 +19,11 @@ namespace Ivayami.UI {
         }
 
         private void OnDestroy() {
-            if (_icon.enabled && Pause.Instance && InputCallbacks.Instance) {
+            if (_icon.enabled) {
                 _actionIndicator.action.performed -= KeyPressed;
-                Pause.Instance.onPause.RemoveListener(IconDisable);
-                Pause.Instance.onUnpause.RemoveListener(IconEnable);
-                InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisuals);
+                Pause.Instance?.onPause.RemoveListener(IconDisable);
+                Pause.Instance?.onUnpause.RemoveListener(IconEnable);
+                InputCallbacks.Instance?.UnsubscribeToOnChangeControls(UpdateVisuals);
             }
         }
 
