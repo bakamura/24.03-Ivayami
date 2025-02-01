@@ -373,13 +373,33 @@ MonoBehaviour:
   _showDuration: 0.25
   _stayDuration: 1.25
   _hideDuration: 0.5
-  _infoUpdateText: {fileID: 11400000, guid: 0e0fbe1a2c3917944a95f9ae8ca50fc1, type: 2}
   _mapInfo:
     <Sprite>k__BackingField: {fileID: 21300000, guid: cdcbae0a8c9c8d04a83779e4f300bcb8, type: 3}
     <Text>k__BackingField: Map
+  _mapInfoUpdateText:
+    m_TableReference:
+      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
+    m_TableEntryReference:
+      m_KeyId: 370328743817222
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _readableInfo:
     <Sprite>k__BackingField: {fileID: 0}
     <Text>k__BackingField: Readable
+  _readableInfoUpdateText:
+    m_TableReference:
+      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
+    m_TableEntryReference:
+      m_KeyId: 370328743817223
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1539147219791113911
 GameObject:
   m_ObjectHideFlags: 0
@@ -789,12 +809,12 @@ MonoBehaviour:
   _audiosData:
   - AudioReference:
       Guid:
-        Data1: 1466478320
-        Data2: 1183738749
-        Data3: 183459757
-        Data4: 593974018
-      Path: event:/UI_SFX/Open_Map
-    AllowFadeOut: 0
+        Data1: -1370875509
+        Data2: 1228108107
+        Data3: 1208518556
+        Data4: -6199864
+      Path: event:/Music/Fone cynthia
+    AllowFadeOut: 1
     AttenuationRange:
       Min: 0
       Max: 0
@@ -1046,7 +1066,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 452d5dc39a7796a43a265484704261d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _onHealActivation:
+  OnHealActivation:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6912191290328388823}
@@ -1061,12 +1081,12 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _onHealEnd:
+  OnHealEnd:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1306315215480621017}
+      - m_Target: {fileID: 6912191290328388823}
         m_TargetAssemblyTypeName: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
-        m_MethodName: Play
+        m_MethodName: Stop
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1076,7 +1096,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _onNotRequiredItem:
+  OnNotRequiredItem:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6411292703840431962}
@@ -1091,7 +1111,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _onAlreadyHealing:
+  OnAlreadyHealing:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8535784908411741694}
@@ -1106,7 +1126,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _onNotEnoughStressToHeal:
+  OnNotEnoughStressToHeal:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4794715038597682264}
@@ -1156,7 +1176,18 @@ MonoBehaviour:
   _possibleOptions:
   - {fileID: 11400000, guid: a9f815be9da327143bfc2fb5bfd67f54, type: 2}
   - {fileID: 11400000, guid: 04439618ce1c38d4f8a74e66716bcc63, type: 2}
-  _translation: {fileID: 11400000, guid: 9087a1e29877d8a499d972fab90367e4, type: 2}
+  _itemUsedText:
+    m_TableReference:
+      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
+    m_TableEntryReference:
+      m_KeyId: 370328743817280
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &5665651778890163381
 GameObject:
   m_ObjectHideFlags: 0

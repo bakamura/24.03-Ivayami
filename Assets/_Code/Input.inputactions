@@ -694,7 +694,16 @@
                     "type": "PassThrough",
                     "id": "50a2c6b0-28cf-42e9-8a28-2ccefb16e207",
                     "expectedControlType": "Vector2",
-                    "processors": "InvertVector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MapZoom",
+                    "type": "PassThrough",
+                    "id": "1e86a499-b5f8-47c1-ab50-bb99d10a9985",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 }
@@ -1145,11 +1154,77 @@
                     "id": "adb955a5-b845-4146-82cb-997f9c72533f",
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "InvertVector2",
                     "groups": "Gamepad",
                     "action": "MapDrag",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "404b3192-187e-4b31-9012-cbeff1b1b5e7",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "MapZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "2D Vector",
+                    "id": "4405bf6d-eb0c-41f2-b23d-2d5ec000c982",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MapZoom",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "d7cc9cf2-1e64-4e02-b204-e963103c871d",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MapZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "e22054ea-8df5-4952-b781-7a0f8dd3eb95",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MapZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "4db827c7-3e6d-410b-9138-3d397a28dd92",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MapZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "803e75b1-d64d-4839-b5d2-d7d36661cb95",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MapZoom",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },
