@@ -49,7 +49,7 @@ namespace Ivayami.Player {
             Pause.Instance.onUnpause.AddListener(() => _pauseStressRelieve = false);
             onStressChange.AddListener(FailStateCheck);
             onFail.AddListener(() => StartCoroutine(DelayToRespawn()));
-            //onFailFade.AddListener(ResetStress);
+            onFailFade.AddListener(ResetStress);
             onFail.AddListener(() => Pause.Instance.ToggleCanPause(FAIL_BLOCK_KEY, false));
             onFailFade.AddListener(() => Pause.Instance.ToggleCanPause(FAIL_BLOCK_KEY, true));
             _restartWait = new WaitForSeconds(_restartDelay);
@@ -139,7 +139,7 @@ namespace Ivayami.Player {
         private void ReloadAndReset() {
             //UnityEvent onSceneLoaded = new UnityEvent();
             //onSceneLoaded.AddListener(() => SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport());
-            ResetStress();
+            //ResetStress();
             SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
             SceneController.Instance.LoadScene("BaseTerrain"/*, onSceneLoaded*/);
             PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
