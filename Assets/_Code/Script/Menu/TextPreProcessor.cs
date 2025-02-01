@@ -11,6 +11,7 @@ namespace Ivayami.UI {
         }
 
         public string PreprocessText(string text) {
+            if (string.IsNullOrEmpty(text)) return text;
             string processedText = text;
             foreach (TextTag tag in _settings.TextTags) {
                 processedText = processedText.Replace($"<{tag.name}>", $"<color=#{ColorUtility.ToHtmlStringRGB(tag.color)}>");
