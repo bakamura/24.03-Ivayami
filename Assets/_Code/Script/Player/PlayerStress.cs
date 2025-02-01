@@ -81,8 +81,7 @@ namespace Ivayami.Player {
 
         public void SetStress(float value)
         {
-            value = Mathf.Clamp(value, 0, _stressMax);
-            _stressCurrent = value;
+            _stressCurrent = Mathf.Clamp(value, 0, _stressMax);
             AddStress(0);
         }
 
