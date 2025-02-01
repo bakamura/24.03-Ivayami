@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 1971556980}
-  m_IndirectSpecularColor: {r: 0.040639684, g: 0.047823314, b: 0.06296477, a: 1}
+  m_IndirectSpecularColor: {r: 0.040684536, g: 0.04780908, b: 0.0629266, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -13790,6 +13790,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 11400000, guid: fa67943ef27800144ae2d9bc1bd0e032, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _dialogueName: 2.CollectKeyInTrash
   _activateOnce: 1
   _deactivateObjectOnFirstActivate: 0
@@ -21775,6 +21781,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 11400000, guid: 01ccfe216d487584188dd2207eaed01d, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _dialogueName: 1.RestaurantOwner
   _activateOnce: 1
   _deactivateObjectOnFirstActivate: 0
@@ -23325,6 +23337,7 @@ GameObject:
   - component: {fileID: 688388116}
   - component: {fileID: 688388117}
   - component: {fileID: 688388118}
+  - component: {fileID: 688388119}
   m_Layer: 0
   m_Name: FirstDialogueCheck (SetEntryProgress_StoryEntry_1)
   m_TagString: Untagged
@@ -23427,6 +23440,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 688388119}
+        m_TargetAssemblyTypeName: Ivayami.Player.PlayerStressRef, Assembly-CSharp
+        m_MethodName: SetPlayerStress
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &688388118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23440,6 +23465,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockKey: ToRestaurant
+--- !u!114 &688388119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688388115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f713dcd9c01619458a49d5544cc04f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &688482937
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31080,6 +31117,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 11400000, guid: 4511f63d38b180a45bdb3cd6a1045deb, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _dialogueName: RestaurantOwnerBeforeCollectKey
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
@@ -32200,6 +32243,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 11400000, guid: 4273cdc4c2037ce4b8c972fcbfba9e35, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _dialogueName: 3.RestaurantExit
   _activateOnce: 1
   _deactivateObjectOnFirstActivate: 0
@@ -36990,6 +37039,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 11400000, guid: f1874465077daf84fbb60e83873e7ac7, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _dialogueName: RestaurantOwnerAfterCollectKey
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
@@ -68432,6 +68487,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 11400000, guid: e48ab910482ab124ca85fbb3551922a7, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _dialogueName: RestaurantOwnerGettingOut
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
