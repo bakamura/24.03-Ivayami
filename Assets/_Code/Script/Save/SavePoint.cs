@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -5,7 +6,6 @@ using Ivayami.Player;
 using Ivayami.Puzzle;
 using Ivayami.Scene;
 using Ivayami.UI;
-using System.Collections;
 using Ivayami.Dialogue;
 
 namespace Ivayami.Save {
@@ -23,7 +23,7 @@ namespace Ivayami.Save {
         public static UnityEvent onCantSaveGame = new UnityEvent();
         private bool _canSave = true;
 
-        private DialogueTrigger _dialogueTrigger;
+        [SerializeField] private Dialogue.Dialogue _preventSaveDialogue;
 
         [SerializeField, Min(0)] private float _delayFadeOut;
         private WaitForSeconds _delayFadeOutWait;
@@ -36,7 +36,6 @@ namespace Ivayami.Save {
             InteratctableFeedbacks = GetComponent<InteractableFeedbacks>();
             UpdatePointsDictionary(_pointId, this);
 
-            _dialogueTrigger = GetComponent<DialogueTrigger>();
             _delayFadeOutWait = new WaitForSeconds(_delayFadeOut);
             _delayUnlockMovementWait = new WaitForSeconds(_delayUnlockMovement);
         }
@@ -60,8 +59,7 @@ namespace Ivayami.Save {
         public PlayerActions.InteractAnimation Interact() {
             if (!_canSave) {
                 onCantSaveGame?.Invoke();
-                _dialogueTrigger.StartDialogue();
-                Debug.Log("Should be Playing Dialogue");
+                DialogueController.Instance.StartDialogue(_preventSaveDialogue.name, false);
 
                 Logger.Log(LogType.Save, "SavePoint Cannot Save");
                 return PlayerActions.InteractAnimation.Default;
