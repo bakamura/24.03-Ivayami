@@ -24,7 +24,6 @@ namespace Ivayami.Player {
         [SerializeField, Min(0f)] private float _stressRelieveFactor;
         [SerializeField] private float _stressRelieveDelay;
         private float _stressRelieveDelayTimer;
-        private bool _pauseStressRelieve = false;
 
         public float MaxStress => _stressMax;
         public float StressCurrent => _stressCurrent;
@@ -46,8 +45,6 @@ namespace Ivayami.Player {
         private bool _isAutoRegenActive = true;
 
         private void Start() {
-            Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
-            Pause.Instance.onUnpause.AddListener(() => _pauseStressRelieve = false);
             onStressChange.AddListener(FailStateCheck);
             onFail.AddListener(() => StartCoroutine(DelayToRespawn()));
             onFailFade.AddListener(ResetStress);
@@ -63,10 +60,8 @@ namespace Ivayami.Player {
 #if UNITY_EDITOR
             if (!_isAutoRegenActive) return;
 #endif
-            if (!_pauseStressRelieve) {
-                if (_stressRelieveDelayTimer > 0) _stressRelieveDelayTimer -= Time.deltaTime;
-                else if (_stressCurrent > _stressRelieveMinValue) RelieveStressAuto();
-            }
+            if (_stressRelieveDelayTimer > 0) _stressRelieveDelayTimer -= Time.deltaTime;
+            else if (_stressCurrent > _stressRelieveMinValue) RelieveStressAuto();
         }
 
         public void AddStress(float amount, float capValue = -1) {

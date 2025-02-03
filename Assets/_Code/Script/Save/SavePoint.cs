@@ -61,11 +61,11 @@ namespace Ivayami.Save {
             if (!_canSave) {
                 onCantSaveGame?.Invoke();
                 _dialogueTrigger.StartDialogue();
-                Debug.Log("Cant Save");
+                Debug.Log("Should be Playing Dialogue");
+
                 Logger.Log(LogType.Save, "SavePoint Cannot Save");
                 return PlayerActions.InteractAnimation.Default;
             }
-            Debug.Log("Save");
             Save();
             return PlayerActions.InteractAnimation.Default;
         }
