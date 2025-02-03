@@ -6,6 +6,7 @@ using Ivayami.Puzzle;
 using Ivayami.Scene;
 using Ivayami.UI;
 using System.Collections;
+using Ivayami.Dialogue;
 
 namespace Ivayami.Save {
     public class SavePoint : MonoBehaviour, IInteractable {
@@ -22,6 +23,8 @@ namespace Ivayami.Save {
         public static UnityEvent onCantSaveGame = new UnityEvent();
         private bool _canSave = true;
 
+        private DialogueTrigger _dialogueTrigger;
+
         [SerializeField, Min(0)] private float _delayFadeOut;
         private WaitForSeconds _delayFadeOutWait;
         [SerializeField, Min(0)] private float _delayUnlockMovement;
@@ -33,13 +36,13 @@ namespace Ivayami.Save {
             InteratctableFeedbacks = GetComponent<InteractableFeedbacks>();
             UpdatePointsDictionary(_pointId, this);
 
+            _dialogueTrigger = GetComponent<DialogueTrigger>();
             _delayFadeOutWait = new WaitForSeconds(_delayFadeOut);
             _delayUnlockMovementWait = new WaitForSeconds(_delayUnlockMovement);
-
         }
 
         private void Start() {
-            PlayerStress.Instance.onStressChange.AddListener(stress => _canSave = stress <= 0);
+            PlayerStress.Instance.onStressChange.AddListener(stress => _canSave = stress <= PlayerStress.Instance.StressRelieveMinValue);
         }
 
         private void Save() {
@@ -57,10 +60,12 @@ namespace Ivayami.Save {
         public PlayerActions.InteractAnimation Interact() {
             if (!_canSave) {
                 onCantSaveGame?.Invoke();
-
+                _dialogueTrigger.StartDialogue();
+                Debug.Log("Cant Save");
                 Logger.Log(LogType.Save, "SavePoint Cannot Save");
                 return PlayerActions.InteractAnimation.Default;
             }
+            Debug.Log("Save");
             Save();
             return PlayerActions.InteractAnimation.Default;
         }
