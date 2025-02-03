@@ -14,7 +14,7 @@ namespace Ivayami.UI {
         [SerializeField] private TextMeshProUGUI _dateText;
         [SerializeField] private LocalizedString _newGameString;
         [SerializeField] private LocalizedString _continueGameString;
-        private LocalizedString _placeString;
+        private LocalizedString _placeString = new LocalizedString("UI", "");
         private byte _id;
         private bool _isFirstTime;
         public Sprite PlaceImage { get; private set; }
@@ -26,7 +26,7 @@ namespace Ivayami.UI {
             _statusText.text = _isFirstTime ? _newGameString.GetLocalizedString() : _continueGameString.GetLocalizedString();
             _dateText.text = _isFirstTime ? "" : progress.lastPlayedDate;
             // Show Playtime
-            _placeString.SetReference("UI", $"SavePoint_{progress.pointId}");
+            if(progress.pointId != 0) _placeString.SetReference("UI", $"SavePoint_{progress.pointId}");
             PlaceName = _placeString.GetLocalizedString();
             PlaceImage = _isFirstTime ? null : Resources.Load<Sprite>($"PlacePreview/SavePoint_{progress.pointId}");
         }
