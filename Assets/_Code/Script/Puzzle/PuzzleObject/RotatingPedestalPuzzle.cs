@@ -9,7 +9,7 @@ using System;
 namespace Ivayami.Puzzle
 {
     [RequireComponent(typeof(InteractableFeedbacks))]
-    public sealed class RotatingPuzzle : MonoBehaviour, IInteractable
+    public sealed class RotatingPedestalPuzzle : MonoBehaviour, IInteractable
     {
         [SerializeField] private RotatingObjectData[] _rotatingObjects;
         [SerializeField, Min(0f)] private float _rotationAmount = 90;
@@ -33,8 +33,8 @@ namespace Ivayami.Puzzle
         private bool _triggerNoSolution;
         private const float _inputCooldown = .1f;
         private InteractableFeedbacks _interatctableFeedbacks;
-        private RotatingPuzzleObject _currentSelected;
-        private List<RotatingPuzzleObject[]> _puzzleObjects;
+        private RotatingPedestalPuzzleObject _currentSelected;
+        private List<RotatingPedestalPuzzleObject[]> _puzzleObjects;
         private byte[] _totalPuzzleObjectsInLayer;
         private Dictionary<int, Coroutine> _rotationAnimations = new Dictionary<int, Coroutine>();
 #if UNITY_EDITOR
@@ -82,7 +82,7 @@ namespace Ivayami.Puzzle
             _debugGizmoPositions = new List<Vector3[]>();
             for (int i = 0; i < _rotatingObjects.Length; i++)
             {
-                RotatingPuzzleObject[] totalAmountPossible = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPuzzleObject>(true);
+                RotatingPedestalPuzzleObject[] totalAmountPossible = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPedestalPuzzleObject>(true);
                 _debugGizmoPositions.Add(new Vector3[totalAmountPossible.Length]);
                 for (int a = 0; a < totalAmountPossible.Length; a++)
                 {
@@ -97,11 +97,11 @@ namespace Ivayami.Puzzle
             if (_puzzleObjects == null)
             {
                 _totalPuzzleObjectsInLayer = new byte[_rotatingObjects.Length];
-                _puzzleObjects = new List<RotatingPuzzleObject[]>();
+                _puzzleObjects = new List<RotatingPedestalPuzzleObject[]>();
                 for (int i = 0; i < _rotatingObjects.Length; i++)
                 {
-                    _puzzleObjects.Add(_rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPuzzleObject>());
-                    RotatingPuzzleObject[] totalAmountPossible = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPuzzleObject>(true);
+                    _puzzleObjects.Add(_rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPedestalPuzzleObject>());
+                    RotatingPedestalPuzzleObject[] totalAmountPossible = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPedestalPuzzleObject>(true);
                     _totalPuzzleObjectsInLayer[i] = (byte)totalAmountPossible.Length;
                     for (int a = 0; a < totalAmountPossible.Length; a++)
                     {
@@ -186,7 +186,7 @@ namespace Ivayami.Puzzle
             }
         }
 
-        private void SetCurrentSelected(RotatingPuzzleObject selected)
+        private void SetCurrentSelected(RotatingPedestalPuzzleObject selected)
         {
             if (_currentSelected) _currentSelected.InteratctableFeedbacks.UpdateFeedbacks(false, true);
             _currentSelected = selected;
@@ -317,7 +317,7 @@ namespace Ivayami.Puzzle
                 {
                     if (_rotatingObjects[i].Transform)
                     {
-                        size = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPuzzleObject>().Length;
+                        size = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPedestalPuzzleObject>().Length;
                         if (_solutions[i].PuzzleLayer[a].Solution == null) _solutions[i].PuzzleLayer[a].Solution = new byte[1];
                         if (_solutions[i].PuzzleLayer[a].Solution.Length > size)
                             Array.Resize(ref _solutions[i].PuzzleLayer[a].Solution, size);

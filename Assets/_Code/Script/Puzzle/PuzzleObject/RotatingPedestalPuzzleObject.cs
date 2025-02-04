@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Ivayami.Puzzle
 {
     [RequireComponent(typeof(InteractableFeedbacks))]
-    public sealed class RotatingPuzzleObject : MonoBehaviour
+    public sealed class RotatingPedestalPuzzleObject : MonoBehaviour
     {
         [SerializeField] private GameObject _itemInDisplay;
         private InteractableFeedbacks _interatctableFeedbacks;
