@@ -27,7 +27,7 @@ namespace Ivayami.Puzzle
             EditorGUILayout.PropertyField(onCancelInteraction, new GUIContent("On Cancel Interaction"));
 
             if (Application.isPlaying && GUILayout.Button("SaveUIChangesDuringPlay")) Save();
-            if (!Application.isPlaying && File.Exists($"{Application.persistentDataPath}/ChangesDuringPlay/{nameof(InteractableObjectsGroup)}") && GUILayout.Button("LoadUIChangesDuringPlay")) Load();
+            if (!Application.isPlaying && File.Exists($"{Application.persistentDataPath}/{nameof(InteractableObjectsGroup)}ChangesDuringPlay") && GUILayout.Button("LoadUIChangesDuringPlay")) Load();
 
             serializedObject.ApplyModifiedProperties();
         }
