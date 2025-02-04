@@ -12,7 +12,7 @@ namespace Ivayami.Puzzle
 
         private void Awake()
         {
-            _rotatingShadows = GetComponentsInChildren<RotatingShadowPuzzle>();
+            _rotatingShadows = GetComponentsInChildren<RotatingShadowPuzzle>(true);
             for(int i =0; i < _rotatingShadows.Length; i++)
             {
                 _rotatingShadows[i].OnRotateObjectEnd.AddListener(CheckForCompletion);
