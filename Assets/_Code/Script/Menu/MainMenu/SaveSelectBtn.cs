@@ -1,32 +1,31 @@
 using UnityEngine;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
 using TMPro;
 using Ivayami.Save;
 using Ivayami.Scene;
 using Ivayami.Player;
-using UnityEngine.Localization;
 
 namespace Ivayami.UI {
     public class SaveSelectBtn : MonoBehaviour {
 
         [Header("UI")]
 
-        [SerializeField] private TextMeshProUGUI _statusText;
+        [SerializeField] private LocalizeStringEvent _statusTextEvent;
         [SerializeField] private TextMeshProUGUI _dateText;
-        [SerializeField] private LocalizedString _newGameString;
-        [SerializeField] private LocalizedString _continueGameString;
         private byte _id;
         private bool _isFirstTime;
         public Sprite PlaceImage { get; private set; }
-        public string PlaceName { get; private set; }
+        public string PlaceEntryName { get; private set; }
 
         public void Setup(SaveProgress progress, byte id) {
             _id = id;
             _isFirstTime = progress == null;
-            _statusText.text = _isFirstTime ? _newGameString.GetLocalizedString() : _continueGameString.GetLocalizedString();
             _dateText.text = _isFirstTime ? "" : progress.lastPlayedDate;
-            // Show Playtime
-            PlaceName = _isFirstTime ? "NewGameMessage" : progress.lastSavePlace;
-            PlaceImage = _isFirstTime ? null : Resources.Load<Sprite>($"PlacePreview/{progress.lastSavePlace}");
+            // Playtime (?)
+            _statusTextEvent.SetEntry($"SaveSelectBtn/{(_isFirstTime ? "NewGame" : "Continue")}");
+            PlaceEntryName = _isFirstTime ? $"SaveSelectBtn/NewGameMessage" : $"SaveSelectBtn/SavePoint_{progress.pointId}";
+            PlaceImage = _isFirstTime ? null : Resources.Load<Sprite>($"PlacePreview/SavePoint_{progress.pointId}");
         }
 
         public void EnterSave() {

@@ -11,7 +11,6 @@ namespace Ivayami.Save {
 
         public string[] inventory;
         public int pointId;
-        public string lastSavePlace;
         public SerializableDictionary<string, int> gameProgress = new SerializableDictionary<string, int>();
         public SerializableDictionary<string, int> entryProgress = new SerializableDictionary<string, int>();
         public int[] roadBlockersState = new int[5];
