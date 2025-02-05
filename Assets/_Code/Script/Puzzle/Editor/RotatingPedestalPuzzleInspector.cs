@@ -20,8 +20,8 @@ namespace Ivayami.Puzzle
             EditorGUILayout.Space(5);
             EditorGUILayout.PropertyField(rotationAmount, new GUIContent("Rotation Amount"));
             EditorGUILayout.PropertyField(rotationDuration, new GUIContent("Rotation Duration"));
-            EditorGUILayout.PropertyField(playNoSolutionEventOnceBySolution, new GUIContent("Play no Solution event Once By Solution"));
-            EditorGUILayout.PropertyField(itemUsed, new GUIContent("Item used"));
+            EditorGUILayout.PropertyField(playNoSolutionEventOnceBySolution, new GUIContent("Play No Solution Event Once By Solution"));
+            EditorGUILayout.PropertyField(itemUsed, new GUIContent("Item Used"));
             EditorGUILayout.PropertyField(rotatingObjects, new GUIContent("Rotating Objects"));
             DrawSolutionVariable();
             EditorGUILayout.Space(10);
