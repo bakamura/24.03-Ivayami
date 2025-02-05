@@ -9,6 +9,7 @@ namespace Ivayami.Puzzle
     {
         [SerializeField] private TriggerTypes _triggerType;
         [SerializeField] private bool _targetNeedToStayInside;
+        [SerializeField] private bool _executeEventOnDisable = true;
         [SerializeField, Min(0f)] private float _delayToActivateEvent;
         [SerializeField] private string _optionalTag;
         [SerializeField] private UnityEvent _onExecute;
@@ -91,10 +92,11 @@ namespace Ivayami.Puzzle
 
         private void OnDisable()
         {
-            if (/*_isTargetInside*/_collisionCount > 0 && (_triggerType == TriggerTypes.OnTriggerExit || _triggerType == TriggerTypes.OnCollisionExit))
+            if (/*_isTargetInside*/_collisionCount > 0 && (_triggerType == TriggerTypes.OnTriggerExit || _triggerType == TriggerTypes.OnCollisionExit) && _executeEventOnDisable)
             {
                 _onExecute?.Invoke();
             }
+            _collisionCount = 0;
         }
 
         private IEnumerator EventDelayCoroutine()
