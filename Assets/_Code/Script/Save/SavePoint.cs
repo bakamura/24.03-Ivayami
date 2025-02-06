@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using Ivayami.Player;
 using Ivayami.Puzzle;
 using Ivayami.Scene;
@@ -23,6 +24,7 @@ namespace Ivayami.Save {
         public static UnityEvent onCantSaveGame = new UnityEvent();
         private bool _canSave = true;
 
+        [SerializeField] private InputActionReference _movementInput;
         [SerializeField] private Dialogue.Dialogue _preventSaveDialogue;
 
         [SerializeField, Min(0)] private float _delayFadeOut;
@@ -85,6 +87,8 @@ namespace Ivayami.Save {
         }
         
         private IEnumerator OnSaveFadeOutEndRoutine() {
+            SceneTransition.Instance.OnOpenEnd.RemoveListener(OnSaveFadeOutEnd);
+
             if (_playerAnimationPoint) {
                 PlayerMovement.Instance.transform.position = _playerAnimationPoint.position;
                 PlayerMovement.Instance.SetTargetAngle(_playerAnimationPoint.eulerAngles.y);
@@ -93,15 +97,16 @@ namespace Ivayami.Save {
             
             yield return _delayFadeOutWait;
 
-            PlayerAnimation.Instance.GetUpSit();
-            SceneTransition.Instance.OnOpenEnd.RemoveListener(OnSaveFadeOutEnd);
-            SceneTransition.Instance.OnCloseEnd.AddListener(OnSaveFadeInEnd);
             SceneTransition.Instance.Close();
+            PlayerAnimation.Instance.Sit();
+            _movementInput.action.performed += OnSaveFadeInEnd;
         }
 
-        private void OnSaveFadeInEnd() {
+        private void OnSaveFadeInEnd(InputAction.CallbackContext context) {
+            _movementInput.action.performed -= OnSaveFadeInEnd;
+
+            PlayerAnimation.Instance.GetUpSit();
             Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
-            SceneTransition.Instance.OnCloseEnd.RemoveListener(OnSaveFadeInEnd);
             StartCoroutine(OnSaveFadeInEndRoutine());
         }
         
