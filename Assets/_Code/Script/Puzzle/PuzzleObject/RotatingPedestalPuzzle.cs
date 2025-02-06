@@ -209,7 +209,7 @@ namespace Ivayami.Puzzle
             float initialAngle = _rotatingObjects[rotatingObjectIndex].Transform.localEulerAngles.y;
             while (count < 1)
             {
-                count += Time.fixedDeltaTime;
+                count += Time.fixedDeltaTime / _rotationDuration;
                 _rotatingObjects[rotatingObjectIndex].Transform.localEulerAngles = new Vector3(0, Mathf.LerpAngle(initialAngle, initialAngle + _rotationAmount, count), 0);
                 yield return delay;
             }
