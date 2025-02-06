@@ -28,6 +28,7 @@ namespace Ivayami.UI {
         }
 
         public void StartTutorial() {
+            if (!gameObject.activeInHierarchy) return;
             _fadeUI.Open();
             _actionIndicator.action.performed += KeyPressed;
             Pause.Instance.onPause.AddListener(IconDisable);

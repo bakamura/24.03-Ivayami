@@ -66,7 +66,7 @@ namespace Ivayami.Puzzle
             _onRotateObjectStart?.Invoke();
             while (count < 1)
             {
-                count += Time.fixedDeltaTime;
+                count += Time.fixedDeltaTime / _rotatingDuration;
                 _rotatingTarget.localEulerAngles = new Vector3(0, Mathf.LerpAngle(initialAngle, initialAngle + _rotationAmount, count), 0);
                 yield return delay;
             }
