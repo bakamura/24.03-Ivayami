@@ -4370,6 +4370,105 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c675d0f176b6d8141be079c735fe0f8d, type: 3}
   m_PrefabInstance: {fileID: 93765702}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &99324646
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 99324647}
+  - component: {fileID: 99324650}
+  - component: {fileID: 99324649}
+  - component: {fileID: 99324648}
+  m_Layer: 0
+  m_Name: Restaurant's_Owner_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &99324647
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99324646}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.57, y: 0, z: 4.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2106642812}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &99324648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99324646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 686c3b17621a93a43a9d81301393d367, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _areaProgress: {fileID: 11400000, guid: 4a815f8ea1ce928418fc05294d266e2a, type: 2}
+--- !u!114 &99324649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99324646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerType: 0
+  _targetNeedToStayInside: 0
+  _delayToActivateEvent: 0
+  _optionalTag: 
+  _onExecute:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 99324648}
+        m_TargetAssemblyTypeName: Ivayami.Save.SaveProgressRef, Assembly-CSharp
+        m_MethodName: SetEntryProgressTo
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!65 &99324650
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99324646}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 8, y: 5, z: 5}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &104316430
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8962,6 +9061,38 @@ PrefabInstance:
       propertyPath: _readable
       value: 
       objectReference: {fileID: 11400000, guid: 36943749980bbcd4d8b2108d5e31236f, type: 2}
+    - target: {fileID: 4128719164006322650, guid: 902c1cebb46c2774faac160889e74e45, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128719164006322650, guid: 902c1cebb46c2774faac160889e74e45, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128719164006322650, guid: 902c1cebb46c2774faac160889e74e45, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1032968575}
+    - target: {fileID: 4128719164006322650, guid: 902c1cebb46c2774faac160889e74e45, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128719164006322650, guid: 902c1cebb46c2774faac160889e74e45, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetEntryProgressTo
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128719164006322650, guid: 902c1cebb46c2774faac160889e74e45, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Ivayami.Save.SaveProgressRef, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128719164006322650, guid: 902c1cebb46c2774faac160889e74e45, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4128719164006322650, guid: 902c1cebb46c2774faac160889e74e45, type: 3}
+      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 6175502076992414270, guid: 902c1cebb46c2774faac160889e74e45, type: 3}
       propertyPath: m_Name
       value: Readable
@@ -13659,6 +13790,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 11400000, guid: fa67943ef27800144ae2d9bc1bd0e032, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _dialogueName: 2.CollectKeyInTrash
   _activateOnce: 1
   _deactivateObjectOnFirstActivate: 0
@@ -21644,6 +21781,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 11400000, guid: 01ccfe216d487584188dd2207eaed01d, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _dialogueName: 1.RestaurantOwner
   _activateOnce: 1
   _deactivateObjectOnFirstActivate: 0
@@ -23194,6 +23337,7 @@ GameObject:
   - component: {fileID: 688388116}
   - component: {fileID: 688388117}
   - component: {fileID: 688388118}
+  - component: {fileID: 688388119}
   m_Layer: 0
   m_Name: FirstDialogueCheck (SetEntryProgress_StoryEntry_1)
   m_TagString: Untagged
@@ -23296,6 +23440,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 688388119}
+        m_TargetAssemblyTypeName: Ivayami.Player.PlayerStressRef, Assembly-CSharp
+        m_MethodName: SetPlayerStress
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &688388118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23309,6 +23465,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockKey: ToRestaurant
+--- !u!114 &688388119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 688388115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f713dcd9c01619458a49d5544cc04f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &688482937
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -30949,6 +31117,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 11400000, guid: 4511f63d38b180a45bdb3cd6a1045deb, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _dialogueName: RestaurantOwnerBeforeCollectKey
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
@@ -32069,6 +32243,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 11400000, guid: 4273cdc4c2037ce4b8c972fcbfba9e35, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _dialogueName: 3.RestaurantExit
   _activateOnce: 1
   _deactivateObjectOnFirstActivate: 0
@@ -36859,6 +37039,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 11400000, guid: f1874465077daf84fbb60e83873e7ac7, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _dialogueName: RestaurantOwnerAfterCollectKey
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
@@ -36878,6 +37064,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1161263841}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1032968573
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1032968574}
+  - component: {fileID: 1032968575}
+  m_Layer: 0
+  m_Name: Restaurant's_Owner_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1032968574
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032968573}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.57, y: 0, z: 4.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2106642812}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1032968575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1032968573}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 686c3b17621a93a43a9d81301393d367, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _areaProgress: {fileID: 11400000, guid: 4a815f8ea1ce928418fc05294d266e2a, type: 2}
 --- !u!1001 &1033635515
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -38733,6 +38964,105 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2669645b32624b34bad4251cdccfcc81, type: 3}
   m_PrefabInstance: {fileID: 1605474792}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1087561366
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1087561367}
+  - component: {fileID: 1087561370}
+  - component: {fileID: 1087561369}
+  - component: {fileID: 1087561368}
+  m_Layer: 0
+  m_Name: Story_Entry_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1087561367
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1087561366}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.31, y: 0, z: -1.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2106642812}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1087561368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1087561366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 686c3b17621a93a43a9d81301393d367, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _areaProgress: {fileID: 11400000, guid: 3b2a23c1afbb72e4ca8e629beb0d93c7, type: 2}
+--- !u!114 &1087561369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1087561366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerType: 0
+  _targetNeedToStayInside: 0
+  _delayToActivateEvent: 0
+  _optionalTag: 
+  _onExecute:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1087561368}
+        m_TargetAssemblyTypeName: Ivayami.Save.SaveProgressRef, Assembly-CSharp
+        m_MethodName: SetEntryProgressTo
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!65 &1087561370
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1087561366}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 6, y: 6, z: 6}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1087568673
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53632,7 +53962,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 25157097e1757674e9841d5c0b85adb2, type: 2}
     - target: {fileID: 2959493235240761457, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.size
-      value: 8
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2959493235240761457, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -53689,7 +54019,7 @@ PrefabInstance:
     - target: {fileID: 2959493235240761457, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[7].m_Target
       value: 
-      objectReference: {fileID: 1514563587}
+      objectReference: {fileID: 0}
     - target: {fileID: 2959493235240761457, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -54835,10 +55165,7 @@ PrefabInstance:
     - {fileID: 987507778545866, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7819979270802992687, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1514563587}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
 --- !u!4 &1514563584 stripped
 Transform:
@@ -54850,19 +55177,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7819979270802992687, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
   m_PrefabInstance: {fileID: 1514563582}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1514563587
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1514563585}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31f0efc5322b43949be994d855c311d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _id: 1
 --- !u!1001 &1518052713
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -55174,7 +55488,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _id: ExitDoors_Restaurant_1692808
-  _saveOnDisable: 0
   _objectsToSave:
   - {fileID: 1514563585}
   - {fileID: 986917376}
@@ -57956,7 +58269,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _id: StorageDoorSave_Restaurant_1692910
-  _saveOnDisable: 0
   _objectsToSave:
   - {fileID: 823268700}
   - {fileID: 1509905510}
@@ -60222,7 +60534,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _id: KeySaver_Restaurant_1693046
-  _saveOnDisable: 0
   _objectsToSave:
   - {fileID: 408115507}
 --- !u!1001 &1625906420
@@ -68176,6 +68487,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dialogue: {fileID: 11400000, guid: e48ab910482ab124ca85fbb3551922a7, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _dialogueName: RestaurantOwnerGettingOut
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
@@ -72454,7 +72771,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _id: battery_Restaurant_1757938
-  _saveOnDisable: 1
   _objectsToSave:
   - {fileID: 983384829}
 --- !u!1001 &1982967780
@@ -76363,6 +76679,40 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c675d0f176b6d8141be079c735fe0f8d, type: 3}
   m_PrefabInstance: {fileID: 2106345065}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2106642811
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2106642812}
+  m_Layer: 0
+  m_Name: Journal Entry Progress
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2106642812
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2106642811}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.137249, y: 83.47661, z: 66.584206}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1087561367}
+  - {fileID: 99324647}
+  - {fileID: 1032968574}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2110568278
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -76901,6 +77251,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _highlightedColor: {r: 0.03921569, g: 0.03921569, b: 0.03921569, a: 1}
   _applyToChildrens: 1
+  _interactionIcons: {fileID: 11400000, guid: 176ec443a41bbfe45ad4bb806445af64, type: 2}
 --- !u!114 &2121060593
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77751,3 +78102,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 1253285990}
   - {fileID: 811883833}
+  - {fileID: 2106642812}
