@@ -101,6 +101,7 @@ namespace Ivayami.Save {
 
             SceneTransition.Instance.Close();
             PlayerAnimation.Instance.Sit();
+            InfoUpdateIndicator.Instance.DisplaySaved();
             _movementInput.action.performed += OnSaveFadeInEnd;
         }
 
