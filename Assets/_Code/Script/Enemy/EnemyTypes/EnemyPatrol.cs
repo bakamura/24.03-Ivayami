@@ -71,6 +71,7 @@ namespace Ivayami.Enemy
         private Coroutine _rotateCoroutine;
         private Coroutine _initializeCoroutine;
         private Coroutine _chaseStressCoroutine;
+        private Coroutine _behaviourCoroutine;
         private Quaternion _initialRotation;
         private Vector3 _lastTargetPosition;
         private Vector3 _initialPosition;
@@ -136,7 +137,7 @@ namespace Ivayami.Enemy
                 }
                 IsActive = true;
                 _navMeshAgent.isStopped = false;
-                StartCoroutine(BehaviourCoroutine());
+                _behaviourCoroutine = StartCoroutine(BehaviourCoroutine());
             }
         }
         [ContextMenu("Stop")]
@@ -144,7 +145,8 @@ namespace Ivayami.Enemy
         {
             if (IsActive)
             {
-                StopCoroutine(BehaviourCoroutine());
+                StopCoroutine(_behaviourCoroutine);
+                _behaviourCoroutine = null;
                 IsActive = false;
                 _isChasing = false;
                 StopMovement(false);
@@ -170,10 +172,11 @@ namespace Ivayami.Enemy
                         {
                             if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
                             //StopMovement(true);
-                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, () =>
-                            {
-                                _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
-                            });
+                            _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
+                            //_enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, () =>
+                            //{
+                            //    _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
+                            //});
                             PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
                             _isChasing = true;
                             if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());
@@ -265,6 +268,7 @@ namespace Ivayami.Enemy
                 }
                 yield return _behaviourTickDelay;
             }
+            _behaviourCoroutine = null;
         }
 
         private IEnumerator RotateCoroutine()

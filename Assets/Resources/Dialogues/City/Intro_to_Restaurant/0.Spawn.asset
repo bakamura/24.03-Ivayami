@@ -13,14 +13,24 @@ MonoBehaviour:
   m_Name: 0.Spawn
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
-      content: Uh...my head...
-    - LanguageType: 1
-      announcerName: Cynthia
-      content: "Ah...minha cabe\xE7a..."
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Cynthia
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - Language: English (en)
+      content: Uh... My head...
+    - Language: Portuguese (pt)
+      content: "Ah... Minha cabe\xE7a..."
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 3
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

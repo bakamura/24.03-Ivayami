@@ -11,13 +11,14 @@ GameObject:
   - component: {fileID: 6322061276151473105}
   - component: {fileID: 8053081816713299008}
   - component: {fileID: 8978895550434068935}
+  - component: {fileID: 4807964319441672021}
   m_Layer: 5
   m_Name: Content
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6322061276151473105
 RectTransform:
   m_ObjectHideFlags: 0
@@ -148,6 +149,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &4807964319441672021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1277736007404627323}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2f967270ab45744dba03baa3b013459, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _settings: {fileID: 11400000, guid: 89580c3bd67e2084e82a67d73da8c3f3, type: 2}
 --- !u!1 &1511725691429876661
 GameObject:
   m_ObjectHideFlags: 0
@@ -415,6 +429,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _title: {fileID: 4382640612164345767}
   _content: {fileID: 8978895550434068935}
+  _closeBtn: {fileID: 4257982264759176295}
+  _nextPageBtn: {fileID: 263815301788851475}
+  _previousPageBtn: {fileID: 4508719023895699231}
 --- !u!114 &5658501063002317399
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -749,11 +766,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
+    m_SelectOnUp: {fileID: 4257982264759176295}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnLeft: {fileID: 4508719023895699231}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
@@ -1310,8 +1327,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
+    m_Mode: 2
+    m_WrapAround: 1
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -1603,12 +1620,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
+    m_SelectOnUp: {fileID: 4257982264759176295}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnRight: {fileID: 263815301788851475}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
@@ -1759,8 +1776,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: X
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8cbb3d4786071dc4cbb047edea1b9fbf, type: 2}
-  m_sharedMaterial: {fileID: 7944113141737556210, guid: 8cbb3d4786071dc4cbb047edea1b9fbf, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 03833a1712d0d0b4d983cd09b1c7ba33, type: 2}
+  m_sharedMaterial: {fileID: 2543225566831672957, guid: 03833a1712d0d0b4d983cd09b1c7ba33, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1838,5 +1855,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e3929b86144ceb4291571a630870cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _normalFontAsset: {fileID: 11400000, guid: 8cbb3d4786071dc4cbb047edea1b9fbf, type: 2}
-  _highlightFontAsset: {fileID: 11400000, guid: 8cbb3d4786071dc4cbb047edea1b9fbf, type: 2}
+  _normalFontAsset: {fileID: 11400000, guid: 03833a1712d0d0b4d983cd09b1c7ba33, type: 2}
+  _highlightFontAsset: {fileID: 11400000, guid: 6b18bed91f10f0f49868d025c3b0eb30, type: 2}

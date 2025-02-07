@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using UnityEngine.Localization.Components;
 using Ivayami.Player;
 using Ivayami.Save;
 using Ivayami.Scene;
@@ -12,7 +12,7 @@ namespace Ivayami.UI {
         [Header("UI")]
 
         [SerializeField] private Image _previewImage;
-        [SerializeField] private TextMeshProUGUI _previewText;
+        [SerializeField] private LocalizeStringEvent _previewText;
         [SerializeField] private SaveSelectBtn[] _saveSelectBtns;
 
         //Game Entering
@@ -26,7 +26,7 @@ namespace Ivayami.UI {
         private void Start() {
             StartCoroutine(WaitForSaveOptions());
 
-            Options.OnChangeLanguage.AddListener((language) => SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate));
+            Options.OnChangeLanguage.AddListener(() => SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate));
             PlayerActions.Instance.ChangeInputMap("Menu");
             PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, false);
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, false);
@@ -59,7 +59,7 @@ namespace Ivayami.UI {
         public void DisplaySaveInfo(int saveId) {
             _previewImage.sprite = _saveSelectBtns[saveId].PlaceImage;
             _previewImage.color = _previewImage.sprite != null ? Color.white : new Color(0, 0, 0, 0);
-            _previewText.text = _saveSelectBtns[saveId].PlaceName;
+            _previewText.SetEntry(_saveSelectBtns[saveId].PlaceEntryName);
 
             Logger.Log(LogType.UI, $"Display Save {saveId}");
         }

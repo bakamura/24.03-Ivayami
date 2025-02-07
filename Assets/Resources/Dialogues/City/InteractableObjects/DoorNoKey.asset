@@ -13,25 +13,42 @@ MonoBehaviour:
   m_Name: DoorNoKey
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Cynthia
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - Language: English (en)
       content: (It won't budge.)
-    - LanguageType: 1
-      announcerName: Cynthia
+    - Language: Portuguese (pt)
       content: "(A porta n\xE3o se mexe.)"
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Cynthia
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Cynthia
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - Language: English (en)
       content: (The keyhole seems sealed. Maybe this doesn't open with a key?)
-    - LanguageType: 1
-      announcerName: Cynthia
+    - Language: Portuguese (pt)
       content: "(A fechadura parece selada. Talvez essa porta n\xE3o abra com uma
         chave?)"
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

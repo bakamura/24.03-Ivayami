@@ -3,6 +3,8 @@ using IngameDebugConsole;
 using UnityEngine.InputSystem;
 using Ivayami.Player;
 using System.Linq;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace Ivayami.debug
 {
@@ -12,6 +14,7 @@ namespace Ivayami.debug
         private InputActionMap _previousMap;
         private InputActionMap _menuMap;
         private CursorLockMode _previousMode;
+        private Selectable _previousSelectable;
 
         void Start()
         {
@@ -28,14 +31,20 @@ namespace Ivayami.debug
             {
                 _menuMap.actions[i].Disable();
             }
+            //foreach (InputActionMap map in _playerInput.actions.actionMaps)
+            //{
+            //    map.Disable();
+            //}
             _previousMap.Enable();
             Cursor.lockState = _previousMode;
+            if (_previousSelectable) _previousSelectable.Select();
         }
 
         private void HandleWindowShow()
         {
-            _previousMap = _playerInput.currentActionMap;
+            _previousMap = PlayerActions.Instance.CurrentActionMap;
             _previousMode = Cursor.lockState;
+            _previousSelectable = EventSystem.current.currentSelectedGameObject ? EventSystem.current.currentSelectedGameObject.GetComponent<Selectable>() : null;
             foreach (InputActionMap map in _playerInput.actions.actionMaps)
             {
                 map.Disable();

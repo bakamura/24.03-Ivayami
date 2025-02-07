@@ -7,6 +7,8 @@ using UnityEngine.InputSystem;
 using Cinemachine;
 using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
+using Ivayami.UI;
+using Ivayami.Dialogue;
 
 namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -20,6 +22,8 @@ namespace Ivayami.Player {
         [SerializeField] private InputActionReference[] _pauseInputs;
         private InputActionMap _actionMapCurrent;
 
+        public InputActionMap CurrentActionMap => _actionMapCurrent;
+
         [Header("Events")]
 
         public UnityEvent<InteractAnimation> onInteract = new UnityEvent<InteractAnimation>();
@@ -27,13 +31,18 @@ namespace Ivayami.Player {
         public UnityEvent<IInteractable> onInteractTargetChange = new UnityEvent<IInteractable>();
         public UnityEvent<string> onAbility = new UnityEvent<string>();
         public UnityEvent<sbyte> onAbilityChange = new UnityEvent<sbyte>();
+        public UnityEvent<string> onActionMapChange = new UnityEvent<string>();
 
         [Header("Interact")]
 
         [SerializeField] private InteractableDetector _interactableDetector;
         [SerializeField] private LayerMask _interactLayer;
         [SerializeField] private LayerMask _blockLayers;
-        [SerializeField] private float _interactableCheckDelay;
+        [SerializeField, Min(0f)] private float _interactableCheckDelay;
+        private const float _interactCoodlown = 1f;
+        //private float _currentInteractCooldown;
+        private HashSet<string> _interactBlock = new HashSet<string>();
+        private Dictionary<string, Coroutine> _interactReleaseDelay = new Dictionary<string, Coroutine>();
 
         public bool Interacting { get; private set; } = false;
         public IInteractable InteractableTarget { get; private set; } // Should be private now?
@@ -42,6 +51,7 @@ namespace Ivayami.Player {
             Default,
             EnterLocker,
             EnterTrash,
+            Seat,
             PullRope,
             PullLever,
             PushButton
@@ -49,7 +59,6 @@ namespace Ivayami.Player {
 
         //[Header("Hand Item")]
 
-        //private GameObject _handItemCurrent;
         [field: SerializeField] public Transform HoldPointLeft { get; private set; }
 
         [Header("Abilities")]
@@ -59,10 +68,8 @@ namespace Ivayami.Player {
 
         [Header("Cache")]
 
-        //private Camera _cam;
         private CinemachineBrain _brain;
         private RaycastHit _interactableHitCache;
-        //private RaycastHit _blockerHitCache;
         private IInteractable _interactableClosestCache;
         private WaitForSeconds _interactableCheckWait;
         private InteractAnimation _interactAnimationCache;
@@ -82,20 +89,21 @@ namespace Ivayami.Player {
             onInteractLong.AddListener((interacting) => Interacting = interacting);
             _interactableCheckWait = new WaitForSeconds(_interactableCheckDelay);
 
-            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //
+            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //            
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
         }        
 
         private void Start() {
-            //_cam = PlayerCamera.Instance.MainCamera;
+            DialogueController.Instance.OnDialogueStart += () => { if (DialogueController.Instance.LockInput) ToggleInteract("Dialogue", false); };
+            DialogueController.Instance.OnDialogueEnd += () => { if (DialogueController.Instance.LockInput) ToggleInteract("Dialogue", true); };
             _brain = PlayerCamera.Instance.CinemachineBrain;
             StartCoroutine(InteractObjectDetect());
-        }
+        }        
 
         private void Interact(InputAction.CallbackContext input) {
             //if (PlayerMovement.Instance.CanMove) {
-                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove) {
+                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _interactBlock.Count == 0) {
                     if (InteractableTarget != null /*&& InteractableTarget != Friend.Instance?.InteractableLongCurrent*/) {
                         _interactAnimationCache = InteractableTarget.Interact();
                         Vector3 directionToInteractable = InteractableTarget.InteratctableFeedbacks.IconPosition - transform.position;
@@ -227,7 +235,7 @@ namespace Ivayami.Player {
 
         private void UseHealthItem(InputAction.CallbackContext obj)
         {
-            if (PlayerUseItemUI.Instance) PlayerUseItemUI.Instance.UpdateUI();
+            if (PlayerUseItemUI.Instance && !PlayerStress.Instance.FailState) PlayerUseItemUI.Instance.UpdateUI(!PlayerUseItemUI.Instance.IsActive);
         }
 
         public void ChangeInputMap(string mapId) {
@@ -235,6 +243,33 @@ namespace Ivayami.Player {
             _actionMapCurrent = mapId != null ? _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId) : null;
             _actionMapCurrent?.Enable();
             Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId == "Player" ? CursorLockMode.Locked : CursorLockMode.None;
+            if(_actionMapCurrent != null) onActionMapChange?.Invoke(_actionMapCurrent.name);
+        }
+
+        public void ToggleInteract(string key, bool canInteract, float releaseDelay = _interactCoodlown)
+        {
+            if (canInteract)
+            {
+                if(!_interactBlock.Contains(key)) Debug.LogWarning($"'{key}' tried to unlock interact but key isn't blocking");
+                else
+                {
+                    if (_interactReleaseDelay.ContainsKey(key)) Debug.LogWarning($"The object {key} asked multiple interact releases at the same time");
+                    else _interactReleaseDelay.Add(key, StartCoroutine(ReleaseInteractDelay(key, releaseDelay)));
+                }         
+            }
+            else
+            {
+                if (!_interactBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock interact but key is already blocking");
+            }
+
+            Logger.Log(LogType.Player, $"Interact Blockers {(canInteract ? "Decrease" : "Increase")} to: {_interactBlock.Count}");
+        }
+
+        private IEnumerator ReleaseInteractDelay(string key, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            _interactBlock.Remove(key);
+            _interactReleaseDelay.Remove(key);
         }
 
 #if UNITY_EDITOR
