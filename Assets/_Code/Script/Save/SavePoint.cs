@@ -25,6 +25,7 @@ namespace Ivayami.Save {
         private bool _canSave = true;
 
         [SerializeField] private InputActionReference _movementInput;
+        [SerializeField] private GameObject _interactableIcon;
         [SerializeField] private Dialogue.Dialogue _preventSaveDialogue;
 
         [SerializeField, Min(0)] private float _delayFadeOut;
@@ -52,6 +53,7 @@ namespace Ivayami.Save {
 
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
             Pause.Instance.ToggleCanPause(BLOCK_KEY, false);
+            _interactableIcon.SetActive(false);
             SceneTransition.Instance.OnOpenEnd.AddListener(OnSaveFadeOutEnd);
             SceneTransition.Instance.Open();
 
@@ -99,6 +101,7 @@ namespace Ivayami.Save {
 
             SceneTransition.Instance.Close();
             PlayerAnimation.Instance.Sit();
+            InfoUpdateIndicator.Instance.DisplaySaved();
             _movementInput.action.performed += OnSaveFadeInEnd;
         }
 
@@ -113,6 +116,7 @@ namespace Ivayami.Save {
         private IEnumerator OnSaveFadeInEndRoutine() {
             yield return _delayUnlockMovementWait;
 
+            _interactableIcon.SetActive(true);
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true);
         }
 
