@@ -32,7 +32,7 @@ namespace Ivayami.UI {
         private void Start() {
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
             Close();
-            SceneController.Instance.OnStartLoadAnyScene += () => SetLoadingIconState(true);
+            SceneController.Instance.OnStartLoadScene += (sceneId) => SetLoadingIconState(true);
             SavePoint.onSaveGame.AddListener(() => SetLoadingIconState(true));
         }
 
