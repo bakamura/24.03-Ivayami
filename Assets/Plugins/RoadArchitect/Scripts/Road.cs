@@ -111,8 +111,8 @@ namespace RoadArchitect
         public Material ShoulderMaterialMarker3;
         public Material ShoulderMaterialMarker4;
 
-        public PhysicMaterial RoadPhysicMaterial;
-        public PhysicMaterial ShoulderPhysicMaterial;
+        public PhysicsMaterial RoadPhysicMaterial;
+        public PhysicsMaterial ShoulderPhysicMaterial;
         #endregion
 
 

@@ -1005,9 +1005,9 @@ namespace RoadArchitect
         private Material[] roadCutMarkerMats;
         private Material[] shoulderCutRMarkerMats;
         private Material[] shoulderCutLMarkerMats;
-        private PhysicMaterial roadCutPhysicMat;
-        private PhysicMaterial shoulderCutRPhysicMat;
-        private PhysicMaterial shoulderCutLPhysicMat;
+        private PhysicsMaterial roadCutPhysicMat;
+        private PhysicsMaterial shoulderCutRPhysicMat;
+        private PhysicsMaterial shoulderCutLPhysicMat;
 
 
         /// <summary> Stores the cut materials. For use in UpdateCuts(). See UpdateCuts() in this code file for further description of this system. </summary>
