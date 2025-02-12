@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Ivayami.Save;
 
 namespace Ivayami.Player {
     public class PlayerAnimation : MonoSingleton<PlayerAnimation> {
@@ -25,6 +24,8 @@ namespace Ivayami.Player {
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
         private static int HOLDING = Animator.StringToHash("Holding");
         private static int GETUP = Animator.StringToHash("GetUp");
+        private static int GETUP_SIT = Animator.StringToHash("GetUpSit");
+        private static int SIT = Animator.StringToHash("Sit");
         private static int USEMP3 = Animator.StringToHash("UseMP3");
         private static int INTERACT_INDEX = Animator.StringToHash("InteractIndex");
 
@@ -45,7 +46,6 @@ namespace Ivayami.Player {
             PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
             PlayerActions.Instance.onAbility.AddListener(Trigger);
-            SavePoint.onSaveGame.AddListener(() => Trigger("Seat"));
         }
 
         public float GetInteractAnimationDuration(PlayerActions.InteractAnimation animation) {
@@ -88,6 +88,14 @@ namespace Ivayami.Player {
 
         public void GetUp() {
             _animator.SetTrigger(GETUP);
+        }
+
+        public void GetUpSit() {
+            _animator.SetTrigger(GETUP_SIT);
+        }
+
+        public void Sit() {
+            _animator.SetTrigger(SIT);
         }
 
         private void Fail() {
