@@ -14,6 +14,7 @@ namespace Ivayami.Audio
     {
         [SerializeField] private SoundEventData[] _audiosData;
         [SerializeField] private bool _debugLog;
+        [SerializeField] private bool _autoActivateOnEnable;
         [SerializeField] private SphereCollider _activationArea;
 
         private bool _hasDoneSetup;
@@ -305,6 +306,11 @@ namespace Ivayami.Audio
             ReleaseAllEvents();
         }
 
+        private void OnEnable()
+        {
+            if (_autoActivateOnEnable) Activate();
+        }
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -319,6 +325,7 @@ namespace Ivayami.Audio
             }
             if (_activationArea)
             {
+                _activationArea.radius = 0;
                 for (int i = 0; i < _audiosData.Length; i++)
                 {
                     if (_audiosData[i].AttenuationRange.Max > _activationArea.radius) _activationArea.radius = _audiosData[i].AttenuationRange.Max;

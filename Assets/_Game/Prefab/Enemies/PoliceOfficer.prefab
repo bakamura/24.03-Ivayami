@@ -128,7 +128,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 15
+  m_Radius: 0
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &84480417977027428
 MonoBehaviour:
@@ -144,6 +144,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _triggerType: 0
   _targetNeedToStayInside: 0
+  _executeEventOnDisable: 1
   _delayToActivateEvent: 0
   _optionalTag: 
   _onExecute:
@@ -175,6 +176,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _triggerType: 1
   _targetNeedToStayInside: 0
+  _executeEventOnDisable: 1
   _delayToActivateEvent: 0
   _optionalTag: 
   _onExecute:
@@ -451,6 +453,7 @@ MonoBehaviour:
     MinRangGizmoColor: {r: 0, g: 0, b: 0, a: 0}
     MaxRangGizmoColor: {r: 0, g: 0, b: 0, a: 0}
   _debugLog: 0
+  _autoActivateOnEnable: 1
   _activationArea: {fileID: 8475871467616555077}
 --- !u!54 &6771547839866747852
 Rigidbody:
