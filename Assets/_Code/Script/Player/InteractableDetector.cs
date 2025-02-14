@@ -1,8 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Ivayami.Puzzle;
+using Ivayami.Player;
 
 public class InteractableDetector : MonoBehaviour {
+
+    [SerializeField] private float _heightMax;
+    [SerializeField] private float _heightMin;
 
     private List<IInteractable> _interactablesDetected = new List<IInteractable>();
     public List<IInteractable> InteractablesDetected { 
@@ -10,6 +14,10 @@ public class InteractableDetector : MonoBehaviour {
             _interactablesDetected.RemoveAll(interactable => interactable as MonoBehaviour == null || !(interactable as MonoBehaviour).gameObject.activeSelf);
             return _interactablesDetected; 
         } 
+    }
+
+    private void Update() {
+        transform.localPosition = Mathf.Lerp(_heightMax, _heightMin, PlayerCamera.Instance.FreeLookCam.m_YAxis.Value) * Vector3.up;
     }
 
     private void OnTriggerEnter(Collider other) {
