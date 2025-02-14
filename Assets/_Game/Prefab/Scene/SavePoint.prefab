@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 125
   m_IsActive: 1
 --- !u!4 &8337749587207064614
 Transform:
@@ -65,7 +65,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 125
   m_IsActive: 1
 --- !u!4 &4128611253949753220
 Transform:
@@ -99,7 +99,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 125
   m_IsActive: 1
 --- !u!4 &9208313675154015547
 Transform:
@@ -156,9 +156,12 @@ MonoBehaviour:
   _pointId: 1
   _playerAnimationPoint: {fileID: 4128611253949753220}
   <SpawnPoint>k__BackingField: {fileID: 1996866322975267914}
+  _movementInput: {fileID: 1691104767917529521, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
+  _interactableIcon: {fileID: 5373248475921979940}
   _preventSaveDialogue: {fileID: 11400000, guid: 49c47935944047144bfd041d3ee23a4f, type: 2}
+  _dialogueName: SavePointFail
   _delayFadeOut: 1
-  _delayUnlockMovement: 3.75
+  _delayUnlockMovement: 4
 --- !u!114 &7368645849743357652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,13 +225,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1167533486680407162, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2153431631413708117, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
       propertyPath: m_LocalPosition.y
       value: 1.2
       objectReference: {fileID: 0}
+    - target: {fileID: 3348135326072239762, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5765627851176342930, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
       propertyPath: m_Name
       value: InteractablePopup
+      objectReference: {fileID: 0}
+    - target: {fileID: 5765627851176342930, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -238,6 +253,11 @@ PrefabInstance:
 --- !u!4 &1496106166190587193 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1031674368046158479, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
+  m_PrefabInstance: {fileID: 1914596083700068278}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5373248475921979940 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5765627851176342930, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
   m_PrefabInstance: {fileID: 1914596083700068278}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4706198409509438104
@@ -288,9 +308,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: b17e27ed0ed9e29459fe0cf45294a52d, type: 3}
+      propertyPath: m_LightProbeUsage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: b17e27ed0ed9e29459fe0cf45294a52d, type: 3}
+      propertyPath: m_StaticShadowCaster
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: b17e27ed0ed9e29459fe0cf45294a52d, type: 3}
       propertyPath: m_Name
       value: Visual
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b17e27ed0ed9e29459fe0cf45294a52d, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 125
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

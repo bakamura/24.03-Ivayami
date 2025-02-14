@@ -209,7 +209,7 @@ namespace Ivayami.Puzzle
             float initialAngle = _rotatingObjects[rotatingObjectIndex].Transform.localEulerAngles.y;
             while (count < 1)
             {
-                count += Time.fixedDeltaTime;
+                count += Time.fixedDeltaTime / _rotationDuration;
                 _rotatingObjects[rotatingObjectIndex].Transform.localEulerAngles = new Vector3(0, Mathf.LerpAngle(initialAngle, initialAngle + _rotationAmount, count), 0);
                 yield return delay;
             }
@@ -315,9 +315,9 @@ namespace Ivayami.Puzzle
                 if (_solutions[i].PuzzleLayer.Length != _rotatingObjects.Length) Array.Resize(ref _solutions[i].PuzzleLayer, _rotatingObjects.Length);
                 for (int a = 0; a < _solutions[i].PuzzleLayer.Length; a++)
                 {
-                    if (_rotatingObjects[i].Transform)
+                    if (_rotatingObjects[a].Transform)
                     {
-                        size = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPedestalPuzzleObject>().Length;
+                        size = _rotatingObjects[a].Transform.GetComponentsInChildren<RotatingPedestalPuzzleObject>().Length;
                         if (_solutions[i].PuzzleLayer[a].Solution == null) _solutions[i].PuzzleLayer[a].Solution = new byte[1];
                         if (_solutions[i].PuzzleLayer[a].Solution.Length > size)
                             Array.Resize(ref _solutions[i].PuzzleLayer[a].Solution, size);
