@@ -70,8 +70,8 @@ namespace Ivayami.UI {
         }
 
         private void SetupStorySelection() {
-            int progress = SaveSystem.Instance.Progress.GetEntryProgressOfType("StoryEntryProgress");
-            if (progress > 0) for (int i = 1; i <= progress; i++) if (i >= _storySelectionContainer.childCount) SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/StoryEntry_{i}"));
+            int progress = SaveSystem.Instance.Progress.GetEntryProgressOfType("StoryEntryProgress") - 1;
+            if (progress >= 0) for (int i = 0; i <= progress; i++) if (i >= _storySelectionContainer.childCount) SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/StoryEntry_{i}"));
         }
 
         private void SetupCharactersSelection() {
