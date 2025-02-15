@@ -36,7 +36,7 @@ namespace Ivayami.UI {
 
         public string GetDisplayDescription()
         {
-            return LocalizationSettings.StringDatabase.GetLocalizedString("Journal", $"{name}/Description_{SaveSystem.Instance.Progress.GetEntryProgressOfType(_progressType.Id)}");
+            return LocalizationSettings.StringDatabase.GetLocalizedString("Journal", $"{name}/Description_{SaveSystem.Instance.Progress.GetEntryProgressOfType(_progressType.Id) - 1}");
         }
 
         //public JournalEntry(Readable readable) {
