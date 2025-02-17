@@ -1289,10 +1289,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startTiredAnimThreshold: 0.1
   _interactAnimations:
-  - {fileID: 1701519168366769839, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
-  - {fileID: 4866158927099243651, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
-  - {fileID: -5374507017704117377, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
-  - {fileID: -1443209977815985297, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+  - InteractType: 0
+    Animation: {fileID: 1701519168366769839, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+    Speed: 1
+  - InteractType: 1
+    Animation: {fileID: 4866158927099243651, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+    Speed: 2
+  - InteractType: 2
+    Animation: {fileID: -5374507017704117377, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+    Speed: 1
+  - InteractType: 3
+    Animation: {fileID: -1443209977815985297, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+    Speed: 1
 --- !u!114 &1145761265743361691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1323,9 +1331,6 @@ MonoBehaviour:
       Data3: -735275854
       Data4: 67989903
     Path: "event:/Player_SFX/Respira\xE7\xE3o_Player"
-  _heavyBreathSoundRange:
-    Min: 0
-    Max: 0
 --- !u!4 &2181725685440365708 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}

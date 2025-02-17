@@ -9,7 +9,15 @@ using UnityEngine.Events;
 namespace Ivayami.Puzzle {
     public class HidingSpot : MonoBehaviour, IInteractable {
 
-        public InteractableFeedbacks InteratctableFeedbacks { get; private set; }
+        public InteractableFeedbacks InteratctableFeedbacks
+        {
+            get
+            {
+                if (!m_interactableFeedbacks) m_interactableFeedbacks = GetComponent<InteractableFeedbacks>();
+                return m_interactableFeedbacks;
+            }
+        }
+        private InteractableFeedbacks m_interactableFeedbacks;
         [Header("Inputs")]
         [SerializeField] private InputActionReference _exitInput;
 
@@ -32,20 +40,22 @@ namespace Ivayami.Puzzle {
         private Animator _objectAnimator;
         private Coroutine _hideCoroutine;
         private const string BLOCK_KEY = "hidingSpot";
+        private static int SPEED = Animator.StringToHash("Speed");
         private bool _inputActive;
 
-        private void Awake() {
-            InteratctableFeedbacks = GetComponent<InteractableFeedbacks>();
-            _objectAnimator = GetComponentInChildren<Animator>();
-        }
-
-        private void Start() {
-            if (!PlayerActions.Instance || !PlayerAnimation.Instance) return;
-            _delayChangeCamera = new WaitForSeconds(PlayerAnimation.Instance.GetInteractAnimationDuration(_interactionType) - _hidingCam.Duration);
+        private void Setup()
+        {
+            if (_delayChangeCamera == null)
+            {
+                _objectAnimator = GetComponentInChildren<Animator>();
+                _delayChangeCamera = new WaitForSeconds(PlayerAnimation.Instance.GetInteractAnimationDuration(_interactionType) - _hidingCam.Duration);
+                _objectAnimator.SetFloat(SPEED, PlayerAnimation.Instance.GetInteractAnimationSpeed(_interactionType));
+            }
         }
 
         public PlayerActions.InteractAnimation Interact() {
             if (PlayerMovement.Instance.hidingState == PlayerMovement.HidingState.None) {
+                Setup();
                 _onInteract?.Invoke();
                 _hideCoroutine = StartCoroutine(HideRoutine());
                 return _interactionType;
