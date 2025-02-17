@@ -71,12 +71,12 @@ namespace Ivayami.Puzzle {
 
             _hidingCam.ExitDialogueCamera();
             _hiddenCam.StartMovement();
+            _inputActive = true;
             PlayerMovement.Instance.hidingState = _hiddenType; 
             ReturnAction.Instance.Set(Exit);
             _exitInput.action.started += HandleExit;
             _exitInput.action.Enable();
             PlayerMovement.Instance.ToggleMovement(nameof(HidingSpot), false);
-            _inputActive = true;
             _hideCoroutine = null;
         }        
 
