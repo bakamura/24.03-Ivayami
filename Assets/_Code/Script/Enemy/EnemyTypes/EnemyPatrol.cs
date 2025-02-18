@@ -84,6 +84,7 @@ namespace Ivayami.Enemy
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
         private float _baseSpeed;
+        private float _baseStoppingDistance;
         //private int _currentAttackAnimIndex;
 
         public bool IsActive { get; private set; }
@@ -104,6 +105,7 @@ namespace Ivayami.Enemy
             _initialRotation = transform.rotation;
             _baseSpeed = _navMeshAgent.speed;
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
+            else _baseStoppingDistance = _navMeshAgent.stoppingDistance;
         }
 
         private void OnEnable()
@@ -186,7 +188,7 @@ namespace Ivayami.Enemy
                         _navMeshAgent.SetDestination(_hitsCache[0].transform.position);                        
                         _lastTargetPosition = _hitsCache[0].transform.position;
                         if (_debugLogsEnemyPatrol) Debug.Log("Chase Target");
-                        if (_attackTarget && !_isAttacking && _chaseTargetPatience == _delayToLoseTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance + _currentTargetColliderSizeFactor)
+                        if (_attackTarget && !_isAttacking && _chaseTargetPatience == _delayToLoseTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance/* + _currentTargetColliderSizeFactor*/)
                         {
                             //StopMovement(true);
                             //PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
@@ -328,6 +330,7 @@ namespace Ivayami.Enemy
             if (_debugLogsEnemyPatrol)
                 Debug.Log($"is Hidden {isHidden}, blocking vision {blockingVision}, is in Min range {isInMinRange}, target Inside Radius {targetInsideRange}, is in Vision Angle {isInVisionAngle}");
             _directContactWithTarget = !isHidden && !blockingVision && (isInMinRange || (isInVisionAngle && targetInsideRange));
+            _navMeshAgent.stoppingDistance = _directContactWithTarget ? _collision.radius + _currentTargetColliderSizeFactor : _baseStoppingDistance;
             return _directContactWithTarget;
         }
 
