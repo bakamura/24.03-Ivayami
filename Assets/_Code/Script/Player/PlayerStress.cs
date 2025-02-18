@@ -57,9 +57,7 @@ namespace Ivayami.Player {
         }
 
         private void Update() {
-#if UNITY_EDITOR
             if (!_isAutoRegenActive) return;
-#endif
             if (_stressRelieveDelayTimer > 0) _stressRelieveDelayTimer -= Time.deltaTime;
             else if (_stressCurrent > _stressRelieveMinValue) RelieveStressAuto();
         }
@@ -143,7 +141,7 @@ namespace Ivayami.Player {
         }
 
         public void UpdateAutoRegenerateStress(bool isActive) {
-            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+            //if (!IngameDebugConsole.DebugLogManager.Instance) return;
             _isAutoRegenActive = isActive;
         }
 
