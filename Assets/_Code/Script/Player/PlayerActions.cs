@@ -175,12 +175,14 @@ namespace Ivayami.Player {
                 _heavyObjectCurrent.transform.parent = HoldPointLeft;
                 _heavyObjectCurrent.transform.localPosition = Vector3.zero;
                 _heavyObjectCurrent.transform.rotation = Quaternion.identity;
+                if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = false;
                 _interactableDetector.onlyHeavyObjects = true;
             }
             else Debug.LogError("Trying to Hold HeavyObject but null object was passed!");
         }
 
         public GameObject HeavyObjectRelease() {
+            if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = true;
             GameObject releasedObject = _heavyObjectCurrent;
             _heavyObjectCurrent = null;
             _interactableDetector.onlyHeavyObjects = false;

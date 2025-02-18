@@ -13,15 +13,18 @@ namespace Ivayami.Puzzle {
         private const string HEAVY_OBJECT_BLOCK_KEY = "HeavyObject";
 
         private void Awake() {
-            if (!_placementPos) Debug.LogError($"{name} has no _placementPos assigned!");
+            if (_placementPos) {
+                if (_placementPos.childCount > 0) _heavyObjectCurrent = _placementPos.GetChild(0).gameObject;
+            }
+            else Debug.LogError($"{name} has no _placementPos assigned!");
             if (!TryGetComponent<InteractableFeedbacks>(out _interactableFeedbacks)) Debug.LogError($"'{name}' has no InteractableFeedbacks attached to!");
         }
 
         public PlayerActions.InteractAnimation Interact() {
             if (PlayerActions.Instance.IsHoldingHeavyObject) {
-                if (TryCollect()) return PlayerActions.InteractAnimation.EnterTrash;
+                if (TryPlace()) return PlayerActions.InteractAnimation.EnterLocker;
             }
-            else if (TryPlace()) return PlayerActions.InteractAnimation.EnterLocker;
+            else if (TryCollect()) return PlayerActions.InteractAnimation.EnterTrash;
             return PlayerActions.InteractAnimation.Default;
         }
 
@@ -54,9 +57,8 @@ namespace Ivayami.Puzzle {
         }
 
         private void RemovePlayerObject() {
-            _heavyObjectCurrent.transform.parent = _placementPos;
+            PlayerActions.Instance.HeavyObjectRelease().transform.parent = _placementPos;
             PlayerMovement.Instance.AllowRun(true);
-            PlayerActions.Instance.HeavyObjectRelease();
             PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
         }
 
