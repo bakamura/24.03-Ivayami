@@ -1,8 +1,11 @@
 using UnityEngine;
+using UnityEngine.Events;
 using Ivayami.Player;
 
 namespace Ivayami.Puzzle {
     public class HeavyObjectPlacement : Activator, IInteractable {
+
+        public static UnityEvent<bool> onCollect = new UnityEvent<bool>();
 
         [SerializeField] private string _correctName;
         [SerializeField] private Transform _placementPos;
@@ -11,14 +14,17 @@ namespace Ivayami.Puzzle {
         private InteractableFeedbacks _interactableFeedbacks;
         public InteractableFeedbacks InteratctableFeedbacks { get { return _interactableFeedbacks; } }
 
-        private const string HEAVY_OBJECT_BLOCK_KEY = "HeavyObject";
-
         private void Awake() {
             if (_placementPos) {
                 if (_placementPos.childCount > 0) _heavyObjectCurrent = _placementPos.GetChild(0).gameObject;
             }
             else Debug.LogError($"{name} has no _placementPos assigned!");
             if (!TryGetComponent<InteractableFeedbacks>(out _interactableFeedbacks)) Debug.LogError($"'{name}' has no InteractableFeedbacks attached to!");
+            onCollect.AddListener((isCollecting) => {
+                if (_heavyObjectCurrent) gameObject.SetActive(!isCollecting);
+                else gameObject.SetActive(isCollecting);
+            });
+            gameObject.SetActive(_heavyObjectCurrent);
         }
 
         public PlayerActions.InteractAnimation Interact() {
@@ -37,6 +43,7 @@ namespace Ivayami.Puzzle {
 
                 PlayerMovement.Instance.AllowRun(false);
                 PlayerStress.Instance.onFail.AddListener(RemovePlayerObject);
+                onCollect.Invoke(true);
                 return true;
             }
             else Debug.Log($"Could not Collect from '{name}': Place empty.");
@@ -53,6 +60,7 @@ namespace Ivayami.Puzzle {
 
                 PlayerMovement.Instance.AllowRun(true);
                 PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
+                onCollect.Invoke(false);
                 return true;
             }
             else Debug.Log($"Could not Place to '{name}': Place not empty.");
