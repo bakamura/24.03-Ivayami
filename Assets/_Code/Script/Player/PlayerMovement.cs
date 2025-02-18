@@ -213,12 +213,33 @@ namespace Ivayami.Player {
         }
 
         private void ToggleWalkInput(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
-            if (_staminaCurrent > _maxStamina * _minStaminaToRun) ToggleWalk();
+            if (_staminaCurrent > _maxStamina * _minStaminaToRun)
+            {
+                if (!_holdToRun) ToggleWalk();
+                else SetWalk(true);
+            }
+        }
+
+        private void SetWalkInputStop(InputAction.CallbackContext input = new InputAction.CallbackContext())
+        {
+            if (_staminaCurrent > _maxStamina * _minStaminaToRun && _holdToRun)
+            {
+                SetWalk(false);
+            }
         }
 
         private void ToggleWalk() {
             if (_canRun) {
                 _running = !_running;
+                if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
+            }
+        }
+
+        private void SetWalk(bool isRunning)
+        {
+            if (_canRun)
+            {
+                _running = isRunning;
                 if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
             }
         }
@@ -317,10 +338,10 @@ namespace Ivayami.Player {
         public void ChangeHoldToRun(bool isActive) {
             _holdToRun = isActive;
             if (isActive) {
-                _walkToggleInput.action.canceled += ToggleWalkInput;
-                if (_running) ToggleWalk();
+                _walkToggleInput.action.canceled += SetWalkInputStop;
+                if (_running) SetWalk(false);
             }
-            else _walkToggleInput.action.canceled -= ToggleWalkInput;
+            else _walkToggleInput.action.canceled -= SetWalkInputStop;
         }
 
         private void UpdateHoldToRun(InputCallbacks.ControlType controlType) {
