@@ -2,10 +2,11 @@ using UnityEngine;
 using Ivayami.Player;
 
 namespace Ivayami.Puzzle {
-    public class HeavyObjectPlacement : MonoBehaviour, IInteractable {
+    public class HeavyObjectPlacement : Activator, IInteractable {
 
-        private GameObject _heavyObjectCurrent;
+        [SerializeField] private string _correctName;
         [SerializeField] private Transform _placementPos;
+        private GameObject _heavyObjectCurrent;
 
         private InteractableFeedbacks _interactableFeedbacks;
         public InteractableFeedbacks InteratctableFeedbacks { get { return _interactableFeedbacks; } }
@@ -32,6 +33,7 @@ namespace Ivayami.Puzzle {
             if (_heavyObjectCurrent) {
                 PlayerActions.Instance.HeavyObjectHold(_heavyObjectCurrent);
                 _heavyObjectCurrent = null;
+                IsActive = false;
 
                 PlayerMovement.Instance.AllowRun(false);
                 PlayerStress.Instance.onFail.AddListener(RemovePlayerObject);
@@ -47,6 +49,7 @@ namespace Ivayami.Puzzle {
                 _heavyObjectCurrent.transform.parent = _placementPos;
                 _heavyObjectCurrent.transform.localPosition = Vector3.zero;
                 _heavyObjectCurrent.transform.rotation = Quaternion.identity;
+                CheckForActivation();
 
                 PlayerMovement.Instance.AllowRun(true);
                 PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
@@ -54,6 +57,13 @@ namespace Ivayami.Puzzle {
             }
             else Debug.Log($"Could not Place to '{name}': Place not empty.");
             return false;
+        }
+
+        private void CheckForActivation() {
+            if (_heavyObjectCurrent?.name == _correctName) {
+                IsActive = true;
+                onActivate.Invoke();
+            }
         }
 
         private void RemovePlayerObject() {
