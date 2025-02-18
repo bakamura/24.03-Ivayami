@@ -5,12 +5,20 @@ using Ivayami.Puzzle;
 public class InteractableDetector : MonoBehaviour {
 
     private List<IInteractable> _interactablesDetected = new List<IInteractable>();
-    public List<IInteractable> InteractablesDetected { 
+    public bool onlyHeavyObjects = false;
+
+    public List<IInteractable> InteractablesDetected {
         get {
             _interactablesDetected.RemoveAll(interactable => interactable as MonoBehaviour == null || !(interactable as MonoBehaviour).gameObject.activeSelf);
-            return _interactablesDetected; 
-        } 
+            List<IInteractable> interactables = _interactablesDetected;
+            if (onlyHeavyObjects) {
+                HeavyObjectPlacement tmp;
+                interactables.RemoveAll(interactable => !interactable.gameObject.TryGetComponent<HeavyObjectPlacement>(out tmp));
+            }
+            return interactables;
+        }
     }
+
 
     private void OnTriggerEnter(Collider other) {
         if (!other.isTrigger) {
