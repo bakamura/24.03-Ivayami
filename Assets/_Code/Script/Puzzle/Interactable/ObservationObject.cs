@@ -68,6 +68,7 @@ namespace Ivayami.Puzzle
                 if (_toggleImageContentInput) _toggleImageContentInput.action.started += HandleToggleContentInput;
                 PlayerMovement.Instance.ToggleMovement(nameof(ObservationObject), false);
                 PlayerActions.Instance.ChangeInputMap("Menu");
+                PlayerActions.Instance.ToggleInteract(nameof(ObservationObject), false);
             }
             else
             {
@@ -75,6 +76,7 @@ namespace Ivayami.Puzzle
                 if (_toggleImageContentInput) _toggleImageContentInput.action.started -= HandleToggleContentInput;
                 PlayerMovement.Instance.ToggleMovement(nameof(ObservationObject), true);
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ToggleInteract(nameof(ObservationObject), true);
             }
         }
 
