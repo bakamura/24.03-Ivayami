@@ -10,6 +10,7 @@ namespace Ivayami.Puzzle {
         [SerializeField] private string _correctName;
         [SerializeField] private Transform _placementPos;
         private GameObject _heavyObjectCurrent;
+        private Collider _collider;
 
         private InteractableFeedbacks _interactableFeedbacks;
         public InteractableFeedbacks InteratctableFeedbacks { get { return _interactableFeedbacks; } }
@@ -20,11 +21,10 @@ namespace Ivayami.Puzzle {
             }
             else Debug.LogError($"{name} has no _placementPos assigned!");
             if (!TryGetComponent<InteractableFeedbacks>(out _interactableFeedbacks)) Debug.LogError($"'{name}' has no InteractableFeedbacks attached to!");
-            onCollect.AddListener((isCollecting) => {
-                if (_heavyObjectCurrent) gameObject.SetActive(!isCollecting);
-                else gameObject.SetActive(isCollecting);
-            });
-            gameObject.SetActive(_heavyObjectCurrent);
+            if (!TryGetComponent<Collider>(out _collider)) Debug.LogError($"'{name}' has no Collider attached to!");
+            onCollect.AddListener((isCollecting) => _collider.enabled = _heavyObjectCurrent ^ isCollecting);
+            //_collider.enabled = _heavyObjectCurrent ? !isCollecting : isCollecting;
+            _collider.enabled = _heavyObjectCurrent;
         }
 
         public PlayerActions.InteractAnimation Interact() {
