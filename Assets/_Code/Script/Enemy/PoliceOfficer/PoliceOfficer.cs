@@ -367,6 +367,7 @@ namespace Ivayami.Enemy
                         break;
                     }
                     yield return _behaviourTickDelay;
+                    currentTimeInPlace += _behaviourTickFrequency;
                 }
             }
             _detectTargetPointOffBehaviourReachedCoroutine = null;
