@@ -39,7 +39,7 @@ namespace Ivayami.Player {
         [SerializeField] private LayerMask _interactLayer;
         [SerializeField] private LayerMask _blockLayers;
         [SerializeField, Min(0f)] private float _interactableCheckDelay;
-        private const float _interactCoodlown = 1f;
+        private const float _interactCoodlown = .5f;
         //private float _currentInteractCooldown;
         private HashSet<string> _interactBlock = new HashSet<string>();
         private Dictionary<string, Coroutine> _interactReleaseDelay = new Dictionary<string, Coroutine>();
@@ -279,15 +279,16 @@ namespace Ivayami.Player {
             }
             else {
                 if (!_interactBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock interact but key is already blocking");
+                Logger.Log(LogType.Player, $"Interact Blockers Increase to: {_interactBlock.Count}");
             }
 
-            Logger.Log(LogType.Player, $"Interact Blockers {(canInteract ? "Decrease" : "Increase")} to: {_interactBlock.Count}");
         }
 
         private IEnumerator ReleaseInteractDelay(string key, float delay) {
             yield return new WaitForSeconds(delay);
             _interactBlock.Remove(key);
             _interactReleaseDelay.Remove(key);
+            Logger.Log(LogType.Player, $"Interact Blockers Decrease to: {_interactBlock.Count}");
         }
 
 #if UNITY_EDITOR
