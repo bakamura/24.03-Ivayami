@@ -6,7 +6,7 @@ namespace Ivayami.Dialogue
     [CustomEditor(typeof(DialogueTrigger))]
     public class DialogueTriggerInspector : Editor
     {
-        SerializedProperty dialogue, dialogueName, activateOnce, deactivateObjectOnFirstActivate, lockPlayerInput;
+        SerializedProperty dialogue, dialogueName, activateOnce, deactivateObjectOnFirstActivate, lockPlayerInput, onDialogueStart, onDialogueEnd;
         private Collider _collider;
         public override void OnInspectorGUI()
         {
@@ -16,6 +16,8 @@ namespace Ivayami.Dialogue
             if (_collider && _collider.isTrigger && activateOnce.boolValue)
                 EditorGUILayout.PropertyField(deactivateObjectOnFirstActivate, new GUIContent("Deactivate Object On Activation"));
             EditorGUILayout.PropertyField(lockPlayerInput, new GUIContent("Lock Player Input"));
+            EditorGUILayout.PropertyField(onDialogueStart, new GUIContent("On Dialogue Start"));
+            EditorGUILayout.PropertyField(onDialogueEnd, new GUIContent("On Dialogue End"));
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -27,6 +29,8 @@ namespace Ivayami.Dialogue
             activateOnce = serializedObject.FindProperty("_activateOnce");
             deactivateObjectOnFirstActivate = serializedObject.FindProperty("_deactivateObjectOnFirstActivate");
             lockPlayerInput = serializedObject.FindProperty("_lockPlayerInput");
+            onDialogueStart = serializedObject.FindProperty("_onDialogueStart");
+            onDialogueEnd = serializedObject.FindProperty("_onDialogueEnd");
 
             DialogueTrigger instance = (DialogueTrigger)target;
             instance.TryGetComponent<Collider>(out _collider);
