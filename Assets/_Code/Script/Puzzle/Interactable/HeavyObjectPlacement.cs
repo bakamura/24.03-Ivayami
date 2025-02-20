@@ -11,6 +11,7 @@ namespace Ivayami.Puzzle {
         [SerializeField] private Transform _placementPos;
         private GameObject _heavyObjectCurrent;
         private Collider _collider;
+        [SerializeField] private GameObject _interactPopup;
 
         private InteractableFeedbacks _interactableFeedbacks;
         public InteractableFeedbacks InteratctableFeedbacks { get { return _interactableFeedbacks; } }
@@ -22,9 +23,16 @@ namespace Ivayami.Puzzle {
             else Debug.LogError($"{name} has no _placementPos assigned!");
             if (!TryGetComponent<InteractableFeedbacks>(out _interactableFeedbacks)) Debug.LogError($"'{name}' has no InteractableFeedbacks attached to!");
             if (!TryGetComponent<Collider>(out _collider)) Debug.LogError($"'{name}' has no Collider attached to!");
-            onCollect.AddListener((isCollecting) => _collider.enabled = _heavyObjectCurrent ^ isCollecting);
-            //_collider.enabled = _heavyObjectCurrent ? !isCollecting : isCollecting;
+            onCollect.AddListener((isCollecting) => {
+                bool shouldShow = _heavyObjectCurrent ^ isCollecting;
+                _collider.enabled = shouldShow;
+                _interactPopup.SetActive(shouldShow);
+            });
+        }
+
+        private void Start() {
             _collider.enabled = _heavyObjectCurrent;
+            _interactPopup.SetActive(_heavyObjectCurrent);
         }
 
         public PlayerActions.InteractAnimation Interact() {
@@ -42,6 +50,7 @@ namespace Ivayami.Puzzle {
                 IsActive = false;
 
                 PlayerMovement.Instance.AllowRun(false);
+                PlayerMovement.Instance.AllowCrouch(false);
                 PlayerStress.Instance.onFail.AddListener(RemovePlayerObject);
                 onCollect.Invoke(true);
                 return true;
@@ -59,6 +68,7 @@ namespace Ivayami.Puzzle {
                 CheckForActivation();
 
                 PlayerMovement.Instance.AllowRun(true);
+                PlayerMovement.Instance.AllowCrouch(true);
                 PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
                 onCollect.Invoke(false);
                 return true;
@@ -77,6 +87,7 @@ namespace Ivayami.Puzzle {
         private void RemovePlayerObject() {
             PlayerActions.Instance.HeavyObjectRelease().transform.parent = _placementPos;
             PlayerMovement.Instance.AllowRun(true);
+            PlayerMovement.Instance.AllowCrouch(true);
             PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
         }
 
