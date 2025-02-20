@@ -38,6 +38,7 @@ namespace Ivayami.Puzzle {
         public PlayerActions.InteractAnimation Interact() {
             PlayerActions.Instance.ChangeInputMap("Menu");
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, false);
+            PlayerActions.Instance.ToggleInteract(nameof(ReadableObject), false);
             InteratctableFeedbacks.UpdateFeedbacks(false, true);
             _focusCamera.StartMovement();
 
@@ -59,6 +60,7 @@ namespace Ivayami.Puzzle {
             PlayerActions.Instance.ChangeInputMap("Player");
             InteratctableFeedbacks.UpdateFeedbacks(true, true);
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, true);
+            PlayerActions.Instance.ToggleInteract(nameof(ReadableObject), true);
             _focusCamera.ExitDialogueCamera();
             ReadableUI.Instance.Menu.Close();
         }

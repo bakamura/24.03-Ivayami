@@ -8,5 +8,10 @@ namespace Ivayami.Player
         {
             PlayerStress.Instance.SetStress(stress);
         }
+
+        public void UpdateAutoStress(bool isActive)
+        {
+            PlayerStress.Instance.UpdateAutoRegenerateStress(isActive);
+        }
     }
 }

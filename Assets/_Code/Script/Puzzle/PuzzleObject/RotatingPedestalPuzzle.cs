@@ -176,6 +176,7 @@ namespace Ivayami.Puzzle
                 _cancelInteractionInput.action.started += HandleCancelInteraction;
                 _confirmInput.action.started += HandleConfirmInput;
                 PlayerActions.Instance.ChangeInputMap("Menu");
+                PlayerActions.Instance.ToggleInteract(nameof(RotatingPedestalPuzzle), false);
             }
             else
             {
@@ -183,6 +184,7 @@ namespace Ivayami.Puzzle
                 _cancelInteractionInput.action.started -= HandleCancelInteraction;
                 _confirmInput.action.started -= HandleConfirmInput;
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ToggleInteract(nameof(RotatingPedestalPuzzle), true);
             }
         }
 

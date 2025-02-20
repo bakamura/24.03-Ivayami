@@ -11,7 +11,7 @@ namespace Ivayami.Puzzle {
 #endif
         public string GetDisplayName()
         {
-            return LocalizationSettings.StringDatabase.GetLocalizedString("Items", $"{name}/Name");
+            return $"{name}/Name";
         }
 
         public string GetDisplayDescription()

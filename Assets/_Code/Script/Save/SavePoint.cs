@@ -25,7 +25,9 @@ namespace Ivayami.Save {
         private bool _canSave = true;
 
         [SerializeField] private InputActionReference _movementInput;
+        [SerializeField] private GameObject _interactableIcon;
         [SerializeField] private Dialogue.Dialogue _preventSaveDialogue;
+        [SerializeField, ReadOnly] private string _dialogueName;
 
         [SerializeField, Min(0)] private float _delayFadeOut;
         private WaitForSeconds _delayFadeOutWait;
@@ -44,6 +46,11 @@ namespace Ivayami.Save {
 
         private void Start() {
             PlayerStress.Instance.onStressChange.AddListener(stress => _canSave = stress <= PlayerStress.Instance.StressRelieveMinValue);
+            if (_preventSaveDialogue)
+            {
+                _dialogueName = _preventSaveDialogue.name;
+                Resources.UnloadAsset(_preventSaveDialogue);
+            }
         }
 
         private void Save() {
@@ -52,6 +59,7 @@ namespace Ivayami.Save {
 
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
             Pause.Instance.ToggleCanPause(BLOCK_KEY, false);
+            _interactableIcon.SetActive(false);
             SceneTransition.Instance.OnOpenEnd.AddListener(OnSaveFadeOutEnd);
             SceneTransition.Instance.Open();
 
@@ -61,7 +69,7 @@ namespace Ivayami.Save {
         public PlayerActions.InteractAnimation Interact() {
             if (!_canSave) {
                 onCantSaveGame?.Invoke();
-                DialogueController.Instance.StartDialogue(_preventSaveDialogue.name, false);
+                DialogueController.Instance.StartDialogue(_dialogueName, false);
 
                 Logger.Log(LogType.Save, "SavePoint Cannot Save");
                 return PlayerActions.InteractAnimation.Default;
@@ -99,6 +107,7 @@ namespace Ivayami.Save {
 
             SceneTransition.Instance.Close();
             PlayerAnimation.Instance.Sit();
+            InfoUpdateIndicator.Instance.DisplaySaved();
             _movementInput.action.performed += OnSaveFadeInEnd;
         }
 
@@ -113,8 +122,18 @@ namespace Ivayami.Save {
         private IEnumerator OnSaveFadeInEndRoutine() {
             yield return _delayUnlockMovementWait;
 
+            _interactableIcon.SetActive(true);
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true);
         }
 
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (_preventSaveDialogue)
+            {
+                _dialogueName = _preventSaveDialogue.name;
+            }
+        }
+#endif
     }
 }
