@@ -48,6 +48,7 @@ namespace Ivayami.Player {
         private float _maxStressCurrent;
         public bool CanMove { get { return _movementBlock.Count <= 0; } }
         private bool _canRun = true;
+        private bool _canCrouch = true;
         private bool _holdToRun;
 
         [Header("Rotation")]
@@ -177,17 +178,18 @@ namespace Ivayami.Player {
         }
 
         private void ToggleCrouch() {
-            Crouching = !Crouching;
-            _movementSpeedMax = Crouching ? _crouchSpeedMax : (_running ? _movementSpeedRun : _movementSpeedWalk);
-            SetColliderHeight(Crouching ? _crouchColliderHeight : _walkColliderHeight);
+            if (_canCrouch) {
+                Crouching = !Crouching;
+                _movementSpeedMax = Crouching ? _crouchSpeedMax : (_running ? _movementSpeedRun : _movementSpeedWalk);
+                SetColliderHeight(Crouching ? _crouchColliderHeight : _walkColliderHeight);
 
-            if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
-            _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
+                if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
+                _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
 
-            onCrouch?.Invoke(Crouching);
+                onCrouch?.Invoke(Crouching);
 
-            Logger.Log(LogType.Player, $"Crouch Toggle: {Crouching}");
-
+                Logger.Log(LogType.Player, $"Crouch Toggle: {Crouching}");
+            }
         }
 
         private void RemoveCrouch() {
@@ -213,17 +215,14 @@ namespace Ivayami.Player {
         }
 
         private void ToggleWalkInput(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
-            if (_staminaCurrent > _maxStamina * _minStaminaToRun)
-            {
+            if (_staminaCurrent > _maxStamina * _minStaminaToRun) {
                 if (!_holdToRun) ToggleWalk();
                 else SetWalk(true);
             }
         }
 
-        private void SetWalkInputStop(InputAction.CallbackContext input = new InputAction.CallbackContext())
-        {
-            if (_staminaCurrent > _maxStamina * _minStaminaToRun && _holdToRun)
-            {
+        private void SetWalkInputStop(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
+            if (_staminaCurrent > _maxStamina * _minStaminaToRun && _holdToRun) {
                 SetWalk(false);
             }
         }
@@ -235,10 +234,8 @@ namespace Ivayami.Player {
             }
         }
 
-        private void SetWalk(bool isRunning)
-        {
-            if (_canRun)
-            {
+        private void SetWalk(bool isRunning) {
+            if (_canRun) {
                 _running = isRunning;
                 if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
             }
@@ -274,6 +271,11 @@ namespace Ivayami.Player {
         public void AllowRun(bool allow) {
             if (!allow && _running) ToggleWalk();
             _canRun = allow;
+        }
+
+        public void AllowCrouch(bool allow) {
+            if (!allow && Crouching) ToggleCrouch();
+            _canCrouch = allow;
         }
 
         public void ToggleMovement(string key, bool canMove) {
