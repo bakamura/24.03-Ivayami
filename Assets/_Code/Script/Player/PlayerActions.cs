@@ -39,7 +39,7 @@ namespace Ivayami.Player {
         [SerializeField] private LayerMask _interactLayer;
         [SerializeField] private LayerMask _blockLayers;
         [SerializeField, Min(0f)] private float _interactableCheckDelay;
-        private const float _interactCoodlown = 1f;
+        private const float _interactCoodlown = .5f;
         //private float _currentInteractCooldown;
         private HashSet<string> _interactBlock = new HashSet<string>();
         private Dictionary<string, Coroutine> _interactReleaseDelay = new Dictionary<string, Coroutine>();
@@ -65,6 +65,11 @@ namespace Ivayami.Player {
 
         private List<PlayerAbility> _abilities = new List<PlayerAbility>();
         private sbyte _abilityCurrent;
+
+        [Header("Heavy Objects")]
+
+        private GameObject _heavyObjectCurrent;
+        public bool IsHoldingHeavyObject { get { return _heavyObjectCurrent != null; } }
 
         [Header("Cache")]
 
@@ -92,49 +97,48 @@ namespace Ivayami.Player {
             _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //            
 
             Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
-        }        
+        }
 
         private void Start() {
             DialogueController.Instance.OnDialogueStart += () => { if (DialogueController.Instance.LockInput) ToggleInteract("Dialogue", false); };
             DialogueController.Instance.OnDialogueEnd += () => { if (DialogueController.Instance.LockInput) ToggleInteract("Dialogue", true); };
             _brain = PlayerCamera.Instance.CinemachineBrain;
             StartCoroutine(InteractObjectDetect());
-        }        
+        }
 
         private void Interact(InputAction.CallbackContext input) {
             //if (PlayerMovement.Instance.CanMove) {
-                if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _interactBlock.Count == 0) {
-                    if (InteractableTarget != null /*&& InteractableTarget != Friend.Instance?.InteractableLongCurrent*/) {
-                        _interactAnimationCache = InteractableTarget.Interact();
-                        Vector3 directionToInteractable = InteractableTarget.InteratctableFeedbacks.IconPosition - transform.position;
-                        PlayerMovement.Instance.SetTargetAngle(Mathf.Atan2(directionToInteractable[0], directionToInteractable[2]) * Mathf.Rad2Deg, false);
-                        if (InteractableTarget is IInteractableLong) {
-                            PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
-                            onInteractLong?.Invoke(true);
-                            onInteract?.Invoke(_interactAnimationCache);
+            if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _interactBlock.Count == 0) {
+                if (InteractableTarget != null /*&& InteractableTarget != Friend.Instance?.InteractableLongCurrent*/) {
+                    _interactAnimationCache = InteractableTarget.Interact();
+                    Vector3 directionToInteractable = InteractableTarget.InteratctableFeedbacks.IconPosition - transform.position;
+                    PlayerMovement.Instance.SetTargetAngle(Mathf.Atan2(directionToInteractable[0], directionToInteractable[2]) * Mathf.Rad2Deg, false);
+                    if (InteractableTarget is IInteractableLong) {
+                        PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
+                        onInteractLong?.Invoke(true);
+                        onInteract?.Invoke(_interactAnimationCache);
 
-                            Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
-                        }
-                        else {
-                            onInteract?.Invoke(_interactAnimationCache);
-
-                            Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
-                        }
+                        Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
                     }
-                    else Logger.Log(LogType.Player, $"Interact: No Target");
+                    else {
+                        onInteract?.Invoke(_interactAnimationCache);
+
+                        Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
+                    }
                 }
-                else if (input.phase == InputActionPhase.Canceled && Interacting) {
-                if (InteractableTarget is IInteractableLong)
-                {
+                else Logger.Log(LogType.Player, $"Interact: No Target");
+            }
+            else if (input.phase == InputActionPhase.Canceled && Interacting) {
+                if (InteractableTarget is IInteractableLong) {
                     PlayerMovement.Instance.BlockMovementFor("Wait Animation End", PlayerAnimation.Instance.GetInteractAnimationDuration(_interactAnimationCache));
                     PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, true);
                     Interacting = false;
                 }
-                    (InteractableTarget as IInteractableLong).InteractStop();
-                    onInteractLong?.Invoke(false);
+                (InteractableTarget as IInteractableLong).InteractStop();
+                onInteractLong?.Invoke(false);
 
-                    Logger.Log(LogType.Player, $"Stop Interact Long with: {InteractableTarget.gameObject.name}");
-                }
+                Logger.Log(LogType.Player, $"Stop Interact Long with: {InteractableTarget.gameObject.name}");
+            }
             //}
         }
 
@@ -163,6 +167,26 @@ namespace Ivayami.Player {
 
                 yield return _interactableCheckWait;
             }
+        }
+
+        public void HeavyObjectHold(GameObject objToHold) {
+            if (objToHold != null) {
+                _heavyObjectCurrent = objToHold;
+                _heavyObjectCurrent.transform.parent = HoldPointLeft;
+                _heavyObjectCurrent.transform.localPosition = Vector3.zero;
+                _heavyObjectCurrent.transform.rotation = Quaternion.identity;
+                if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = false;
+                _interactableDetector.onlyHeavyObjects = true;
+            }
+            else Debug.LogError("Trying to Hold HeavyObject but null object was passed!");
+        }
+
+        public GameObject HeavyObjectRelease() {
+            if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = true;
+            GameObject releasedObject = _heavyObjectCurrent;
+            _heavyObjectCurrent = null;
+            _interactableDetector.onlyHeavyObjects = false;
+            return releasedObject;
         }
 
         #region Abilities (To be removed)
@@ -233,8 +257,7 @@ namespace Ivayami.Player {
         }
         #endregion
 
-        private void UseHealthItem(InputAction.CallbackContext obj)
-        {
+        private void UseHealthItem(InputAction.CallbackContext obj) {
             if (PlayerUseItemUI.Instance && !PlayerStress.Instance.FailState) PlayerUseItemUI.Instance.UpdateUI(!PlayerUseItemUI.Instance.IsActive);
         }
 
@@ -243,33 +266,29 @@ namespace Ivayami.Player {
             _actionMapCurrent = mapId != null ? _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId) : null;
             _actionMapCurrent?.Enable();
             Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId == "Player" ? CursorLockMode.Locked : CursorLockMode.None;
-            if(_actionMapCurrent != null) onActionMapChange?.Invoke(_actionMapCurrent.name);
+            if (_actionMapCurrent != null) onActionMapChange?.Invoke(_actionMapCurrent.name);
         }
 
-        public void ToggleInteract(string key, bool canInteract, float releaseDelay = _interactCoodlown)
-        {
-            if (canInteract)
-            {
-                if(!_interactBlock.Contains(key)) Debug.LogWarning($"'{key}' tried to unlock interact but key isn't blocking");
-                else
-                {
+        public void ToggleInteract(string key, bool canInteract, float releaseDelay = _interactCoodlown) {
+            if (canInteract) {
+                if (!_interactBlock.Contains(key)) Debug.LogWarning($"'{key}' tried to unlock interact but key isn't blocking");
+                else {
                     if (_interactReleaseDelay.ContainsKey(key)) Debug.LogWarning($"The object {key} asked multiple interact releases at the same time");
                     else _interactReleaseDelay.Add(key, StartCoroutine(ReleaseInteractDelay(key, releaseDelay)));
-                }         
+                }
             }
-            else
-            {
+            else {
                 if (!_interactBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock interact but key is already blocking");
+                Logger.Log(LogType.Player, $"Interact Blockers Increase to: {_interactBlock.Count}");
             }
 
-            Logger.Log(LogType.Player, $"Interact Blockers {(canInteract ? "Decrease" : "Increase")} to: {_interactBlock.Count}");
         }
 
-        private IEnumerator ReleaseInteractDelay(string key, float delay)
-        {
+        private IEnumerator ReleaseInteractDelay(string key, float delay) {
             yield return new WaitForSeconds(delay);
             _interactBlock.Remove(key);
             _interactReleaseDelay.Remove(key);
+            Logger.Log(LogType.Player, $"Interact Blockers Decrease to: {_interactBlock.Count}");
         }
 
 #if UNITY_EDITOR

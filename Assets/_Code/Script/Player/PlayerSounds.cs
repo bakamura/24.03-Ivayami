@@ -15,7 +15,7 @@ public class PlayerSounds : EntitySound {
 
     [SerializeField] private float _heavyBreathStressMin;
     [SerializeField] private EventReference _heavyBreathSoundRef;
-    [SerializeField] private Range _heavyBreathSoundRange;
+    //[SerializeField] private Range _heavyBreathSoundRange;
 
     [Header("Cache")]
 
@@ -38,6 +38,7 @@ public class PlayerSounds : EntitySound {
     public void HeavyBreathCheck(float stressAmount) {
         if (_heavyBreathSound.getPlaybackState(out PLAYBACK_STATE playbackState) == FMOD.RESULT.OK) {
             if (stressAmount > _heavyBreathStressMin) {
+                _heavyBreathSound.set3DAttributes(RuntimeUtils.To3DAttributes(transform.position));
                 if (playbackState == PLAYBACK_STATE.STOPPED) _heavyBreathSound.start();
                 //if (playbackState == PLAYBACK_STATE.STOPPED) Debug.Log("Player HeavyBreathing Starting");
             }

@@ -98,11 +98,13 @@ namespace Ivayami.Puzzle
             {
                 _cancelInteractionInput.action.performed += HandleCancelInteraction;
                 PlayerActions.Instance.ChangeInputMap("Menu");
+                PlayerActions.Instance.ToggleInteract(nameof(FuseBox), false);
             }
             else
             {
                 _cancelInteractionInput.action.performed -= HandleCancelInteraction;
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ToggleInteract(nameof(FuseBox), true);
             }
             _fuseUIParent.interactable = isActive;
             _fuseUIParent.blocksRaycasts = isActive;

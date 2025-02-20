@@ -123,6 +123,7 @@ namespace Ivayami.Puzzle
                 //_deliverInput.action.started += HandleDeliverInput;
                 PlayerMovement.Instance.ToggleMovement(nameof(DeliverUI), false);
                 PlayerActions.Instance.ChangeInputMap("Menu");
+                PlayerActions.Instance.ToggleInteract(nameof(DeliverUI), false);
                 //StartCoroutine(ActivateInputCoroutine());
             }
             else
@@ -131,6 +132,7 @@ namespace Ivayami.Puzzle
                 //_deliverInput.action.started -= HandleDeliverInput;
                 PlayerMovement.Instance.ToggleMovement(nameof(DeliverUI), true);
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ToggleInteract(nameof(DeliverUI), true);
             }
         }        
 
