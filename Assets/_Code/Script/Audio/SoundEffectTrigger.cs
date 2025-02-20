@@ -6,6 +6,7 @@ using FMOD;
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using AOT;
 
 namespace Ivayami.Audio
 {
@@ -81,9 +82,13 @@ namespace Ivayami.Audio
         public void Stop()
         {
             _currentSounData.AudioInstance.getPlaybackState(out PLAYBACK_STATE state);
-            if (state == PLAYBACK_STATE.PLAYING) _currentSounData.AudioInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            if (state == PLAYBACK_STATE.PLAYING)
+            {
+                _currentSounData.AudioInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                _currentSounData.OnAudioEnd?.Invoke();
+            }
             StopUpdateCoroutine();
-            _currentSounData.OnAudioEnd?.Invoke();
+            StopReplayCoroutine();
         }
 
         private void Setup()
@@ -136,6 +141,7 @@ namespace Ivayami.Audio
         #endregion
 
         #region Callback
+        [MonoPInvokeCallback(typeof(RESULT))]
         private static RESULT HandleOnAudioEnd(EVENT_CALLBACK_TYPE type, IntPtr instancePtr, IntPtr parameterPtr)
         {
             EventInstance instance = new EventInstance(instancePtr);

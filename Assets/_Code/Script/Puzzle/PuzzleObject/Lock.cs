@@ -112,33 +112,35 @@ namespace Ivayami.Puzzle
         {
             if (isActive)
             {
-                _cancelInteractionInput.action.performed += HandleExitInteraction;
+                _cancelInteractionInput.action.started += HandleExitInteraction;
                 if (_interactionType == InteractionTypes.RequirePassword)
                 {
                     _passwordUI.OnCheckPassword += TryUnlock;
                     if (_passwordUI is RotateLock)
                     {
-                        _confirmInput.action.performed += HandleConfirmUI;
+                        _confirmInput.action.started += HandleConfirmUI;
                         _clickInput.action.performed += HandleConfirmUI;
                     }
                 }
                 PlayerMovement.Instance.ToggleMovement(nameof(Lock), false);
                 PlayerActions.Instance.ChangeInputMap("Menu");
+                PlayerActions.Instance.ToggleInteract(nameof(Lock), false);
             }
             else
             {
-                _cancelInteractionInput.action.performed -= HandleExitInteraction;
+                _cancelInteractionInput.action.started -= HandleExitInteraction;
                 if (_interactionType == InteractionTypes.RequirePassword)
                 {
                     _passwordUI.OnCheckPassword -= TryUnlock;
                     if (_passwordUI is RotateLock)
                     {
-                        _confirmInput.action.performed -= HandleConfirmUI;
+                        _confirmInput.action.started -= HandleConfirmUI;
                         _clickInput.action.performed -= HandleConfirmUI;
                     }
                 }
                 PlayerMovement.Instance.ToggleMovement(nameof(Lock), true);
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ToggleInteract(nameof(Lock), true);
             }
         }
         private void UpdateUIs(bool isActive)

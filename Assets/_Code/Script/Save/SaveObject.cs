@@ -1,14 +1,11 @@
 using UnityEngine;
-using Ivayami.Player;
 
 namespace Ivayami.Save
 {
     public abstract class SaveObject : MonoBehaviour
     {
-        [SerializeField, ReadOnly] private string _id;
-        [SerializeField] private bool _saveOnDisable = true;
+        [SerializeField, ReadOnly] private string _id;        
         private static bool _canSave = true;
-        private static bool _eventSubscribed;
         public string ID
         {
             get { return _id; }
@@ -18,11 +15,6 @@ namespace Ivayami.Save
         protected virtual void Start()
         {
             LoadData();
-            if (!_eventSubscribed && PlayerStress.Instance)
-            {
-                PlayerStress.Instance.onFail.AddListener(HandlePlayerDeath);
-                _eventSubscribed = true;
-            }
         }
 
         public abstract void SaveData();
@@ -34,7 +26,6 @@ namespace Ivayami.Save
             if (SaveSystem.Instance)
             {
                 SaveSystem.Instance.RegisterSaveObject(this);
-                //PlayerStress.Instance.onFail.AddListener(HandlePlayerDeath);
             }
         }
 
@@ -42,27 +33,20 @@ namespace Ivayami.Save
         {
             if (SaveSystem.Instance)
             {
-                if (_saveOnDisable && _canSave) SaveData();
+                if (_canSave) SaveData();
                 SaveSystem.Instance.UnregisterSaveObject(this);
-                //PlayerStress.Instance.onFail.RemoveListener(HandlePlayerDeath);
-                //_canSave = true;
             }
         }
 
-        private void OnDestroy()
+        public static void UpdateSaveLock(bool canSave)
         {
-            _canSave = true;
-        }
-
-        private static void HandlePlayerDeath()
-        {
-            if (!PlayerStress.Instance.OverrideFailLoadValue) _canSave = false;
+            _canSave = canSave;
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (string.IsNullOrEmpty(ID)) ID = gameObject.name + "_" + Mathf.Abs(this.GetInstanceID());
+            if (string.IsNullOrEmpty(ID)) ID = gameObject.name + "_"+ UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene().name + "_" + Mathf.Abs(this.GetInstanceID());
         }
 #endif
     }

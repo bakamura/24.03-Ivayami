@@ -38,15 +38,15 @@ namespace Ivayami.Player {
         [Header("Stamina")]
 
         [SerializeField, Min(0)] private float _maxStamina = 100f;
-        [SerializeField, Range(0,1)] private float _minStaminaToRun;
-        [SerializeField, Range(0,1), Tooltip("Depletion per second")] private float _staminaDepletionRate = .1f;
+        [SerializeField, Range(0, 1)] private float _minStaminaToRun;
+        [SerializeField, Range(0, 1), Tooltip("Depletion per second")] private float _staminaDepletionRate = .1f;
         [SerializeField, Range(0, 1), Tooltip("Depletion per second")] private float _staminaRegenerationRate = .1f;
-        [SerializeField, Range(0,1), Tooltip("When stress is greater or equal to this value, stamia depletion will start")] private float _staminaDepletionStressThreshold = .6f;
+        [SerializeField, Range(0, 1), Tooltip("When stress is greater or equal to this value, stamia depletion will start")] private float _staminaDepletionStressThreshold = .6f;
         //[SerializeField, Range(0,1)] private float _staminaFeedbackThreshold;
         private float _staminaCurrent;
         private float _stressCurrent;
         private float _maxStressCurrent;
-        public bool CanMove {  get { return _movementBlock.Count <= 0; } }
+        public bool CanMove { get { return _movementBlock.Count <= 0; } }
         private bool _canRun = true;
         private bool _holdToRun;
 
@@ -109,8 +109,7 @@ namespace Ivayami.Player {
         public float MaxStamina => _maxStamina;
 #endif
 
-        protected override void Awake() 
-            {
+        protected override void Awake() {
             base.Awake();
 
             _movementInput.action.performed += MoveDirection;
@@ -122,7 +121,7 @@ namespace Ivayami.Player {
             _decceleration = Time.fixedDeltaTime / _deccelerationDuration;
             _movementSpeedMax = _movementSpeedRun;
             _movementCache = Physics.gravity;
-            ResetStamina();           
+            ResetStamina();
 
             _characterController = GetComponent<CharacterController>();
             _visualComponents = _visualTransform.GetComponentsInChildren<SkinnedMeshRenderer>();
@@ -137,7 +136,7 @@ namespace Ivayami.Player {
             PlayerStress.Instance.onStressChange.AddListener(OnStressChange);
             InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateHoldToRun);
             _maxStressCurrent = PlayerStress.Instance.MaxStress;
-        }        
+        }
 
         private void Update() {
             if (CanMove) Move();
@@ -147,7 +146,7 @@ namespace Ivayami.Player {
 
         private void MoveDirection(InputAction.CallbackContext input) {
             Vector2 value = input.ReadValue<Vector2>();
-            if(value.magnitude > _stickDeadzone) _inputCache = value;
+            if (value.magnitude > _stickDeadzone) _inputCache = value;
             else _inputCache = Vector2.zero;
 
             Logger.Log(LogType.Player, $"Movement Input Change: {input.ReadValue<Vector2>()}");
@@ -158,7 +157,7 @@ namespace Ivayami.Player {
             _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMax); // Could use _decceleration when above max speed
             _directionCache = (_targetAngle * Vector3.forward).normalized * _speedCurrent;
             _movementCache[0] = _directionCache[0];
-            _movementCache[1] = _characterController.isGrounded ? Physics.gravity.y / 10f *_gravityFactor : Mathf.Clamp(_movementCache[1] + (Physics.gravity.y * Time.deltaTime), -50f, Physics.gravity.y / 10f) * _gravityFactor;
+            _movementCache[1] = _characterController.isGrounded ? Physics.gravity.y / 10f * _gravityFactor : Mathf.Clamp(_movementCache[1] + (Physics.gravity.y * Time.deltaTime), -50f, Physics.gravity.y / 10f) * _gravityFactor;
             _movementCache[2] = _directionCache[2];
             _characterController.Move(_movementCache * Time.deltaTime);
 
@@ -214,47 +213,60 @@ namespace Ivayami.Player {
         }
 
         private void ToggleWalkInput(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
-            if(_staminaCurrent > _maxStamina * _minStaminaToRun)ToggleWalk();
+            if (_staminaCurrent > _maxStamina * _minStaminaToRun)
+            {
+                if (!_holdToRun) ToggleWalk();
+                else SetWalk(true);
+            }
         }
 
-        private void ToggleWalk()
+        private void SetWalkInputStop(InputAction.CallbackContext input = new InputAction.CallbackContext())
         {
-            if (_canRun)
+            if (_staminaCurrent > _maxStamina * _minStaminaToRun && _holdToRun)
             {
+                SetWalk(false);
+            }
+        }
+
+        private void ToggleWalk() {
+            if (_canRun) {
                 _running = !_running;
                 if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
             }
         }
 
-        private void OnStressChange(float currentStress)
+        private void SetWalk(bool isRunning)
         {
+            if (_canRun)
+            {
+                _running = isRunning;
+                if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
+            }
+        }
+
+        private void OnStressChange(float currentStress) {
             _stressCurrent = currentStress;
         }
 
-        private void StaminaUpdate()
-        {
+        private void StaminaUpdate() {
             bool inStressRange = _stressCurrent >= _staminaDepletionStressThreshold * _maxStressCurrent;
-            if (!_running || _speedCurrent == 0)
-            {
-                if (inStressRange && _staminaCurrent < _maxStamina) UpdateCurrentStamina(_staminaRegenerationRate);                
+            if (!_running || _speedCurrent == 0) {
+                if (inStressRange && _staminaCurrent < _maxStamina) UpdateCurrentStamina(_staminaRegenerationRate);
             }
-            else
-            {
+            else {
                 if (inStressRange && _staminaCurrent > 0) UpdateCurrentStamina(-_staminaDepletionRate);
             }
             if (!inStressRange) ResetStamina();
         }
 
-        private void UpdateCurrentStamina(float value)
-        {
+        private void UpdateCurrentStamina(float value) {
             _staminaCurrent = Mathf.Clamp(_staminaCurrent + value * _maxStamina * Time.deltaTime, 0, _maxStamina);
             if (_staminaCurrent <= 0) AllowRun(false);
             else AllowRun(true);
             onStaminaUpdate?.Invoke(_staminaCurrent / _maxStamina);
         }
 
-        private void ResetStamina()
-        {
+        private void ResetStamina() {
             _staminaCurrent = _maxStamina;
             onStaminaUpdate?.Invoke(1);
         }
@@ -304,8 +316,7 @@ namespace Ivayami.Player {
             //_visualTransform.gameObject.SetActive(isVisible);
         }
 
-        public void ChangeRunSpeed(float val)
-        {
+        public void ChangeRunSpeed(float val) {
             if (!IngameDebugConsole.DebugLogManager.Instance) return;
             _movementSpeedRun = val;
             _movementSpeedMax = _movementSpeedRun;
@@ -316,44 +327,39 @@ namespace Ivayami.Player {
             _movementBlock.Clear();
         }
 
-        public void UpdatePlayerGravity(bool isActive)
-        {
+        public void UpdatePlayerGravity(bool isActive) {
             _gravityFactor = (byte)(isActive ? 1 : 0);
         }
 
-        public void ChangeStickDeadzone(float value)
-        {
+        public void ChangeStickDeadzone(float value) {
             _stickDeadzone = Mathf.Clamp(value, 0.1f, .5f);
         }
 
-        public void ChangeHoldToRun(bool isActive)
-        {
+        public void ChangeHoldToRun(bool isActive) {
             _holdToRun = isActive;
-            if (isActive)
-            {
-                _walkToggleInput.action.canceled += ToggleWalkInput;
-                if (_running) ToggleWalk();
+            if (isActive) {
+                _walkToggleInput.action.canceled += SetWalkInputStop;
+                if (_running) SetWalk(false);
             }
-            else _walkToggleInput.action.canceled -= ToggleWalkInput;
+            else _walkToggleInput.action.canceled -= SetWalkInputStop;
         }
 
-        private void UpdateHoldToRun(bool isGamepad)
-        {
-            if (!SaveSystem.Instance || SaveSystem.Instance.Options == null) return;
-            if (isGamepad && SaveSystem.Instance.Options.holdToRun && _holdToRun)
-            {
-                ChangeHoldToRun(false);
-            }
-            else if(!isGamepad && SaveSystem.Instance.Options.holdToRun && !_holdToRun)
-            {
-                ChangeHoldToRun(true);
+        private void UpdateHoldToRun(InputCallbacks.ControlType controlType) {
+            if (SaveSystem.Instance?.Options == null) return;
+            if (SaveSystem.Instance.Options.holdToRun) {
+                if (controlType != InputCallbacks.ControlType.Keyboard) {
+                    if (_holdToRun) ChangeHoldToRun(false);
+                }
+                else if (!_holdToRun) {
+                    ChangeHoldToRun(true);
+                }
             }
         }
 
 #if UNITY_EDITOR
 
         private void OnValidate() {
-            if(!_characterController)_characterController = GetComponent<CharacterController>();
+            if (!_characterController) _characterController = GetComponent<CharacterController>();
             SetColliderHeight(_walkColliderHeight);
         }
 #endif

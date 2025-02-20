@@ -13,24 +13,43 @@ MonoBehaviour:
   m_Name: RestaurantOwnerGettingOut
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Restaurant's Owner
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Restaurant's Owner
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - Language: English (en)
       content: Have you found your friend?
-    - LanguageType: 1
-      announcerName: Dono do Restaurante
+    - Language: Portuguese (pt)
       content: "J\xE1 encontrou seu amigo?"
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Restaurant's Owner
-      content: I told you, he's probably at the police station.
-    - LanguageType: 1
-      announcerName: Dono do Restaurante
-      content: "Eu te disse, ele provavelmente t\xE1 na delegacia."
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Restaurant's Owner
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - Language: English (en)
+      content: If the Officer took your friend, he may be at the Police Station.
+        Take care, lass!
+    - Language: Portuguese (pt)
+      content: "Se o Policial levou seu amigo, deve t\xE1 na Delegacia. Se cuida,
+        menina!"
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 1049471123752715417}
   - component: {fileID: 5988296776515647634}
   - component: {fileID: 5767598560021351809}
-  - component: {fileID: 1701516927550585512}
   - component: {fileID: 7948569156873115150}
+  - component: {fileID: 3161739348993964617}
   m_Layer: 5
   m_Name: 4
   m_TagString: Untagged
@@ -134,51 +134,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &1701516927550585512
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 36633778036517175}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 7948569156873115150}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 7948569156873115150}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &7948569156873115150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,6 +146,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3161739348993964617
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 36633778036517175}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7948569156873115150}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7948569156873115150}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &283947077007298434
 GameObject:
   m_ObjectHideFlags: 0
@@ -506,8 +506,8 @@ GameObject:
   - component: {fileID: 448517201528837042}
   - component: {fileID: 4109054124892340692}
   - component: {fileID: 8708583052714155087}
-  - component: {fileID: 8203632250685970079}
   - component: {fileID: 176694736190292915}
+  - component: {fileID: 681054530633391714}
   m_Layer: 5
   m_Name: 11
   m_TagString: Untagged
@@ -628,51 +628,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8203632250685970079
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 493378431828674438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 176694736190292915}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 176694736190292915}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &176694736190292915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -685,6 +640,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &681054530633391714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 493378431828674438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 176694736190292915}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 176694736190292915}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &572651899882966061
 GameObject:
   m_ObjectHideFlags: 0
@@ -1194,8 +1194,8 @@ GameObject:
   - component: {fileID: 2396900717377430228}
   - component: {fileID: 3599354774397878458}
   - component: {fileID: 7056397519728082243}
-  - component: {fileID: 5719404723915563850}
   - component: {fileID: 191265179484157506}
+  - component: {fileID: 8934152691978837599}
   m_Layer: 5
   m_Name: 10
   m_TagString: Untagged
@@ -1316,51 +1316,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &5719404723915563850
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1245674844339880028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 191265179484157506}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 191265179484157506}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &191265179484157506
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1373,6 +1328,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8934152691978837599
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245674844339880028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 191265179484157506}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 191265179484157506}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1331839087397586948
 GameObject:
   m_ObjectHideFlags: 0
@@ -1573,8 +1573,8 @@ GameObject:
   - component: {fileID: 5585657092468370439}
   - component: {fileID: 775825843619186183}
   - component: {fileID: 7239891531610480033}
-  - component: {fileID: 7072729657304960283}
   - component: {fileID: 4843227720513439341}
+  - component: {fileID: 6423918536483632163}
   m_Layer: 5
   m_Name: 7
   m_TagString: Untagged
@@ -1695,51 +1695,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7072729657304960283
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1575353398542464904}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 4843227720513439341}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 4843227720513439341}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &4843227720513439341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1752,6 +1707,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6423918536483632163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1575353398542464904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 4843227720513439341}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 4843227720513439341}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1812501638351676747
 GameObject:
   m_ObjectHideFlags: 0
@@ -2013,8 +2013,8 @@ GameObject:
   - component: {fileID: 5521412743412151076}
   - component: {fileID: 1301059434637601672}
   - component: {fileID: 3093750717779124168}
-  - component: {fileID: 931924039178404615}
   - component: {fileID: 165213599077817641}
+  - component: {fileID: 6205153318887560170}
   m_Layer: 5
   m_Name: 8
   m_TagString: Untagged
@@ -2135,51 +2135,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &931924039178404615
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2081194022393448139}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 165213599077817641}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 165213599077817641}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &165213599077817641
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2192,6 +2147,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6205153318887560170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2081194022393448139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 165213599077817641}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 165213599077817641}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2314977368799312381
 GameObject:
   m_ObjectHideFlags: 0
@@ -2230,7 +2230,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 200}
+  m_SizeDelta: {x: 0, y: 140}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &6893647799403979839
 MonoBehaviour:
@@ -2353,8 +2353,8 @@ GameObject:
   - component: {fileID: 5546660258096947943}
   - component: {fileID: 7905041913874041191}
   - component: {fileID: 7701576863486827259}
-  - component: {fileID: 4307404949472008453}
   - component: {fileID: 9174963936975169250}
+  - component: {fileID: 5805695760779334209}
   m_Layer: 5
   m_Name: 0
   m_TagString: Untagged
@@ -2475,51 +2475,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &4307404949472008453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2391416594211462378}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 9174963936975169250}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 9174963936975169250}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &9174963936975169250
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2532,6 +2487,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5805695760779334209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2391416594211462378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 9174963936975169250}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 9174963936975169250}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &2704498239840731726
 GameObject:
   m_ObjectHideFlags: 0
@@ -3184,8 +3184,8 @@ GameObject:
   - component: {fileID: 2162821789000654147}
   - component: {fileID: 146625892914358854}
   - component: {fileID: 512764089040060509}
-  - component: {fileID: 2403000934910306345}
   - component: {fileID: 8948392484742496698}
+  - component: {fileID: 1583098807455761724}
   m_Layer: 5
   m_Name: 1
   m_TagString: Untagged
@@ -3306,51 +3306,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2403000934910306345
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3616039048193658801}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 8948392484742496698}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 8948392484742496698}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &8948392484742496698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3363,6 +3318,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1583098807455761724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3616039048193658801}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8948392484742496698}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 8948392484742496698}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3619155967632225934
 GameObject:
   m_ObjectHideFlags: 0
@@ -3652,8 +3652,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0.73522186, y: 0.78234863, z: 0.5179901}
+  m_Center: {x: -0.09717941, y: 0.010375977, z: 0.24100494}
 --- !u!114 &5338945787228921581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3668,8 +3668,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _highlightedColor: {r: 0.03921569, g: 0.03921569, b: 0.03921569, a: 1}
   _applyToChildrens: 1
-  _controllerInteractionIcon: {fileID: 21300000, guid: 24f08fc209a15634b89835799e799e29, type: 3}
-  _keyboardInteractionIcon: {fileID: 21300000, guid: 2db7e48706ebdaf4ea4aeb3503544834, type: 3}
+  _interactionIcons: {fileID: 11400000, guid: 176ec443a41bbfe45ad4bb806445af64, type: 2}
 --- !u!114 &897054061248490331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3871,8 +3870,8 @@ GameObject:
   - component: {fileID: 687009229770664102}
   - component: {fileID: 7661286269587004432}
   - component: {fileID: 1256876270567942367}
-  - component: {fileID: 7575355647369129979}
   - component: {fileID: 7411925066338722912}
+  - component: {fileID: 6446277352635339980}
   m_Layer: 5
   m_Name: 6
   m_TagString: Untagged
@@ -3993,51 +3992,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7575355647369129979
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3776373757146673933}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 7411925066338722912}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 7411925066338722912}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &7411925066338722912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4050,6 +4004,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6446277352635339980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3776373757146673933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7411925066338722912}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7411925066338722912}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3832501624356208759
 GameObject:
   m_ObjectHideFlags: 0
@@ -4061,6 +4060,7 @@ GameObject:
   - component: {fileID: 1540944189666240689}
   - component: {fileID: 5195341436478218574}
   - component: {fileID: 2990885799242031336}
+  - component: {fileID: 1789272962436727420}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -4184,6 +4184,46 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1789272962436727420
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3832501624356208759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
+    m_TableEntryReference:
+      m_KeyId: 370328743817219
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2990885799242031336}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &3999808518869403706
 GameObject:
   m_ObjectHideFlags: 0
@@ -4301,8 +4341,8 @@ GameObject:
   - component: {fileID: 7635990127317034464}
   - component: {fileID: 9098434392677625291}
   - component: {fileID: 5298997129858506020}
-  - component: {fileID: 2887441513918882174}
   - component: {fileID: 7644357310141145465}
+  - component: {fileID: 6832561237659665323}
   m_Layer: 5
   m_Name: 9
   m_TagString: Untagged
@@ -4423,51 +4463,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2887441513918882174
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4000264351362784578}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 7644357310141145465}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 7644357310141145465}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &7644357310141145465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4480,6 +4475,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6832561237659665323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4000264351362784578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7644357310141145465}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7644357310141145465}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &4068911439887493261
 GameObject:
   m_ObjectHideFlags: 0
@@ -4492,8 +4532,8 @@ GameObject:
   - component: {fileID: 8660745682893105604}
   - component: {fileID: 3774134371920913745}
   - component: {fileID: 9007896201650943731}
-  - component: {fileID: 3454347810552884490}
   - component: {fileID: 3423548501184143522}
+  - component: {fileID: 7189405344545265776}
   m_Layer: 5
   m_Name: 3
   m_TagString: Untagged
@@ -4614,51 +4654,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3454347810552884490
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4068911439887493261}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 3423548501184143522}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 3423548501184143522}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &3423548501184143522
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4671,6 +4666,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7189405344545265776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4068911439887493261}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3423548501184143522}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 3423548501184143522}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &4137338400696613623
 GameObject:
   m_ObjectHideFlags: 0
@@ -4683,8 +4723,8 @@ GameObject:
   - component: {fileID: 659005827648359582}
   - component: {fileID: 7145599012337880532}
   - component: {fileID: 8564731691015206945}
-  - component: {fileID: 7405386133426020562}
   - component: {fileID: 7109347361010994596}
+  - component: {fileID: 1531134248696476695}
   m_Layer: 5
   m_Name: 14
   m_TagString: Untagged
@@ -4805,51 +4845,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7405386133426020562
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4137338400696613623}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 7109347361010994596}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 7109347361010994596}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &7109347361010994596
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4862,6 +4857,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1531134248696476695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4137338400696613623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7109347361010994596}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 7109347361010994596}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &4216089513019164832
 GameObject:
   m_ObjectHideFlags: 0
@@ -5040,8 +5080,8 @@ GameObject:
   - component: {fileID: 2597537320404716344}
   - component: {fileID: 4615556592027712350}
   - component: {fileID: 7115545153389751098}
-  - component: {fileID: 3255404337356347087}
   - component: {fileID: 4357747634710331065}
+  - component: {fileID: 1241912517047209190}
   m_Layer: 5
   m_Name: 2
   m_TagString: Untagged
@@ -5162,51 +5202,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3255404337356347087
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4440702352604969740}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 4357747634710331065}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 4357747634710331065}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &4357747634710331065
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5219,6 +5214,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1241912517047209190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4440702352604969740}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 4357747634710331065}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 4357747634710331065}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &4572575872833730486
 GameObject:
   m_ObjectHideFlags: 0
@@ -5484,7 +5524,6 @@ GameObject:
   - component: {fileID: 6225233947222475960}
   - component: {fileID: 9026621619201968221}
   - component: {fileID: 1622517385668724494}
-  - component: {fileID: 460446272788954191}
   m_Layer: 5
   m_Name: InputDisplayUI
   m_TagString: Untagged
@@ -5571,15 +5610,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _displays:
-  - Icon: {fileID: 2247651753666434186}
-    KeyboardIcon: {fileID: 21300000, guid: 6eb72c645ea839547987871da8f1e05c, type: 3}
-    GamepadIcon: {fileID: 21300000, guid: 4181cd3b4bc4c3243b66f2d75a4ccdf1, type: 3}
-  - Icon: {fileID: 4830033989539092468}
-    KeyboardIcon: {fileID: 21300000, guid: 8bf30719618d6684d9bba6b5d1e59a5d, type: 3}
-    GamepadIcon: {fileID: 21300000, guid: 24f08fc209a15634b89835799e799e29, type: 3}
-  - Icon: {fileID: 8755818318631635126}
-    KeyboardIcon: {fileID: 21300000, guid: b90414f123435834d9bc42d7213e09b7, type: 3}
-    GamepadIcon: {fileID: 21300000, guid: e942d5643c22fef469e0ea46e9f14f86, type: 3}
+  - Image: {fileID: 2247651753666434186}
+    InputIcons: {fileID: 11400000, guid: 6b3e1eef5952b324a9e0486ad4fb4e0b, type: 2}
+  - Image: {fileID: 4830033989539092468}
+    InputIcons: {fileID: 11400000, guid: 9e26f8306ee4bd04193db8110e780527, type: 2}
+  - Image: {fileID: 8755818318631635126}
+    InputIcons: {fileID: 11400000, guid: 88bf289dfcc87b546b994f0a4b4d8c39, type: 2}
 --- !u!225 &1622517385668724494
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -5592,26 +5628,6 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
---- !u!114 &460446272788954191
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5165451207461262597}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cdab7fbe0b3a1848822baadf3abe675, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _uiText: {fileID: 11400000, guid: de9356220cb7af048bb1ecdb75b838e8, type: 2}
-  _languageComponents:
-  - <Tmp>k__BackingField: {fileID: 2990885799242031336}
-    Id: ChangeSelectionContainer
-  - <Tmp>k__BackingField: {fileID: 3319273924817977321}
-    Id: ActivateFuseContainer
-  - <Tmp>k__BackingField: {fileID: 4186874691435846776}
-    Id: ExitPuzzleContainer
 --- !u!1 &5389364591737881102
 GameObject:
   m_ObjectHideFlags: 0
@@ -5758,8 +5774,8 @@ GameObject:
   - component: {fileID: 6406906444634418424}
   - component: {fileID: 4080962045622541058}
   - component: {fileID: 6371273851778766742}
-  - component: {fileID: 7305370382812234445}
   - component: {fileID: 6102372676132106842}
+  - component: {fileID: 9048144051801528585}
   m_Layer: 5
   m_Name: 5
   m_TagString: Untagged
@@ -5880,51 +5896,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7305370382812234445
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5486261942460587262}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 6102372676132106842}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 6102372676132106842}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &6102372676132106842
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5937,6 +5908,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &9048144051801528585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5486261942460587262}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6102372676132106842}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6102372676132106842}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5689946464757035985
 GameObject:
   m_ObjectHideFlags: 0
@@ -6375,8 +6391,8 @@ GameObject:
   - component: {fileID: 667329808065093753}
   - component: {fileID: 550290566271793629}
   - component: {fileID: 2457486801991122731}
-  - component: {fileID: 9217290345002194058}
   - component: {fileID: 2561969693782580678}
+  - component: {fileID: 4687450958259692480}
   m_Layer: 5
   m_Name: 19
   m_TagString: Untagged
@@ -6497,51 +6513,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &9217290345002194058
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6161593969327174849}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 2561969693782580678}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 2561969693782580678}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &2561969693782580678
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6554,6 +6525,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4687450958259692480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6161593969327174849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2561969693782580678}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2561969693782580678}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6284216593551302420
 GameObject:
   m_ObjectHideFlags: 0
@@ -6566,8 +6582,8 @@ GameObject:
   - component: {fileID: 824672397835516008}
   - component: {fileID: 3496859341347672072}
   - component: {fileID: 3703512844875609651}
-  - component: {fileID: 8781183962524786665}
   - component: {fileID: 4563197130327828382}
+  - component: {fileID: 934697966360631530}
   m_Layer: 5
   m_Name: 13
   m_TagString: Untagged
@@ -6688,51 +6704,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8781183962524786665
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6284216593551302420}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 4563197130327828382}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 4563197130327828382}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &4563197130327828382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6745,6 +6716,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &934697966360631530
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6284216593551302420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 4563197130327828382}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 4563197130327828382}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6311329288809484762
 GameObject:
   m_ObjectHideFlags: 0
@@ -7072,8 +7088,8 @@ GameObject:
   - component: {fileID: 3988027805143229900}
   - component: {fileID: 8173798488561275271}
   - component: {fileID: 5002668743512215251}
-  - component: {fileID: 129076021854582178}
   - component: {fileID: 2829977861214647295}
+  - component: {fileID: 7889128076444821154}
   m_Layer: 5
   m_Name: 15
   m_TagString: Untagged
@@ -7194,51 +7210,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &129076021854582178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6658739957103480935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 2829977861214647295}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 2829977861214647295}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &2829977861214647295
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7251,6 +7222,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &7889128076444821154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6658739957103480935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2829977861214647295}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 2829977861214647295}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7188978097636374817
 GameObject:
   m_ObjectHideFlags: 0
@@ -7367,6 +7383,7 @@ GameObject:
   - component: {fileID: 2485466761447979544}
   - component: {fileID: 2495783928149929822}
   - component: {fileID: 4186874691435846776}
+  - component: {fileID: 6914511088862522835}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -7490,6 +7507,46 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &6914511088862522835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7215888026730296597}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
+    m_TableEntryReference:
+      m_KeyId: 370328743817221
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4186874691435846776}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &7271681853574258931
 GameObject:
   m_ObjectHideFlags: 0
@@ -7502,8 +7559,8 @@ GameObject:
   - component: {fileID: 2230963964772890610}
   - component: {fileID: 507960694699501872}
   - component: {fileID: 5685616390647029874}
-  - component: {fileID: 3446787064264813425}
   - component: {fileID: 5725868436510495784}
+  - component: {fileID: 4065195126142965678}
   m_Layer: 5
   m_Name: 18
   m_TagString: Untagged
@@ -7624,51 +7681,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3446787064264813425
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7271681853574258931}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 5725868436510495784}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 5725868436510495784}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &5725868436510495784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7681,6 +7693,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &4065195126142965678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7271681853574258931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 5725868436510495784}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 5725868436510495784}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7362607455517018253
 GameObject:
   m_ObjectHideFlags: 0
@@ -7693,8 +7750,8 @@ GameObject:
   - component: {fileID: 2819756893968221693}
   - component: {fileID: 8913871826577816998}
   - component: {fileID: 9029542063684977235}
-  - component: {fileID: 5652336746558587767}
   - component: {fileID: 1650325361838886852}
+  - component: {fileID: 8142423663459722085}
   m_Layer: 5
   m_Name: 17
   m_TagString: Untagged
@@ -7815,51 +7872,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &5652336746558587767
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7362607455517018253}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1650325361838886852}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1650325361838886852}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1650325361838886852
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7872,6 +7884,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8142423663459722085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7362607455517018253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1650325361838886852}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1650325361838886852}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7442742053690232935
 GameObject:
   m_ObjectHideFlags: 0
@@ -7884,8 +7941,8 @@ GameObject:
   - component: {fileID: 4551204692102270311}
   - component: {fileID: 2195649751263535003}
   - component: {fileID: 2731327866759209495}
-  - component: {fileID: 7346074876446726927}
   - component: {fileID: 1603746295016123822}
+  - component: {fileID: 2527334943397583590}
   m_Layer: 5
   m_Name: 12
   m_TagString: Untagged
@@ -8006,51 +8063,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7346074876446726927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7442742053690232935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1603746295016123822}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 1603746295016123822}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &1603746295016123822
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8063,6 +8075,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2527334943397583590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7442742053690232935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1603746295016123822}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 1603746295016123822}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &7694523373002708970
 GameObject:
   m_ObjectHideFlags: 0
@@ -8623,8 +8680,8 @@ GameObject:
   - component: {fileID: 1075424019203113567}
   - component: {fileID: 1456436940160856703}
   - component: {fileID: 6012241939009565368}
-  - component: {fileID: 5810658234110349825}
   - component: {fileID: 6531665495743550260}
+  - component: {fileID: 47843673365735903}
   m_Layer: 5
   m_Name: 16
   m_TagString: Untagged
@@ -8745,51 +8802,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &5810658234110349825
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8829866014793559164}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Delegates:
-  - eventID: 0
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 6531665495743550260}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - eventID: 9
-    callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1589715338426270118}
-          m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
-          m_MethodName: ChangeCurrentSelected
-          m_Mode: 2
-          m_Arguments:
-            m_ObjectArgument: {fileID: 6531665495743550260}
-            m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
 --- !u!114 &6531665495743550260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8802,6 +8814,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52e5ad4fcc78ecd4e96ce5f5576bc7de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &47843673365735903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8829866014793559164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf0bd82fa6331264898169ad4116538d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onSelect:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6531665495743550260}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerEnter:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1589715338426270118}
+        m_TargetAssemblyTypeName: Ivayami.Puzzle.FuseBox, Assembly-CSharp
+        m_MethodName: ChangeCurrentSelected
+        m_Mode: 2
+        m_Arguments:
+          m_ObjectArgument: {fileID: 6531665495743550260}
+          m_ObjectArgumentAssemblyTypeName: Ivayami.Puzzle.FuseBoxButtonUI, Assembly-CSharp
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onPointerExit:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &8901644279709205822
 GameObject:
   m_ObjectHideFlags: 0
@@ -8813,6 +8870,7 @@ GameObject:
   - component: {fileID: 5106938320229738368}
   - component: {fileID: 1106017620934063242}
   - component: {fileID: 3319273924817977321}
+  - component: {fileID: 8250179242888614847}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -8936,6 +8994,46 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &8250179242888614847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8901644279709205822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
+    m_TableEntryReference:
+      m_KeyId: 370328743817220
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 3319273924817977321}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &8978925268316601810
 GameObject:
   m_ObjectHideFlags: 0
@@ -9698,10 +9796,6 @@ PrefabInstance:
     - target: {fileID: 5765627851176342930, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
       propertyPath: m_Name
       value: InteractablePopup
-      objectReference: {fileID: 0}
-    - target: {fileID: 6279569169204341742, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

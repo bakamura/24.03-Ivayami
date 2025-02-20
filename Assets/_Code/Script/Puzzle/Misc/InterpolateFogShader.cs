@@ -19,18 +19,24 @@ namespace Ivayami.Puzzle
         public void StartLerp()
         {
             GetMaterialInstance();
-            StopLerp();
             _initialValue = _fogMaterial.GetVector(PARAMETER);
-            _interpolationCoroutine = StartCoroutine(InterpolateCoroutine());
+            if (!gameObject.activeInHierarchy)
+            {
+                _fogMaterial.SetVector(PARAMETER, new Vector4(_initialValue.x, _finalValue, _initialValue.z, _initialValue.w));
+                return;
+            }
+            StopLerp();
+            _interpolationCoroutine = StartCoroutine(InterpolateCoroutine(_finalValue));
         }
         [ContextMenu("Stop")]
         public void StopLerp()
         {
+            //if (!gameObject.activeInHierarchy) return;
             if (_interpolationCoroutine != null)
             {
                 StopCoroutine(_interpolationCoroutine);
                 _interpolationCoroutine = null;
-                _fogMaterial.SetVector(PARAMETER, new Vector4(_initialValue.x, _finalValue, _initialValue.z, _initialValue.w));
+                //_fogMaterial.SetVector(PARAMETER, new Vector4(_initialValue.x, _finalValue, _initialValue.z, _initialValue.w));
             }
         }
 
@@ -39,7 +45,7 @@ namespace Ivayami.Puzzle
             if (!_fogMaterial) _fogMaterial = PlayerCamera.Instance.MainCamera.GetComponentInChildren<MeshRenderer>().material;
         }
 
-        private IEnumerator InterpolateCoroutine()
+        private IEnumerator InterpolateCoroutine(float targetValue)
         {
             float count = 0;
             if(_duration > 0)
@@ -48,13 +54,13 @@ namespace Ivayami.Puzzle
                 {
                     count += Time.deltaTime;
                     _fogMaterial.SetVector(PARAMETER, Vector4.Lerp(_initialValue,
-                        new Vector4(_initialValue.x, _finalValue, _initialValue.z, _initialValue.w), _interpolationCurve.Evaluate(count / _duration)));
+                        new Vector4(_initialValue.x, targetValue, _initialValue.z, _initialValue.w), _interpolationCurve.Evaluate(count / _duration)));
                     yield return null;
                 }                
             }
             else
             {
-                _fogMaterial.SetVector(PARAMETER, new Vector4(_initialValue.x, _finalValue, _initialValue.z, _initialValue.w));
+                _fogMaterial.SetVector(PARAMETER, new Vector4(_initialValue.x, targetValue, _initialValue.z, _initialValue.w));
             }
             _interpolationCoroutine = null;
         }

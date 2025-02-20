@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using Ivayami.UI;
 using Ivayami.Player;
 
 namespace Ivayami.Puzzle
@@ -8,9 +9,8 @@ namespace Ivayami.Puzzle
     {
         [SerializeField] private Color _highlightedColor = new Color(0.03921569f, 0.03921569f, 0.03921569f, 1);
         [SerializeField] private bool _applyToChildrens = true;
-        [SerializeField] private Sprite _controllerInteractionIcon;
-        [SerializeField] private Sprite _keyboardInteractionIcon;
-
+        [SerializeField] private InputIcons _interactionIcons;
+        
         private List<Material> _materials;
         private List<Color> _baseColors;
         private SpriteRenderer _icon;
@@ -22,6 +22,10 @@ namespace Ivayami.Puzzle
         private static readonly int _colorVarName = Shader.PropertyToID("_EmissionColor");
         private static int PULSE = Animator.StringToHash("pulse");
         public Vector3 IconPosition {  get { return _icon.gameObject.transform.position; } }
+
+        //private void Awake() {
+        //    if(_interactionIcons == null) _interactionIcons = Resources.Load<InputIcons>("InputIcons/InteractablePopup").Icons;
+        //}
 
         private void Start()
         {
@@ -104,10 +108,7 @@ namespace Ivayami.Puzzle
             {
                 _showingInputIcon = isActive;
                 if (forcePopupIconActivationUpdate) _icon.enabled = isActive;
-                if (isActive)
-                {
-                    InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisualIcon);
-                }
+                if (isActive) InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisualIcon);
                 else
                 {
                     InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisualIcon);
@@ -121,10 +122,10 @@ namespace Ivayami.Puzzle
             _interactionAnimation.Play(PULSE, 0);
         }
 
-        private void UpdateVisualIcon(bool isGamepad)
+        private void UpdateVisualIcon(InputCallbacks.ControlType controlType)
         {
             SetupIcon();
-            _icon.sprite = isGamepad ? _controllerInteractionIcon : _keyboardInteractionIcon;
+            _icon.sprite = _interactionIcons.Icons[(int)controlType];
         }
 
         //private void OnValidate()
@@ -137,5 +138,7 @@ namespace Ivayami.Puzzle
         //        sprite.enabled = false;
         //    }
         //}
+
+
     }
 }

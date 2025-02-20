@@ -10,6 +10,7 @@ namespace Ivayami.Puzzle
     public class InteractableObjectsGroup : MonoBehaviour, IInteractable
     {
         [SerializeField] private InputActionReference _cancelInteractionInput;
+        [SerializeField] private bool _buttonsInteractAutoWithInteractable = true;
         [SerializeField] private ButtonData[] _options;
 
         [SerializeField] private UnityEvent _onInteract;
@@ -27,7 +28,11 @@ namespace Ivayami.Puzzle
         private CanvasGroup m_canvasGroup;
         private InteractableObjectsGroupButton _currentBtn;
         private bool _setupComplete;
+#if UNITY_EDITOR
+        private Transform _interactableObjectsParent;
+#endif
 
+        public bool ButtonsInteractAutoWithInteractable => _buttonsInteractAutoWithInteractable;
         [Serializable]
         public struct ButtonData
         {
@@ -94,11 +99,13 @@ namespace Ivayami.Puzzle
             {
                 _cancelInteractionInput.action.started += HandleCancelInteraction;
                 PlayerActions.Instance.ChangeInputMap("Menu");
+                PlayerActions.Instance.ToggleInteract(nameof(InteractableObjectsGroup), false);
             }
             else
             {
                 _cancelInteractionInput.action.started -= HandleCancelInteraction;
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ToggleInteract(nameof(InteractableObjectsGroup), true);
             }
         }
 
@@ -141,13 +148,17 @@ namespace Ivayami.Puzzle
 
         public void UpdateButtonsArray()
         {
+            if (!_interactableObjectsParent) _interactableObjectsParent = transform.Find("InteractableObjects");
             InteractableObjectsGroupButton[] btns = _canvasGroup.GetComponentsInChildren<InteractableObjectsGroupButton>();
+            IInteractable[] interactableObjects = _interactableObjectsParent.GetComponentsInChildren<IInteractable>();
             if (btns == null) return;
             if (_options == null) _options = new ButtonData[btns.Length];
             else Array.Resize(ref _options, btns.Length);
             for (int i = 0; i < _options.Length; i++)
             {
                 _options[i].PuzzleButton = btns[i];
+                if (i < interactableObjects.Length && !_options[i].InteractableObject)
+                    _options[i].InteractableObject = interactableObjects[i].gameObject;
             }
         }
 #endif

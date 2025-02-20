@@ -2,7 +2,6 @@ using UnityEngine;
 using Ivayami.Player;
 using Ivayami.UI;
 using Ivayami.Dialogue;
-using Ivayami.Save;
 using Ivayami.Audio;
 using UnityEngine.Events;
 
@@ -39,11 +38,11 @@ namespace Ivayami.Puzzle {
         public PlayerActions.InteractAnimation Interact() {
             PlayerActions.Instance.ChangeInputMap("Menu");
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, false);
+            PlayerActions.Instance.ToggleInteract(nameof(ReadableObject), false);
             InteratctableFeedbacks.UpdateFeedbacks(false, true);
             _focusCamera.StartMovement();
 
-            Readable readable = _readable.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language);
-            ReadableUI.Instance.ShowReadable(readable.Title, readable.Content);
+            ReadableUI.Instance.ShowReadable(_readable.GetDisplayName(), _readable.GetDisplayDescription());
 
             ReturnAction.Instance.Set(StopReading);
 
@@ -61,6 +60,7 @@ namespace Ivayami.Puzzle {
             PlayerActions.Instance.ChangeInputMap("Player");
             InteratctableFeedbacks.UpdateFeedbacks(true, true);
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, true);
+            PlayerActions.Instance.ToggleInteract(nameof(ReadableObject), true);
             _focusCamera.ExitDialogueCamera();
             ReadableUI.Instance.Menu.Close();
         }

@@ -6,6 +6,8 @@ using Ivayami.Player;
 using Ivayami.Save;
 using Ivayami.Audio;
 using System.Collections;
+using Ivayami.Puzzle;
+using UnityEngine.Localization.Components;
 
 namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
@@ -32,7 +34,7 @@ namespace Ivayami.UI {
             Menu menu = GetComponent<Menu>();
             menu.OnOpenStart.AddListener(() => {
                 _shouldResetToStory = true;
-                });
+            });
             menu.OnCloseStart.AddListener(() => {
                 _shouldResetToStory = false;
             });
@@ -52,8 +54,7 @@ namespace Ivayami.UI {
             StartCoroutine(ResetToSToryCoroutine());
         }
 
-        private IEnumerator ResetToSToryCoroutine()
-        {
+        private IEnumerator ResetToSToryCoroutine() {
             yield return new WaitForEndOfFrame();
             if (_shouldResetToStory) _chapterBtn.onClick.Invoke();
         }
@@ -70,12 +71,12 @@ namespace Ivayami.UI {
         }
 
         private void SetupStorySelection() {
-            for (int i = 0; i <= SaveSystem.Instance.Progress.GetEntryProgressOfType("StoryEntry"); i++) if (i >= _storySelectionContainer.childCount)
-                    SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/ENUS/StoryEntry_{i}").GetTranslation(SaveSystem.Instance.Options.Language), i == 0);
+            int progress = SaveSystem.Instance.Progress.GetEntryProgressOfType("StoryEntryProgress") - 1;
+            if (progress >= 0) for (int i = 0; i <= progress; i++) if (i >= _storySelectionContainer.childCount) SetupBtn(Instantiate(_selectionBtnPrefab, _storySelectionContainer), Resources.Load<JournalEntry>($"Journal/StoryEntry/StoryEntry_{i}"));
         }
 
         private void SetupCharactersSelection() {
-            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/CharacterEntry/ENUS");
+            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/CharacterEntry");
             int currentChild = 0;
             for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.GetEntryProgressOfType(entries[i].name) > 0) {
                     SetupBtn(currentChild >= _characterSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _characterSelectionContainer) : _characterSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
@@ -86,11 +87,11 @@ namespace Ivayami.UI {
         private void SetupDocumentsSelection() {
             ReadableItem[] documentItems = PlayerInventory.Instance.CheckInventory().OfType<ReadableItem>().ToArray();
             for (int i = 0; i < documentItems.Length; i++)
-                SetupBtn(i >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(i).GetComponentInChildren<Button>(), documentItems[i].JournalEntry);
+                SetupBtn(i >= _documentSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _documentSelectionContainer) : _documentSelectionContainer.GetChild(i).GetComponentInChildren<Button>(), documentItems[i].Entry);
         }
 
         private void SetupAberrationsSelection() {
-            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/AberrationEntry/ENUS");
+            JournalEntry[] entries = Resources.LoadAll<JournalEntry>($"Journal/AberrationEntry");
             int currentChild = 0;
             for (int i = 0; i < entries.Length; i++) if (SaveSystem.Instance.Progress.GetEntryProgressOfType(entries[i].name) > 0) {
                     SetupBtn(currentChild >= _aberrationSelectionContainer.childCount ? Instantiate(_selectionBtnPrefab, _aberrationSelectionContainer) : _aberrationSelectionContainer.GetChild(currentChild).GetComponentInChildren<Button>(), entries[i]);
@@ -102,7 +103,15 @@ namespace Ivayami.UI {
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() => DisplayEntry(entry));
             btn.onClick.AddListener(_btnSound.GoForth);
-            btn.GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
+            btn.GetComponent<LocalizeStringEvent>().SetEntry(entry.GetDisplayName());
+            if (shouldSelect) btn.onClick.Invoke();
+        }
+
+        private void SetupBtn(Button btn, Readable entry, bool shouldSelect = false) {
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => DisplayEntry(entry));
+            btn.onClick.AddListener(_btnSound.GoForth);
+            btn.GetComponent<TextMeshProUGUI>().text = entry.GetDisplayName();
             if (shouldSelect) btn.onClick.Invoke();
         }
 
@@ -160,8 +169,15 @@ namespace Ivayami.UI {
                 return;
             }
             if (_presets.Length > entry.TemplateID) _presets[entry.TemplateID].DisplayEntry(entry);
-            else Debug.LogError($"'{entry.name}' tried using journal preset {entry.TemplateID} which is doesn't exist!");
+            else Debug.LogError($"'{entry.name}' tried using journal preset {entry.TemplateID} which doesn't exist!");
         }
 
+        private void DisplayEntry(Readable entry) {
+            if (entry == null) {
+                Debug.LogWarning("Description Not Found");
+                return;
+            }
+            _presets[0].DisplayEntry(entry);
+        }
     }
 }

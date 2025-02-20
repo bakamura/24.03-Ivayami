@@ -36,7 +36,7 @@ namespace Ivayami.Puzzle
         private FuseBoxButtonUI _defaultBtn;
         private InteractableFeedbacks _interatctableHighlight;
         private InteractableSounds _interactableSounds;
-        private static int _colorEmissionVarID = Shader.PropertyToID("_EmissionColor");
+        private static readonly int _colorEmissionVarID = Shader.PropertyToID("_EmissionColor");
 
         public InteractableFeedbacks InteratctableFeedbacks { get => _interatctableHighlight; }
 
@@ -85,9 +85,9 @@ namespace Ivayami.Puzzle
 
         private void Setup()
         {
-            SelectDefaultButton();
-            _meshRendererFuses[_currentButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _selectedColor);
             _isActive = true;
+            _defaultBtn.Button.Select();
+            _meshRendererFuses[_currentButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _selectedColor);
             UpdateInputsAndUI(_isActive);
             _onInteract?.Invoke();
         }
@@ -98,20 +98,16 @@ namespace Ivayami.Puzzle
             {
                 _cancelInteractionInput.action.performed += HandleCancelInteraction;
                 PlayerActions.Instance.ChangeInputMap("Menu");
+                PlayerActions.Instance.ToggleInteract(nameof(FuseBox), false);
             }
             else
             {
                 _cancelInteractionInput.action.performed -= HandleCancelInteraction;
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ToggleInteract(nameof(FuseBox), true);
             }
             _fuseUIParent.interactable = isActive;
             _fuseUIParent.blocksRaycasts = isActive;
-        }
-
-        private void SelectDefaultButton()
-        {
-            _defaultBtn.Button.Select();
-            _currentButtonSelected = _defaultBtn;
         }
 
         public void ActivateFuse()
@@ -145,47 +141,47 @@ namespace Ivayami.Puzzle
 
         private void UpdateActivateFuse()
         {
-                RaycastHit hit;
-                MeshRenderer mesh;
-                //self
-                _meshRenderersLeds[_currentButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _meshRenderersLeds[_currentButtonSelected.ButtonIndex].material.GetColor(_colorEmissionVarID) == _activatedColor ? _deactivatedColor : _activatedColor);
+            RaycastHit hit;
+            MeshRenderer mesh;
+            //self
+            _meshRenderersLeds[_currentButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _meshRenderersLeds[_currentButtonSelected.ButtonIndex].material.GetColor(_colorEmissionVarID) == _activatedColor ? _deactivatedColor : _activatedColor);
 
-                //up
-                if (Physics.Raycast(_meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.position, _meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.up, out hit, _distanceBetweenLeds.y, _fuseLayer))
-                {
-                    mesh = hit.collider.GetComponent<MeshRenderer>();
-                    mesh.material.SetColor(_colorEmissionVarID, mesh.material.GetColor(_colorEmissionVarID) == _activatedColor ? _deactivatedColor : _activatedColor);
-                }
-                //if (index - _matrixDimensions.y >= 0)
-                //_meshRenderers[index - (int)_matrixDimensions.y].material.color = _meshRenderers[index - (int)_matrixDimensions.y].material.color == Color.red ? Color.white : Color.red;
-                //down
-                if (Physics.Raycast(_meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.position, -_meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.up, out hit, _distanceBetweenLeds.y, _fuseLayer))
-                {
-                    mesh = hit.collider.GetComponent<MeshRenderer>();
-                    mesh.material.SetColor(_colorEmissionVarID, mesh.material.GetColor(_colorEmissionVarID) == _activatedColor ? _deactivatedColor : _activatedColor);
-                }
-                //if (index + _matrixDimensions.y < _meshRenderers.Length)
-                //_meshRenderers[index + (int)_matrixDimensions.y].material.color = _meshRenderers[index + (int)_matrixDimensions.y].material.color == Color.red ? Color.white : Color.red;
-                //left
-                if (Physics.Raycast(_meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.position, -_meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.right, out hit, _distanceBetweenLeds.x, _fuseLayer))
-                {
-                    mesh = hit.collider.GetComponent<MeshRenderer>();
-                    mesh.material.SetColor(_colorEmissionVarID, mesh.material.GetColor(_colorEmissionVarID) == _activatedColor ? _deactivatedColor : _activatedColor);
-                }
-                //if (index % _matrixDimensions.y != 0)
-                //_meshRenderers[index - 1].material.color = _meshRenderers[index - 1].material.color == Color.red ? Color.white : Color.red;
-                //right
-                if (Physics.Raycast(_meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.position, _meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.right, out hit, _distanceBetweenLeds.x, _fuseLayer))
-                {
-                    mesh = hit.collider.GetComponent<MeshRenderer>();
-                    mesh.material.SetColor(_colorEmissionVarID, mesh.material.GetColor(_colorEmissionVarID) == _activatedColor ? _deactivatedColor : _activatedColor);
-                }
-                //if ((index + 1) % _matrixDimensions.y != 0)
-                //_meshRenderers[index + 1].material.color = _meshRenderers[index + 1].material.color == Color.red ? Color.white : Color.red;
+            //up
+            if (Physics.Raycast(_meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.position, _meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.up, out hit, _distanceBetweenLeds.y, _fuseLayer))
+            {
+                mesh = hit.collider.GetComponent<MeshRenderer>();
+                mesh.material.SetColor(_colorEmissionVarID, mesh.material.GetColor(_colorEmissionVarID) == _activatedColor ? _deactivatedColor : _activatedColor);
+            }
+            //if (index - _matrixDimensions.y >= 0)
+            //_meshRenderers[index - (int)_matrixDimensions.y].material.color = _meshRenderers[index - (int)_matrixDimensions.y].material.color == Color.red ? Color.white : Color.red;
+            //down
+            if (Physics.Raycast(_meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.position, -_meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.up, out hit, _distanceBetweenLeds.y, _fuseLayer))
+            {
+                mesh = hit.collider.GetComponent<MeshRenderer>();
+                mesh.material.SetColor(_colorEmissionVarID, mesh.material.GetColor(_colorEmissionVarID) == _activatedColor ? _deactivatedColor : _activatedColor);
+            }
+            //if (index + _matrixDimensions.y < _meshRenderers.Length)
+            //_meshRenderers[index + (int)_matrixDimensions.y].material.color = _meshRenderers[index + (int)_matrixDimensions.y].material.color == Color.red ? Color.white : Color.red;
+            //left
+            if (Physics.Raycast(_meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.position, -_meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.right, out hit, _distanceBetweenLeds.x, _fuseLayer))
+            {
+                mesh = hit.collider.GetComponent<MeshRenderer>();
+                mesh.material.SetColor(_colorEmissionVarID, mesh.material.GetColor(_colorEmissionVarID) == _activatedColor ? _deactivatedColor : _activatedColor);
+            }
+            //if (index % _matrixDimensions.y != 0)
+            //_meshRenderers[index - 1].material.color = _meshRenderers[index - 1].material.color == Color.red ? Color.white : Color.red;
+            //right
+            if (Physics.Raycast(_meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.position, _meshRenderersLeds[_currentButtonSelected.ButtonIndex].transform.right, out hit, _distanceBetweenLeds.x, _fuseLayer))
+            {
+                mesh = hit.collider.GetComponent<MeshRenderer>();
+                mesh.material.SetColor(_colorEmissionVarID, mesh.material.GetColor(_colorEmissionVarID) == _activatedColor ? _deactivatedColor : _activatedColor);
+            }
+            //if ((index + 1) % _matrixDimensions.y != 0)
+            //_meshRenderers[index + 1].material.color = _meshRenderers[index + 1].material.color == Color.red ? Color.white : Color.red;
 
-                //_previousColor = _previousColor == _activatedColor ? _baseFuseColor : _activatedColor;
-                //_updateActivated = false;
-                CheckCompletion();           
+            //_previousColor = _previousColor == _activatedColor ? _baseFuseColor : _activatedColor;
+            //_updateActivated = false;
+            CheckCompletion();
         }
 
         private void CheckCompletion()
@@ -203,10 +199,10 @@ namespace Ivayami.Puzzle
         }
 
         private void UpdateFuseSelected()
-        {           
-                if (_previousButtonSelected) _meshRendererFuses[_previousButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _baseFuseColor);
-                _meshRendererFuses[_currentButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _selectedColor);
-                _previousButtonSelected = _currentButtonSelected;            
+        {
+            if (_previousButtonSelected) _meshRendererFuses[_previousButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _baseFuseColor);
+            _meshRendererFuses[_currentButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _selectedColor);
+            _previousButtonSelected = _currentButtonSelected;
         }
 #if UNITY_EDITOR
         #region Utilities
@@ -239,6 +235,14 @@ namespace Ivayami.Puzzle
         //    }
         //}
 
+        private void OnValidate()
+        {
+            if (_fuseUIParent)
+            {
+                _fuseUIParent.GetComponent<UnityEngine.UI.GridLayoutGroup>().constraintCount = (int)_matrixDimensions.y;
+            }
+        }
+
         public void RepositionFuses()
         {
             sbyte currentX = 0;
@@ -251,7 +255,7 @@ namespace Ivayami.Puzzle
                 leds[i].transform.localPosition = pos;
                 fuses[i].transform.localPosition = pos;
                 currentX++;
-                if (currentX > _matrixDimensions.x)
+                if (currentX >= _matrixDimensions.x)
                 {
                     currentX = 0;
                     currentY++;

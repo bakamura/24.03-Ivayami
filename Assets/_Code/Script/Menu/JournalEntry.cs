@@ -1,11 +1,23 @@
 using Ivayami.Save;
-using System.Linq;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
+//using Ivayami.Puzzle;
 
 namespace Ivayami.UI {
     [CreateAssetMenu(menuName = "Texts/JournalyEntry")]
     public class JournalEntry : ScriptableObject {
 
+#if UNITY_EDITOR
+        public EntryContent[] DisplayTexts;
+
+        [System.Serializable]
+        public struct EntryContent
+        {
+            [ReadOnly] public string Language;
+            public string Name;
+            public string[] Descriptions;
+        }
+#endif
         public enum EntryCategory {
             Story,
             Character,
@@ -14,35 +26,45 @@ namespace Ivayami.UI {
 
         [field: SerializeField] public int TemplateID { get; private set; }
         [field: SerializeField] public EntryCategory Category { get; private set; }
-        [field: SerializeField] public string DisplayName { get; private set; }
         [SerializeField] private AreaProgress _progressType;
-
-        [SerializeField, TextArea] private string[] _text;
-        public string Text { get { return string.Join("\n", _progressType != null ? _text.Take(SaveSystem.Instance.Progress.GetEntryProgressOfType(_progressType.Id)).ToArray() : _text); } }
         [field: SerializeField] public Sprite[] Images { get; private set; }
 
-        public JournalEntry(string displayName, string content) {
-            DisplayName = displayName;
-            _text = new string[] { content };
-            Images = new Sprite[0];
+        public string GetDisplayName()
+        {
+            //return LocalizationSettings.StringDatabase.GetLocalizedString("Journal", $"{name}/Name");
+            return $"{name}/Name";
         }
 
-        public JournalEntry(string displayName, string[] content) {
-            DisplayName = displayName;
-            _text = content;
-            Images = new Sprite[0];
+        public string GetDisplayDescription()
+        {
+            return LocalizationSettings.StringDatabase.GetLocalizedString("Journal", $"{name}/Description_{(_progressType.Id != "StoryEntryProgress" ? SaveSystem.Instance.Progress.GetEntryProgressOfType(_progressType.Id) - 1 : 0)}");
         }
 
-        public JournalEntry GetTranslation(LanguageTypes language) {
-            if (language == LanguageTypes.ENUS) return this;
-            JournalEntry entry = Resources.LoadAll<JournalEntry>($"Journal/{Category}Entry/{language}").First(text => text.name == name);
-            Resources.UnloadUnusedAssets();
-            if (entry != null) return entry;
-            else {
-                Debug.LogError($"No translation {language} found of '{name}' (JournalEntry)");
-                return this;
+        //public JournalEntry(Readable readable) {
+        //    DisplayTexts = new EntryContent[readable.DisplayTexts.Length];
+        //    for(int i = 0; i < readable.DisplayTexts.Length; i++)
+        //    {
+        //        DisplayTexts[i].Name = readable.DisplayTexts[i].Name;
+        //        DisplayTexts[i].Descriptions = new string[1];
+        //        DisplayTexts[i].Descriptions[0] = readable.DisplayTexts[i].Description;
+        //    }
+        //    Images = new Sprite[0];
+        //}
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (DisplayTexts == null || DisplayTexts.Length == 0) return;
+            int languagesCount = LocalizationSettings.AvailableLocales.Locales.Count;
+            if (languagesCount > 0 && DisplayTexts.Length != languagesCount)
+            {
+                System.Array.Resize(ref DisplayTexts, languagesCount);
+                for (int i = 0; i < DisplayTexts.Length; i++)
+                {
+                    DisplayTexts[i].Language = LocalizationSettings.AvailableLocales.Locales[i].LocaleName;
+                }
             }
         }
-
+#endif
     }
 }

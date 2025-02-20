@@ -123,6 +123,7 @@ namespace Ivayami.Puzzle
                 //_deliverInput.action.started += HandleDeliverInput;
                 PlayerMovement.Instance.ToggleMovement(nameof(DeliverUI), false);
                 PlayerActions.Instance.ChangeInputMap("Menu");
+                PlayerActions.Instance.ToggleInteract(nameof(DeliverUI), false);
                 //StartCoroutine(ActivateInputCoroutine());
             }
             else
@@ -131,6 +132,7 @@ namespace Ivayami.Puzzle
                 //_deliverInput.action.started -= HandleDeliverInput;
                 PlayerMovement.Instance.ToggleMovement(nameof(DeliverUI), true);
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ToggleInteract(nameof(DeliverUI), true);
             }
         }        
 
@@ -208,7 +210,7 @@ namespace Ivayami.Puzzle
                 if (requestIndex == _itemsCache.Count) requestIndex = 0;
             }
             _itemDisplayName.text = PlayerInventory.Instance.CheckInventoryFor(_currentItemSelected.name).Item ? 
-                _currentItemSelected.GetTranslation((LanguageTypes)SaveSystem.Instance.Options.language).DisplayName : null;
+                _currentItemSelected.GetDisplayName() : null;
         }
 
         private bool ContainItemTypeInRequest(ItemType itemType)
