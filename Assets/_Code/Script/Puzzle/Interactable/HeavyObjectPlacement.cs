@@ -37,9 +37,9 @@ namespace Ivayami.Puzzle {
 
         public PlayerActions.InteractAnimation Interact() {
             if (PlayerActions.Instance.IsHoldingHeavyObject) {
-                if (TryPlace()) return PlayerActions.InteractAnimation.EnterLocker;
+                if (TryPlace()) return PlayerActions.InteractAnimation.HeavyPlace;
             }
-            else if (TryCollect()) return PlayerActions.InteractAnimation.EnterTrash;
+            else if (TryCollect()) return PlayerActions.InteractAnimation.HeavyPickup;
             return PlayerActions.InteractAnimation.Default;
         }
 
@@ -52,10 +52,11 @@ namespace Ivayami.Puzzle {
                 PlayerMovement.Instance.AllowRun(false);
                 PlayerMovement.Instance.AllowCrouch(false);
                 PlayerStress.Instance.onFail.AddListener(RemovePlayerObject);
+                PlayerAnimation.Instance.HeavyHold(true);
                 onCollect.Invoke(true);
                 return true;
             }
-            else Debug.Log($"Could not Collect from '{name}': Place empty.");
+            else Debug.LogError($"Could not Collect from '{name}': Place empty.");
             return false;
         }
 
@@ -70,10 +71,11 @@ namespace Ivayami.Puzzle {
                 PlayerMovement.Instance.AllowRun(true);
                 PlayerMovement.Instance.AllowCrouch(true);
                 PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
+                PlayerAnimation.Instance.HeavyHold(false);
                 onCollect.Invoke(false);
                 return true;
             }
-            else Debug.Log($"Could not Place to '{name}': Place not empty.");
+            else Debug.LogError($"Could not Place to '{name}': Place not empty.");
             return false;
         }
 
@@ -89,6 +91,7 @@ namespace Ivayami.Puzzle {
             PlayerMovement.Instance.AllowRun(true);
             PlayerMovement.Instance.AllowCrouch(true);
             PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
+            PlayerAnimation.Instance.HeavyHold(false);
         }
 
     }
