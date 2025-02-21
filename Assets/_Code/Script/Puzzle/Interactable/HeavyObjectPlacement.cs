@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 using Ivayami.Player;
+using System.Collections;
 
 namespace Ivayami.Puzzle {
     public class HeavyObjectPlacement : Activator, IInteractable {
@@ -12,6 +13,12 @@ namespace Ivayami.Puzzle {
         private GameObject _heavyObjectCurrent;
         private Collider _collider;
         [SerializeField] private GameObject _interactPopup;
+
+        [Space(24)]
+
+        [SerializeField, Range(0f, 1f)] private float _pickupAnimationPoint;
+        private WaitForSeconds _collectWait;
+        private WaitForSeconds _placeWait;
 
         private InteractableFeedbacks _interactableFeedbacks;
         public InteractableFeedbacks InteratctableFeedbacks { get { return _interactableFeedbacks; } }
@@ -33,6 +40,9 @@ namespace Ivayami.Puzzle {
         private void Start() {
             _collider.enabled = _heavyObjectCurrent;
             _interactPopup.SetActive(_heavyObjectCurrent);
+            float interactAnimDuration = PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.HeavyPickup);
+            _collectWait = new WaitForSeconds(interactAnimDuration * _pickupAnimationPoint);
+            _placeWait = new WaitForSeconds(interactAnimDuration * (1f - _pickupAnimationPoint));
         }
 
         public PlayerActions.InteractAnimation Interact() {
@@ -45,38 +55,50 @@ namespace Ivayami.Puzzle {
 
         public bool TryCollect() {
             if (_heavyObjectCurrent) {
-                PlayerActions.Instance.HeavyObjectHold(_heavyObjectCurrent);
-                _heavyObjectCurrent = null;
-                IsActive = false;
-
-                PlayerMovement.Instance.AllowRun(false);
-                PlayerMovement.Instance.AllowCrouch(false);
-                PlayerStress.Instance.onFail.AddListener(RemovePlayerObject);
-                PlayerAnimation.Instance.HeavyHold(true);
-                onCollect.Invoke(true);
+                StartCoroutine(CollectRoutine());
                 return true;
             }
             else Debug.LogError($"Could not Collect from '{name}': Place empty.");
             return false;
         }
 
+        private IEnumerator CollectRoutine() {
+            yield return _collectWait;
+
+            PlayerActions.Instance.HeavyObjectHold(_heavyObjectCurrent);
+            _heavyObjectCurrent = null;
+            IsActive = false;
+
+            PlayerMovement.Instance.AllowRun(false);
+            PlayerMovement.Instance.AllowCrouch(false);
+            PlayerStress.Instance.onFail.AddListener(RemovePlayerObject);
+            PlayerAnimation.Instance.HeavyHold(true);
+            onCollect.Invoke(true);
+        }
+
         public bool TryPlace() {
             if (!_heavyObjectCurrent) {
-                _heavyObjectCurrent = PlayerActions.Instance.HeavyObjectRelease();
-                _heavyObjectCurrent.transform.parent = _placementPos;
-                _heavyObjectCurrent.transform.localPosition = Vector3.zero;
-                _heavyObjectCurrent.transform.rotation = Quaternion.identity;
-                CheckForActivation();
-
-                PlayerMovement.Instance.AllowRun(true);
-                PlayerMovement.Instance.AllowCrouch(true);
-                PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
-                PlayerAnimation.Instance.HeavyHold(false);
-                onCollect.Invoke(false);
+                StartCoroutine(PlaceRoutine());
                 return true;
             }
             else Debug.LogError($"Could not Place to '{name}': Place not empty.");
             return false;
+        }
+
+        private IEnumerator PlaceRoutine() {
+            yield return _placeWait;
+
+            _heavyObjectCurrent = PlayerActions.Instance.HeavyObjectRelease();
+            _heavyObjectCurrent.transform.parent = _placementPos;
+            _heavyObjectCurrent.transform.localPosition = Vector3.zero;
+            _heavyObjectCurrent.transform.rotation = Quaternion.identity;
+            CheckForActivation();
+
+            PlayerMovement.Instance.AllowRun(true);
+            PlayerMovement.Instance.AllowCrouch(true);
+            PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
+            PlayerAnimation.Instance.HeavyHold(false);
+            onCollect.Invoke(false);
         }
 
         private void CheckForActivation() {
@@ -87,6 +109,7 @@ namespace Ivayami.Puzzle {
         }
 
         private void RemovePlayerObject() {
+            StopAllCoroutines();
             PlayerActions.Instance.HeavyObjectRelease().transform.parent = _placementPos;
             PlayerMovement.Instance.AllowRun(true);
             PlayerMovement.Instance.AllowCrouch(true);
