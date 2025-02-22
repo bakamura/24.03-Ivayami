@@ -31,7 +31,8 @@ namespace Ivayami.UI {
 
         public string GetDisplayName()
         {
-            return LocalizationSettings.StringDatabase.GetLocalizedString("Journal", $"{name}/Name");
+            //return LocalizationSettings.StringDatabase.GetLocalizedString("Journal", $"{name}/Name");
+            return $"{name}/Name";
         }
 
         public string GetDisplayDescription()

@@ -7,6 +7,7 @@ using Ivayami.Save;
 using Ivayami.Audio;
 using System.Collections;
 using Ivayami.Puzzle;
+using UnityEngine.Localization.Components;
 
 namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
@@ -102,7 +103,7 @@ namespace Ivayami.UI {
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() => DisplayEntry(entry));
             btn.onClick.AddListener(_btnSound.GoForth);
-            btn.GetComponent<TextMeshProUGUI>().text = entry.GetDisplayName();
+            btn.GetComponent<LocalizeStringEvent>().SetEntry(entry.GetDisplayName());
             if (shouldSelect) btn.onClick.Invoke();
         }
 
