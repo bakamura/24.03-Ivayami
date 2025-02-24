@@ -32,17 +32,20 @@ namespace Ivayami.Misc
             if (_autoStart)
             {
                 Activate();
-                UpdateCoroutine(true);
+                _light.enabled = false;
+                //UpdateCoroutine(true);
             }
         }
 
         private void OnTriggerEnter(Collider other)
         {
+            _light.enabled = true;
             UpdateCoroutine(true);
         }
 
         private void OnTriggerExit(Collider other)
         {
+            _light.enabled = false;
             UpdateCoroutine(false);
         }
 
