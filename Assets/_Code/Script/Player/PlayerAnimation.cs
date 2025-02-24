@@ -23,6 +23,7 @@ namespace Ivayami.Player {
         //};
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
         private static int HOLDING = Animator.StringToHash("Holding");
+        private static int HEAVY_HOLDING = Animator.StringToHash("HeavyHolding");
         private static int GETUP = Animator.StringToHash("GetUp");
         private static int GETUP_SIT = Animator.StringToHash("GetUpSit");
         private static int SIT = Animator.StringToHash("Sit");
@@ -48,12 +49,9 @@ namespace Ivayami.Player {
             base.Awake();
 
             _animator = GetComponent<Animator>();
-            for (int i = 0; i < _interactAnimations.Length; i++)
-            {
-                if (!_interactAnimationDuration.ContainsKey(_interactAnimations[i].InteractType))
-                    _interactAnimationDuration.Add(_interactAnimations[i].InteractType, _interactAnimations[i]);
-                else
-                    Debug.LogWarning($"The animation {_interactAnimations[i].InteractType} already has an entry in the list");
+            for (int i = 0; i < _interactAnimations.Length; i++) {
+                if (!_interactAnimationDuration.ContainsKey(_interactAnimations[i].InteractType)) _interactAnimationDuration.Add(_interactAnimations[i].InteractType, _interactAnimations[i]);
+                else Debug.LogWarning($"The animation {_interactAnimations[i].InteractType} already has an entry in the list");
             }
         }
 
@@ -111,6 +109,10 @@ namespace Ivayami.Player {
 
         public void Hold(bool isHolding) {
             _animator.SetBool(HOLDING, isHolding);
+        }
+
+        public void HeavyHold(bool isHolding) {
+            _animator.SetBool(HEAVY_HOLDING, isHolding);
         }
 
         private void Trigger(string abilityName) {
