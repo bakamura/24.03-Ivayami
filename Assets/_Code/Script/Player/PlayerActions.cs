@@ -54,7 +54,9 @@ namespace Ivayami.Player {
             Seat,
             PullRope,
             PullLever,
-            PushButton
+            PushButton,
+            HeavyPickup,
+            HeavyPlace
         }
 
         //[Header("Hand Item")]
