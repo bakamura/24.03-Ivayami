@@ -1,5 +1,6 @@
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Ivayami.Player {
     public class PlayerCamera : MonoSingleton<PlayerCamera> {
@@ -33,6 +34,11 @@ namespace Ivayami.Player {
         public void UpdateCameraControls(bool isActive)
         {
             InputProvider.enabled = isActive;
+        }
+
+        public void UpdateCameraDeadzone(InputActionReference action)
+        {
+            InputProvider.XYAxis = action;
         }
 
         public void InvertCamera(bool isActive)
