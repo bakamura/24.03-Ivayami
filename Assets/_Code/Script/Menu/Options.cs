@@ -162,19 +162,15 @@ namespace Ivayami.UI {
             for (int i = 0; i < _leftStickDeadzoneInputs.Length; i++)
             {
                 _leftStickDeadzoneInputs[i].action.ApplyParameterOverride((StickDeadzoneProcessor s) => s.min, deadzoneRange);
-                Debug.Log(_leftStickDeadzoneInputs[i].action.GetParameterValue((StickDeadzoneProcessor s) => s.min));
             }
         }
 
         private void UpdateRightStickDeadzones(float deadzoneRange)
         {
-            InputActionReference cameraInput = null;
             for (int i = 0; i < _rightStickDeadzoneInputs.Length; i++)
             {
                 _rightStickDeadzoneInputs[i].action.ApplyParameterOverride((StickDeadzoneProcessor s) => s.min, deadzoneRange);
-                if (string.Equals(_rightStickDeadzoneInputs[i].name, "Camera")) cameraInput = _rightStickDeadzoneInputs[i];
             }
-            //PlayerCamera.Instance.UpdateCameraDeadzone(cameraInput);
         }
 
         public void ToggleToRun(bool isActive)
