@@ -101,7 +101,7 @@ namespace Ivayami.Player {
         private Transform _cameraTransform;
         private SkinnedMeshRenderer[] _visualComponents;
         private byte _gravityFactor = 1;
-        private float _stickDeadzone = .125f;
+        //private float _stickDeadzone = .125f;
 
         private const string INTERACT_BLOCK_KEY = "Interact";
 
@@ -147,8 +147,9 @@ namespace Ivayami.Player {
 
         private void MoveDirection(InputAction.CallbackContext input) {
             Vector2 value = input.ReadValue<Vector2>();
-            if (value.magnitude > _stickDeadzone) _inputCache = value;
-            else _inputCache = Vector2.zero;
+            _inputCache = value;
+            //if (value.magnitude > _stickDeadzone) _inputCache = value;
+            //else _inputCache = Vector2.zero;
 
             Logger.Log(LogType.Player, $"Movement Input Change: {input.ReadValue<Vector2>()}");
         }
@@ -333,9 +334,9 @@ namespace Ivayami.Player {
             _gravityFactor = (byte)(isActive ? 1 : 0);
         }
 
-        public void ChangeStickDeadzone(float value) {
-            _stickDeadzone = Mathf.Clamp(value, 0.1f, .5f);
-        }
+        //public void ChangeStickDeadzone(float value) {
+        //    _stickDeadzone = Mathf.Clamp(value, 0.1f, .5f);
+        //}
 
         public void ChangeHoldToRun(bool isActive) {
             _holdToRun = isActive;
