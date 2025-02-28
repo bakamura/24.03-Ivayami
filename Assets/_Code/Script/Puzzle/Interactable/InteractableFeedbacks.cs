@@ -35,7 +35,7 @@ namespace Ivayami.Puzzle
         private void Update()
         {
             if (_icon && _cameraTransform && _icon.enabled)
-                _icon.transform.rotation = Quaternion.LookRotation(_cameraTransform.forward);
+                _icon.transform.rotation = Quaternion.LookRotation(_cameraTransform.forward, _cameraTransform.up);
         }
 
         private void OnDestroy()
