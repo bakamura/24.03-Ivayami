@@ -96,9 +96,7 @@ namespace Ivayami.Player {
             onInteractLong.AddListener((interacting) => Interacting = interacting);
             _interactableCheckWait = new WaitForSeconds(_interactableCheckDelay);
 
-            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //            
-
-            Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
+            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //
         }
 
         private void Start() {
@@ -109,9 +107,8 @@ namespace Ivayami.Player {
         }
 
         private void Interact(InputAction.CallbackContext input) {
-            //if (PlayerMovement.Instance.CanMove) {
             if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _interactBlock.Count == 0) {
-                if (InteractableTarget != null /*&& InteractableTarget != Friend.Instance?.InteractableLongCurrent*/) {
+                if (InteractableTarget != null) {
                     _interactAnimationCache = InteractableTarget.Interact();
                     Vector3 directionToInteractable = InteractableTarget.InteratctableFeedbacks.IconPosition - transform.position;
                     PlayerMovement.Instance.SetTargetAngle(Mathf.Atan2(directionToInteractable[0], directionToInteractable[2]) * Mathf.Rad2Deg, false);
@@ -119,16 +116,9 @@ namespace Ivayami.Player {
                         PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
                         onInteractLong?.Invoke(true);
                         onInteract?.Invoke(_interactAnimationCache);
-
-                        Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
                     }
-                    else {
-                        onInteract?.Invoke(_interactAnimationCache);
-
-                        Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
-                    }
+                    else onInteract?.Invoke(_interactAnimationCache);
                 }
-                else Logger.Log(LogType.Player, $"Interact: No Target");
             }
             else if (input.phase == InputActionPhase.Canceled && Interacting) {
                 if (InteractableTarget is IInteractableLong) {
@@ -138,10 +128,7 @@ namespace Ivayami.Player {
                 }
                 (InteractableTarget as IInteractableLong).InteractStop();
                 onInteractLong?.Invoke(false);
-
-                Logger.Log(LogType.Player, $"Stop Interact Long with: {InteractableTarget.gameObject.name}");
             }
-            //}
         }
 
         private IEnumerator InteractObjectDetect() {
@@ -163,7 +150,6 @@ namespace Ivayami.Player {
                         InteractableTarget = _interactableClosestCache;
                         InteractableTarget?.InteratctableFeedbacks.UpdateFeedbacks(true);
                         onInteractTargetChange?.Invoke(InteractableTarget);
-                        Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(InteractableTarget != null ? InteractableTarget.gameObject.name : "Null")}");
                     }
                 }
 
@@ -180,7 +166,6 @@ namespace Ivayami.Player {
                 if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = false;
                 _interactableDetector.onlyHeavyObjects = true;
             }
-            else Debug.LogError("Trying to Hold HeavyObject but null object was passed!");
         }
 
         public GameObject HeavyObjectRelease() {
@@ -279,18 +264,13 @@ namespace Ivayami.Player {
                     else _interactReleaseDelay.Add(key, StartCoroutine(ReleaseInteractDelay(key, releaseDelay)));
                 }
             }
-            else {
-                if (!_interactBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock interact but key is already blocking");
-                Logger.Log(LogType.Player, $"Interact Blockers Increase to: {_interactBlock.Count}");
-            }
-
+            else if (!_interactBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock interact but key is already blocking");
         }
 
         private IEnumerator ReleaseInteractDelay(string key, float delay) {
             yield return new WaitForSeconds(delay);
             _interactBlock.Remove(key);
             _interactReleaseDelay.Remove(key);
-            Logger.Log(LogType.Player, $"Interact Blockers Decrease to: {_interactBlock.Count}");
         }
 
 #if UNITY_EDITOR
