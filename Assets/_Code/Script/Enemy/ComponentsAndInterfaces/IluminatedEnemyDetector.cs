@@ -5,7 +5,7 @@ using Ivayami.Player.Ability;
 
 namespace Ivayami.Enemy
 {
-    public class IluminatedEnemyDetector : MonoBehaviour, ILightable
+    public class IluminatedEnemyDetector : Lightable
     {
         [SerializeField] private LightBehaviours _lightBehaviour;
         [SerializeField, Min(0f)] private float _finalSpeed;
@@ -35,12 +35,17 @@ namespace Ivayami.Enemy
             {
                 _paraliseDelay = new WaitForSeconds(_paraliseDuration);
             }
-            else Lantern.OnIlluminate.AddListener(HandleIlumatePoint);
+            else LightFocuses.OnChange.AddListener(HandleIlumatePoint);
+
+            onIlluminated.AddListener((isIlluminated) => {
+                if (isIlluminated) Iluminate();
+                else IluminateStop();
+            });
         }
 
         private void OnDisable()
         {
-            if (_lightBehaviour == LightBehaviours.FollowLight) Lantern.OnIlluminate.RemoveListener(HandleIlumatePoint);
+            if (_lightBehaviour == LightBehaviours.FollowLight) LightFocuses.OnChange.RemoveListener(HandleIlumatePoint);
         }
 
         [ContextMenu("Iluminate")]
@@ -93,8 +98,9 @@ namespace Ivayami.Enemy
             }
         }
 
-        private void HandleIlumatePoint(Vector3 point)
+        private void HandleIlumatePoint()
         {
+            Vector3 point = LightFocuses.Instance.GetClosestPointTo(transform.position);
             if (point != Vector3.zero)
             {
                 _target.UpdateBehaviour(false, true);
