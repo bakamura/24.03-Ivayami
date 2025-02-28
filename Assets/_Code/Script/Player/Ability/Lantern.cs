@@ -1,7 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Ivayami.Puzzle;
-using System.Collections;
 using Ivayami.Enemy;
 
 namespace Ivayami.Player.Ability {
