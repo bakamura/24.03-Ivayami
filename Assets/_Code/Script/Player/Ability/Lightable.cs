@@ -5,10 +5,10 @@ using UnityEngine.Events;
 namespace Ivayami.Puzzle {
     public class Lightable : MonoBehaviour {
 
-        protected HashSet<string> _illuminationSources { get; set; }
+        protected HashSet<string> _illuminationSources { get; set; } = new HashSet<string>();
         public UnityEvent<bool> onIlluminated;
 
-        private void Awake() {
+        protected virtual void Awake() {
             if (!TryGetComponent(out Collider collider)) Debug.LogWarning($"There is no Collider associated with Lightable '{name}'");
         }
 
