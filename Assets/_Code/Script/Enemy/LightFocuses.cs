@@ -8,7 +8,7 @@ namespace Ivayami.Enemy {
 
         public static UnityEvent OnChange { get; private set; }
 
-        private Dictionary<string, Vector3> _focuses;
+        private Dictionary<string, Vector3> _focuses = new Dictionary<string, Vector3>();
         public Vector3[] Focuses { get { return _focuses.Values.ToArray(); } }
 
         public void FocusUpdate(string key, Vector3 position) {

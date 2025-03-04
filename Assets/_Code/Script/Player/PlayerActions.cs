@@ -62,11 +62,12 @@ namespace Ivayami.Player {
         //[Header("Hand Item")]
 
         [field: SerializeField] public Transform HoldPointLeft { get; private set; }
+        [field: SerializeField] public Transform HoldPointHeavy { get; private set; }
 
         [Header("Abilities")]
 
         private List<PlayerAbility> _abilities = new List<PlayerAbility>();
-        private sbyte _abilityCurrent;
+        private sbyte _abilityCurrent; //
 
         [Header("Heavy Objects")]
 
@@ -89,7 +90,7 @@ namespace Ivayami.Player {
             _interactInput.action.started += Interact;
             _interactInput.action.canceled += Interact;
             _abilityInput.action.started += Ability;
-            _changeAbilityInput.action.started += ChangeAbility;
+            //_changeAbilityInput.action.started += ChangeAbility;
             _useHealthItemInput.action.started += UseHealthItem;
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable();
 
@@ -160,7 +161,7 @@ namespace Ivayami.Player {
         public void HeavyObjectHold(GameObject objToHold) {
             if (objToHold != null) {
                 _heavyObjectCurrent = objToHold;
-                _heavyObjectCurrent.transform.parent = HoldPointLeft;
+                _heavyObjectCurrent.transform.parent = HoldPointHeavy;
                 _heavyObjectCurrent.transform.localPosition = Vector3.zero;
                 _heavyObjectCurrent.transform.rotation = Quaternion.identity;
                 if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = false;
@@ -181,15 +182,11 @@ namespace Ivayami.Player {
             if (_abilityCurrent >= 0) {
                 if (input.phase == InputActionPhase.Started) {
                     _abilities[_abilityCurrent].AbilityStart();
-                    onAbility?.Invoke(_abilities[_abilityCurrent].name);
-
-                    Logger.Log(LogType.Player, $"Ability Start: {_abilities[_abilityCurrent].name}");
+                    onAbility?.Invoke(_abilities[_abilityCurrent].GetType().Name);
                 }
                 else if (input.phase == InputActionPhase.Canceled) {
                     _abilities[_abilityCurrent].AbilityEnd();
                     onAbility?.Invoke($"{_abilities[_abilityCurrent].name}End");
-
-                    Logger.Log(LogType.Player, $"Ability End: {_abilities[_abilityCurrent].name}");
                 }
             }
         }
@@ -214,8 +211,6 @@ namespace Ivayami.Player {
                     break;
             }
             onAbilityChange?.Invoke(_abilityCurrent);
-
-            Logger.Log(LogType.Player, $"Ability Changed to: {_abilities[_abilityCurrent].name}");
         }
 
         public void AddAbility(PlayerAbility ability) {
@@ -226,7 +221,7 @@ namespace Ivayami.Player {
             abilityInstance.transform.localRotation = localRotation;
             _abilities.Add(abilityInstance);
 
-            Logger.Log(LogType.Player, $"Ability Add: {ability.name}");
+            if (_abilityCurrent < 0) _abilityCurrent = 0;
         }
 
         public void RemoveAbility(PlayerAbility ability) {

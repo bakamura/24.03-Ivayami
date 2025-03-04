@@ -26,6 +26,7 @@ namespace Ivayami.Player.Ability {
         private Collider[] _lightHits;
         private float _coneAngleHalf;
 
+        private Light _light;
         private MeshRenderer[] _meshRenderers;
 
         private const string ILLUMINATION_KEY = "Lantern";
@@ -33,6 +34,8 @@ namespace Ivayami.Player.Ability {
         private void Awake() {
             _coneAngleHalf = GetComponentInChildren<Light>().spotAngle / 2f;
             _lightHits = new Collider[_lightMaxHitNumber];
+            _light = GetComponentInChildren<Light>();
+            _light.enabled = false;
             _meshRenderers = GetComponentsInChildren<MeshRenderer>();
             foreach (MeshRenderer meshRenderer in _meshRenderers) meshRenderer.enabled = false;
             _behaviourCheckWait = new WaitForSeconds(_behaviourCheckInterval);
@@ -48,6 +51,7 @@ namespace Ivayami.Player.Ability {
 
         public override void AbilityStart() {
             _enabled = !_enabled;
+            _light.enabled = _enabled;
             foreach (MeshRenderer meshRenderer in _meshRenderers) meshRenderer.enabled = _enabled;
             PlayerAnimation.Instance.Hold(_enabled);
             if (_enabled) StartCoroutine(CheckInterval());
