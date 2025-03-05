@@ -17,7 +17,6 @@ namespace Ivayami.Player {
 
         [SerializeField] private InputActionReference _interactInput;
         [SerializeField] private InputActionReference _abilityInput;
-        [SerializeField] private InputActionReference _changeAbilityInput;
         [SerializeField] private InputActionReference _useHealthItemInput;
         [SerializeField] private InputActionReference[] _pauseInputs;
         private InputActionMap _actionMapCurrent;
@@ -177,7 +176,7 @@ namespace Ivayami.Player {
             return releasedObject;
         }
 
-        #region Abilities (To be removed)
+        #region Abilities
         private void Ability(InputAction.CallbackContext input) {
             if (_abilityCurrent >= 0) {
                 if (input.phase == InputActionPhase.Started) {
@@ -189,28 +188,6 @@ namespace Ivayami.Player {
                     onAbility?.Invoke($"{_abilities[_abilityCurrent].name}End");
                 }
             }
-        }
-
-        private void ChangeAbility(InputAction.CallbackContext input) {
-            switch (input.ReadValue<Vector2>()) {
-                case Vector2 v2 when v2.Equals(Vector2.up):
-                    if (_abilities.Count < 1) return;
-                    _abilityCurrent = 0;
-                    break;
-                case Vector2 v2 when v2.Equals(Vector2.right):
-                    if (_abilities.Count < 2) return;
-                    _abilityCurrent = 1;
-                    break;
-                case Vector2 v2 when v2.Equals(Vector2.down):
-                    if (_abilities.Count < 3) return;
-                    _abilityCurrent = 2;
-                    break;
-                case Vector2 v2 when v2.Equals(Vector2.left):
-                    if (_abilities.Count < 4) return;
-                    _abilityCurrent = 3;
-                    break;
-            }
-            onAbilityChange?.Invoke(_abilityCurrent);
         }
 
         public void AddAbility(PlayerAbility ability) {
