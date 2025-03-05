@@ -100,7 +100,7 @@ namespace Ivayami.Player.Ability {
         }
 
         private void GravityRotate() {
-            transform.rotation = Quaternion.Euler(0, transform.parent.eulerAngles.y, 0);
+            transform.rotation = Quaternion.AngleAxis(transform.parent.eulerAngles.y, Vector3.up);
         }
 
     }
