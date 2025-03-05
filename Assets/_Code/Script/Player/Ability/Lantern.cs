@@ -43,6 +43,7 @@ namespace Ivayami.Player.Ability {
         private IEnumerator CheckInterval() {
             while (true) {
                 Illuminate();
+                GravityRotate();
 
                 yield return _behaviourCheckWait;
             }
@@ -51,7 +52,7 @@ namespace Ivayami.Player.Ability {
         public override void AbilityStart() {
             _enabled = !_enabled;
             _lightsParent.gameObject.SetActive(_enabled);
-            _visuals.SetActive(enabled);
+            _visuals.SetActive(_enabled);
             PlayerAnimation.Instance.Hold(_enabled);
             if (_enabled) StartCoroutine(CheckInterval());
             else {
@@ -95,7 +96,11 @@ namespace Ivayami.Player.Ability {
             Light light = (_focused ? _focusedOrigin : _wideOrigin);
             _coneAngleHalf = light.spotAngle / 2f;
             _lightDistance = light.range;
-            Debug.Log($"Cone [{(_focused ? "F" : "Unf")}ocused]:\nAngleHalf - {_coneAngleHalf}\nRange - {_lightDistance}");
+            //Debug.Log($"Cone [{(_focused ? "F" : "Unf")}ocused]:\nAngleHalf - {_coneAngleHalf}\nRange - {_lightDistance}");
+        }
+
+        private void GravityRotate() {
+            transform.rotation = Quaternion.Euler(0, transform.parent.eulerAngles.y, 0);
         }
 
     }
