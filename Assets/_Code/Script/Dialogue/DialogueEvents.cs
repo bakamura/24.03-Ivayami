@@ -8,7 +8,9 @@ namespace Ivayami.Dialogue
         //[SerializeField] private bool _debugLogs;
         [SerializeField] private SpeechEvent[] _events;
         private Dictionary<string, SpeechEvent> _eventsDictionary = new Dictionary<string, SpeechEvent>();
+#if UNITY_EDITOR
         public SpeechEvent[] Events => _events;
+#endif
 
         private void Start()
         {
