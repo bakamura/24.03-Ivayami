@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
+//using UnityEngine.Events;
 
 namespace Ivayami.Enemy {
     public class LightFocuses : MonoSingleton<LightFocuses> {
 
-        public static UnityEvent OnChange { get; private set; }
+        //public static UnityEvent OnChange { get; private set; }
 
         private Dictionary<string, Vector3> _focuses = new Dictionary<string, Vector3>();
         public Vector3[] Focuses { get { return _focuses.Values.ToArray(); } }
