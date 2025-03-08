@@ -245,7 +245,7 @@ MonoBehaviour:
         Data4: -1986376360
       Path: event:/Monster_sfx/Perseguindo
     AttenuationRange:
-      Min: 10
+      Min: 3
       Max: 15
     CanPlayMultipleTimes: 0
     CanBeStoped: 1
@@ -265,7 +265,7 @@ MonoBehaviour:
         Data4: 2136706042
       Path: event:/Monster_sfx/Idle
     AttenuationRange:
-      Min: 20
+      Min: 3
       Max: 25
     CanPlayMultipleTimes: 0
     CanBeStoped: 1
@@ -273,7 +273,7 @@ MonoBehaviour:
     ReplayIntervalRange:
       Min: 3
       Max: 6
-    DrawGizmos: 1
+    DrawGizmos: 0
     MinRangGizmoColor: {r: 0, g: 1, b: 0, a: 1}
     MaxRangGizmoColor: {r: 1, g: 0, b: 0, a: 1}
   - SoundType: 3
@@ -285,7 +285,7 @@ MonoBehaviour:
         Data4: -1986376360
       Path: event:/Monster_sfx/Perseguindo
     AttenuationRange:
-      Min: 10
+      Min: 3
       Max: 15
     CanPlayMultipleTimes: 0
     CanBeStoped: 1
@@ -305,18 +305,19 @@ MonoBehaviour:
         Data4: 644500951
       Path: event:/Monster_sfx/Passos monstro
     AttenuationRange:
-      Min: 20
-      Max: 25
+      Min: 3
+      Max: 24
     CanPlayMultipleTimes: 1
     CanBeStoped: 0
     ReplayAudioOnEnd: 0
     ReplayIntervalRange:
       Min: 1
       Max: 2
-    DrawGizmos: 0
+    DrawGizmos: 1
     MinRangGizmoColor: {r: 0, g: 1, b: 0, a: 1}
     MaxRangGizmoColor: {r: 1, g: 0, b: 0, a: 1}
   _debugLog: 0
+  _autoActivateOnEnable: 0
   _activationArea: {fileID: 5166961187278011446}
 --- !u!1 &6810730618730225620
 GameObject:
@@ -486,6 +487,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _triggerType: 0
   _targetNeedToStayInside: 0
+  _executeEventOnDisable: 1
   _delayToActivateEvent: 0
   _optionalTag: 
   _onExecute:
@@ -517,6 +519,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _triggerType: 1
   _targetNeedToStayInside: 0
+  _executeEventOnDisable: 1
   _delayToActivateEvent: 0
   _optionalTag: 
   _onExecute:

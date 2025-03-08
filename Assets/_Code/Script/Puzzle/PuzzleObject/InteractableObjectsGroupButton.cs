@@ -14,11 +14,21 @@ namespace Ivayami.Puzzle
         {
             Button = GetComponent<Button>();
             Interactable = interactable;
-            Button.onClick.AddListener(() =>
+            if (puzzleGroup.ButtonsInteractAutoWithInteractable)
             {
-                puzzleGroup.InteractableSelected();
-                Interactable.Interact();
-            });
+                Button.onClick.AddListener(() =>
+                {
+                    puzzleGroup.InteractableSelected();
+                    Interactable.Interact();
+                });
+            }
+            else
+            {
+                Button.onClick.AddListener(() =>
+                {
+                    Interactable.Interact();
+                });
+            }
             ButtonEventsCustom events = GetComponent<ButtonEventsCustom>();
             events.OnSelectSelectable.AddListener((call) => puzzleGroup.SetCurrentSelected(this));
             events.OnPointerEnterSelectable.AddListener((call) => Button.Select());
