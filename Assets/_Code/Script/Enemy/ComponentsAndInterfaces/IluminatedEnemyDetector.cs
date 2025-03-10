@@ -11,7 +11,7 @@ namespace Ivayami.Enemy
         [SerializeField, Min(0f)] private float _paraliseDuration;
         [SerializeField, Min(0f)] private float _interpolateDuration;
         [SerializeField] private EnemyAnimator _enemyAnimator;
-        [SerializeField, Min(0)] private int _praliseAnimationRandomAmount;
+        [SerializeField, Min(0)] private int _paraliseAnimationRandomAmount;
         [SerializeField, Min(0f)] private float _detectLightRange;
         [SerializeField, Min(0.02f)] private float _checkLightTickFrequency = 1;
         [SerializeField] private Color _gizmoColor;
@@ -71,7 +71,7 @@ namespace Ivayami.Enemy
             {
                 _isIliuminated = true;
                 _baseSpeed = _target.CurrentSpeed;
-                _enemyAnimator.Paralise(true, paraliseAnimationIndex : Random.Range(0, _praliseAnimationRandomAmount));
+                _enemyAnimator.Paralise(true, paraliseAnimationIndex : Random.Range(0, _paraliseAnimationRandomAmount));
                 _iluminatedCoroutine = StartCoroutine(IluminateCoroutine());
             }
         }
@@ -87,7 +87,7 @@ namespace Ivayami.Enemy
                     _iluminatedCoroutine = null;
                 }
                 _isIliuminated = false;
-                _enemyAnimator.Paralise(false, paraliseAnimationIndex: Random.Range(0, _praliseAnimationRandomAmount));
+                _enemyAnimator.Paralise(false, paraliseAnimationIndex: Random.Range(0, _paraliseAnimationRandomAmount));
                 _target.ChangeSpeed(_baseSpeed);
                 _target.UpdateBehaviour(true, true, false);
             }
