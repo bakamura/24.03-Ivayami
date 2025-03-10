@@ -50,7 +50,7 @@ namespace Ivayami.Enemy
         private EnemySounds _enemySounds;
         private EnemyMovementData _currentMovementData;
         private EnemyWalkArea _currenWalkArea;
-        private HitboxAttack _hitboxAttack;
+        //private HitboxAttack _hitboxAttack;
         private CapsuleCollider _collision;
         private WaitForSeconds _behaviourTickDelay;
         private Collider[] _hitsCache = new Collider[1];
@@ -79,7 +79,7 @@ namespace Ivayami.Enemy
             _behaviourTickDelay = new WaitForSeconds(_behaviourTickFrequency);
             _enemyAnimator = GetComponentInChildren<EnemyAnimator>();
             _enemySounds = GetComponent<EnemySounds>();
-            _hitboxAttack = GetComponentInChildren<HitboxAttack>();
+            //_hitboxAttack = GetComponentInChildren<HitboxAttack>();
             _halfVisionAngle = _visionAngle / 2f;
 
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
@@ -315,7 +315,11 @@ namespace Ivayami.Enemy
 
         private void OnAttackAnimationEnd()
         {
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+            //_hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+            for (int i = 0; i < _attackAreaInfos.Length; i++)
+            {
+                _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+            }
             if (PlayerStress.Instance && PlayerStress.Instance.FailState)
             {
                 _enemyAnimator.Walking(0);
@@ -328,15 +332,16 @@ namespace Ivayami.Enemy
 
         private void OnAnimationStepChange(float normalizedTime)
         {
+            int currentAnimIndex = _enemyAnimator.GetCurrentAttackAnimIndex();
             for (int i = 0; i < _attackAreaInfos.Length; i++)
             {
-                if (normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
+                if (_attackAreaInfos[i].AnimationIndex == currentAnimIndex && normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
                 {
-                    _hitboxAttack.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
+                    _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
                     return;
                 }
             }
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+            //_hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
         }
 
         private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine(Vector3 finalPos, /*bool stayInPath,*/ bool autoStartBehaviour, float durationInPlace)
@@ -449,17 +454,17 @@ namespace Ivayami.Enemy
             {
                 if (_attackAreaInfos[i].MinInterval > _attackAreaInfos[i].MaxInterval) _attackAreaInfos[i].MinInterval = _attackAreaInfos[i].MaxInterval;
             }
-            if (!_hitboxAttack)
-            {
-                _hitboxAttack = GetComponentInChildren<HitboxAttack>();
-                if (!_hitboxAttack)
-                {
-                    Debug.Log("To make enemy attack please add a HitboxAttack component as child");
-                    //GameObject go = new GameObject("HitboxAttackArea");
-                    //go.transform.parent = transform;
-                    //_hitboxAttack = go.AddComponent<HitboxAttack>();
-                }
-            }
+            //if (!_hitboxAttack)
+            //{
+            //    _hitboxAttack = GetComponentInChildren<HitboxAttack>();
+            //    if (!_hitboxAttack)
+            //    {
+            //        Debug.Log("To make enemy attack please add a HitboxAttack component as child");
+            //        //GameObject go = new GameObject("HitboxAttackArea");
+            //        //go.transform.parent = transform;
+            //        //_hitboxAttack = go.AddComponent<HitboxAttack>();
+            //    }
+            //}
         }
 #endif
         #endregion

@@ -13,8 +13,8 @@ public class IluminatedEnemyDetectorInspector : Editor
         if(lightBehaviour.enumValueIndex == 0)
         {
             EditorGUILayout.PropertyField(finalSpeed, new GUIContent("Final Speed"));
-            EditorGUILayout.PropertyField(paraliseDuration, new GUIContent("Paralise Duration"));
-            EditorGUILayout.PropertyField(interpolateDuration, new GUIContent("Slow Effect Interpolation Duration"));
+            EditorGUILayout.PropertyField(paraliseDuration, new GUIContent("Paralise Duration", "If value is 0 the enemy will stay still until all lights are away from it"));
+            EditorGUILayout.PropertyField(interpolateDuration, new GUIContent("Slow Effect Interpolation Duration", "If value is 0 the enemy will have its speed change immediately"));
             EditorGUILayout.PropertyField(interpolateCurve, new GUIContent("Slow Effect Interpolation Curve"));
         }
         else if (lightBehaviour.enumValueIndex == 1)

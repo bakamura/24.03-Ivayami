@@ -15,10 +15,11 @@ namespace Ivayami.Enemy
         private static readonly int ATTACK_TRIGGER = Animator.StringToHash("attacking");
         private static readonly int TARGET_DETECTED_TRIGGER = Animator.StringToHash("targetDetected");
         private static readonly int INTERACT_TRIGGER = Animator.StringToHash("interacting");
-        private static readonly int TAKE_DAMAGE_TRIGGER = Animator.StringToHash("takeDamage");
+        private static readonly int PARALISE_BOOL = Animator.StringToHash("paralised");
         private static readonly int CHASING_BOOL = Animator.StringToHash("chasing");
         private static readonly int MOVE_SPEED_FLOAT = Animator.StringToHash("moveSpeed");
         private static readonly int ATTACK_INDEX_FLOAT = Animator.StringToHash("attackIndex");
+        private static readonly int PARALISE_INDEX_FLOAT = Animator.StringToHash("paralisedIndex");
 
         private static readonly int WALKING_STATE = Animator.StringToHash("walk");
         private static readonly int CHASE_STATE = Animator.StringToHash("chase");
@@ -26,7 +27,7 @@ namespace Ivayami.Enemy
         private static readonly int ATTACK_STATE = Animator.StringToHash("attack");
         private static readonly int TARGET_DETECTED_STATE = Animator.StringToHash("targetDetect");
         private static readonly int INTERACT_STATE = Animator.StringToHash("interact");
-        private static readonly int TAKE_DAMAGE_STATE = Animator.StringToHash("damage");
+        private static readonly int PARALISE_STATE = Animator.StringToHash("paralise");
 
         private Animator _animator
         {
@@ -77,6 +78,11 @@ namespace Ivayami.Enemy
             _animator.SetTrigger(ATTACK_TRIGGER);
             StartAnimationEvent(ATTACK_STATE, _attackAnimationLayer, onAnimationEnd, currentAnimationStepCallback);
         }
+
+        public int GetCurrentAttackAnimIndex()
+        {
+            return (int)_animator.GetFloat(ATTACK_INDEX_FLOAT);
+        }
         /// <param name="onAnimationEnd">
         /// will only activate once
         /// </param>
@@ -97,10 +103,11 @@ namespace Ivayami.Enemy
         /// <param name="onAnimationEnd">
         /// will only activate once
         /// </param>
-        public void TakeDamage(Action onAnimationEnd = null)
+        public void Paralise(bool paralised, Action onAnimationEnd = null, int paraliseAnimationIndex = 0)
         {
-            _animator.SetTrigger(TAKE_DAMAGE_TRIGGER);
-            StartAnimationEvent(TAKE_DAMAGE_STATE, 0, onAnimationEnd);
+            _animator.SetFloat(PARALISE_INDEX_FLOAT, paraliseAnimationIndex);
+            _animator.SetBool(PARALISE_BOOL, paralised);
+            StartAnimationEvent(PARALISE_STATE, 0, onAnimationEnd);
         }
         /// <param name="isChasing"></param>
         /// <param name="onAnimationEnd">will only activate once</param>

@@ -10,6 +10,8 @@ namespace Ivayami.Enemy
         [SerializeField, Min(0f)] private float _finalSpeed;
         [SerializeField, Min(0f)] private float _paraliseDuration;
         [SerializeField, Min(0f)] private float _interpolateDuration;
+        [SerializeField] private EnemyAnimator _enemyAnimator;
+        [SerializeField, Min(0)] private int _praliseAnimationRandomAmount;
         [SerializeField, Min(0f)] private float _detectLightRange;
         [SerializeField, Min(0.02f)] private float _checkLightTickFrequency = 1;
         [SerializeField] private Color _gizmoColor;
@@ -21,10 +23,9 @@ namespace Ivayami.Enemy
             FollowLight
         }
         private IIluminatedEnemy _target;
-        private WaitForSeconds _paraliseDelay;
         private WaitForSeconds _checkLightDelay;
         private Coroutine _iluminatedCoroutine;
-        private Coroutine _checkForLightsCoroutine;
+        private Coroutine _checkForLightsCoroutine;        
         private bool _isIliuminated;
         private float _baseSpeed;
 
@@ -40,7 +41,6 @@ namespace Ivayami.Enemy
             }
             if (_lightBehaviour == LightBehaviours.Paralise)
             {
-                _paraliseDelay = new WaitForSeconds(_paraliseDuration);
                 onIlluminated.AddListener((isIlluminated) =>
                 {
                     if (isIlluminated) Iluminate();
@@ -56,7 +56,7 @@ namespace Ivayami.Enemy
 
         private void OnDisable()
         {
-            if (_iluminatedCoroutine != null) IluminateStop();
+            IluminateStop();
             if (_checkForLightsCoroutine != null)
             {
                 StopCoroutine(_checkForLightsCoroutine);
@@ -71,6 +71,7 @@ namespace Ivayami.Enemy
             {
                 _isIliuminated = true;
                 _baseSpeed = _target.CurrentSpeed;
+                _enemyAnimator.Paralise(true, paraliseAnimationIndex : Random.Range(0, _praliseAnimationRandomAmount));
                 _iluminatedCoroutine = StartCoroutine(IluminateCoroutine());
             }
         }
@@ -80,9 +81,13 @@ namespace Ivayami.Enemy
         {
             if (_lightBehaviour == LightBehaviours.Paralise)
             {
-                StopCoroutine(_iluminatedCoroutine);
-                _iluminatedCoroutine = null;
+                if (_iluminatedCoroutine != null)
+                {
+                    StopCoroutine(_iluminatedCoroutine);
+                    _iluminatedCoroutine = null;
+                }
                 _isIliuminated = false;
+                _enemyAnimator.Paralise(false, paraliseAnimationIndex: Random.Range(0, _praliseAnimationRandomAmount));
                 _target.ChangeSpeed(_baseSpeed);
                 _target.UpdateBehaviour(true, true, false);
             }
@@ -91,6 +96,8 @@ namespace Ivayami.Enemy
         private IEnumerator IluminateCoroutine()
         {
             float count;
+            WaitForFixedUpdate delay = new WaitForFixedUpdate();
+            WaitForSeconds paraliseDelay = new WaitForSeconds(_paraliseDuration);
             while (_isIliuminated)
             {
                 count = 0;
@@ -98,9 +105,9 @@ namespace Ivayami.Enemy
                 {
                     while (count < 1)
                     {
-                        count += Time.deltaTime / _interpolateDuration;
+                        count += Time.fixedDeltaTime / _interpolateDuration;
                         _target.ChangeSpeed(Mathf.Lerp(_baseSpeed, _finalSpeed, _interpolateCurve.Evaluate(count)));
-                        yield return null;
+                        yield return delay;
                     }
                 }
                 else
@@ -109,9 +116,13 @@ namespace Ivayami.Enemy
                 }
                 _target.UpdateBehaviour(false, false, true);
                 _target.ChangeSpeed(0);
-                yield return _paraliseDelay;
-                _target.ChangeSpeed(_baseSpeed);
-                _target.UpdateBehaviour(true, true, false);
+                if (_paraliseDuration > 0)
+                {
+                    yield return paraliseDelay;
+                    _target.ChangeSpeed(_baseSpeed);
+                    _target.UpdateBehaviour(true, true, false);
+                }
+                else yield break;
             }
             _iluminatedCoroutine = null;
         }
