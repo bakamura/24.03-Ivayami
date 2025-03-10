@@ -124,6 +124,7 @@ namespace Ivayami.Puzzle
                 }
                 PlayerMovement.Instance.ToggleMovement(nameof(Lock), false);
                 PlayerActions.Instance.ChangeInputMap("Menu");
+                PlayerActions.Instance.ToggleInteract(nameof(Lock), false);
             }
             else
             {
@@ -139,6 +140,7 @@ namespace Ivayami.Puzzle
                 }
                 PlayerMovement.Instance.ToggleMovement(nameof(Lock), true);
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ToggleInteract(nameof(Lock), true);
             }
         }
         private void UpdateUIs(bool isActive)
