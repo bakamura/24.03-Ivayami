@@ -42,7 +42,8 @@ namespace Ivayami.Puzzle {
         private void Start() {
             _collider.enabled = _heavyObjectCurrent;
             _interactPopup.SetActive(_heavyObjectCurrent);
-            float interactAnimDuration = PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.HeavyPickup);
+            Debug.Log(PlayerAnimation.Instance != null);
+            float interactAnimDuration = PlayerAnimation.Instance ? PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.HeavyPickup) : 1f;
             _collectWait = new WaitForSeconds(interactAnimDuration * _pickupAnimationPoint);
             _placeWait = new WaitForSeconds(interactAnimDuration * (1f - _pickupAnimationPoint));
         }
