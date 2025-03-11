@@ -29,9 +29,9 @@ namespace Ivayami.Puzzle
 
         private sbyte _currentPuzzleLayer;
         private sbyte _currentPuzzleObjectSelectedIndex;
-        private float _currentInputCooldown;
+        //private float _currentInputCooldown;
         private bool _triggerNoSolution;
-        private const float _inputCooldown = .1f;
+        //private const float _inputCooldown = .1f;
         private InteractableFeedbacks _interatctableFeedbacks;
         private RotatingPedestalPuzzleObject _currentSelected;
         private List<RotatingPedestalPuzzleObject[]> _puzzleObjects;
@@ -130,8 +130,8 @@ namespace Ivayami.Puzzle
 
         private void HandleNavigationUI(InputAction.CallbackContext obj)
         {
-            if (Time.time - _currentInputCooldown < _inputCooldown) return;
-            _currentInputCooldown = Time.time;
+            //if (Time.time - _currentInputCooldown < _inputCooldown) return;
+            //_currentInputCooldown = Time.time;
             Vector2 input = obj.ReadValue<Vector2>();
             if (Mathf.Abs(input.y) == 1)
             {
@@ -176,6 +176,7 @@ namespace Ivayami.Puzzle
                 _cancelInteractionInput.action.started += HandleCancelInteraction;
                 _confirmInput.action.started += HandleConfirmInput;
                 PlayerActions.Instance.ChangeInputMap("Menu");
+                PlayerActions.Instance.ToggleInteract(nameof(RotatingPedestalPuzzle), false);
             }
             else
             {
@@ -183,6 +184,7 @@ namespace Ivayami.Puzzle
                 _cancelInteractionInput.action.started -= HandleCancelInteraction;
                 _confirmInput.action.started -= HandleConfirmInput;
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ToggleInteract(nameof(RotatingPedestalPuzzle), true);
             }
         }
 

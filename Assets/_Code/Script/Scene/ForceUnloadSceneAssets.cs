@@ -6,6 +6,7 @@ namespace Ivayami.Scene
     {
         private void Start()
         {
+            if (!SceneController.Instance) return;
             SceneController.Instance.OnStartUnloadScene += HandleOnStartUnloadScene;
         }
 

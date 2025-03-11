@@ -5,6 +5,7 @@ using TMPro;
 using Ivayami.UI;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Localization.Components;
 
 namespace Ivayami.Puzzle
 {
@@ -13,7 +14,7 @@ namespace Ivayami.Puzzle
 
         public Menu Menu { get; private set; }
 
-        [SerializeField] private TextMeshProUGUI _title;
+        [SerializeField] private LocalizeStringEvent _title;
         [SerializeField] private TextMeshProUGUI _content;
         [SerializeField] private Button _closeBtn;
         [SerializeField] private Button _nextPageBtn;
@@ -37,7 +38,7 @@ namespace Ivayami.Puzzle
 
         private IEnumerator ShowReadableRoutine(string title, string content)
         {
-            _title.text = title;
+            _title.SetEntry(title);
             int contentIndex = 0;
             int overflowIndex;
             while (content.Length > 0)

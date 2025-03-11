@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +8,8 @@ using Ivayami.Player;
 using FMOD.Studio;
 using FMODUnity;
 using UnityEngine.Localization.Settings;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Processors;
 
 namespace Ivayami.UI {
     public class Options : MonoBehaviour {
@@ -19,7 +20,8 @@ namespace Ivayami.UI {
 
         [SerializeField] private Slider _musicSlider;
         [SerializeField] private Slider _sfxSlider;        
-        [SerializeField] private Slider _deadzoneSlider;
+        [SerializeField] private Slider _rightStickDeadzoneSlider;
+        [SerializeField] private Slider _leftStickDeadzoneSlider;
 
         [Space(16)]
 
@@ -29,6 +31,8 @@ namespace Ivayami.UI {
         [SerializeField] private Slider _cameraSensitivitySliderY;
         [SerializeField] private float _mouseCameraSensitivityMultiplierY;
         [SerializeField] private float _gamepadCameraSensitivityMultiplierY;
+        [SerializeField] private InputActionReference[] _leftStickDeadzoneInputs;
+        [SerializeField] private InputActionReference[] _rightStickDeadzoneInputs;
 
         [Space(16)]
 
@@ -44,7 +48,7 @@ namespace Ivayami.UI {
         public static Bus Music { get; private set; }
         public static Bus Sfx { get; private set; }
         public static Bus GameplaySfx { get; private set; }
-        //private Bus _master;
+        //private Bus _master;        
 
         private void Awake()
         {
@@ -106,7 +110,8 @@ namespace Ivayami.UI {
             _sfxSlider.SetValueWithoutNotify(SaveSystem.Instance.Options.sfxVol);
             _cameraSensitivitySliderX.SetValueWithoutNotify(SaveSystem.Instance.Options.cameraSensitivityX);
             _cameraSensitivitySliderY.SetValueWithoutNotify(SaveSystem.Instance.Options.cameraSensitivityY);
-            _deadzoneSlider.SetValueWithoutNotify(SaveSystem.Instance.Options.cameraDeadzone);
+            _rightStickDeadzoneSlider.SetValueWithoutNotify(SaveSystem.Instance.Options.cameraDeadzone);
+            _leftStickDeadzoneSlider.SetValueWithoutNotify(SaveSystem.Instance.Options.movementDeadzone);
             _languageNameText.text = LocalizationSettings.AvailableLocales.Locales[SaveSystem.Instance.Options.language].LocaleName;
             //_languageDropdown.SetValueWithoutNotify(SaveSystem.Instance.Options.language);
             _invertCameraToggle.SetIsOnWithoutNotify(SaveSystem.Instance.Options.invertCamera);
@@ -119,7 +124,9 @@ namespace Ivayami.UI {
             Sfx.setVolume(_sfxSlider.value);
             PlayerCamera.Instance.SetSensitivityX(SaveSystem.Instance.Options.cameraSensitivityX * (InputCallbacks.Instance.IsGamepad ? _gamepadCameraSensitivityMultiplierX : _mouseCameraSensitivityMultiplierX));
             PlayerCamera.Instance.SetSensitivityY(SaveSystem.Instance.Options.cameraSensitivityY * (InputCallbacks.Instance.IsGamepad ? _gamepadCameraSensitivityMultiplierY : _mouseCameraSensitivityMultiplierY));
-            PlayerMovement.Instance.ChangeStickDeadzone(SaveSystem.Instance.Options.cameraDeadzone);
+            //PlayerMovement.Instance.ChangeStickDeadzone(SaveSystem.Instance.Options.cameraDeadzone);
+            UpdateRightStickDeadzones(SaveSystem.Instance.Options.cameraDeadzone);
+            UpdateLeftStickDeadzones(SaveSystem.Instance.Options.movementDeadzone);
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[SaveSystem.Instance.Options.language];
             OnChangeLanguage.Invoke();
             PlayerCamera.Instance.InvertCamera(!SaveSystem.Instance.Options.invertCamera);
@@ -140,7 +147,30 @@ namespace Ivayami.UI {
         public void ChangeCameraDeadzone(float deadzoneRange)
         {
             SaveSystem.Instance.Options.cameraDeadzone = deadzoneRange;
-            PlayerMovement.Instance.ChangeStickDeadzone(deadzoneRange);
+            UpdateRightStickDeadzones(deadzoneRange);
+            //PlayerMovement.Instance.ChangeStickDeadzone(deadzoneRange);
+        }
+
+        public void ChangeMovementDeadzone(float deadzoneRange)
+        {
+            SaveSystem.Instance.Options.movementDeadzone = deadzoneRange;
+            UpdateLeftStickDeadzones(deadzoneRange);
+        }
+
+        private void UpdateLeftStickDeadzones(float deadzoneRange)
+        {
+            for (int i = 0; i < _leftStickDeadzoneInputs.Length; i++)
+            {
+                _leftStickDeadzoneInputs[i].action.ApplyParameterOverride((StickDeadzoneProcessor s) => s.min, deadzoneRange);
+            }
+        }
+
+        private void UpdateRightStickDeadzones(float deadzoneRange)
+        {
+            for (int i = 0; i < _rightStickDeadzoneInputs.Length; i++)
+            {
+                _rightStickDeadzoneInputs[i].action.ApplyParameterOverride((StickDeadzoneProcessor s) => s.min, deadzoneRange);
+            }
         }
 
         public void ToggleToRun(bool isActive)
