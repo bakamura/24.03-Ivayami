@@ -9,34 +9,36 @@ namespace Ivayami.Enemy
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
     public class EnemyAngel : StressEntity, IIluminatedEnemy
     {
-        [SerializeField, Min(0f)] private float _minDetectionRange;
+        [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
+        [SerializeField] private bool _startActive;
+
+        [SerializeField, Min(0f)] private float _chaseSpeed;
         [SerializeField, Min(0f)] private float _detectionRange;
-        [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
+        [SerializeField, Min(0f)] private float _minDetectionRange;
+        [SerializeField, Min(0f)] private float _minDetectionRangeInChase;
         [SerializeField, Range(0f, 180f)] private float _visionAngle = 60f;
         [SerializeField] private Vector3 _visionOffset;
-        [SerializeField, Min(0f)] private float _delayBetweenPatrolPoints;
+        [SerializeField] private LayerMask _targetLayer;
+        [SerializeField] private LayerMask _blockVisionLayer;
+
+        [SerializeField] private bool _goToLastTargetPosition;
+        [SerializeField] private bool _loseTargetWhenHidden = true;
+        [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
         [SerializeField, Min(0f)] private float _delayToStopSearchTarget;
         [SerializeField, Min(0f)] private float _delayToFinishTargetSearch;
-        [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
+        [SerializeField, Min(0f)] private float _delayBetweenPatrolPoints;
+        [SerializeField] private Vector3[] _patrolPoints;
+
         //[SerializeField, Min(0f)] private float _stressIncreaseOnTargetDetected;
         [SerializeField, Min(0f)] private float _stressIncreaseWhileChasing;
         [SerializeField, Min(0f)] private float _stressMaxWhileChasing;
-        [SerializeField, Min(0f)] private float _chaseSpeed;
-        [SerializeField, Min(0f)] private float _minDetectionRangeInChase;
-
         [SerializeField, Min(0f)] private float _distanceToLeapAttack;
         [SerializeField, Min(0f)] private float _distanceToFogAttack;
-        [SerializeField, Min(0f)] private float _leapAttackSpeed;
+        [SerializeField, Min(0f)] private float _leapAttackDuration;
         [SerializeField, Range(0f, 1f)] private float _startLeapMovementInterval;
-
-        [SerializeField] private bool _startActive;
-        [SerializeField] private bool _goToLastTargetPosition;
-        [SerializeField] private bool _loseTargetWhenHidden = true;
-        //[SerializeField] private bool _attackTarget;
+        [SerializeField, Min(1f)] private float _leapAttackJumpHeight;
+        [SerializeField] private AnimationCurve _leapAttackHeightCurve;
         [SerializeField] private HitboxInfo[] _attackAreaInfos;
-        [SerializeField] private LayerMask _targetLayer;
-        [SerializeField] private LayerMask _blockVisionLayer;
-        [SerializeField] private Vector3[] _patrolPoints;
 
         //[Header("Enemy Debug")]
         [SerializeField] private bool _debugLogsEnemyPatrol;
@@ -107,6 +109,7 @@ namespace Ivayami.Enemy
         private bool _canWalkPath = true;
         private bool _directContactWithTarget;
         private bool _isAttacking;
+        private bool _isInLeapAnimation;
         private float _currentTargetColliderSizeFactor;
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
@@ -131,8 +134,8 @@ namespace Ivayami.Enemy
             _initialRotation = transform.rotation;
             _baseSpeed = _navMeshAgent.speed;
 
-            //if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
-            //else _baseStoppingDistance = _navMeshAgent.stoppingDistance;
+            if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
+            _baseStoppingDistance = _navMeshAgent.stoppingDistance;
         }
 
         private void OnEnable()
@@ -197,7 +200,7 @@ namespace Ivayami.Enemy
             sbyte indexFactor = 1;
             while (IsActive)
             {
-                if (!_navMeshAgent.isStopped && _navMeshAgent.enabled)
+                if (_navMeshAgent.enabled && !_navMeshAgent.isStopped)
                 {
                     _chaseTargetPatience = Mathf.Clamp(_chaseTargetPatience - _behaviourTickFrequency, 0, _delayToLoseTarget);
                     if (CheckForTarget(halfVisionAngle)) _chaseTargetPatience = _delayToLoseTarget;
@@ -215,7 +218,7 @@ namespace Ivayami.Enemy
                         _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                         _lastTargetPosition = _hitsCache[0].transform.position;
                         if (_debugLogsEnemyPatrol) Debug.Log("Chase Target");
-                        if (!_isAttacking /*&& _chaseTargetPatience == _delayToLoseTarget*/)
+                        if (!_isAttacking && _chaseTargetPatience == _delayToLoseTarget)
                         {
                             Attack();
                         }
@@ -267,7 +270,7 @@ namespace Ivayami.Enemy
                                     }
                                     else
                                     {
-                                        if (transform.rotation != _initialRotation && _rotateCoroutine == null) _rotateCoroutine = StartCoroutine(RotateCoroutine());
+                                        if (transform.rotation != _initialRotation && _rotateCoroutine == null) _rotateCoroutine = StartCoroutine(RotateCoroutine(_initialRotation));
                                     }
                                 }
                             }
@@ -281,12 +284,12 @@ namespace Ivayami.Enemy
             _behaviourCoroutine = null;
         }
 
-        private IEnumerator RotateCoroutine()
+        private IEnumerator RotateCoroutine(Quaternion finalRotation)
         {
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
-            while (transform.rotation != _initialRotation)
+            while (transform.rotation != finalRotation)
             {
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, _initialRotation, _navMeshAgent.angularSpeed * Time.fixedDeltaTime);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, finalRotation, _navMeshAgent.angularSpeed * Time.fixedDeltaTime);
                 yield return delay;
             }
             _rotateCoroutine = null;
@@ -349,56 +352,36 @@ namespace Ivayami.Enemy
         private void Attack()
         {
             if (_isAttacking) return;
-            bool distanceToFogAttack = Vector3.Distance(transform.position, _navMeshAgent.destination) <= _distanceToFogAttack;
-            bool distanceToLeapAttack = Vector3.Distance(transform.position, _navMeshAgent.destination) <= _distanceToLeapAttack;
+            bool distanceToFogAttack = Vector3.Distance(transform.position, _hitsCache[0].transform.position) <= _distanceToFogAttack;
+            bool distanceToLeapAttack = Vector3.Distance(transform.position, _hitsCache[0].transform.position) <= _distanceToLeapAttack;
             _isAttacking = distanceToFogAttack || distanceToLeapAttack;
             if (_isAttacking)
             {
+                _navMeshAgent.isStopped = true;
                 int attackIndex = 0;
                 if (distanceToFogAttack) attackIndex = 0;
-                else if (distanceToLeapAttack) attackIndex = 1;
+                else if (distanceToLeapAttack)
+                {
+                    attackIndex = 1;
+                    Vector3 dir = _hitsCache[0].transform.position - transform.position;
+                    dir = new Vector3(dir.x, 0, dir.z);
+                    _rotateCoroutine = StartCoroutine(RotateCoroutine(Quaternion.LookRotation(dir.normalized)));
+                }
                 _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange, attackIndex);
                 if (_debugLogsEnemyPatrol) Debug.Log("Attack Target");
             }
         }
 
-        private IEnumerator LeapCoroutine()
-        {
-            float count = 0;
-            Vector3 finalPos = (_hitsCache[0].transform.position - transform.position).normalized * _distanceToLeapAttack;
-            Vector3 colliderSize;
-            while (count < 1)
-            {
-                count += _behaviourTickFrequency * _leapAttackSpeed;
-                transform.position = Vector3.Lerp(_initialLeapPosition, finalPos, count);
-                for (int i = 0; i < _attackAreaInfos.Length; i++)
-                {
-                    if (_attackAreaInfos[i].WillInterpolateAnySize() && _attackAreaInfos[i].AnimationIndex == 1 &&
-                        _currentLeapAnimationTime >= _attackAreaInfos[i].MinInterval && _currentLeapAnimationTime <= _attackAreaInfos[i].MaxInterval)
-                    {
-                        colliderSize = new Vector3(_attackAreaInfos[i].Size.x, _attackAreaInfos[i].Size.y, Vector3.Distance(transform.position, _initialLeapPosition));
-                        _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, colliderSize, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
-                    }
-                    else
-                    {
-                        //deactivate all hitboxes that lerp size
-                        if(_attackAreaInfos[i].WillInterpolateAnySize()) _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
-                    }
-                }
-                yield return _behaviourTickDelay;
-            }
-            _leapCoroutine = null;
-        }
-
         private void HandleAttackAnimationEnd()
         {
-            //_navMeshAgent.isStopped = false;
             for (int i = 0; i < _attackAreaInfos.Length; i++)
             {
                 _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
             }
             _isAttacking = false;
+            _isInLeapAnimation = false;
             _navMeshAgent.enabled = true;
+            _navMeshAgent.isStopped = false;
         }
 
         private void OnAnimationStepChange(float normalizedTime)
@@ -414,16 +397,53 @@ namespace Ivayami.Enemy
                 else
                 {
                     //deactivates all hitboxes that dont lerp size
-                    if(!_attackAreaInfos[i].WillInterpolateAnySize())_attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+                    if (!_attackAreaInfos[i].WillInterpolateAnySize()) _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
                 }
             }
-            if (currentAnimIndex == 1 && _leapCoroutine == null && normalizedTime >= _startLeapMovementInterval)
+            if (currentAnimIndex == 1 && normalizedTime >= _startLeapMovementInterval && !_isInLeapAnimation)
             {
+                _isInLeapAnimation = true;
                 _navMeshAgent.enabled = false;
                 _initialLeapPosition = transform.position;
                 _leapCoroutine = StartCoroutine(LeapCoroutine());
             }
             //_attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+        }
+
+        private IEnumerator LeapCoroutine()
+        {
+            WaitForFixedUpdate delay = new WaitForFixedUpdate();
+            float count = 0;
+            // this is a direction that points to the enemy
+            Vector3 dir = (_initialLeapPosition - _hitsCache[0].transform.position).normalized;
+            Vector3 finalPos = Vector3.Distance(transform.position, _hitsCache[0].transform.position) <= _distanceToLeapAttack ?
+                _hitsCache[0].transform.position + dir * (_collision.radius + _currentTargetColliderSizeFactor) :
+                _initialLeapPosition + new Vector3(-dir.x * _distanceToLeapAttack, _hitsCache[0].transform.position.y, -dir.z * _distanceToLeapAttack);
+            Vector3 colliderSize;
+            transform.rotation = Quaternion.LookRotation(-dir);
+
+            while (count < 1)
+            {
+                count += Time.fixedDeltaTime / _leapAttackDuration;
+                //transform.position = Vector3.Lerp(_initialLeapPosition, finalPos, count) + new Vector3(0,Mathf.Lerp(),0);
+                transform.position = new Vector3(Mathf.Lerp(_initialLeapPosition.x, finalPos.x, count), Mathf.Lerp(_initialLeapPosition.y, finalPos.y + _leapAttackJumpHeight, _leapAttackHeightCurve.Evaluate(count)), Mathf.Lerp(_initialLeapPosition.z, finalPos.z, count));
+                for (int i = 0; i < _attackAreaInfos.Length; i++)
+                {
+                    if (_attackAreaInfos[i].WillInterpolateAnySize() && _attackAreaInfos[i].AnimationIndex == 1 &&
+                        _currentLeapAnimationTime >= _attackAreaInfos[i].MinInterval && _currentLeapAnimationTime <= _attackAreaInfos[i].MaxInterval)
+                    {
+                        colliderSize = new Vector3(_attackAreaInfos[i].Size.x, _attackAreaInfos[i].Size.y, Vector3.Distance(transform.position, _initialLeapPosition));
+                        _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, colliderSize, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
+                    }
+                    else
+                    {
+                        //deactivate all hitboxes that lerp size
+                        if (_attackAreaInfos[i].WillInterpolateAnySize()) _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+                    }
+                }
+                yield return delay;
+            }
+            _leapCoroutine = null;
         }
 
         public void ChangeSpeed(float speed)

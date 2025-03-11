@@ -10,28 +10,31 @@ namespace Ivayami.Enemy
     public class EnemyPatrol : StressEntity, IIluminatedEnemy
     {
         //[Header("Enemy Parameters")]
-        [SerializeField, Min(0f)] private float _minDetectionRange;
+        [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
+        [SerializeField] private bool _startActive;
+
+        [SerializeField, Min(0f)] private float _chaseSpeed;
         [SerializeField, Min(0f)] private float _detectionRange;
-        [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
+        [SerializeField, Min(0f)] private float _minDetectionRange;
+        [SerializeField, Min(0f)] private float _minDetectionRangeInChase;
         [SerializeField, Range(0f, 180f)] private float _visionAngle = 60f;
         [SerializeField] private Vector3 _visionOffset;
-        [SerializeField, Min(0f)] private float _delayBetweenPatrolPoints;
+        [SerializeField] private LayerMask _targetLayer;
+        [SerializeField] private LayerMask _blockVisionLayer;
+
+        [SerializeField] private bool _goToLastTargetPosition;
+        [SerializeField] private bool _loseTargetWhenHidden = true;
+        [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
         [SerializeField, Min(0f)] private float _delayToStopSearchTarget;
         [SerializeField, Min(0f)] private float _delayToFinishTargetSearch;
-        [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
+        [SerializeField, Min(0f)] private float _delayBetweenPatrolPoints;
+        [SerializeField] private Vector3[] _patrolPoints;
+
         [SerializeField, Min(0f)] private float _stressIncreaseOnTargetDetected;
         [SerializeField, Min(0f)] private float _stressIncreaseWhileChasing;
         [SerializeField, Min(0f)] private float _stressMaxWhileChasing;
-        [SerializeField, Min(0f)] private float _chaseSpeed;
-        [SerializeField, Min(0f)] private float _minDetectionRangeInChase;
-        [SerializeField] private bool _startActive;
-        [SerializeField] private bool _goToLastTargetPosition;
-        [SerializeField] private bool _loseTargetWhenHidden = true;
         [SerializeField] private bool _attackTarget;
         [SerializeField] private HitboxInfo[] _attackAreaInfos;
-        [SerializeField] private LayerMask _targetLayer;
-        [SerializeField] private LayerMask _blockVisionLayer;
-        [SerializeField] private Vector3[] _patrolPoints;
 
         //[Header("Enemy Debug")]
         [SerializeField] private bool _debugLogsEnemyPatrol;
@@ -112,7 +115,7 @@ namespace Ivayami.Enemy
             _initialRotation = transform.rotation;
             _baseSpeed = _navMeshAgent.speed;
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
-            else _baseStoppingDistance = _navMeshAgent.stoppingDistance;
+            _baseStoppingDistance = _navMeshAgent.stoppingDistance;
         }
 
         private void OnEnable()
