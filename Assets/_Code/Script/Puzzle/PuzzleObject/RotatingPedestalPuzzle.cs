@@ -29,9 +29,9 @@ namespace Ivayami.Puzzle
 
         private sbyte _currentPuzzleLayer;
         private sbyte _currentPuzzleObjectSelectedIndex;
-        private float _currentInputCooldown;
+        //private float _currentInputCooldown;
         private bool _triggerNoSolution;
-        private const float _inputCooldown = .1f;
+        //private const float _inputCooldown = .1f;
         private InteractableFeedbacks _interatctableFeedbacks;
         private RotatingPedestalPuzzleObject _currentSelected;
         private List<RotatingPedestalPuzzleObject[]> _puzzleObjects;
@@ -130,8 +130,8 @@ namespace Ivayami.Puzzle
 
         private void HandleNavigationUI(InputAction.CallbackContext obj)
         {
-            if (Time.time - _currentInputCooldown < _inputCooldown) return;
-            _currentInputCooldown = Time.time;
+            //if (Time.time - _currentInputCooldown < _inputCooldown) return;
+            //_currentInputCooldown = Time.time;
             Vector2 input = obj.ReadValue<Vector2>();
             if (Mathf.Abs(input.y) == 1)
             {

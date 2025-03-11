@@ -17,7 +17,6 @@ namespace Ivayami.Player {
 
         [SerializeField] private InputActionReference _interactInput;
         [SerializeField] private InputActionReference _abilityInput;
-        [SerializeField] private InputActionReference _changeAbilityInput;
         [SerializeField] private InputActionReference _useHealthItemInput;
         [SerializeField] private InputActionReference[] _pauseInputs;
         private InputActionMap _actionMapCurrent;
@@ -54,17 +53,20 @@ namespace Ivayami.Player {
             Seat,
             PullRope,
             PullLever,
-            PushButton
+            PushButton,
+            HeavyPickup,
+            HeavyPlace
         }
 
         //[Header("Hand Item")]
 
         [field: SerializeField] public Transform HoldPointLeft { get; private set; }
+        [field: SerializeField] public Transform HoldPointHeavy { get; private set; }
 
         [Header("Abilities")]
 
         private List<PlayerAbility> _abilities = new List<PlayerAbility>();
-        private sbyte _abilityCurrent;
+        private sbyte _abilityCurrent; //
 
         [Header("Heavy Objects")]
 
@@ -87,16 +89,14 @@ namespace Ivayami.Player {
             _interactInput.action.started += Interact;
             _interactInput.action.canceled += Interact;
             _abilityInput.action.started += Ability;
-            _changeAbilityInput.action.started += ChangeAbility;
+            //_changeAbilityInput.action.started += ChangeAbility;
             _useHealthItemInput.action.started += UseHealthItem;
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable();
 
             onInteractLong.AddListener((interacting) => Interacting = interacting);
             _interactableCheckWait = new WaitForSeconds(_interactableCheckDelay);
 
-            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //            
-
-            Logger.Log(LogType.Player, $"{typeof(PlayerActions).Name} Initialized");
+            _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //
         }
 
         private void Start() {
@@ -107,9 +107,8 @@ namespace Ivayami.Player {
         }
 
         private void Interact(InputAction.CallbackContext input) {
-            //if (PlayerMovement.Instance.CanMove) {
             if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _interactBlock.Count == 0) {
-                if (InteractableTarget != null /*&& InteractableTarget != Friend.Instance?.InteractableLongCurrent*/) {
+                if (InteractableTarget != null) {
                     _interactAnimationCache = InteractableTarget.Interact();
                     Vector3 directionToInteractable = InteractableTarget.InteratctableFeedbacks.IconPosition - transform.position;
                     PlayerMovement.Instance.SetTargetAngle(Mathf.Atan2(directionToInteractable[0], directionToInteractable[2]) * Mathf.Rad2Deg, false);
@@ -117,16 +116,9 @@ namespace Ivayami.Player {
                         PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
                         onInteractLong?.Invoke(true);
                         onInteract?.Invoke(_interactAnimationCache);
-
-                        Logger.Log(LogType.Player, $"Interact Long with: {InteractableTarget.gameObject.name}");
                     }
-                    else {
-                        onInteract?.Invoke(_interactAnimationCache);
-
-                        Logger.Log(LogType.Player, $"Interact with: {InteractableTarget.gameObject.name}");
-                    }
+                    else onInteract?.Invoke(_interactAnimationCache);
                 }
-                else Logger.Log(LogType.Player, $"Interact: No Target");
             }
             else if (input.phase == InputActionPhase.Canceled && Interacting) {
                 if (InteractableTarget is IInteractableLong) {
@@ -136,10 +128,7 @@ namespace Ivayami.Player {
                 }
                 (InteractableTarget as IInteractableLong).InteractStop();
                 onInteractLong?.Invoke(false);
-
-                Logger.Log(LogType.Player, $"Stop Interact Long with: {InteractableTarget.gameObject.name}");
             }
-            //}
         }
 
         private IEnumerator InteractObjectDetect() {
@@ -161,7 +150,6 @@ namespace Ivayami.Player {
                         InteractableTarget = _interactableClosestCache;
                         InteractableTarget?.InteratctableFeedbacks.UpdateFeedbacks(true);
                         onInteractTargetChange?.Invoke(InteractableTarget);
-                        Logger.Log(LogType.Player, $"Changed Current Interact Target to: {(InteractableTarget != null ? InteractableTarget.gameObject.name : "Null")}");
                     }
                 }
 
@@ -172,13 +160,12 @@ namespace Ivayami.Player {
         public void HeavyObjectHold(GameObject objToHold) {
             if (objToHold != null) {
                 _heavyObjectCurrent = objToHold;
-                _heavyObjectCurrent.transform.parent = HoldPointLeft;
+                _heavyObjectCurrent.transform.parent = HoldPointHeavy;
                 _heavyObjectCurrent.transform.localPosition = Vector3.zero;
                 _heavyObjectCurrent.transform.rotation = Quaternion.identity;
                 if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = false;
                 _interactableDetector.onlyHeavyObjects = true;
             }
-            else Debug.LogError("Trying to Hold HeavyObject but null object was passed!");
         }
 
         public GameObject HeavyObjectRelease() {
@@ -189,46 +176,18 @@ namespace Ivayami.Player {
             return releasedObject;
         }
 
-        #region Abilities (To be removed)
+        #region Abilities
         private void Ability(InputAction.CallbackContext input) {
             if (_abilityCurrent >= 0) {
                 if (input.phase == InputActionPhase.Started) {
                     _abilities[_abilityCurrent].AbilityStart();
-                    onAbility?.Invoke(_abilities[_abilityCurrent].name);
-
-                    Logger.Log(LogType.Player, $"Ability Start: {_abilities[_abilityCurrent].name}");
+                    onAbility?.Invoke(_abilities[_abilityCurrent].GetType().Name);
                 }
                 else if (input.phase == InputActionPhase.Canceled) {
                     _abilities[_abilityCurrent].AbilityEnd();
                     onAbility?.Invoke($"{_abilities[_abilityCurrent].name}End");
-
-                    Logger.Log(LogType.Player, $"Ability End: {_abilities[_abilityCurrent].name}");
                 }
             }
-        }
-
-        private void ChangeAbility(InputAction.CallbackContext input) {
-            switch (input.ReadValue<Vector2>()) {
-                case Vector2 v2 when v2.Equals(Vector2.up):
-                    if (_abilities.Count < 1) return;
-                    _abilityCurrent = 0;
-                    break;
-                case Vector2 v2 when v2.Equals(Vector2.right):
-                    if (_abilities.Count < 2) return;
-                    _abilityCurrent = 1;
-                    break;
-                case Vector2 v2 when v2.Equals(Vector2.down):
-                    if (_abilities.Count < 3) return;
-                    _abilityCurrent = 2;
-                    break;
-                case Vector2 v2 when v2.Equals(Vector2.left):
-                    if (_abilities.Count < 4) return;
-                    _abilityCurrent = 3;
-                    break;
-            }
-            onAbilityChange?.Invoke(_abilityCurrent);
-
-            Logger.Log(LogType.Player, $"Ability Changed to: {_abilities[_abilityCurrent].name}");
         }
 
         public void AddAbility(PlayerAbility ability) {
@@ -239,7 +198,7 @@ namespace Ivayami.Player {
             abilityInstance.transform.localRotation = localRotation;
             _abilities.Add(abilityInstance);
 
-            Logger.Log(LogType.Player, $"Ability Add: {ability.name}");
+            if (_abilityCurrent < 0) _abilityCurrent = 0;
         }
 
         public void RemoveAbility(PlayerAbility ability) {
@@ -277,18 +236,13 @@ namespace Ivayami.Player {
                     else _interactReleaseDelay.Add(key, StartCoroutine(ReleaseInteractDelay(key, releaseDelay)));
                 }
             }
-            else {
-                if (!_interactBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock interact but key is already blocking");
-                Logger.Log(LogType.Player, $"Interact Blockers Increase to: {_interactBlock.Count}");
-            }
-
+            else if (!_interactBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock interact but key is already blocking");
         }
 
         private IEnumerator ReleaseInteractDelay(string key, float delay) {
             yield return new WaitForSeconds(delay);
             _interactBlock.Remove(key);
             _interactReleaseDelay.Remove(key);
-            Logger.Log(LogType.Player, $"Interact Blockers Decrease to: {_interactBlock.Count}");
         }
 
 #if UNITY_EDITOR
