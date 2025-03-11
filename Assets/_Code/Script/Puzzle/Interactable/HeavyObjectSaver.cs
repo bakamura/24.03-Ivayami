@@ -51,3 +51,4 @@ namespace Ivayami.Puzzle {
 #endif
         }
     }
+}

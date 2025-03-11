@@ -12,7 +12,7 @@ namespace Ivayami.Puzzle {
         [SerializeField] private string _correctName;
         [SerializeField] private Transform _placementPos;
         private GameObject _heavyObjectCurrent;
-        public string HeavyObjectCurrentName { get { return _heavyObjectCurrent.name} }
+        public string HeavyObjectCurrentName { get { return _heavyObjectCurrent.name; } }
         private Collider _collider;
         [SerializeField] private GameObject _interactPopup;
 
