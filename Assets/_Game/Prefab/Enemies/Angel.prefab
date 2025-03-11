@@ -734,7 +734,7 @@ ParticleSystem:
           m_RotationOrder: 4
     m_Mesh: {fileID: 0}
     m_MeshRenderer: {fileID: 0}
-    m_SkinnedMeshRenderer: {fileID: 0}
+    m_SkinnedMeshRenderer: {fileID: 605304078348711695}
     m_Sprite: {fileID: 0}
     m_SpriteRenderer: {fileID: 0}
     m_UseMeshMaterialIndex: 0
@@ -5052,7 +5052,19 @@ MonoBehaviour:
         m_CallState: 2
   OnHitboxDeactivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6231947542994471809}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3051955991647902436
 GameObject:
   m_ObjectHideFlags: 0
@@ -5218,6 +5230,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  _fallDuration: 1
   _attackAreaInfos:
   - Hitbox: {fileID: 7757587321474757377}
     AnimationIndex: 0
@@ -5358,7 +5371,7 @@ MonoBehaviour:
     ReplayIntervalRange:
       Min: 1
       Max: 2
-    DrawGizmos: 1
+    DrawGizmos: 0
     MinRangGizmoColor: {r: 0, g: 1, b: 0, a: 1}
     MaxRangGizmoColor: {r: 1, g: 0, b: 0, a: 1}
   _debugLog: 0
@@ -5503,6 +5516,7 @@ MonoBehaviour:
   _finalSpeed: 0
   _paraliseDuration: 0
   _interpolateDuration: 0
+  _willInterruptAttack: 1
   _enemyAnimator: {fileID: 8052367091888512825}
   _paraliseAnimationRandomAmount: 3
   _detectLightRange: 7
@@ -5758,7 +5772,19 @@ MonoBehaviour:
         m_CallState: 2
   OnHitboxDeactivate:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6231947542994471809}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &9133823217886349961
 GameObject:
   m_ObjectHideFlags: 0
@@ -6493,7 +6519,7 @@ ParticleSystem:
           m_RotationOrder: 4
     m_Mesh: {fileID: 0}
     m_MeshRenderer: {fileID: 0}
-    m_SkinnedMeshRenderer: {fileID: 0}
+    m_SkinnedMeshRenderer: {fileID: 605304078348711695}
     m_Sprite: {fileID: 0}
     m_SpriteRenderer: {fileID: 0}
     m_UseMeshMaterialIndex: 0
@@ -11395,6 +11421,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 8052367091888512825}
   m_SourcePrefab: {fileID: 100100000, guid: eec9fbe2f6db5924e93241bb63b0d2ab, type: 3}
+--- !u!137 &605304078348711695 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -666985854777507172, guid: eec9fbe2f6db5924e93241bb63b0d2ab, type: 3}
+  m_PrefabInstance: {fileID: 9140085389146928531}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8221728960478316738 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: eec9fbe2f6db5924e93241bb63b0d2ab, type: 3}

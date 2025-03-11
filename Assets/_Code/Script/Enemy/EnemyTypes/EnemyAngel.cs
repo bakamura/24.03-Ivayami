@@ -38,6 +38,7 @@ namespace Ivayami.Enemy
         [SerializeField, Range(0f, 1f)] private float _startLeapMovementInterval;
         [SerializeField, Min(1f)] private float _leapAttackJumpHeight;
         [SerializeField] private AnimationCurve _leapAttackHeightCurve;
+        [SerializeField, Min(0f)] private float _fallDuration;
         [SerializeField] private HitboxInfo[] _attackAreaInfos;
 
         //[Header("Enemy Debug")]
@@ -91,6 +92,7 @@ namespace Ivayami.Enemy
             }
         }
         private CapsuleCollider m_collision;
+        //private IluminatedEnemyDetector _lightDetector;
         private Collider[] _hitsCache = new Collider[1];
         private WaitForSeconds _behaviourTickDelay;
         private WaitForSeconds _betweenPatrolPointsDelay;
@@ -100,6 +102,7 @@ namespace Ivayami.Enemy
         private Coroutine _chaseStressCoroutine;
         private Coroutine _behaviourCoroutine;
         private Coroutine _leapCoroutine;
+        private Coroutine _fallCoroutine;
         private Quaternion _initialRotation;
         private Vector3 _lastTargetPosition;
         private Vector3 _initialPosition;
@@ -110,6 +113,7 @@ namespace Ivayami.Enemy
         private bool _directContactWithTarget;
         private bool _isAttacking;
         private bool _isInLeapAnimation;
+        //private bool _isParalised;
         private float _currentTargetColliderSizeFactor;
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
@@ -128,6 +132,7 @@ namespace Ivayami.Enemy
             _betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints - _behaviourTickFrequency);
             _endGoToLastTargetDelay = new WaitForSeconds(_delayToFinishTargetSearch - _behaviourTickFrequency);
             _enemySounds = GetComponent<EnemySounds>();
+            //_lightDetector = GetComponentInChildren<IluminatedEnemyDetector>();
             //if (_attackTarget) _hitboxAttack = GetComponentInChildren<HitboxAttack>();
 
             _initialPosition = transform.position;
@@ -186,6 +191,11 @@ namespace Ivayami.Enemy
                     transform.position = _initialLeapPosition;
                     _navMeshAgent.enabled = true;
                 }
+                if(_fallCoroutine != null)
+                {
+                    StopCoroutine(_fallCoroutine);
+                    _fallCoroutine = null;
+                }
                 IsActive = false;
                 _isChasing = false;
                 UpdateMovement(false);
@@ -200,7 +210,7 @@ namespace Ivayami.Enemy
             sbyte indexFactor = 1;
             while (IsActive)
             {
-                if (_navMeshAgent.enabled && !_navMeshAgent.isStopped)
+                if (_navMeshAgent.enabled && !_navMeshAgent.isStopped && _fallCoroutine == null)
                 {
                     _chaseTargetPatience = Mathf.Clamp(_chaseTargetPatience - _behaviourTickFrequency, 0, _delayToLoseTarget);
                     if (CheckForTarget(halfVisionAngle)) _chaseTargetPatience = _delayToLoseTarget;
@@ -380,8 +390,18 @@ namespace Ivayami.Enemy
             }
             _isAttacking = false;
             _isInLeapAnimation = false;
-            _navMeshAgent.enabled = true;
-            _navMeshAgent.isStopped = false;
+            Debug.Log("EndAttack");
+            if (!_canChaseTarget && !_canWalkPath && _leapCoroutine != null && _fallCoroutine == null)
+            {
+                StopCoroutine(_leapCoroutine);
+                _leapCoroutine = null;
+                _fallCoroutine = StartCoroutine(FallCoroutine());
+            }
+            else
+            {
+                _navMeshAgent.enabled = true;
+                _navMeshAgent.isStopped = false;
+            }
         }
 
         private void OnAnimationStepChange(float normalizedTime)
@@ -445,6 +465,24 @@ namespace Ivayami.Enemy
             }
             _leapCoroutine = null;
         }
+        //when is affected by light during the leap
+        private IEnumerator FallCoroutine()
+        {
+            float count = 0;
+            WaitForFixedUpdate delay = new WaitForFixedUpdate();
+            Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit, 20, LayerMask.NameToLayer("Terrain"));
+            Vector3 finalPos = new Vector3(transform.position.x, hit.point.y + .15f, transform.position.z);
+            Debug.Log(finalPos.y);
+            while(count < 1)
+            {
+                count += Time.fixedDeltaTime / _fallDuration;
+                transform.position = Vector3.Lerp(transform.position, finalPos, count);
+                yield return delay;
+            }
+            _navMeshAgent.enabled = true;
+            _navMeshAgent.isStopped = false;
+            _fallCoroutine = null;
+        }
 
         public void ChangeSpeed(float speed)
         {
@@ -454,7 +492,7 @@ namespace Ivayami.Enemy
         public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped)
         {
             _canChaseTarget = canChaseTarget;
-            _canWalkPath = canWalkPath;
+            _canWalkPath = canWalkPath;        
             UpdateMovement(isStopped);
         }
 

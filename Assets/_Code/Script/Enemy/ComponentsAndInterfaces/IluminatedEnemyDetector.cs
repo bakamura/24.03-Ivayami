@@ -10,6 +10,7 @@ namespace Ivayami.Enemy
         [SerializeField, Min(0f)] private float _finalSpeed;
         [SerializeField, Min(0f)] private float _paraliseDuration;
         [SerializeField, Min(0f)] private float _interpolateDuration;
+        [SerializeField] private bool _willInterruptAttack;
         [SerializeField] private EnemyAnimator _enemyAnimator;
         [SerializeField, Min(0)] private int _paraliseAnimationRandomAmount;
         [SerializeField, Min(0f)] private float _detectLightRange;
@@ -25,9 +26,11 @@ namespace Ivayami.Enemy
         private IIluminatedEnemy _target;
         private WaitForSeconds _checkLightDelay;
         private Coroutine _iluminatedCoroutine;
-        private Coroutine _checkForLightsCoroutine;        
+        private Coroutine _checkForLightsCoroutine;
         private bool _isIliuminated;
+        private bool _hasParaliseAnim;
         private float _baseSpeed;
+        private int _animIndex;
 
         protected override void Awake()
         {
@@ -52,6 +55,7 @@ namespace Ivayami.Enemy
                 _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
                 _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
             }
+            _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
         }
 
         private void OnDisable()
@@ -71,7 +75,7 @@ namespace Ivayami.Enemy
             {
                 _isIliuminated = true;
                 _baseSpeed = _target.CurrentSpeed;
-                _enemyAnimator.Paralise(true, paraliseAnimationIndex : Random.Range(0, _paraliseAnimationRandomAmount));
+                _animIndex = Random.Range(0, _paraliseAnimationRandomAmount);
                 _iluminatedCoroutine = StartCoroutine(IluminateCoroutine());
             }
         }
@@ -87,9 +91,19 @@ namespace Ivayami.Enemy
                     _iluminatedCoroutine = null;
                 }
                 _isIliuminated = false;
-                _enemyAnimator.Paralise(false, paraliseAnimationIndex: Random.Range(0, _paraliseAnimationRandomAmount));
-                _target.ChangeSpeed(_baseSpeed);
-                _target.UpdateBehaviour(true, true, false);
+                if (_hasParaliseAnim)
+                {
+                    _enemyAnimator.Paralise(false, false, () =>
+                    {
+                        _target.ChangeSpeed(_baseSpeed);
+                        _target.UpdateBehaviour(true, true, false);
+                    }, _animIndex);
+                }
+                else
+                {
+                    _target.ChangeSpeed(_baseSpeed);
+                    _target.UpdateBehaviour(true, true, false);
+                }
             }
         }
 
@@ -115,8 +129,12 @@ namespace Ivayami.Enemy
                     _target.ChangeSpeed(_finalSpeed);
                 }
                 _target.UpdateBehaviour(false, false, true);
-                _target.ChangeSpeed(0);
-                if (_paraliseDuration > 0)
+                if (_hasParaliseAnim)
+                {
+                    _enemyAnimator.Paralise(true, _willInterruptAttack, paraliseAnimationIndex: _animIndex);
+                    Debug.Log("ParaliseAnim");
+                }
+                    if (_paraliseDuration > 0)
                 {
                     yield return paraliseDelay;
                     _target.ChangeSpeed(_baseSpeed);

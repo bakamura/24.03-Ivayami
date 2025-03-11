@@ -6,7 +6,7 @@ using Ivayami.Enemy;
 [CustomEditor(typeof(IluminatedEnemyDetector))]
 public class IluminatedEnemyDetectorInspector : Editor
 {
-    SerializedProperty lightBehaviour, finalSpeed, paraliseDuration, interpolateDuration, enemyAnimator, paraliseAnimationRandomAmount, interpolateCurve,  detectLightRange, checkLightTickFrequency, gizmoColor;
+    SerializedProperty lightBehaviour, finalSpeed, paraliseDuration, interpolateDuration, willInterruptAttack, enemyAnimator, paraliseAnimationRandomAmount, interpolateCurve,  detectLightRange, checkLightTickFrequency, gizmoColor;
     public override void OnInspectorGUI()
     {
         EditorGUILayout.PropertyField(lightBehaviour, new GUIContent("Light Behaviour"));
@@ -15,6 +15,7 @@ public class IluminatedEnemyDetectorInspector : Editor
         {
             EditorGUILayout.PropertyField(enemyAnimator, new GUIContent("Enemy Animator"));
             EditorGUILayout.PropertyField(finalSpeed, new GUIContent("Final Speed"));
+            EditorGUILayout.PropertyField(willInterruptAttack, new GUIContent("Will Interrupt Attack On Start", "The attack will be immediately interrupted when it enters in contact with light, works only if enemy has the paralise animation state"));
             EditorGUILayout.PropertyField(paraliseDuration, new GUIContent("Paralise Duration", "If value is 0 the enemy will stay still until all lights are away from it"));
             EditorGUILayout.PropertyField(interpolateDuration, new GUIContent("Slow Effect Interpolation Duration", "If value is 0 the enemy will have its speed change immediately"));
             EditorGUILayout.PropertyField(interpolateCurve, new GUIContent("Slow Effect Interpolation Curve"));
@@ -36,6 +37,7 @@ public class IluminatedEnemyDetectorInspector : Editor
         finalSpeed = serializedObject.FindProperty("_finalSpeed");
         paraliseDuration = serializedObject.FindProperty("_paraliseDuration");
         interpolateDuration = serializedObject.FindProperty("_interpolateDuration");
+        willInterruptAttack = serializedObject.FindProperty("_willInterruptAttack");
         enemyAnimator = serializedObject.FindProperty("_enemyAnimator");
         paraliseAnimationRandomAmount = serializedObject.FindProperty("_paraliseAnimationRandomAmount");
         interpolateCurve = serializedObject.FindProperty("_interpolateCurve");
