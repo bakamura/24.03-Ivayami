@@ -5141,7 +5141,7 @@ NavMeshAgent:
   m_Enabled: 0
   m_AgentTypeID: 1479372276
   m_Radius: 1
-  m_Speed: 5
+  m_Speed: 1
   m_Acceleration: 20
   avoidancePriority: 1
   m_AngularSpeed: 1200
@@ -5171,10 +5171,10 @@ MonoBehaviour:
   _drawGizmos: 0
   _behaviourTickFrequency: 0.2
   _startActive: 1
-  _chaseSpeed: 5
-  _detectionRange: 10
-  _minDetectionRange: 2
-  _minDetectionRangeInChase: 8
+  _chaseSpeed: 10
+  _detectionRange: 15
+  _minDetectionRange: 7
+  _minDetectionRangeInChase: 15
   _visionAngle: 60
   _visionOffset: {x: 0, y: 1, z: 0}
   _targetLayer:
@@ -5192,9 +5192,9 @@ MonoBehaviour:
   _patrolPoints: []
   _stressIncreaseWhileChasing: 5
   _stressMaxWhileChasing: 30
-  _distanceToLeapAttack: 10
+  _distanceToLeapAttack: 7
   _distanceToFogAttack: 3
-  _leapAttackDuration: 0.5
+  _leapAttackDuration: 0.7
   _startLeapMovementInterval: 0.5
   _leapAttackJumpHeight: 1.5
   _leapAttackHeightCurve:
@@ -5237,35 +5237,35 @@ MonoBehaviour:
     AnimationIndex: 0
     MinInterval: 0.36
     MaxInterval: 0.73
-    StressIncreaseOnEnter: 0
-    StressIncreaseOnStay: 20
+    StressIncreaseOnEnter: 70
+    StressIncreaseOnStay: 0
     Center: {x: 0, y: 0, z: 0}
     InterpolateSizeXAxisByAnimation: 0
     InterpolateSizeYAxisByAnimation: 0
     InterpolateSizeZAxisByAnimation: 0
-    Size: {x: 2.5, y: 2.5, z: 2.5}
+    Size: {x: 4, y: 4, z: 4}
   - Hitbox: {fileID: 911149533854555400}
     AnimationIndex: 1
     MinInterval: 0.5
     MaxInterval: 0.66
-    StressIncreaseOnEnter: 25
+    StressIncreaseOnEnter: 30
     StressIncreaseOnStay: 0
     Center: {x: 0, y: 0, z: 0}
     InterpolateSizeXAxisByAnimation: 0
     InterpolateSizeYAxisByAnimation: 0
     InterpolateSizeZAxisByAnimation: 1
-    Size: {x: 2, y: 3, z: 0}
+    Size: {x: 2, y: 3, z: 1}
   - Hitbox: {fileID: 3516801248242467651}
     AnimationIndex: 1
     MinInterval: 0.66
     MaxInterval: 0.76
-    StressIncreaseOnEnter: 20
+    StressIncreaseOnEnter: 30
     StressIncreaseOnStay: 0
     Center: {x: 0, y: 0, z: 0}
     InterpolateSizeXAxisByAnimation: 0
     InterpolateSizeYAxisByAnimation: 0
     InterpolateSizeZAxisByAnimation: 0
-    Size: {x: 2.5, y: 2.5, z: 2.5}
+    Size: {x: 3, y: 4, z: 3}
   _debugLogsEnemyPatrol: 0
   _drawMinDistance: 0
   _minDistanceAreaColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
