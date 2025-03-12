@@ -2,14 +2,20 @@ using UnityEngine;
 using System;
 using System.Collections;
 using Ivayami.Audio;
+//#if UNITY_EDITOR
+//using UnityEditor.Animations;
+//#endif
 
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(Animator))]
     public class EnemyAnimator : MonoBehaviour
     {
-        [SerializeField] private bool _animationScaleWithMovementSpeed;
+        [SerializeField] private bool _movementAnimationScaleWithMovementSpeed;
+        [SerializeField, Range(0f, 1f), Tooltip("Multiplier, example the enemy have a walk speed of 10 if the animation nedds to be played at half speed you set the value at .5")] private float _walkSpeedFactor = 1;
+        [SerializeField, Range(0f, 1f), Tooltip("Multiplier, example the enemy have a chase speed of 10 if the animation nedds to be played at half speed you set the value at .5")] private float _chaseSpeedFactor = 1;
         [SerializeField, Min(0)] private int _attackAnimationLayer;
+        [SerializeField, Min(1f)] private float[] _attackAnimationsSpeed;
         //private static readonly int WALKING_BOOL = Animator.StringToHash("walking");
         private static readonly int SPAWNING_TRIGGER = Animator.StringToHash("spawning");
         private static readonly int ATTACK_TRIGGER = Animator.StringToHash("attacking");
@@ -20,6 +26,7 @@ namespace Ivayami.Enemy
         private static readonly int MOVE_SPEED_FLOAT = Animator.StringToHash("moveSpeed");
         private static readonly int ATTACK_INDEX_FLOAT = Animator.StringToHash("attackIndex");
         private static readonly int PARALISE_INDEX_FLOAT = Animator.StringToHash("paralisedIndex");
+        private static readonly int ATTACK_SPEED_FLOAT = Animator.StringToHash("attackSpeed");
 
         private static readonly int WALKING_STATE = Animator.StringToHash("walk");
         private static readonly int CHASE_STATE = Animator.StringToHash("chase");
@@ -55,7 +62,14 @@ namespace Ivayami.Enemy
         public void Walking(float speed, Action onAnimationEnd = null)
         {
             //_animator.SetBool(WALKING_BOOL, walking);
-            _animator.SetFloat(MOVE_SPEED_FLOAT, _animationScaleWithMovementSpeed ? speed : Math.Clamp(speed, 0, 1));
+            float finalSpeed;
+            if (_movementAnimationScaleWithMovementSpeed)
+            {
+                if (_animator.GetBool(CHASING_BOOL)) finalSpeed = speed * _chaseSpeedFactor;
+                else finalSpeed = speed * _walkSpeedFactor;
+            }
+            else finalSpeed = Math.Clamp(speed, 0, 1);
+            _animator.SetFloat(MOVE_SPEED_FLOAT, finalSpeed);
             if (_animator.GetBool(CHASING_BOOL)) StartAnimationEvent(CHASE_STATE, 0, onAnimationEnd, false);
             else StartAnimationEvent(WALKING_STATE, 0, onAnimationEnd, false);
         }
@@ -75,13 +89,14 @@ namespace Ivayami.Enemy
         /// <param name="attackAnimationIndex">Wich animation the enemy will play in the attack pool</param>
         public void Attack(/*bool playPreviousAnimationEndEvent, */Action onAnimationEnd = null, Action<float> currentAnimationStepCallback = null, int attackAnimationIndex = 0)
         {
+            _animator.SetFloat(ATTACK_SPEED_FLOAT, _attackAnimationsSpeed[attackAnimationIndex]);
             _animator.SetFloat(ATTACK_INDEX_FLOAT, attackAnimationIndex);
             _animator.SetTrigger(ATTACK_TRIGGER);
             StartAnimationEvent(ATTACK_STATE, _attackAnimationLayer, onAnimationEnd, false/*playPreviousAnimationEndEvent*/, currentAnimationStepCallback);
         }
 
         public int GetCurrentAttackAnimIndex()
-        {           
+        {
             return (int)_animator.GetFloat(ATTACK_INDEX_FLOAT);
         }
         /// <param name="onAnimationEnd">
@@ -172,5 +187,18 @@ namespace Ivayami.Enemy
             //onAnimationEnd?.Invoke();
             _waitAnimationEndCoroutine = null;
         }
+
+        //#if UNITY_EDITOR
+        //        private void OnValidate()
+        //        {
+        //            AnimatorController ac = _animator.runtimeAnimatorController as AnimatorController;
+        //            AnimatorControllerLayer acLayers = ac.layers[_attackAnimationLayer];
+        //            Debug.Log(acLayers.stateMachine.name);
+        //            //if(_attackAnimationsSpeed.Length != acLayers.stateMachine.states.Length)
+        //            //{
+        //            //    Array.Resize(ref _attackAnimationsSpeed, acLayers.stateMachine.states.Length);
+        //            //}
+        //        }
+        //#endif
     }
 }

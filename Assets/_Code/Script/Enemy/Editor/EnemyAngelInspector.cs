@@ -12,9 +12,9 @@ public class EnemyAngelInspector : Editor
     //Enemy Patrol variables
     SerializedProperty minDetectionRange, minDetectionRangeInChase, detectionRange, delayToLoseTarget, visionAngle, visionOffset, delayBetweenPatrolPoints, delayToStopSearchTarget, delayToFinishTargetSearch, behaviourTickFrequency, /*stressIncreaseOnTargetDetected,*/
         stressIncreaseWhileChasing, stressMaxWhileChasing, chaseSpeed, startActive, goToLastTargetPosition, attackAreaInfos, loseTargetWhenHidden, targetLayer, blockVisionLayer, patrolPoints,
-        distanceToLeapAttack, distanceToFogAttack, leapAttackDuration, startLeapMovementInterval, leapAttackJumpHeight, leapAttackPredictDistance, leapAttackHeightCurve, fallDuration,
+        distanceToLeapAttack, distanceToFogAttack, leapAttackRange, leapAttackDuration, startLeapMovementInterval, leapAttackJumpHeight, leapAttackPredictDistance, leapAttackHeightCurve, fallDuration,
         debugLogsEnemyPatrol, drawMinDistance, minDistanceAreaColor, drawMinDistanceInChase, minDistanceInChaseAreaColor, drawDetectionRange, detectionRangeAreaColor, drawPatrolPoints, patrolPointsColor, drawStoppingDistance, stoppingDistanceColor, patrolPointRadius,
-        drawFogAttackDistance, fogAttackColor, drawLeapAttackDistance, leapAttackColor, drawPredictPosition, predictPositionColor;
+        drawFogAttackDistance, fogAttackColor, drawLeapAttackDistance, leapAttackColor, drawPredictPosition, predictPositionColor, drawLeapAttackRange, leapAttackRangeColor;
     private NavMeshAgent _navMeshAgent;
     private const float _space = 2;
     public override void OnInspectorGUI()
@@ -60,6 +60,7 @@ public class EnemyAngelInspector : Editor
         EditorGUILayout.PropertyField(stressMaxWhileChasing, new GUIContent("Stress Max While Chasing"));
         EditorGUILayout.PropertyField(distanceToFogAttack, new GUIContent("Distance To Fog Attack"));
         EditorGUILayout.PropertyField(distanceToLeapAttack, new GUIContent("Distance To Leap Attack"));
+        EditorGUILayout.PropertyField(leapAttackRange, new GUIContent("Leap Attack Range"));
         EditorGUILayout.PropertyField(leapAttackDuration, new GUIContent("Leap Attack Duration", "The duration of the jump portion of the attack"));
         EditorGUILayout.PropertyField(startLeapMovementInterval, new GUIContent("Start Leap Movement Interval", "The percentage of the animation to start the jump movement"));
         EditorGUILayout.PropertyField(leapAttackJumpHeight, new GUIContent("Leap Attack Jump Height"));
@@ -111,6 +112,11 @@ public class EnemyAngelInspector : Editor
         }
         EditorGUILayout.PropertyField(drawPredictPosition, new GUIContent("Draw Predict Position", "Only shows during play mode"));
         if (drawPredictPosition.boolValue) EditorGUILayout.PropertyField(predictPositionColor, new GUIContent("Predict Position Color"));
+        if(leapAttackRange.floatValue > 0)
+        {
+            EditorGUILayout.PropertyField(drawLeapAttackRange, new GUIContent("Draw Leap Attack Range"));
+            if (drawLeapAttackRange.boolValue) EditorGUILayout.PropertyField(leapAttackRangeColor, new GUIContent("Leap Attack Range Color"));
+        }
         EditorGUI.indentLevel--;
 
         serializedObject.ApplyModifiedProperties();
@@ -157,6 +163,7 @@ public class EnemyAngelInspector : Editor
 
         distanceToLeapAttack = serializedObject.FindProperty("_distanceToLeapAttack");
         distanceToFogAttack = serializedObject.FindProperty("_distanceToFogAttack");
+        leapAttackRange = serializedObject.FindProperty("_leapAttackRange");
         leapAttackDuration = serializedObject.FindProperty("_leapAttackDuration");
         startLeapMovementInterval = serializedObject.FindProperty("_startLeapMovementInterval");
         leapAttackJumpHeight = serializedObject.FindProperty("_leapAttackJumpHeight");
@@ -183,6 +190,8 @@ public class EnemyAngelInspector : Editor
         leapAttackColor = serializedObject.FindProperty("_leapAttackColor");
         drawPredictPosition = serializedObject.FindProperty("_drawPredictPosition");
         predictPositionColor = serializedObject.FindProperty("_predictPositionColor");
+        drawLeapAttackRange = serializedObject.FindProperty("_drawLeapAttackRange");
+        leapAttackRangeColor = serializedObject.FindProperty("_leapAttackRangeColor");
 
         EnemyAngel instance = (EnemyAngel)target;
         _navMeshAgent = instance.GetComponent<NavMeshAgent>();

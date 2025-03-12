@@ -5194,6 +5194,7 @@ MonoBehaviour:
   _stressMaxWhileChasing: 30
   _distanceToLeapAttack: 7
   _distanceToFogAttack: 3
+  _leapAttackRange: 10
   _leapAttackDuration: 0.7
   _startLeapMovementInterval: 0.5
   _leapAttackJumpHeight: 1.5
@@ -5284,6 +5285,8 @@ MonoBehaviour:
   _leapAttackColor: {r: 0.050391674, g: 0, b: 1, a: 0.5019608}
   _drawPredictPosition: 0
   _predictPositionColor: {r: 0, g: 0, b: 0, a: 0}
+  _drawLeapAttackRange: 0
+  _leapAttackRangeColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &5055345033382741222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11467,8 +11470,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73e8af86ccdf6bd4299ede567d8ffef4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _animationScaleWithMovementSpeed: 1
+  _movementAnimationScaleWithMovementSpeed: 1
+  _walkSpeedFactor: 1
+  _chaseSpeedFactor: 0.6
   _attackAnimationLayer: 0
+  _attackAnimationsSpeed:
+  - 1.5
+  - 1.5
 --- !u!4 &8742228227984609912 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: eec9fbe2f6db5924e93241bb63b0d2ab, type: 3}

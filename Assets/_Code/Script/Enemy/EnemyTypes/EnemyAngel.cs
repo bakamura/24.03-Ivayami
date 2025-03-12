@@ -35,6 +35,7 @@ namespace Ivayami.Enemy
         [SerializeField, Min(0f)] private float _stressMaxWhileChasing;
         [SerializeField, Min(0f)] private float _distanceToLeapAttack;
         [SerializeField, Min(0f)] private float _distanceToFogAttack;
+        [SerializeField, Min(0f)] private float _leapAttackRange;
         [SerializeField, Min(0f)] private float _leapAttackDuration;
         [SerializeField, Range(0f, 1f)] private float _startLeapMovementInterval;
         [SerializeField, Min(1f)] private float _leapAttackJumpHeight;
@@ -63,6 +64,8 @@ namespace Ivayami.Enemy
         [SerializeField] private Color _leapAttackColor;
         [SerializeField] private bool _drawPredictPosition;
         [SerializeField] private Color _predictPositionColor;
+        [SerializeField] private bool _drawLeapAttackRange;
+        [SerializeField] private Color _leapAttackRangeColor;
         private Mesh _FOVMesh;
         //private RaycastHit _blockHit;
 #endif
@@ -287,7 +290,7 @@ namespace Ivayami.Enemy
                         }
                     }
                     _enemyAnimator.Chasing(_isChasing);
-                    _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude / _navMeshAgent.speed);
+                    _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude /*/ _navMeshAgent.speed*/);
                 }
                 yield return _behaviourTickDelay;
             }
@@ -469,7 +472,7 @@ namespace Ivayami.Enemy
             {
                 Vector3 finalPos;
                 Vector3 currentPlayerMovement = new Vector3(PlayerMovement.Instance.MovementDirection.x, 0, PlayerMovement.Instance.MovementDirection.z);
-                if (Vector3.Distance(transform.position, _hitsCache[0].transform.position) <= _distanceToLeapAttack)
+                if (Vector3.Distance(transform.position, _hitsCache[0].transform.position) <= _leapAttackRange)
                 {
                     //float halfExtent = _navMeshAgent.radius * .75f;
                     float halfHeight = _navMeshAgent.height * .5f;
@@ -479,18 +482,18 @@ namespace Ivayami.Enemy
                     if (Physics.Raycast(new Ray(_hitsCache[0].transform.position + new Vector3(0, halfHeight, 0), currentPlayerMovement.normalized), _predictDistance, _blockVisionLayer))
                     {
                         finalPos = _hitsCache[0].transform.position + dir * (_navMeshAgent.radius + _currentTargetColliderSizeFactor);
-                        //Debug.Log("Position Blocked, jump close to player");
+                        if(_debugLogsEnemyPatrol) Debug.Log("Position Blocked, Leap attack close to player");
                     }
                     else
                     {
                         finalPos = _hitsCache[0].transform.position + currentPlayerMovement.normalized * _predictDistance;
-                        //Debug.Log("Try predict player position");
+                        if (_debugLogsEnemyPatrol) Debug.Log("Leap attack predict position");
                     }
                 }
                 else
                 {
-                    finalPos = _initialLeapPosition + new Vector3(-dir.x * _distanceToLeapAttack, _hitsCache[0].transform.position.y, -dir.z * _distanceToLeapAttack);
-                    //Debug.Log("Far From Leap Distance");
+                    finalPos = _initialLeapPosition + new Vector3(-dir.x * _leapAttackRange, _hitsCache[0].transform.position.y, -dir.z * _leapAttackRange);
+                    if (_debugLogsEnemyPatrol) Debug.Log("Too Far from Leap Attack Range, jump closest direct point");
                 }
                 //Debug.Log(finalPos);
                 return finalPos;
@@ -526,6 +529,7 @@ namespace Ivayami.Enemy
         {
             _canChaseTarget = canChaseTarget;
             _canWalkPath = canWalkPath;
+            if(!canWalkPath && !canChaseTarget) _chaseTargetPatience = _delayToLoseTarget;
             UpdateMovement(isStopped);
         }
 
@@ -598,6 +602,11 @@ namespace Ivayami.Enemy
                 Gizmos.DrawSphere(_hitsCache[0].transform.position + new Vector3(0, _navMeshAgent.height * .5f, 0) + currentPlayerMovement.normalized * _predictDistance, .1f);
                 //Gizmos.DrawWireCube(_hitsCache[0].transform.position + new Vector3(0, _navMeshAgent.height * .5f, 0) + currentPlayerMovement.normalized * _predictDistance,
                 //    new Vector3(_collision.radius * 1.5f, _navMeshAgent.height, _collision.radius * 1.5f));
+            }
+            if (_drawLeapAttackRange)
+            {
+                Gizmos.color = _leapAttackRangeColor;
+                Gizmos.DrawSphere(transform.position, _leapAttackRange);
             }
         }
 
