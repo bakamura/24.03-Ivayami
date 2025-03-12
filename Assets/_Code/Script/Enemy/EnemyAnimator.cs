@@ -12,8 +12,8 @@ namespace Ivayami.Enemy
     public class EnemyAnimator : MonoBehaviour
     {
         [SerializeField] private bool _movementAnimationScaleWithMovementSpeed;
-        [SerializeField, Range(0f, 1f), Tooltip("Multiplier, example the enemy have a walk speed of 10 if the animation nedds to be played at half speed you set the value at .5")] private float _walkSpeedFactor = 1;
-        [SerializeField, Range(0f, 1f), Tooltip("Multiplier, example the enemy have a chase speed of 10 if the animation nedds to be played at half speed you set the value at .5")] private float _chaseSpeedFactor = 1;
+        [SerializeField, Range(0f, 1f)] private float _walkSpeedFactor = 1;
+        [SerializeField, Range(0f, 1f)] private float _chaseSpeedFactor = 1;
         [SerializeField, Min(0)] private int _attackAnimationLayer;
         [SerializeField, Min(1f)] private float[] _attackAnimationsSpeed;
         //private static readonly int WALKING_BOOL = Animator.StringToHash("walking");
