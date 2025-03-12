@@ -73,11 +73,11 @@ namespace Ivayami.Enemy
         /// <param name="onAnimationEnd"></param>
         /// <param name="currentAnimationStepCallback"></param>
         /// <param name="attackAnimationIndex">Wich animation the enemy will play in the attack pool</param>
-        public void Attack(Action onAnimationEnd = null, Action<float> currentAnimationStepCallback = null, int attackAnimationIndex = 0)
+        public void Attack(/*bool playPreviousAnimationEndEvent, */Action onAnimationEnd = null, Action<float> currentAnimationStepCallback = null, int attackAnimationIndex = 0)
         {
             _animator.SetFloat(ATTACK_INDEX_FLOAT, attackAnimationIndex);
             _animator.SetTrigger(ATTACK_TRIGGER);
-            StartAnimationEvent(ATTACK_STATE, _attackAnimationLayer, onAnimationEnd, false, currentAnimationStepCallback);
+            StartAnimationEvent(ATTACK_STATE, _attackAnimationLayer, onAnimationEnd, false/*playPreviousAnimationEndEvent*/, currentAnimationStepCallback);
         }
 
         public int GetCurrentAttackAnimIndex()
@@ -133,6 +133,8 @@ namespace Ivayami.Enemy
             {
                 StopWaitAnimationEndCoroutine();
                 _currentAnimationEndEvent?.Invoke();
+                //if(_currentAnimationEndEvent != null) Debug.Log("ForceCallback");
+                _currentAnimationEndEvent = null;
             }
             if (onAnimationEnd != null)
             {
@@ -165,7 +167,9 @@ namespace Ivayami.Enemy
                 currentAnimationStepCallback?.Invoke(_animator.GetCurrentAnimatorStateInfo(layer).normalizedTime);
                 yield return null;
             }
-            onAnimationEnd?.Invoke();
+            _currentAnimationEndEvent?.Invoke();
+            _currentAnimationEndEvent = null;
+            //onAnimationEnd?.Invoke();
             _waitAnimationEndCoroutine = null;
         }
     }

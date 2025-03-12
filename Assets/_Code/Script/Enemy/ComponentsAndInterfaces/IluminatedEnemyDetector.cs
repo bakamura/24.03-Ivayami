@@ -29,6 +29,7 @@ namespace Ivayami.Enemy
         private Coroutine _checkForLightsCoroutine;
         private bool _isIliuminated;
         private bool _hasParaliseAnim;
+        private bool _paraliseAnimationEnded = true;
         private float _baseSpeed;
         private int _animIndex;
 
@@ -60,6 +61,7 @@ namespace Ivayami.Enemy
 
         private void OnDisable()
         {
+            if (_target == null) return;
             IluminateStop();
             if (_checkForLightsCoroutine != null)
             {
@@ -70,13 +72,13 @@ namespace Ivayami.Enemy
 
         [ContextMenu("Iluminate")]
         private void Iluminate()
-        {
+        {            
             if (_lightBehaviour == LightBehaviours.Paralise)
             {
                 _isIliuminated = true;
                 _baseSpeed = _target.CurrentSpeed;
                 _animIndex = Random.Range(0, _paraliseAnimationRandomAmount);
-                _iluminatedCoroutine = StartCoroutine(IluminateCoroutine());
+                _iluminatedCoroutine ??= StartCoroutine(IluminateCoroutine());
             }
         }
 
@@ -85,19 +87,15 @@ namespace Ivayami.Enemy
         {
             if (_lightBehaviour == LightBehaviours.Paralise)
             {
+                _isIliuminated = false;
                 if (_iluminatedCoroutine != null)
                 {
                     StopCoroutine(_iluminatedCoroutine);
                     _iluminatedCoroutine = null;
                 }
-                _isIliuminated = false;
                 if (_hasParaliseAnim)
                 {
-                    _enemyAnimator.Paralise(false, false, () =>
-                    {
-                        _target.ChangeSpeed(_baseSpeed);
-                        _target.UpdateBehaviour(true, true, false);
-                    }, _animIndex);
+                    _enemyAnimator.Paralise(false, false, HandleParaliseAnimationEnd, _animIndex);
                 }
                 else
                 {
@@ -131,10 +129,11 @@ namespace Ivayami.Enemy
                 _target.UpdateBehaviour(false, false, true);
                 if (_hasParaliseAnim)
                 {
-                    _enemyAnimator.Paralise(true, _willInterruptAttack, paraliseAnimationIndex: _animIndex);
-                    Debug.Log("ParaliseAnim");
+                    _enemyAnimator.Paralise(true, _paraliseAnimationEnded && _willInterruptAttack, paraliseAnimationIndex: _animIndex);
+                    //Debug.Log("IliminateAnimStart");
+                    _paraliseAnimationEnded = false;
                 }
-                    if (_paraliseDuration > 0)
+                if (_paraliseDuration > 0)
                 {
                     yield return paraliseDelay;
                     _target.ChangeSpeed(_baseSpeed);
@@ -162,6 +161,14 @@ namespace Ivayami.Enemy
                 }
                 yield return _checkLightDelay;
             }
+        }
+
+        private void HandleParaliseAnimationEnd()
+        {
+            _target.ChangeSpeed(_baseSpeed);
+            _target.UpdateBehaviour(true, true, false);
+            _paraliseAnimationEnded = true;
+            //Debug.Log("EndParaliseAnim");
         }
 
 #if UNITY_EDITOR

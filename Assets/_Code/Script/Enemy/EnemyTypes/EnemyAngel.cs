@@ -92,7 +92,6 @@ namespace Ivayami.Enemy
             }
         }
         private CapsuleCollider m_collision;
-        //private IluminatedEnemyDetector _lightDetector;
         private Collider[] _hitsCache = new Collider[1];
         private WaitForSeconds _behaviourTickDelay;
         private WaitForSeconds _betweenPatrolPointsDelay;
@@ -132,7 +131,6 @@ namespace Ivayami.Enemy
             _betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints - _behaviourTickFrequency);
             _endGoToLastTargetDelay = new WaitForSeconds(_delayToFinishTargetSearch - _behaviourTickFrequency);
             _enemySounds = GetComponent<EnemySounds>();
-            //_lightDetector = GetComponentInChildren<IluminatedEnemyDetector>();
             //if (_attackTarget) _hitboxAttack = GetComponentInChildren<HitboxAttack>();
 
             _initialPosition = transform.position;
@@ -361,7 +359,7 @@ namespace Ivayami.Enemy
         /// <param name="attackIndex"></param>
         private void Attack()
         {
-            if (_isAttacking) return;
+            //if (_isAttacking) return;
             bool distanceToFogAttack = Vector3.Distance(transform.position, _hitsCache[0].transform.position) <= _distanceToFogAttack;
             bool distanceToLeapAttack = Vector3.Distance(transform.position, _hitsCache[0].transform.position) <= _distanceToLeapAttack;
             _isAttacking = distanceToFogAttack || distanceToLeapAttack;
@@ -378,6 +376,7 @@ namespace Ivayami.Enemy
                     _rotateCoroutine = StartCoroutine(RotateCoroutine(Quaternion.LookRotation(dir.normalized)));
                 }
                 _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange, attackIndex);
+                //Debug.Log("AttackAnimReady");
                 if (_debugLogsEnemyPatrol) Debug.Log("Attack Target");
             }
         }
@@ -388,9 +387,8 @@ namespace Ivayami.Enemy
             {
                 _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
             }
-            _isAttacking = false;
             _isInLeapAnimation = false;
-            Debug.Log("EndAttack");
+            //Debug.Log("EndAttack");
             if (!_canChaseTarget && !_canWalkPath && _leapCoroutine != null && _fallCoroutine == null)
             {
                 StopCoroutine(_leapCoroutine);
@@ -402,6 +400,7 @@ namespace Ivayami.Enemy
                 _navMeshAgent.enabled = true;
                 _navMeshAgent.isStopped = false;
             }
+            _isAttacking = false;
         }
 
         private void OnAnimationStepChange(float normalizedTime)
@@ -471,8 +470,7 @@ namespace Ivayami.Enemy
             float count = 0;
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
             Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit, 20, LayerMask.NameToLayer("Terrain"));
-            Vector3 finalPos = new Vector3(transform.position.x, hit.point.y + .15f, transform.position.z);
-            Debug.Log(finalPos.y);
+            Vector3 finalPos = new Vector3(transform.position.x, hit.point.y + .16f, transform.position.z);
             while(count < 1)
             {
                 count += Time.fixedDeltaTime / _fallDuration;
