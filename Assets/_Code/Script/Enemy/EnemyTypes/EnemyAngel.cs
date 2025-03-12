@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Ivayami.Player;
 using Ivayami.Audio;
+using System;
 
 namespace Ivayami.Enemy
 {
@@ -38,6 +39,7 @@ namespace Ivayami.Enemy
         [SerializeField, Range(0f, 1f)] private float _startLeapMovementInterval;
         [SerializeField, Min(1f)] private float _leapAttackJumpHeight;
         [SerializeField] private AnimationCurve _leapAttackHeightCurve;
+        [SerializeField, Min(0f)] private float _leapAttackPredictDistance;
         [SerializeField, Min(0f)] private float _fallDuration;
         [SerializeField] private HitboxInfo[] _attackAreaInfos;
 
@@ -59,6 +61,8 @@ namespace Ivayami.Enemy
         [SerializeField] private Color _fogAttackColor;
         [SerializeField] private bool _drawLeapAttackDistance;
         [SerializeField] private Color _leapAttackColor;
+        [SerializeField] private bool _drawPredictPosition;
+        [SerializeField] private Color _predictPositionColor;
         private Mesh _FOVMesh;
         //private RaycastHit _blockHit;
 #endif
@@ -82,7 +86,6 @@ namespace Ivayami.Enemy
         }
         private EnemyAnimator m_enemyAnimator;
         private EnemySounds _enemySounds;
-        //private HitboxAttack _hitboxAttack;
         private CapsuleCollider _collision
         {
             get
@@ -112,14 +115,13 @@ namespace Ivayami.Enemy
         private bool _directContactWithTarget;
         private bool _isAttacking;
         private bool _isInLeapAnimation;
-        //private bool _isParalised;
         private float _currentTargetColliderSizeFactor;
         private float _chaseTargetPatience;
         private float _goToLastTargetPointPatience;
         private float _baseSpeed;
         private float _baseStoppingDistance;
         private float _currentLeapAnimationTime;
-        //private int _currentAttackAnimIndex;
+        private float _predictDistance => _navMeshAgent.radius + _currentTargetColliderSizeFactor + _leapAttackPredictDistance;
 
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
@@ -131,7 +133,6 @@ namespace Ivayami.Enemy
             _betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints - _behaviourTickFrequency);
             _endGoToLastTargetDelay = new WaitForSeconds(_delayToFinishTargetSearch - _behaviourTickFrequency);
             _enemySounds = GetComponent<EnemySounds>();
-            //if (_attackTarget) _hitboxAttack = GetComponentInChildren<HitboxAttack>();
 
             _initialPosition = transform.position;
             _initialRotation = transform.rotation;
@@ -175,6 +176,7 @@ namespace Ivayami.Enemy
                 _behaviourCoroutine = StartCoroutine(BehaviourCoroutine());
             }
         }
+
         [ContextMenu("Stop")]
         public void StopBehaviour()
         {
@@ -189,7 +191,7 @@ namespace Ivayami.Enemy
                     transform.position = _initialLeapPosition;
                     _navMeshAgent.enabled = true;
                 }
-                if(_fallCoroutine != null)
+                if (_fallCoroutine != null)
                 {
                     StopCoroutine(_fallCoroutine);
                     _fallCoroutine = null;
@@ -353,6 +355,8 @@ namespace Ivayami.Enemy
             _navMeshAgent.stoppingDistance = _directContactWithTarget ? _collision.radius + _currentTargetColliderSizeFactor + .1f : _baseStoppingDistance;
             return _directContactWithTarget;
         }
+
+        #region LeapAttack
         /// <summary>
         ///  0 = Fog attack, 1 = Leap attack
         /// </summary>
@@ -435,16 +439,13 @@ namespace Ivayami.Enemy
             float count = 0;
             // this is a direction that points to the enemy
             Vector3 dir = (_initialLeapPosition - _hitsCache[0].transform.position).normalized;
-            Vector3 finalPos = Vector3.Distance(transform.position, _hitsCache[0].transform.position) <= _distanceToLeapAttack ?
-                _hitsCache[0].transform.position + dir * (_collision.radius + _currentTargetColliderSizeFactor) :
-                _initialLeapPosition + new Vector3(-dir.x * _distanceToLeapAttack, _hitsCache[0].transform.position.y, -dir.z * _distanceToLeapAttack);
+            Vector3 finalPos = GetFinalPos();
             Vector3 colliderSize;
-            transform.rotation = Quaternion.LookRotation(-dir);
+            transform.rotation = Quaternion.LookRotation(-dir);            
 
             while (count < 1)
             {
                 count += Time.fixedDeltaTime / _leapAttackDuration;
-                //transform.position = Vector3.Lerp(_initialLeapPosition, finalPos, count) + new Vector3(0,Mathf.Lerp(),0);
                 transform.position = new Vector3(Mathf.Lerp(_initialLeapPosition.x, finalPos.x, count), Mathf.Lerp(_initialLeapPosition.y, finalPos.y + _leapAttackJumpHeight, _leapAttackHeightCurve.Evaluate(count)), Mathf.Lerp(_initialLeapPosition.z, finalPos.z, count));
                 for (int i = 0; i < _attackAreaInfos.Length; i++)
                 {
@@ -463,7 +464,39 @@ namespace Ivayami.Enemy
                 yield return delay;
             }
             _leapCoroutine = null;
+
+            Vector3 GetFinalPos()
+            {
+                Vector3 finalPos;
+                Vector3 currentPlayerMovement = new Vector3(PlayerMovement.Instance.MovementDirection.x, 0, PlayerMovement.Instance.MovementDirection.z);
+                if (Vector3.Distance(transform.position, _hitsCache[0].transform.position) <= _distanceToLeapAttack)
+                {
+                    //float halfExtent = _navMeshAgent.radius * .75f;
+                    float halfHeight = _navMeshAgent.height * .5f;
+                    //Physics.SphereCast(new Ray(_hitsCache[0].transform.position + new Vector3(0, _navMeshAgent.height * .3f, 0), _currentPlayerMovement.normalized), _collision.radius * .5f, _collision.radius + _currentTargetColliderSizeFactor, _blockVisionLayer)
+                    //Physics.BoxCast(_hitsCache[0].transform.position + new Vector3(0, halfHeight, 0), new Vector3(halfExtent, halfHeight, halfExtent), currentPlayerMovement.normalized, Quaternion.identity, _predictDistance, _blockVisionLayer)
+                    //Physics.Raycast(new Ray(_hitsCache[0].transform.position + new Vector3(0, halfHeight, 0), currentPlayerMovement.normalized), _predictDistance, _blockVisionLayer);
+                    if (Physics.Raycast(new Ray(_hitsCache[0].transform.position + new Vector3(0, halfHeight, 0), currentPlayerMovement.normalized), _predictDistance, _blockVisionLayer))
+                    {
+                        finalPos = _hitsCache[0].transform.position + dir * (_navMeshAgent.radius + _currentTargetColliderSizeFactor);
+                        Debug.Log("Position Blocked, jump close to player");
+                    }
+                    else
+                    {
+                        finalPos = _hitsCache[0].transform.position + currentPlayerMovement.normalized * _predictDistance;
+                        Debug.Log("Try predict player position");
+                    }
+                }
+                else
+                {
+                    finalPos = _initialLeapPosition + new Vector3(-dir.x * _distanceToLeapAttack, _hitsCache[0].transform.position.y, -dir.z * _distanceToLeapAttack);
+                    Debug.Log("Far From Leap Distance");
+                }
+                Debug.Log(finalPos);
+                return finalPos;
+            }
         }
+
         //when is affected by light during the leap
         private IEnumerator FallCoroutine()
         {
@@ -471,7 +504,7 @@ namespace Ivayami.Enemy
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
             Physics.Raycast(transform.position, -Vector3.up, out RaycastHit hit, 20, LayerMask.NameToLayer("Terrain"));
             Vector3 finalPos = new Vector3(transform.position.x, hit.point.y + .16f, transform.position.z);
-            while(count < 1)
+            while (count < 1)
             {
                 count += Time.fixedDeltaTime / _fallDuration;
                 transform.position = Vector3.Lerp(transform.position, finalPos, count);
@@ -481,7 +514,9 @@ namespace Ivayami.Enemy
             _navMeshAgent.isStopped = false;
             _fallCoroutine = null;
         }
+        #endregion
 
+        #region IluminatedMethods
         public void ChangeSpeed(float speed)
         {
             _navMeshAgent.speed = speed;
@@ -490,7 +525,7 @@ namespace Ivayami.Enemy
         public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped)
         {
             _canChaseTarget = canChaseTarget;
-            _canWalkPath = canWalkPath;        
+            _canWalkPath = canWalkPath;
             UpdateMovement(isStopped);
         }
 
@@ -498,6 +533,8 @@ namespace Ivayami.Enemy
         {
             _navMeshAgent.SetDestination(targetPoint);
         }
+        #endregion
+
         #region Debug
 #if UNITY_EDITOR
         protected override void OnDrawGizmosSelected()
@@ -551,23 +588,19 @@ namespace Ivayami.Enemy
                 Gizmos.color = _leapAttackColor;
                 Gizmos.DrawSphere(transform.position, _distanceToLeapAttack);
             }
+            if (_drawPredictPosition && Application.isPlaying)
+            {
+                Vector3 currentPlayerMovement = new Vector3(PlayerMovement.Instance.MovementDirection.x, 0, PlayerMovement.Instance.MovementDirection.z);
+                bool blocked = Physics.Raycast(new Ray(_hitsCache[0].transform.position + new Vector3(0, _navMeshAgent.height * .5f, 0), currentPlayerMovement.normalized), _predictDistance, _blockVisionLayer);
+                Gizmos.color = blocked ? Color.red : _predictPositionColor;
+                Gizmos.DrawLine(_hitsCache[0].transform.position + new Vector3(0, _navMeshAgent.height * .5f, 0),
+                    _hitsCache[0].transform.position + new Vector3(0, _navMeshAgent.height * .5f, 0) + currentPlayerMovement.normalized * _predictDistance);
+                Gizmos.DrawSphere(_hitsCache[0].transform.position + new Vector3(0, _navMeshAgent.height * .5f, 0) + currentPlayerMovement.normalized * _predictDistance, .1f);
+                //Gizmos.DrawWireCube(_hitsCache[0].transform.position + new Vector3(0, _navMeshAgent.height * .5f, 0) + currentPlayerMovement.normalized * _predictDistance,
+                //    new Vector3(_collision.radius * 1.5f, _navMeshAgent.height, _collision.radius * 1.5f));
+            }
         }
 
-        //private void OnDrawGizmos()
-        //{
-        //    if (_hitsCache[0])
-        //    {
-        //        Gizmos.color = Color.black;
-        //        Vector3 targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
-        //        Vector3 rayOrigin = transform.position + _visionOffset;
-        //        Gizmos.DrawLine(rayOrigin, targetCenter /*+ (targetCenter - rayOrigin).normalized * Vector3.Distance(rayOrigin, targetCenter)*/);
-        //    }
-        //    if (_blockHit.collider)
-        //    {
-        //        Gizmos.color = Color.blue;
-        //        Gizmos.DrawSphere(_blockHit.point, .1f);
-        //    }
-        //}
 
         protected override void OnValidate()
         {
@@ -579,17 +612,6 @@ namespace Ivayami.Enemy
             }
             if (_distanceToFogAttack < _collision.radius + .2f) _distanceToFogAttack = _collision.radius + .2f;
             _navMeshAgent.stoppingDistance = _distanceToFogAttack;
-            //if (_attackTarget && !_hitboxAttack)
-            //{
-            //    _hitboxAttack = GetComponentInChildren<HitboxAttack>();
-            //    if (!_hitboxAttack)
-            //    {
-            //        Debug.Log("To make enemy attack please add a HitboxAttack component as child");
-            //        //GameObject go = new GameObject("HitboxAttackArea");
-            //        //go.transform.parent = transform;
-            //        //_hitboxAttack = go.AddComponent<HitboxAttack>();
-            //    }
-            //}
         }
 #endif
         #endregion
