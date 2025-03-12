@@ -18,7 +18,11 @@ namespace Ivayami.UI {
             _action = action;
         }
 
-        public void Do(InputAction.CallbackContext context) {
+        private void Do(InputAction.CallbackContext context) {
+            Do();
+        }
+
+        public void Do() {
             if (_action != null) {
                 _action.Invoke();
                 _action = null;

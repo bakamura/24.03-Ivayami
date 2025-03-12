@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using Ivayami.Audio;
 
 namespace Ivayami.Enemy
 {
@@ -8,6 +9,7 @@ namespace Ivayami.Enemy
     public class EnemyAnimator : MonoBehaviour
     {
         [SerializeField] private bool _animationScaleWithMovementSpeed;
+        [SerializeField, Min(0)] private int _attackAnimationLayer;
         //private static readonly int WALKING_BOOL = Animator.StringToHash("walking");
         private static readonly int SPAWNING_TRIGGER = Animator.StringToHash("spawning");
         private static readonly int ATTACK_TRIGGER = Animator.StringToHash("attacking");
@@ -35,6 +37,15 @@ namespace Ivayami.Enemy
             }
         }
         private Animator m_animator;
+        private EnemySounds _enemySound
+        {
+            get
+            {
+                if (!m_enemySound) m_enemySound = GetComponentInParent<EnemySounds>();
+                return m_enemySound;
+            }
+        }
+        private EnemySounds m_enemySound;
         private Coroutine _waitAnimationEndCoroutine;
         /// <param name="onAnimationEnd">
         /// will only activate once
@@ -43,8 +54,8 @@ namespace Ivayami.Enemy
         {
             //_animator.SetBool(WALKING_BOOL, walking);
             _animator.SetFloat(MOVE_SPEED_FLOAT, _animationScaleWithMovementSpeed ? speed : Math.Clamp(speed, 0, 1));
-            if(_animator.GetBool(CHASING_BOOL))StartAnimationEvent(CHASE_STATE, onAnimationEnd);
-            else StartAnimationEvent(WALKING_STATE, onAnimationEnd);
+            if(_animator.GetBool(CHASING_BOOL))StartAnimationEvent(CHASE_STATE, 0, onAnimationEnd);
+            else StartAnimationEvent(WALKING_STATE, 0, onAnimationEnd);
         }
         /// <param name="onAnimationEnd">
         /// will only activate once
@@ -52,7 +63,7 @@ namespace Ivayami.Enemy
         public void Spawning(Action onAnimationEnd = null)
         {
             _animator.SetTrigger(SPAWNING_TRIGGER);
-            StartAnimationEvent(SPAWNING_STATE, onAnimationEnd);
+            StartAnimationEvent(SPAWNING_STATE, 0, onAnimationEnd);
         }
         /// <summary>
         /// will only activate once
@@ -64,7 +75,7 @@ namespace Ivayami.Enemy
         {
             _animator.SetFloat(ATTACK_INDEX_FLOAT, attackAnimationIndex);
             _animator.SetTrigger(ATTACK_TRIGGER);
-            StartAnimationEvent(ATTACK_STATE, onAnimationEnd, currentAnimationStepCallback);
+            StartAnimationEvent(ATTACK_STATE, _attackAnimationLayer, onAnimationEnd, currentAnimationStepCallback);
         }
         /// <param name="onAnimationEnd">
         /// will only activate once
@@ -73,7 +84,7 @@ namespace Ivayami.Enemy
         {
             _animator.SetTrigger(TARGET_DETECTED_TRIGGER);
             _animator.SetBool(CHASING_BOOL, true);
-            StartAnimationEvent(TARGET_DETECTED_STATE, onAnimationEnd);
+            StartAnimationEvent(TARGET_DETECTED_STATE, 0, onAnimationEnd);
         }
         /// <param name="onAnimationEnd">
         /// will only activate once
@@ -81,7 +92,7 @@ namespace Ivayami.Enemy
         public void Interact(Action onAnimationEnd = null)
         {
             _animator.SetTrigger(INTERACT_TRIGGER);
-            StartAnimationEvent(INTERACT_STATE, onAnimationEnd);
+            StartAnimationEvent(INTERACT_STATE, 0, onAnimationEnd);
         }
         /// <param name="onAnimationEnd">
         /// will only activate once
@@ -89,7 +100,7 @@ namespace Ivayami.Enemy
         public void TakeDamage(Action onAnimationEnd = null)
         {
             _animator.SetTrigger(TAKE_DAMAGE_TRIGGER);
-            StartAnimationEvent(TAKE_DAMAGE_STATE, onAnimationEnd);
+            StartAnimationEvent(TAKE_DAMAGE_STATE, 0, onAnimationEnd);
         }
         /// <param name="isChasing"></param>
         /// <param name="onAnimationEnd">will only activate once</param>
@@ -98,7 +109,12 @@ namespace Ivayami.Enemy
             _animator.SetBool(CHASING_BOOL, isChasing);
         }
 
-        private void StartAnimationEvent(int stateHash, Action onAnimationEnd, Action<float> currentAnimationStepCallback = null)
+        public void PlayStepSound()
+        {
+            _enemySound.PlaySound(EnemySounds.SoundTypes.Steps);
+        }
+
+        private void StartAnimationEvent(int stateHash, int layer, Action onAnimationEnd, Action<float> currentAnimationStepCallback = null)
         {
             if (onAnimationEnd != null)
             {
@@ -107,22 +123,22 @@ namespace Ivayami.Enemy
                     StopCoroutine(_waitAnimationEndCoroutine);
                     _waitAnimationEndCoroutine = null;
                 }
-                _waitAnimationEndCoroutine = StartCoroutine(WaitAnimationEndCoroutine(stateHash, onAnimationEnd, currentAnimationStepCallback));
+                _waitAnimationEndCoroutine = StartCoroutine(WaitAnimationEndCoroutine(stateHash, layer, onAnimationEnd, currentAnimationStepCallback));
             }
         }
 
-        private IEnumerator WaitAnimationEndCoroutine(int stateHash, Action onAnimationEnd, Action<float> currentAnimationStepCallback = null)
+        private IEnumerator WaitAnimationEndCoroutine(int stateHash, int layer, Action onAnimationEnd, Action<float> currentAnimationStepCallback = null)
         {
-            if (_animator.GetCurrentAnimatorStateInfo(0).shortNameHash != stateHash)
+            if (_animator.GetCurrentAnimatorStateInfo(layer).shortNameHash != stateHash)
             {
-                while (_animator.GetCurrentAnimatorStateInfo(0).shortNameHash != stateHash)
+                while (_animator.GetCurrentAnimatorStateInfo(layer).shortNameHash != stateHash)
                 {
                     yield return null;
                 }
             }
-            while (_animator.GetCurrentAnimatorStateInfo(0).shortNameHash == stateHash)
+            while (_animator.GetCurrentAnimatorStateInfo(layer).shortNameHash == stateHash)
             {
-                currentAnimationStepCallback?.Invoke(_animator.GetCurrentAnimatorStateInfo(0).normalizedTime);
+                currentAnimationStepCallback?.Invoke(_animator.GetCurrentAnimatorStateInfo(layer).normalizedTime);
                 yield return null;
             }
             onAnimationEnd?.Invoke();

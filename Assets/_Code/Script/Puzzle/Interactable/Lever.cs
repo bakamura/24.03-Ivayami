@@ -7,7 +7,7 @@ namespace Ivayami.Puzzle
     public class Lever : Activator, IInteractableLong
     {
         [SerializeField] private PlayerActions.InteractAnimation _animationType;
-        public InteractableFeedbacks InteratctableHighlight
+        public InteractableFeedbacks InteratctableFeedbacks
         {
             get
             {

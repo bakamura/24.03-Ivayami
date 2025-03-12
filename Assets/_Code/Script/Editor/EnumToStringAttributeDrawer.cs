@@ -22,7 +22,7 @@ internal sealed class EnumToStringAttributeDrawer : PropertyDrawer
             EditorGUI.indentLevel++;
         }
         //position = GUILayoutUtility.GetLastRect();
-        EditorGUI.LabelField(position, Enum.GetNames(typeof(LanguageTypes))[index]);
+        EditorGUI.LabelField(position, Enum.GetNames(instance.EnumType)[index]);
         for (int i = 0; i < instance.IndentLevel; i++)
         {
             EditorGUI.indentLevel--;
@@ -32,7 +32,7 @@ internal sealed class EnumToStringAttributeDrawer : PropertyDrawer
     private void DrawPropertyWithWarning(Rect position, SerializedProperty property, GUIContent label)
     {
         position.height = base.GetPropertyHeight(property, label);
-        EditorGUI.HelpBox(position, "Language Attribute is only valid for the Enum type", MessageType.Warning);
+        EditorGUI.HelpBox(position, "This attribute is only valid for Enum types", MessageType.Warning);
 
         position.y += EditorGUIUtility.singleLineHeight;
         EditorGUI.PropertyField(position, property, label);

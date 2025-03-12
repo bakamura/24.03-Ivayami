@@ -4,8 +4,8 @@ namespace Ivayami.Save
 {
     public abstract class SaveObject : MonoBehaviour
     {
-        [SerializeField, ReadOnly] private string _id;
-        [SerializeField] private bool _saveOnDisable = true;
+        [SerializeField, ReadOnly] private string _id;        
+        private static bool _canSave = true;
         public string ID
         {
             get { return _id; }
@@ -23,22 +23,30 @@ namespace Ivayami.Save
 
         protected virtual void OnEnable()
         {
-            if (SaveSystem.Instance) SaveSystem.Instance.RegisterSaveObject(this);
+            if (SaveSystem.Instance)
+            {
+                SaveSystem.Instance.RegisterSaveObject(this);
+            }
         }
 
         protected virtual void OnDisable()
         {
             if (SaveSystem.Instance)
             {
-                if (_saveOnDisable) SaveData();
+                if (_canSave) SaveData();
                 SaveSystem.Instance.UnregisterSaveObject(this);
             }
+        }
+
+        public static void UpdateSaveLock(bool canSave)
+        {
+            _canSave = canSave;
         }
 
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (string.IsNullOrEmpty(ID)) ID = gameObject.name + "_" + Mathf.Abs(this.GetInstanceID());
+            if (string.IsNullOrEmpty(ID)) ID = gameObject.name + "_"+ UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene().name + "_" + Mathf.Abs(this.GetInstanceID());
         }
 #endif
     }

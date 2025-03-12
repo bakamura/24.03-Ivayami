@@ -2,70 +2,110 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System.Linq;
 
 namespace Ivayami.Dialogue
 {
     [CustomEditor(typeof(DialogueEvents))]
     public class DialogueEventsInspector : Editor
     {
-        SerializedProperty debugLogs, events;
+        SerializedProperty /*debugLogs,*/ events;
         private static Dialogue[] _dialogueAssets;
-        private List<string> _previousIDs = new List<string>();
+        private Dictionary<int, string> _eventsDic = new Dictionary<int, string>();
+        private int _previousSize;
+        private int _currentEventIndex;
         public override void OnInspectorGUI()
         {
             if (_dialogueAssets == null) UpdateDialoguesList();
 
-            EditorGUILayout.PropertyField(debugLogs, new GUIContent("Debug Log"));
+            //EditorGUILayout.PropertyField(debugLogs, new GUIContent("Debug Log"));
             EditorGUILayout.PropertyField(events, new GUIContent("Events"));
-
-            HandleEventsValuesUpdate(false);
+            
             serializedObject.ApplyModifiedProperties();
-            HandleEventsValuesUpdate(true);
+            HandleEventsValuesUpdate();
+            _previousSize = events.arraySize;
         }
 
         private void OnEnable()
         {
-            debugLogs = serializedObject.FindProperty("_debugLogs");
+            //debugLogs = serializedObject.FindProperty("_debugLogs");
             events = serializedObject.FindProperty("_events");
+            DialogueEvents instance = (DialogueEvents)target;
+            if (instance.Events != null)
+            {
+                for (int i = 0; i < instance.Events.Length; i++)
+                {
+                    _currentEventIndex++;
+                    instance.Events[i].InternalId = _currentEventIndex;
+                    _eventsDic.Add(_currentEventIndex, instance.Events[i].id);
+                }
+            }
+            _previousSize = instance.Events.Length;
         }
 
-        private void HandleEventsValuesUpdate(bool updateCurrentValues)
+        private void OnDestroy()
         {
-            DialogueEvents instance = (DialogueEvents)target;
-            SpeechEvent[] dialogArray = instance.Events;
-            if (dialogArray != null /*&& dialogArray.Length > 0*/)
+            if (target == null)
             {
-                if (!updateCurrentValues)
+                HandleComponentDestroy();
+            }
+        }
+
+        private void HandleEventsValuesUpdate()
+        {
+            //removed
+            if (_previousSize > events.arraySize)
+            {
+                int i;
+                List<int> keys = _eventsDic.Keys.ToList();
+                List<int> exists = new List<int>();
+                for (i = 0; i < events.arraySize; i++)
                 {
-                    _previousIDs.Clear();
-                    for (int i = 0; i < dialogArray.Length; i++)
+                    if (keys.Contains(events.GetArrayElementAtIndex(i).FindPropertyRelative("InternalId").intValue))
                     {
-                        if (!_previousIDs.Contains(dialogArray[i].id)) _previousIDs.Add(dialogArray[i].id);
+                        exists.Add(events.GetArrayElementAtIndex(i).FindPropertyRelative("InternalId").intValue);
                     }
                 }
-                else
+                for (i = 0; i < exists.Count; i++)
                 {
-                    int arrayLenght = _previousIDs.Count;
-                    if (dialogArray.Length < _previousIDs.Count)
+                    keys.Remove(exists[i]);
+                }
+                for (i = 0; i < keys.Count; i++)
+                {
+                    RemoveEventIDFromDialogeOrSpeech(_eventsDic[keys[i]]);
+                    _eventsDic.Remove(keys[i]);
+                }
+            }
+            //added
+            else if (_previousSize < events.arraySize)
+            {
+                DialogueEvents instance = (DialogueEvents)target;
+                List<int> indexsFound = new List<int>();
+                for (int i = 0; i < instance.Events.Length; i++)
+                {
+                    if (!indexsFound.Contains(instance.Events[i].InternalId))
                     {
-                        arrayLenght = dialogArray.Length;
-                        List<string> temp = new List<string>(_previousIDs);
-                        for (int i = 0; i < dialogArray.Length; i++)
-                        {
-                            temp.Remove(dialogArray[i].id);
-                        }
-                        for (int i = 0; i < temp.Count; i++)
-                        {
-                            RemoveEventIDFromDialogeOrSpeech(temp[i]);
-                        }
+                        indexsFound.Add(instance.Events[i].InternalId);                        
                     }
-                    for (int i = 0; i < arrayLenght; i++)
+                    else
                     {
-                        if (!_previousIDs.Contains(dialogArray[i].id))
-                        {
-                            //Debug.Log($"previous {_previousIDs[i]}, current {dialogArray[i].id}");
-                            UpdateEventIDFromDialogeOrSpeech(_previousIDs[i], dialogArray[i].id);
-                        }
+                        _currentEventIndex++;
+                        instance.Events[i] = new SpeechEvent(_currentEventIndex);
+                        _eventsDic.Add(instance.Events[i].InternalId, instance.Events[i].id);
+                    }
+                }
+            }
+            //update values
+            else
+            {
+                SerializedProperty prop;
+                for (int i = 0; i < events.arraySize; i++)
+                {
+                    prop = events.GetArrayElementAtIndex(i);
+                    if (_eventsDic[prop.FindPropertyRelative("InternalId").intValue] != prop.FindPropertyRelative("id").stringValue)
+                    {
+                        UpdateEventIDFromDialogeOrSpeech(_eventsDic[prop.FindPropertyRelative("InternalId").intValue], prop.FindPropertyRelative("id").stringValue);
+                        _eventsDic[prop.FindPropertyRelative("InternalId").intValue] = prop.FindPropertyRelative("id").stringValue;
                     }
                 }
             }
@@ -79,18 +119,26 @@ namespace Ivayami.Dialogue
         //assumes that there will be no duplicate ID in the Dialoge Assets
         private void RemoveEventIDFromDialogeOrSpeech(string eventID)
         {
+            bool objectRecorded;
             for (int i = 0; i < _dialogueAssets.Length; i++)
             {
+                objectRecorded = false;
                 if (_dialogueAssets[i].onEndEventId == eventID)
                 {
+                    if (!objectRecorded) Undo.RecordObject(_dialogueAssets[i], "EndEventId");
+                    objectRecorded = true;
                     _dialogueAssets[i].onEndEventId = null;
+                    EditorUtility.SetDirty(_dialogueAssets[i]);
                     //return;
                 }
                 for (int a = 0; a < _dialogueAssets[i].dialogue.Length; a++)
                 {
                     if (_dialogueAssets[i].dialogue[a].EventId == eventID)
                     {
+                        if (!objectRecorded) Undo.RecordObject(_dialogueAssets[i], "SpeechEventId");
+                        objectRecorded = true;
                         _dialogueAssets[i].dialogue[a].EventId = null;
+                        EditorUtility.SetDirty(_dialogueAssets[i]);
                         //return;
                     }
                 }
@@ -99,23 +147,42 @@ namespace Ivayami.Dialogue
 
         private void UpdateEventIDFromDialogeOrSpeech(string previousID, string currentID)
         {
+            bool objectRecorded;
             for (int i = 0; i < _dialogueAssets.Length; i++)
             {
+                objectRecorded = false;
                 if (_dialogueAssets[i].onEndEventId == previousID && !string.IsNullOrEmpty(_dialogueAssets[i].onEndEventId))
                 {
+                    if (!objectRecorded) Undo.RecordObject(_dialogueAssets[i], "EndEventId");
+                    objectRecorded = true;
                     _dialogueAssets[i].onEndEventId = currentID;
+                    EditorUtility.SetDirty(_dialogueAssets[i]);
                     //return;
                 }
                 for (int a = 0; a < _dialogueAssets[i].dialogue.Length; a++)
                 {
                     if (_dialogueAssets[i].dialogue[a].EventId == previousID && !string.IsNullOrEmpty(_dialogueAssets[i].dialogue[a].EventId))
                     {
+                        if (!objectRecorded) Undo.RecordObject(_dialogueAssets[i], "SpeechEventId");
+                        objectRecorded = true;
                         _dialogueAssets[i].dialogue[a].EventId = currentID;
+                        EditorUtility.SetDirty(_dialogueAssets[i]);
                         //return;
                     }
                 }
             }
         }
+
+        private void HandleComponentDestroy()
+        {
+            string[] temp = _eventsDic.Values.ToArray();
+            for (int i = 0; i < temp.Length; i++)
+            {
+                RemoveEventIDFromDialogeOrSpeech(temp[i]);
+            }
+            _eventsDic.Clear();
+        }
+
     }
 }
 #endif

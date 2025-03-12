@@ -33,7 +33,12 @@ namespace Ivayami.Audio
 
         private void OnDisable()
         {
-            if (_continueDialogueSoundInstance.isValid()) _continueDialogueSoundInstance.release();
+            if (_continueDialogueSoundInstance.isValid())
+            {
+                _continueDialogueSoundInstance.getPlaybackState(out PLAYBACK_STATE state);
+                if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _continueDialogueSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                _continueDialogueSoundInstance.release();
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Ivayami.Enemy
         [Serializable]
         public struct PathCallback
         {
-            public byte PointIndex;
+            [Tooltip("Use the same number shown in the Element text in the Point array")] public byte PointIndex;
             public UnityEvent OnPointReached;
         }
 #if UNITY_EDITOR

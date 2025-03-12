@@ -17,6 +17,7 @@ namespace Ivayami.Save {
 
         private static string _progressPath;
         private static string _optionsPath;
+        public const byte MaxSaveSlots = 5;
         private HashSet<SaveObject> _saveObjects = new HashSet<SaveObject>();
 
         protected override void Awake() {
@@ -32,7 +33,7 @@ namespace Ivayami.Save {
             SavePoint.onSaveGame.AddListener(SaveProgress);
             PlayerInventory.Instance.onInventoryUpdate.AddListener((inventory) => {
                 Progress.inventory = new string[inventory.Length];
-                for(int i = 0; i < inventory.Length; i++) Progress.inventory[i] = inventory[i].name;
+                for(int i = 0; i < inventory.Length; i++) Progress.inventory[i] = JsonUtility.ToJson(new SaveProgress.ItemData(inventory[i]));
             });
         }
 
@@ -76,15 +77,14 @@ namespace Ivayami.Save {
         private IEnumerator LoadSavesProgressRoutine(Action<SaveProgress[]> loadSaveCallback) {
             List<SaveProgress> progressSaves = new List<SaveProgress>();
             int saveId = 0;
-            while (true) {
+            while (saveId < MaxSaveSlots) {
                 if (File.Exists($"{_progressPath}/{ProgressFolderName}_{saveId}.sav")) {
                     Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/{ProgressFolderName}_{saveId}.sav");                    
                     yield return readTask;
-
+                    Debug.Log($"save file found in {_progressPath}/{ProgressFolderName}_{saveId}");
                     progressSaves.Add(JsonUtility.FromJson<SaveProgress>(Encryption.Decrypt(readTask.Result)));
-                    saveId++;
                 }
-                else break;
+                saveId++;
             }
             loadSaveCallback.Invoke(progressSaves.ToArray());
 
@@ -104,11 +104,15 @@ namespace Ivayami.Save {
         }
 
         private IEnumerator WriteSaveRoutine(string savePath, Type type) {
-            foreach (SaveObject saveObject in _saveObjects) {
-                if (saveObject) saveObject.SaveData();
-            }
 
-            if (type == typeof(SaveProgress)) yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Progress)));
+            if (type == typeof(SaveProgress))
+            {
+                foreach (SaveObject saveObject in _saveObjects)
+                {
+                    if (saveObject) saveObject.SaveData();
+                }
+                yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Progress)));
+            }
             else yield return File.WriteAllTextAsync(savePath, Encryption.Encrypt(JsonUtility.ToJson(Options)));
 
             Logger.Log(LogType.Save, $"Wrote Save of type '{type.Name}' in {savePath}");

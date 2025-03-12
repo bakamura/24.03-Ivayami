@@ -21,6 +21,16 @@ namespace Ivayami.Audio
             ConfirmOption
         }
 
+        public void PlayChangeOption()
+        {
+            PlaySound(SoundTypes.ChangeOption);
+        }
+
+        public void PlayConfirmOption()
+        {
+            PlaySound(SoundTypes.ConfirmOption);
+        }
+
         public void PlaySound(SoundTypes soundType)
         {
             Setup();
@@ -48,8 +58,19 @@ namespace Ivayami.Audio
 
         private void OnDisable()
         {
-            if (_changeOptionSoundInstance.isValid()) _changeOptionSoundInstance.release();
-            if (_confirmOptionSoundInstance.isValid()) _confirmOptionSoundInstance.release();
+            //PLAYBACK_STATE state;
+            if (_changeOptionSoundInstance.isValid())
+            {
+                //_changeOptionSoundInstance.getPlaybackState(out state);
+                //if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _changeOptionSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                _changeOptionSoundInstance.release();
+            }
+            if (_confirmOptionSoundInstance.isValid())
+            {
+                //_confirmOptionSoundInstance.getPlaybackState(out state);
+                //if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _confirmOptionSoundInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+                _confirmOptionSoundInstance.release();
+            }
             _hasDoneSetup = false;
         }
     }

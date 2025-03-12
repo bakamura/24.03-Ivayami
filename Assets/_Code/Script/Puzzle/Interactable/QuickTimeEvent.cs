@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using System;
 using Ivayami.Player;
 using Ivayami.Audio;
+using Ivayami.UI;
 
 namespace Ivayami.Puzzle
 {
@@ -66,6 +67,7 @@ namespace Ivayami.Puzzle
             {
                 _quickTimeButton.action.started += HandleOnClick;
                 PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
+                Pause.Instance.ToggleCanPause(BLOCK_KEY, false);
                 _onStart?.Invoke();
                 for (int i = 0; i < _animations.Length; i++)
                 {
@@ -84,6 +86,7 @@ namespace Ivayami.Puzzle
         {
             _quickTimeButton.action.started -= HandleOnClick;
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true);
+            Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
             _currentClickAmount = 0;
             SetAllSpeeds(true);
             _onEnd?.Invoke();

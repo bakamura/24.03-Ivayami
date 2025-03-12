@@ -1,15 +1,14 @@
-using Ivayami.Puzzle;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Ivayami.Player;
 
 namespace Ivayami.UI {
     [RequireComponent(typeof(Fade))]
     public class KeyTutorial : MonoBehaviour {
 
         [SerializeField] private InputActionReference _actionIndicator;
-        [SerializeField] private Sprite _indicatorKeyboard;
-        [SerializeField] private Sprite _indicatorGamepad;
+        [SerializeField] private InputIcons _indicators;
 
         private Image _icon;
         private Fade _fadeUI;
@@ -19,19 +18,17 @@ namespace Ivayami.UI {
             _fadeUI = GetComponentInChildren<Fade>();
         }
 
-        private void Start() {
-        }
-
         private void OnDestroy() {
             if (_icon.enabled) {
                 _actionIndicator.action.performed -= KeyPressed;
-                Pause.Instance.onPause.RemoveListener(IconDisable);
-                Pause.Instance.onUnpause.RemoveListener(IconEnable);
-                InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisuals);
+                Pause.Instance?.onPause.RemoveListener(IconDisable);
+                Pause.Instance?.onUnpause.RemoveListener(IconEnable);
+                InputCallbacks.Instance?.UnsubscribeToOnChangeControls(UpdateVisuals);
             }
         }
 
         public void StartTutorial() {
+            if (!gameObject.activeInHierarchy) return;
             _fadeUI.Open();
             _actionIndicator.action.performed += KeyPressed;
             Pause.Instance.onPause.AddListener(IconDisable);
@@ -47,8 +44,8 @@ namespace Ivayami.UI {
             InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisuals);
         }
 
-        private void UpdateVisuals(bool isGamepad) {
-            _icon.sprite = isGamepad ? _indicatorGamepad : _indicatorKeyboard;
+        private void UpdateVisuals(InputCallbacks.ControlType controlType) {
+            _icon.sprite = _indicators.Icons[(int)controlType];
         }
 
         private void IconEnable() {

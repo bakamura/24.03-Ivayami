@@ -2,7 +2,6 @@ using Ivayami.Puzzle;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
-using Ivayami.Enemy;
 
 namespace Ivayami.Player.Ability
 {
@@ -71,17 +70,25 @@ namespace Ivayami.Player.Ability
         [ContextMenu("Activate")]
         public void ActivateBehaviour()
         {
-            if (_behaviourCoroutine == null) _behaviourCoroutine = StartCoroutine(BehaviourCoroutine());
+            if (_behaviourCoroutine == null)
+            {
+                _navMeshAgent.isStopped = false;
+                _behaviourCoroutine = StartCoroutine(BehaviourCoroutine());
+            }
         }
 
         [ContextMenu("Deactivate")]
         public void DeactivateBehaviour()
         {
-            if (_behaviourCoroutine != null)
+            DeactivateStandardBehaviour();
+            if (_detectTargetPointOffBehaviourReachedCoroutine != null)
             {
-                StopCoroutine(_behaviourCoroutine);
-                _behaviourCoroutine = null;
+                StopCoroutine(_detectTargetPointOffBehaviourReachedCoroutine);
+                _detectTargetPointOffBehaviourReachedCoroutine = null;
             }
+            _friendAnimator.UpdateWalking(0);
+            _navMeshAgent.isStopped = true;
+            _navMeshAgent.velocity = Vector3.zero;
         }
 
         public void InteractLongWith(IInteractableLong interactableLong)
@@ -106,7 +113,7 @@ namespace Ivayami.Player.Ability
 
         public void GoToPosition(Transform transform)
         {
-            DeactivateBehaviour();
+            DeactivateStandardBehaviour();
             if(_detectTargetPointOffBehaviourReachedCoroutine != null)
             {
                 StopCoroutine(_detectTargetPointOffBehaviourReachedCoroutine);
@@ -244,6 +251,15 @@ namespace Ivayami.Player.Ability
                 }
             }
             return false;
+        }
+
+        private void DeactivateStandardBehaviour()
+        {
+            if (_behaviourCoroutine != null)
+            {
+                StopCoroutine(_behaviourCoroutine);
+                _behaviourCoroutine = null;
+            }
         }
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()

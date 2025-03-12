@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using UnityEngine.Localization.Components;
 using Ivayami.Player;
 using Ivayami.Save;
 using Ivayami.Scene;
@@ -12,7 +12,7 @@ namespace Ivayami.UI {
         [Header("UI")]
 
         [SerializeField] private Image _previewImage;
-        [SerializeField] private TextMeshProUGUI _previewText;
+        [SerializeField] private LocalizeStringEvent _previewText;
         [SerializeField] private SaveSelectBtn[] _saveSelectBtns;
 
         //Game Entering
@@ -26,7 +26,7 @@ namespace Ivayami.UI {
         private void Start() {
             StartCoroutine(WaitForSaveOptions());
 
-            Options.OnChangeLanguage.AddListener((language) => SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate));
+            Options.OnChangeLanguage.AddListener(() => SaveSystem.Instance.LoadSavesProgress(SaveSelectBtnUpdate));
             PlayerActions.Instance.ChangeInputMap("Menu");
             PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, false);
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, false);
@@ -39,13 +39,27 @@ namespace Ivayami.UI {
         }
 
         private void SaveSelectBtnUpdate(SaveProgress[] progressSaves) {
-            for (int i = 0; i < _saveSelectBtns.Length; i++) _saveSelectBtns[i].Setup(i < progressSaves.Length ? progressSaves[i] : null, (byte)i);
+            bool foundSave;
+            for (int i = 0; i < _saveSelectBtns.Length; i++)
+            {
+                foundSave = false;
+                for(int a = 0; a < progressSaves.Length; a++)
+                {
+                    if(progressSaves[a].id == i)
+                    {
+                        foundSave = true;
+                        _saveSelectBtns[i].Setup(progressSaves[a], progressSaves[a].id);
+                        break;
+                    }
+                }
+                if (!foundSave) _saveSelectBtns[i].Setup(null, (byte)i);
+            }
         }
 
         public void DisplaySaveInfo(int saveId) {
             _previewImage.sprite = _saveSelectBtns[saveId].PlaceImage;
             _previewImage.color = _previewImage.sprite != null ? Color.white : new Color(0, 0, 0, 0);
-            _previewText.text = _saveSelectBtns[saveId].PlaceName;
+            _previewText.SetEntry(_saveSelectBtns[saveId].PlaceEntryName);
 
             Logger.Log(LogType.UI, $"Display Save {saveId}");
         }
@@ -55,5 +69,11 @@ namespace Ivayami.UI {
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, true);
         }
 
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (_saveSelectBtns.Length > SaveSystem.MaxSaveSlots) System.Array.Resize(ref _saveSelectBtns, SaveSystem.MaxSaveSlots);
+        }
+#endif
     }
 }

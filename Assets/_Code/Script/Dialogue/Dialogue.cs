@@ -1,5 +1,7 @@
 using UnityEngine;
 using System;
+using UnityEngine.Localization.Settings;
+using UnityEngine.Localization;
 
 namespace Ivayami.Dialogue
 {
@@ -12,8 +14,9 @@ namespace Ivayami.Dialogue
         [Serializable]
         public struct DialogueEvent
         {
-            public Speech[] Speeches;
+            public LocalizedString AnnouncerName;
 #if UNITY_EDITOR
+            public Speech[] Speeches;
             public string FilterTags;
 #endif
             public string EventId;
@@ -37,16 +40,16 @@ namespace Ivayami.Dialogue
                 dialogue[dialogue.Length - 1].FilterTags = null;
                 dialogue[dialogue.Length - 1].FixedDurationInSpeech = 0;
             }
-            int languagesCount = Enum.GetNames(typeof(LanguageTypes)).Length;
+            int languagesCount = LocalizationSettings.AvailableLocales.Locales.Count;
             for (int i = 0; i < dialogue.Length; i++)
             {
-                if (dialogue[i].Speeches == null || dialogue[i].Speeches.Length != languagesCount)
+                if (dialogue[i].Speeches == null || (dialogue[i].Speeches.Length != languagesCount && languagesCount > 0))
                 {
                     if (dialogue[i].Speeches == null) dialogue[i].Speeches = new Speech[languagesCount];
                     Array.Resize(ref dialogue[i].Speeches, languagesCount);
                     for (int a = 0; a < dialogue[i].Speeches.Length; a++)
                     {
-                        dialogue[i].Speeches[a].LanguageType = (LanguageTypes)a;
+                        dialogue[i].Speeches[a].Language = LocalizationSettings.AvailableLocales.Locales[a].LocaleName;
                     }
                 }
             }

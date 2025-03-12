@@ -82,7 +82,7 @@ namespace Ivayami.Audio {
         }
 
         private void UpdateMusicToStress(float stress) {
-            _musicInstanceCurrent.setParameterByName("Stress", stress);
+            _musicInstanceCurrent.setParameterByName("Stress", stress / PlayerStress.Instance.MaxStress);
         }
 
         private IEnumerator RandomlyMuteMusic() {

@@ -52,7 +52,8 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public InteractableFeedbacks InteratctableHighlight { get => _interatctableHighlight; }
+        public InteractableFeedbacks InteratctableFeedbacks { get => _interatctableHighlight; }
+        public bool HasBeenInteracted => _interactionAnimator.GetBool(_interactBoolHash);
 
         protected override void Awake()
         {

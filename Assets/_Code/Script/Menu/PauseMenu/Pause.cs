@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using Ivayami.Player;
-using Ivayami.Puzzle;
 using Ivayami.Scene;
 using Ivayami.Dialogue;
 
@@ -30,7 +29,7 @@ namespace Ivayami.UI {
             onPause.AddListener(() => ReturnAction.Instance.Set(UnpauseOnBack));
             PlayerStress.Instance.onFail.AddListener(UnpauseIfPaused);
             SceneController.Instance.OnAllSceneRequestEnd += UnpauseIfPaused;
-            DialogueController.Instance.OnDialogeStart += UnpauseIfPaused;
+            DialogueController.Instance.OnDialogueStart += UnpauseIfPaused;
         }
 
         public void PauseGame(bool isPausing) {
@@ -59,6 +58,12 @@ namespace Ivayami.UI {
             else if (!_pauseBlocker.Add(key)) Debug.LogWarning($"'{key}' tried to lock movement but key is already blocking");
 
             Logger.Log(LogType.UI, $"Puase blockers {(canPause ? "Increase" : "Decrease")} to: {_pauseBlocker.Count}");
+        }
+
+        public void RemoveAllBlockers()
+        {
+            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+            _pauseBlocker.Clear();
         }
 
     }

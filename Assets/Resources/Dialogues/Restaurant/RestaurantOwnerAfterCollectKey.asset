@@ -13,14 +13,24 @@ MonoBehaviour:
   m_Name: RestaurantOwnerAfterCollectKey
   m_EditorClassIdentifier: 
   dialogue:
-  - Speeches:
-    - LanguageType: 0
-      announcerName: Restaurant's Owner
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: Announcers
+      m_TableEntryReference:
+        m_KeyId: 0
+        m_Key: Restaurant's Owner
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - Language: English (en)
       content: Did you find the key?
-    - LanguageType: 1
-      announcerName: Dono do Restaurante
+    - Language: Portuguese (pt)
       content: Achou a chave?
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 0
   onEndEventId: 
+  references:
+    version: 2
+    RefIds: []

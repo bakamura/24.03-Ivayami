@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Ivayami.Player;
 
 namespace Ivayami.Puzzle
 {
@@ -7,7 +8,7 @@ namespace Ivayami.Puzzle
     {
         [SerializeField] private AnimationCurve _interpolationCurve;
         [SerializeField, Min(0f)] private float _duration;
-        [SerializeField, Range(1e-5f, .2f)] private float _finalValue = 0.03333f;
+        [SerializeField, Range(1e-5f, .2f), Tooltip("Big values means more fog, small values means less fog")] private float _finalValue = 0.03333f;
 
         private static Material _fogMaterial;
         private Coroutine _interpolationCoroutine;
@@ -18,27 +19,33 @@ namespace Ivayami.Puzzle
         public void StartLerp()
         {
             GetMaterialInstance();
-            if (_interpolationCoroutine == null) StopLerp();
             _initialValue = _fogMaterial.GetVector(PARAMETER);
-            _interpolationCoroutine = StartCoroutine(InterpolateCoroutine());
+            if (!gameObject.activeInHierarchy)
+            {
+                _fogMaterial.SetVector(PARAMETER, new Vector4(_initialValue.x, _finalValue, _initialValue.z, _initialValue.w));
+                return;
+            }
+            StopLerp();
+            _interpolationCoroutine = StartCoroutine(InterpolateCoroutine(_finalValue));
         }
         [ContextMenu("Stop")]
         public void StopLerp()
         {
+            //if (!gameObject.activeInHierarchy) return;
             if (_interpolationCoroutine != null)
             {
                 StopCoroutine(_interpolationCoroutine);
                 _interpolationCoroutine = null;
-                _fogMaterial.SetVector(PARAMETER, _initialValue);
+                //_fogMaterial.SetVector(PARAMETER, new Vector4(_initialValue.x, _finalValue, _initialValue.z, _initialValue.w));
             }
         }
 
         private void GetMaterialInstance()
         {
-            if (!_fogMaterial) _fogMaterial = Camera.main.GetComponentInChildren<MeshRenderer>().material;
+            if (!_fogMaterial) _fogMaterial = PlayerCamera.Instance.MainCamera.GetComponentInChildren<MeshRenderer>().material;
         }
 
-        private IEnumerator InterpolateCoroutine()
+        private IEnumerator InterpolateCoroutine(float targetValue)
         {
             float count = 0;
             if(_duration > 0)
@@ -47,13 +54,13 @@ namespace Ivayami.Puzzle
                 {
                     count += Time.deltaTime;
                     _fogMaterial.SetVector(PARAMETER, Vector4.Lerp(_initialValue,
-                        new Vector4(_initialValue.x, _finalValue, _initialValue.z, _initialValue.w), _interpolationCurve.Evaluate(count / _duration)));
+                        new Vector4(_initialValue.x, targetValue, _initialValue.z, _initialValue.w), _interpolationCurve.Evaluate(count / _duration)));
                     yield return null;
                 }                
             }
             else
             {
-                _fogMaterial.SetVector(PARAMETER, new Vector4(_initialValue.x, _finalValue, _initialValue.z, _initialValue.w));
+                _fogMaterial.SetVector(PARAMETER, new Vector4(_initialValue.x, targetValue, _initialValue.z, _initialValue.w));
             }
             _interpolationCoroutine = null;
         }

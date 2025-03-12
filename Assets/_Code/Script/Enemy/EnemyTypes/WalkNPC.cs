@@ -12,7 +12,7 @@ namespace Ivayami.Enemy
         [SerializeField] private bool _lookAtPlayerOnStart;
         [SerializeField] private EnemyWalkArea _fixedWalkArea;
         [SerializeField, Min(0f)] private float _minDistanceFromPathPoint;
-        [SerializeField] private EnemyWalkArea.PathCallback[] _pathsCallback;
+        [SerializeField, Tooltip("Does Not suport the RandomPoints option in the PatrolBehaviour")] private EnemyWalkArea.PathCallback[] _pathsCallback;
 
         private WaitForSeconds _delay = new WaitForSeconds(_tick);
         private EnemyAnimator _animator;
@@ -26,19 +26,24 @@ namespace Ivayami.Enemy
 
         public bool CanChangeWalkArea => _fixedWalkArea;
 
+        private void Start()
+        {
+            if (PlayerMovement.Instance && _lookAtPlayerOnStart)
+                TryLookAtPlayer();
+        }
+
         private void Setup()
         {
             if (_navMeshAgent) return;
             _navMeshAgent = GetComponent<NavMeshAgent>();
+            _navMeshAgent.enabled = true;
             _animator = GetComponentInChildren<EnemyAnimator>();
             if (_fixedWalkArea)
             {
                 if (_fixedWalkArea.MovementData) SetMovementData(_fixedWalkArea.MovementData);
                 SetWalkArea(_fixedWalkArea);
                 _fixedWalkArea.AddEnemyToArea(this, gameObject.name);
-            }
-            if (PlayerMovement.Instance && _lookAtPlayerOnStart)
-                TryLookAtPlayer();
+            }           
         }
         //private void OnTriggerEnter(Collider other)
         //{
