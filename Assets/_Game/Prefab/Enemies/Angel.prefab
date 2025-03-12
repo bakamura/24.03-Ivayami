@@ -5145,7 +5145,7 @@ NavMeshAgent:
   m_Acceleration: 20
   avoidancePriority: 1
   m_AngularSpeed: 1200
-  m_StoppingDistance: 3
+  m_StoppingDistance: 5
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
@@ -5192,9 +5192,9 @@ MonoBehaviour:
   _patrolPoints: []
   _stressIncreaseWhileChasing: 5
   _stressMaxWhileChasing: 30
-  _distanceToLeapAttack: 7
-  _distanceToFogAttack: 3
-  _leapAttackRange: 10
+  _distanceToLeapAttack: 9
+  _distanceToFogAttack: 5
+  _leapAttackRange: 15
   _leapAttackDuration: 0.7
   _startLeapMovementInterval: 0.5
   _leapAttackJumpHeight: 1.5
@@ -5231,42 +5231,42 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _leapAttackPredictDistance: 1.5
+  _leapAttackPredictDistance: 2.5
   _fallDuration: 1
   _attackAreaInfos:
   - Hitbox: {fileID: 7757587321474757377}
     AnimationIndex: 0
     MinInterval: 0.36
     MaxInterval: 0.73
-    StressIncreaseOnEnter: 70
-    StressIncreaseOnStay: 0
+    StressIncreaseOnEnter: 10
+    StressIncreaseOnStay: 20
     Center: {x: 0, y: 0, z: 0}
     InterpolateSizeXAxisByAnimation: 0
     InterpolateSizeYAxisByAnimation: 0
     InterpolateSizeZAxisByAnimation: 0
-    Size: {x: 4, y: 4, z: 4}
+    Size: {x: 10, y: 4, z: 10}
   - Hitbox: {fileID: 911149533854555400}
     AnimationIndex: 1
     MinInterval: 0.5
     MaxInterval: 0.66
-    StressIncreaseOnEnter: 30
+    StressIncreaseOnEnter: 20
     StressIncreaseOnStay: 0
     Center: {x: 0, y: 0, z: 0}
     InterpolateSizeXAxisByAnimation: 0
     InterpolateSizeYAxisByAnimation: 0
     InterpolateSizeZAxisByAnimation: 1
-    Size: {x: 2, y: 3, z: 1}
+    Size: {x: 1, y: 2, z: 0.5}
   - Hitbox: {fileID: 3516801248242467651}
     AnimationIndex: 1
     MinInterval: 0.66
     MaxInterval: 0.76
-    StressIncreaseOnEnter: 30
+    StressIncreaseOnEnter: 20
     StressIncreaseOnStay: 0
     Center: {x: 0, y: 0, z: 0}
     InterpolateSizeXAxisByAnimation: 0
     InterpolateSizeYAxisByAnimation: 0
     InterpolateSizeZAxisByAnimation: 0
-    Size: {x: 3, y: 4, z: 3}
+    Size: {x: 3, y: 3, z: 3}
   _debugLogsEnemyPatrol: 0
   _drawMinDistance: 0
   _minDistanceAreaColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
