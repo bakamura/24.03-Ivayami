@@ -479,20 +479,20 @@ namespace Ivayami.Enemy
                     if (Physics.Raycast(new Ray(_hitsCache[0].transform.position + new Vector3(0, halfHeight, 0), currentPlayerMovement.normalized), _predictDistance, _blockVisionLayer))
                     {
                         finalPos = _hitsCache[0].transform.position + dir * (_navMeshAgent.radius + _currentTargetColliderSizeFactor);
-                        Debug.Log("Position Blocked, jump close to player");
+                        //Debug.Log("Position Blocked, jump close to player");
                     }
                     else
                     {
                         finalPos = _hitsCache[0].transform.position + currentPlayerMovement.normalized * _predictDistance;
-                        Debug.Log("Try predict player position");
+                        //Debug.Log("Try predict player position");
                     }
                 }
                 else
                 {
                     finalPos = _initialLeapPosition + new Vector3(-dir.x * _distanceToLeapAttack, _hitsCache[0].transform.position.y, -dir.z * _distanceToLeapAttack);
-                    Debug.Log("Far From Leap Distance");
+                    //Debug.Log("Far From Leap Distance");
                 }
-                Debug.Log(finalPos);
+                //Debug.Log(finalPos);
                 return finalPos;
             }
         }
