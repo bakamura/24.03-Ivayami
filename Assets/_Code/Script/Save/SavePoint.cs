@@ -102,7 +102,8 @@ namespace Ivayami.Save {
                 PlayerMovement.Instance.SetTargetAngle(_playerAnimationPoint.eulerAngles.y);
             }
             else Debug.LogWarning($"Save point '{name}' has no _playerAnimationPoint referenced");
-            
+            PlayerStress.Instance.AddStress(-1000);
+
             yield return _delayFadeOutWait;
 
             SceneTransition.Instance.Close();

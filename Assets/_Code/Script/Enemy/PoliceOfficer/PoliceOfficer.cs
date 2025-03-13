@@ -127,7 +127,7 @@ namespace Ivayami.Enemy
                 StopTargetPointReachedCoroutine();
                 _isChasing = false;
                 _chaseTargetPatience = 0;
-                _navMeshAgent.isStopped = true;
+                if(_navMeshAgent.isOnNavMesh) _navMeshAgent.isStopped = true;
                 _navMeshAgent.velocity = Vector3.zero;
                 _enemyAnimator.Walking(0);
                 isStressAreaActive = false;
