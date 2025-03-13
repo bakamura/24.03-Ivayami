@@ -325,7 +325,7 @@ namespace Ivayami.Enemy
         private void UpdateMovement(bool isStoped)
         {
             if (!_navMeshAgent.enabled) return;
-            _navMeshAgent.isStopped = isStoped;
+            if (_navMeshAgent.isOnNavMesh) _navMeshAgent.isStopped = isStoped;
             if (isStoped) _navMeshAgent.velocity = Vector3.zero;
             _enemyAnimator.Walking(isStoped ? 0 : _navMeshAgent.velocity.magnitude / _navMeshAgent.speed);
         }
