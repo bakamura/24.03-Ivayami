@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Localization;
 using UnityEngine.Localization.Components;
 using TMPro;
 using Ivayami.Save;

@@ -99,11 +99,13 @@ namespace Ivayami.Puzzle
             {
                 _cancelInteractionInput.action.started += HandleCancelInteraction;
                 PlayerActions.Instance.ChangeInputMap("Menu");
+                PlayerActions.Instance.ToggleInteract(nameof(InteractableObjectsGroup), false);
             }
             else
             {
                 _cancelInteractionInput.action.started -= HandleCancelInteraction;
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ToggleInteract(nameof(InteractableObjectsGroup), true);
             }
         }
 

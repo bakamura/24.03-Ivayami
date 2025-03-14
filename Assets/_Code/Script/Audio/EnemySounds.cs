@@ -14,6 +14,7 @@ namespace Ivayami.Audio
     {
         [SerializeField] private SoundEventData[] _audiosData;
         [SerializeField] private bool _debugLog;
+        [SerializeField] private bool _autoActivateOnEnable;
         [SerializeField] private SphereCollider _activationArea;
 
         private bool _hasDoneSetup;
@@ -303,6 +304,11 @@ namespace Ivayami.Audio
         private void OnDisable()
         {
             ReleaseAllEvents();
+        }
+
+        private void OnEnable()
+        {
+            if (_autoActivateOnEnable) Activate();
         }
 
 #if UNITY_EDITOR

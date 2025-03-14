@@ -3,14 +3,15 @@ using UnityEngine;
 namespace Ivayami.Player.Ability {
     public class AbilityGiver : MonoBehaviour {
 
-        [SerializeField] private PlayerAbility _ability;
+        [field: SerializeField] public PlayerAbility Ability { get; private set; }
 
         public void GiveAbility() {
-            PlayerActions.Instance.AddAbility(_ability);
+            if (!PlayerActions.Instance.CheckAbility(Ability)) PlayerActions.Instance.AddAbility(Ability);
+            else Debug.LogWarning($"Trying to give Ability '{Ability.GetType().Name}' to Player, but it alrady has it!");
         }
 
         public void RemoveAbility() {
-            PlayerActions.Instance.RemoveAbility(_ability);
+            PlayerActions.Instance.RemoveAbility(Ability);
         }
 
     }

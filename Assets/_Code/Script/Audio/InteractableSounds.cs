@@ -24,6 +24,7 @@ namespace Ivayami.Audio
         private EventInstance _actionSuccessSoundInstance;
 
         private bool _hasDoneSetup;
+        private bool _canPlaySound = true;
 
         public enum SoundTypes
         {
@@ -38,6 +39,7 @@ namespace Ivayami.Audio
 
         public void PlaySound(SoundTypes soundType)
         {
+            if (!_canPlaySound) return;
             Setup();
             if (_debugLog) Debug.Log($"Interactable {name} is playing soun {soundType}");
             switch (soundType)
@@ -64,6 +66,11 @@ namespace Ivayami.Audio
                     PlayOneShot(_actionSuccessSoundInstance, false, Range.Empty);
                     break;
             }
+        }
+
+        public void UpdateActiveState(bool canPlaySound)
+        {
+            _canPlaySound = canPlaySound;
         }
 
         private void Setup()

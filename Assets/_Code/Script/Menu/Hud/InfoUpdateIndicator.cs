@@ -7,7 +7,7 @@ using UnityEngine.Localization;
 
 namespace Ivayami.UI {
     public class InfoUpdateIndicator : MonoSingleton<InfoUpdateIndicator> {
-        
+
         [Header("Parameters")]
 
         [SerializeField] private CanvasGroup _canvasGroup;
@@ -37,17 +37,19 @@ namespace Ivayami.UI {
         [System.Serializable]
         private class DisplayInfo {
             [field: SerializeField] public Sprite Sprite { get; private set; }
-            [field: SerializeField] public LocalizedString Text { get; private set; }
-            public DisplayInfo(Sprite sprite, string localizationId) {
+            [field: SerializeField] public LocalizedString LocalizedText { get; private set; }
+            private string _text;
+            public string Text { get { return LocalizedText != null ? LocalizedText.GetLocalizedString() : _text; } }
+
+            public DisplayInfo(Sprite sprite, string text) {
                 Sprite = sprite;
-                string[] str = localizationId.Split('/');
-                Text = new LocalizedString(str[0], str[1]);
+                _text = text;
             }
         }
 
         protected override void Awake() {
             base.Awake();
-            
+
             _stayWait = new WaitForSeconds(_stayDuration);
             _containerBaseWidth = _container.sizeDelta.x;
         }
@@ -59,12 +61,12 @@ namespace Ivayami.UI {
         private void DisplayUpdate(DisplayInfo infoToDisplay) {
             if (_currentDisplayRoutine != null) _displayQueue.Enqueue(infoToDisplay);
             else _currentDisplayRoutine = StartCoroutine(DisplayUpdateRoutine(infoToDisplay));
-            Logger.Log(LogType.UI, $"Display Update Enqueue '{infoToDisplay.Text}' / {infoToDisplay.Sprite}");
+            Logger.Log(LogType.UI, $"Display Update Enqueue '{infoToDisplay.LocalizedText}' / {infoToDisplay.Sprite}");
         }
 
         private IEnumerator DisplayUpdateRoutine(DisplayInfo infoToDisplay) {
             _image.sprite = infoToDisplay.Sprite;
-            _text.text = infoToDisplay.Text.GetLocalizedString();
+            _text.text = infoToDisplay.Text;
             _container.sizeDelta = new Vector2(_containerBaseWidth + _text.preferredWidth, _container.sizeDelta.y);
 
             while (_canvasGroup.alpha < 1f) {
@@ -81,13 +83,13 @@ namespace Ivayami.UI {
                 yield return null;
             }
 
-            _currentDisplayRoutine = _displayQueue.Count > 0 ? StartCoroutine(DisplayUpdateRoutine(_displayQueue.Dequeue())) :  null;
+            _currentDisplayRoutine = _displayQueue.Count > 0 ? StartCoroutine(DisplayUpdateRoutine(_displayQueue.Dequeue())) : null;
         }
 
         public void DisplayMap() {
             DisplayUpdate(_mapInfo);
         }
-        
+
         public void DisplayReadable() {
             DisplayUpdate(_readableInfo);
         }
