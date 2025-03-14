@@ -43,10 +43,10 @@ namespace Ivayami.Puzzle
             if (InputCallbacks.Instance && _icon && _showingInputIcon) InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisualIcon);
         }
 
-        private void SetupMaterials()
+        private void SetupMaterials(bool forceRecalcMaterials = false)
         {
             //setup materials
-            if (_materials == null)
+            if (_materials == null || forceRecalcMaterials)
             {
                 _materials = new List<Material>();
                 _baseColors = new List<Color>();
@@ -96,9 +96,9 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public void UpdateFeedbacks(bool isActive, bool forcePopupIconActivationUpdate = false)
+        public void UpdateFeedbacks(bool isActive, bool forcePopupIconActivationUpdate = false, bool forceRecalcMaterials = false)
         {
-            SetupMaterials();
+            SetupMaterials(forceRecalcMaterials);
             SetupIcon();
             for (int i = 0; i < _materials.Count; i++)
             {

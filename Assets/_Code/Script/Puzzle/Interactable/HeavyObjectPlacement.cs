@@ -12,7 +12,7 @@ namespace Ivayami.Puzzle {
         [SerializeField] private string _correctName;
         [SerializeField] private Transform _placementPos;
         private GameObject _heavyObjectCurrent;
-        public string HeavyObjectCurrentName { get { return _heavyObjectCurrent.name; } }
+        public string HeavyObjectCurrentName { get { return _heavyObjectCurrent?.name; } }
         private Collider _collider;
         [SerializeField] private GameObject _interactPopup;
 
@@ -42,7 +42,6 @@ namespace Ivayami.Puzzle {
         private void Start() {
             _collider.enabled = _heavyObjectCurrent;
             _interactPopup.SetActive(_heavyObjectCurrent);
-            Debug.Log(PlayerAnimation.Instance != null);
             float interactAnimDuration = PlayerAnimation.Instance ? PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.HeavyPickup) : 1f;
             _collectWait = new WaitForSeconds(interactAnimDuration * _pickupAnimationPoint);
             _placeWait = new WaitForSeconds(interactAnimDuration * (1f - _pickupAnimationPoint));
@@ -77,6 +76,7 @@ namespace Ivayami.Puzzle {
             PlayerStress.Instance.onFail.AddListener(RemovePlayerObject);
             PlayerAnimation.Instance.HeavyHold(true);
             onCollect.Invoke(true);
+            _interactableFeedbacks.UpdateFeedbacks(true, false, true);
         }
 
         public bool TryPlace() {
@@ -102,6 +102,7 @@ namespace Ivayami.Puzzle {
             PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
             PlayerAnimation.Instance.HeavyHold(false);
             onCollect.Invoke(false);
+            _interactableFeedbacks.UpdateFeedbacks(true, false, true);
         }
 
         private void CheckForActivation() {

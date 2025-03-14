@@ -39,9 +39,10 @@ namespace Ivayami.Player {
             public AnimationClip Animation;
             public float Speed;
 
-            public float GetAnimationDuration()
-            {
-                return Animation.length / Speed;
+            public float GetAnimationDuration() {
+                if(Animation != null) return Animation.length / Speed;
+                Debug.LogError($"Player Animation '{InteractType}' has no AnimationClip assigned!");
+                return 1;
             }
         }
 
