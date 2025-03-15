@@ -25,24 +25,31 @@ namespace Ivayami.Puzzle {
             if (SaveSystem.Instance?.Progress != null) {
                 if (SaveSystem.Instance.Progress.GetSaveObjectOfType(ID, out Data data)) {
                     _dataCurrent = data;
-                    Debug.Log($"{name}: '{(_heavyObjectParent.childCount > 0 ? _heavyObjectParent.GetChild(0).name : "")}' == '{_dataCurrent.currentObjectName}'");
-                    if (_heavyObjectParent.childCount > 0 && _heavyObjectParent.GetChild(0).name != _dataCurrent.currentObjectName) {
-                        Destroy(_heavyObjectParent.GetChild(0).gameObject);
-                        if (!string.IsNullOrEmpty(_dataCurrent.currentObjectName)) Instantiate((Resources.Load($"HeavyObjects/{data.currentObjectName}") as GameObject), _heavyObjectParent);
+                    string spawnName = _heavyObjectParent.childCount > 0 ? _heavyObjectParent.GetChild(0).name : "";
+                    Debug.Log($"'{name}' loaded save with info [{data.currentObjectName}]");
+                    Debug.Log($"'{name}' spawnName = '{spawnName}'");
+                    if (spawnName != _dataCurrent.currentObjectName) {
+                        if (spawnName != "") Destroy(_heavyObjectParent.GetChild(0).gameObject);
+                        if (!string.IsNullOrEmpty(_dataCurrent.currentObjectName)) {
+                            GameObject heavyResource = Resources.Load($"HeavyObjects/{data.currentObjectName}") as GameObject;
+                            Instantiate(heavyResource, _heavyObjectParent).name = heavyResource.name;
+                        }
+                        Resources.UnloadUnusedAssets();
                     }
                 }
+                else Debug.Log($"'{name}' found no Save");
             }
             if (_dataCurrent == null) _dataCurrent = new Data(_heavyObjectParent.childCount > 0 ? _heavyObjectParent.GetChild(0).name : "");
+            if (TryGetComponent(out HeavyObjectPlacement placement)) placement.Setup();
         }
 
         public override void SaveData() {
             if (SaveSystem.Instance?.Progress != null) {
                 if (TryGetComponent(out HeavyObjectPlacement placement)) {
-                    Debug.Log($"{name}: '{_dataCurrent.currentObjectName}' != '{placement.HeavyObjectCurrentName}'");
                     if (_dataCurrent.currentObjectName != placement.HeavyObjectCurrentName) {
                         _dataCurrent.currentObjectName = placement.HeavyObjectCurrentName;
-                        SaveSystem.Instance.Progress.RecordSaveObject(ID, _dataCurrent);
-                        Debug.Log($"{name}: '{_dataCurrent.currentObjectName}'");
+                        SaveSystem.Instance.Progress.RecordSaveObject(ID, new Data(_heavyObjectParent.childCount > 0 ? _heavyObjectParent.GetChild(0).name : ""));
+                        Debug.Log(SaveSystem.Instance.Progress.GetSaveObjectOfType(ID, out Data data) ? $"{name}: '{data.currentObjectName}'" : "There was some error retrieving data just saved!");
                     }
                 }
             }

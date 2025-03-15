@@ -26,10 +26,6 @@ namespace Ivayami.Puzzle {
         public InteractableFeedbacks InteratctableFeedbacks { get { return _interactableFeedbacks; } }
 
         private void Awake() {
-            if (_placementPos) {
-                if (_placementPos.childCount > 0) _heavyObjectCurrent = _placementPos.GetChild(0).gameObject;
-            }
-            else Debug.LogError($"{name} has no _placementPos assigned!");
             if (!TryGetComponent<InteractableFeedbacks>(out _interactableFeedbacks)) Debug.LogError($"'{name}' has no InteractableFeedbacks attached to!");
             if (!TryGetComponent<Collider>(out _collider)) Debug.LogError($"'{name}' has no Collider attached to!");
             onCollect.AddListener((isCollecting) => {
@@ -40,11 +36,25 @@ namespace Ivayami.Puzzle {
         }
 
         private void Start() {
-            _collider.enabled = _heavyObjectCurrent;
-            _interactPopup.SetActive(_heavyObjectCurrent);
             float interactAnimDuration = PlayerAnimation.Instance ? PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.HeavyPickup) : 1f;
             _collectWait = new WaitForSeconds(interactAnimDuration * _pickupAnimationPoint);
             _placeWait = new WaitForSeconds(interactAnimDuration * (1f - _pickupAnimationPoint));
+        }
+
+        public void Setup() {
+            StartCoroutine(SetupRoutine());
+        }
+
+        private IEnumerator SetupRoutine() {
+            yield return null;
+
+            if (_placementPos) {
+                if (_placementPos.childCount > 0) _heavyObjectCurrent = _placementPos.GetChild(0).gameObject;
+            }
+            else Debug.LogError($"{name} has no _placementPos assigned!");
+            bool enabled = _heavyObjectCurrent != null;
+            _collider.enabled = enabled;
+            _interactPopup.SetActive(enabled);
         }
 
         public PlayerActions.InteractAnimation Interact() {
