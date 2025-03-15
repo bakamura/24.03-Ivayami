@@ -106,6 +106,7 @@ namespace Ivayami.Player {
         private const string INTERACT_BLOCK_KEY = "Interact";
 
         public Vector3 VisualForward { get { return _visualTransform.forward; } }
+        public Vector3 MovementDirection { get { return _movementCache; } }
 #if UNITY_EDITOR
         public float MaxStamina => _maxStamina;
 #endif

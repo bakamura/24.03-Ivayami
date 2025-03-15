@@ -387,11 +387,16 @@ MonoBehaviour:
   _loseTargetWhenHidden: 1
   _stayInLastTargetPositionDuration: 0.1
   _attackAreaInfos:
-  - MinInterval: 0.5
+  - Hitbox: {fileID: 7979798263519903882}
+    AnimationIndex: 0
+    MinInterval: 0.5
     MaxInterval: 0.6
     StressIncreaseOnEnter: 999
     StressIncreaseOnStay: 0
     Center: {x: 0, y: 0, z: 0}
+    InterpolateSizeXAxisByAnimation: 0
+    InterpolateSizeYAxisByAnimation: 0
+    InterpolateSizeZAxisByAnimation: 0
     Size: {x: 1.5, y: 2, z: 1}
   _debugLogPoliceOfficer: 0
   _drawMinDistance: 0
@@ -1976,6 +1981,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _animationScaleWithMovementSpeed: 0
   _attackAnimationLayer: 0
+  _attackAnimationsSpeed:
+  - 1
 --- !u!4 &7852145921260173681 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9fddf1502c97460408dec83aadf7ea5a, type: 3}
