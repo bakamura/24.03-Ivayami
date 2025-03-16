@@ -66,8 +66,9 @@ namespace Ivayami.Puzzle
             if (_waitAnimationCoroutine == null)
             {
                 _quickTimeButton.action.started += HandleOnClick;
-                PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
+                //PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
                 Pause.Instance.ToggleCanPause(BLOCK_KEY, false);
+                PlayerActions.Instance.ChangeInputMap("Menu");
                 _onStart?.Invoke();
                 for (int i = 0; i < _animations.Length; i++)
                 {
@@ -85,8 +86,9 @@ namespace Ivayami.Puzzle
         public void EndEvent()
         {
             _quickTimeButton.action.started -= HandleOnClick;
-            PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true);
+            //PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true);
             Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
+            PlayerActions.Instance.ChangeInputMap("Player");
             _currentClickAmount = 0;
             SetAllSpeeds(true);
             _onEnd?.Invoke();

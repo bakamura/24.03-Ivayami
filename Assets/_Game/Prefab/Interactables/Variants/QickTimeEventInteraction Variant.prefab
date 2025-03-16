@@ -44,7 +44,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fddd3369896713646ad1e21d820b85bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _changeCameraFocus: 0
+  _lookAtPlayer: 0
+  _followPlayer: 0
+  _lookAtTarget: {fileID: 0}
+  _followTarget: {fileID: 0}
   Duration: 0.2
+  _hidePlayerModel: 0
   PositionCurve:
     serializedVersion: 2
     m_Curve:
@@ -157,10 +163,6 @@ PrefabInstance:
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
       value: 6
       objectReference: {fileID: 0}
-    - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
-      propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 6267851372260443902}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
@@ -289,7 +291,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a3475b3e93445049b3f186634a90e71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _quickTimeButton: {fileID: -960142445056486336, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
+  _quickTimeButton: {fileID: 3844165835466181304, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _amountOfTimesToClick: 0
   _framesAdvancePerClick: 0
   _onStart:
@@ -326,10 +328,5 @@ MonoBehaviour:
 --- !u!4 &1870214865694983741 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
-  m_PrefabInstance: {fileID: 5154686322084132350}
-  m_PrefabAsset: {fileID: 0}
---- !u!135 &6267851372260443902 stripped
-SphereCollider:
-  m_CorrespondingSourceObject: {fileID: 1257347051849839360, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
   m_PrefabInstance: {fileID: 5154686322084132350}
   m_PrefabAsset: {fileID: 0}

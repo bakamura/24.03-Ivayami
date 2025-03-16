@@ -2,23 +2,31 @@ using UnityEngine;
 using System;
 using System.Collections;
 using Ivayami.Audio;
+//#if UNITY_EDITOR
+//using UnityEditor.Animations;
+//#endif
 
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(Animator))]
     public class EnemyAnimator : MonoBehaviour
     {
-        [SerializeField] private bool _animationScaleWithMovementSpeed;
+        [SerializeField] private bool _movementAnimationScaleWithMovementSpeed;
+        [SerializeField, Range(0f, 1f)] private float _walkSpeedFactor = 1;
+        [SerializeField, Range(0f, 1f)] private float _chaseSpeedFactor = 1;
         [SerializeField, Min(0)] private int _attackAnimationLayer;
+        [SerializeField, Min(1f)] private float[] _attackAnimationsSpeed;
         //private static readonly int WALKING_BOOL = Animator.StringToHash("walking");
         private static readonly int SPAWNING_TRIGGER = Animator.StringToHash("spawning");
         private static readonly int ATTACK_TRIGGER = Animator.StringToHash("attacking");
         private static readonly int TARGET_DETECTED_TRIGGER = Animator.StringToHash("targetDetected");
         private static readonly int INTERACT_TRIGGER = Animator.StringToHash("interacting");
-        private static readonly int TAKE_DAMAGE_TRIGGER = Animator.StringToHash("takeDamage");
+        private static readonly int PARALISE_BOOL = Animator.StringToHash("paralised");
         private static readonly int CHASING_BOOL = Animator.StringToHash("chasing");
         private static readonly int MOVE_SPEED_FLOAT = Animator.StringToHash("moveSpeed");
         private static readonly int ATTACK_INDEX_FLOAT = Animator.StringToHash("attackIndex");
+        private static readonly int PARALISE_INDEX_FLOAT = Animator.StringToHash("paralisedIndex");
+        private static readonly int ATTACK_SPEED_FLOAT = Animator.StringToHash("attackSpeed");
 
         private static readonly int WALKING_STATE = Animator.StringToHash("walk");
         private static readonly int CHASE_STATE = Animator.StringToHash("chase");
@@ -26,7 +34,7 @@ namespace Ivayami.Enemy
         private static readonly int ATTACK_STATE = Animator.StringToHash("attack");
         private static readonly int TARGET_DETECTED_STATE = Animator.StringToHash("targetDetect");
         private static readonly int INTERACT_STATE = Animator.StringToHash("interact");
-        private static readonly int TAKE_DAMAGE_STATE = Animator.StringToHash("damage");
+        private static readonly int PARALISE_STATE = Animator.StringToHash("paralise");
 
         private Animator _animator
         {
@@ -47,15 +55,23 @@ namespace Ivayami.Enemy
         }
         private EnemySounds m_enemySound;
         private Coroutine _waitAnimationEndCoroutine;
+        private Action _currentAnimationEndEvent;
         /// <param name="onAnimationEnd">
         /// will only activate once
         /// </param>
         public void Walking(float speed, Action onAnimationEnd = null)
         {
             //_animator.SetBool(WALKING_BOOL, walking);
-            _animator.SetFloat(MOVE_SPEED_FLOAT, _animationScaleWithMovementSpeed ? speed : Math.Clamp(speed, 0, 1));
-            if(_animator.GetBool(CHASING_BOOL))StartAnimationEvent(CHASE_STATE, 0, onAnimationEnd);
-            else StartAnimationEvent(WALKING_STATE, 0, onAnimationEnd);
+            float finalSpeed;
+            if (_movementAnimationScaleWithMovementSpeed)
+            {
+                if (_animator.GetBool(CHASING_BOOL)) finalSpeed = speed * _chaseSpeedFactor;
+                else finalSpeed = speed * _walkSpeedFactor;
+            }
+            else finalSpeed = Math.Clamp(speed, 0, 1);
+            _animator.SetFloat(MOVE_SPEED_FLOAT, finalSpeed);
+            if (_animator.GetBool(CHASING_BOOL)) StartAnimationEvent(CHASE_STATE, 0, onAnimationEnd, false);
+            else StartAnimationEvent(WALKING_STATE, 0, onAnimationEnd, false);
         }
         /// <param name="onAnimationEnd">
         /// will only activate once
@@ -63,7 +79,7 @@ namespace Ivayami.Enemy
         public void Spawning(Action onAnimationEnd = null)
         {
             _animator.SetTrigger(SPAWNING_TRIGGER);
-            StartAnimationEvent(SPAWNING_STATE, 0, onAnimationEnd);
+            StartAnimationEvent(SPAWNING_STATE, 0, onAnimationEnd, false);
         }
         /// <summary>
         /// will only activate once
@@ -71,11 +87,17 @@ namespace Ivayami.Enemy
         /// <param name="onAnimationEnd"></param>
         /// <param name="currentAnimationStepCallback"></param>
         /// <param name="attackAnimationIndex">Wich animation the enemy will play in the attack pool</param>
-        public void Attack(Action onAnimationEnd = null, Action<float> currentAnimationStepCallback = null, int attackAnimationIndex = 0)
+        public void Attack(/*bool playPreviousAnimationEndEvent, */Action onAnimationEnd = null, Action<float> currentAnimationStepCallback = null, int attackAnimationIndex = 0)
         {
+            _animator.SetFloat(ATTACK_SPEED_FLOAT, _attackAnimationsSpeed[attackAnimationIndex]);
             _animator.SetFloat(ATTACK_INDEX_FLOAT, attackAnimationIndex);
             _animator.SetTrigger(ATTACK_TRIGGER);
-            StartAnimationEvent(ATTACK_STATE, _attackAnimationLayer, onAnimationEnd, currentAnimationStepCallback);
+            StartAnimationEvent(ATTACK_STATE, _attackAnimationLayer, onAnimationEnd, false/*playPreviousAnimationEndEvent*/, currentAnimationStepCallback);
+        }
+
+        public int GetCurrentAttackAnimIndex()
+        {
+            return (int)_animator.GetFloat(ATTACK_INDEX_FLOAT);
         }
         /// <param name="onAnimationEnd">
         /// will only activate once
@@ -84,7 +106,7 @@ namespace Ivayami.Enemy
         {
             _animator.SetTrigger(TARGET_DETECTED_TRIGGER);
             _animator.SetBool(CHASING_BOOL, true);
-            StartAnimationEvent(TARGET_DETECTED_STATE, 0, onAnimationEnd);
+            StartAnimationEvent(TARGET_DETECTED_STATE, 0, onAnimationEnd, false);
         }
         /// <param name="onAnimationEnd">
         /// will only activate once
@@ -92,15 +114,16 @@ namespace Ivayami.Enemy
         public void Interact(Action onAnimationEnd = null)
         {
             _animator.SetTrigger(INTERACT_TRIGGER);
-            StartAnimationEvent(INTERACT_STATE, 0, onAnimationEnd);
+            StartAnimationEvent(INTERACT_STATE, 0, onAnimationEnd, false);
         }
         /// <param name="onAnimationEnd">
         /// will only activate once
         /// </param>
-        public void TakeDamage(Action onAnimationEnd = null)
+        public void Paralise(bool paralised, bool playPreviousAnimationEndEvent, Action onAnimationEnd = null, int paraliseAnimationIndex = 0)
         {
-            _animator.SetTrigger(TAKE_DAMAGE_TRIGGER);
-            StartAnimationEvent(TAKE_DAMAGE_STATE, 0, onAnimationEnd);
+            _animator.SetFloat(PARALISE_INDEX_FLOAT, paraliseAnimationIndex);
+            _animator.SetBool(PARALISE_BOOL, paralised);
+            StartAnimationEvent(PARALISE_STATE, 0, onAnimationEnd, playPreviousAnimationEndEvent);
         }
         /// <param name="isChasing"></param>
         /// <param name="onAnimationEnd">will only activate once</param>
@@ -114,16 +137,34 @@ namespace Ivayami.Enemy
             _enemySound.PlaySound(EnemySounds.SoundTypes.Steps);
         }
 
-        private void StartAnimationEvent(int stateHash, int layer, Action onAnimationEnd, Action<float> currentAnimationStepCallback = null)
+        public bool HasParaliseAnimation()
         {
+            return _animator.HasState(0, PARALISE_STATE);
+        }
+
+        private void StartAnimationEvent(int stateHash, int layer, Action onAnimationEnd, bool playPreviousAnimationEndEvent, Action<float> currentAnimationStepCallback = null)
+        {
+            if (playPreviousAnimationEndEvent)
+            {
+                StopWaitAnimationEndCoroutine();
+                _currentAnimationEndEvent?.Invoke();
+                //if(_currentAnimationEndEvent != null) Debug.Log("ForceCallback");
+                _currentAnimationEndEvent = null;
+            }
             if (onAnimationEnd != null)
             {
-                if (_waitAnimationEndCoroutine != null)
-                {
-                    StopCoroutine(_waitAnimationEndCoroutine);
-                    _waitAnimationEndCoroutine = null;
-                }
+                StopWaitAnimationEndCoroutine();
+                _currentAnimationEndEvent = onAnimationEnd;
                 _waitAnimationEndCoroutine = StartCoroutine(WaitAnimationEndCoroutine(stateHash, layer, onAnimationEnd, currentAnimationStepCallback));
+            }
+        }
+
+        private void StopWaitAnimationEndCoroutine()
+        {
+            if (_waitAnimationEndCoroutine != null)
+            {
+                StopCoroutine(_waitAnimationEndCoroutine);
+                _waitAnimationEndCoroutine = null;
             }
         }
 
@@ -141,8 +182,23 @@ namespace Ivayami.Enemy
                 currentAnimationStepCallback?.Invoke(_animator.GetCurrentAnimatorStateInfo(layer).normalizedTime);
                 yield return null;
             }
-            onAnimationEnd?.Invoke();
+            _currentAnimationEndEvent?.Invoke();
+            _currentAnimationEndEvent = null;
+            //onAnimationEnd?.Invoke();
             _waitAnimationEndCoroutine = null;
         }
+
+        //#if UNITY_EDITOR
+        //        private void OnValidate()
+        //        {
+        //            AnimatorController ac = _animator.runtimeAnimatorController as AnimatorController;
+        //            AnimatorControllerLayer acLayers = ac.layers[_attackAnimationLayer];
+        //            Debug.Log(acLayers.stateMachine.name);
+        //            //if(_attackAnimationsSpeed.Length != acLayers.stateMachine.states.Length)
+        //            //{
+        //            //    Array.Resize(ref _attackAnimationsSpeed, acLayers.stateMachine.states.Length);
+        //            //}
+        //        }
+        //#endif
     }
 }

@@ -83,6 +83,16 @@ namespace Ivayami.Dialogue
             operation.completed += (AsyncOperation op) => { IsPaused = false; };
         }
 
+        private void Start()
+        {
+            PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
+        }
+
+        private void HandleInputMapChange(string arg0)
+        {
+            if (string.Equals(arg0, "Menu") && _currentDialogue) StopDialogue();
+        }
+
         #region BaseStructure
         public void StartDialogue(string dialogueName, bool lockInput)
         {
