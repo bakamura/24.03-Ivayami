@@ -158,22 +158,30 @@ namespace Ivayami.Player {
         }
 
         public void HeavyObjectHold(GameObject objToHold) {
-            if (objToHold != null) {
-                _heavyObjectCurrent = objToHold;
-                _heavyObjectCurrent.transform.parent = HoldPointHeavy;
-                _heavyObjectCurrent.transform.localPosition = Vector3.zero;
-                _heavyObjectCurrent.transform.rotation = Quaternion.identity;
-                if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = false;
-                _interactableDetector.onlyHeavyObjects = true;
+            if (_heavyObjectCurrent == null) {
+                if (objToHold != null) {
+                    _heavyObjectCurrent = objToHold;
+                    _heavyObjectCurrent.transform.parent = HoldPointHeavy;
+                    _heavyObjectCurrent.transform.localPosition = Vector3.zero;
+                    _heavyObjectCurrent.transform.localRotation = Quaternion.identity;
+                    if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = false;
+                    _interactableDetector.onlyHeavyObjects = true;
+                }
+                else Debug.LogWarning($"Tried to hold null object");
             }
+            else Debug.LogWarning($"Tried to hold '{objToHold?.name}' but is alraedy holding '{_heavyObjectCurrent.name}'");
         }
 
         public GameObject HeavyObjectRelease() {
-            if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = true;
-            GameObject releasedObject = _heavyObjectCurrent;
-            _heavyObjectCurrent = null;
-            _interactableDetector.onlyHeavyObjects = false;
-            return releasedObject;
+            if (_heavyObjectCurrent) {
+                if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = true;
+                GameObject releasedObject = _heavyObjectCurrent;
+                _heavyObjectCurrent = null;
+                _interactableDetector.onlyHeavyObjects = false;
+                return releasedObject;
+            }
+            Debug.LogWarning($"Tried to release null object");
+            return null;
         }
 
         #region Abilities
@@ -241,6 +249,7 @@ namespace Ivayami.Player {
 
         private IEnumerator ReleaseInteractDelay(string key, float delay) {
             yield return new WaitForSeconds(delay);
+
             _interactBlock.Remove(key);
             _interactReleaseDelay.Remove(key);
         }
