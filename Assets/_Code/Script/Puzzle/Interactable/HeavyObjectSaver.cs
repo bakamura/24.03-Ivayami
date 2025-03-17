@@ -26,8 +26,6 @@ namespace Ivayami.Puzzle {
                 if (SaveSystem.Instance.Progress.GetSaveObjectOfType(ID, out Data data)) {
                     _dataCurrent = data;
                     string spawnName = _heavyObjectParent.childCount > 0 ? _heavyObjectParent.GetChild(0).name : "";
-                    Debug.Log($"'{name}' loaded save with info [{data.currentObjectName}]");
-                    Debug.Log($"'{name}' spawnName = '{spawnName}'");
                     if (spawnName != _dataCurrent.currentObjectName) {
                         if (spawnName != "") Destroy(_heavyObjectParent.GetChild(0).gameObject);
                         if (!string.IsNullOrEmpty(_dataCurrent.currentObjectName)) {
@@ -37,7 +35,7 @@ namespace Ivayami.Puzzle {
                         Resources.UnloadUnusedAssets();
                     }
                 }
-                else Debug.Log($"'{name}' found no Save");
+                else Debug.Log($"'{name}' found no Save Instance");
             }
             if (_dataCurrent == null) _dataCurrent = new Data(_heavyObjectParent.childCount > 0 ? _heavyObjectParent.GetChild(0).name : "");
             if (TryGetComponent(out HeavyObjectPlacement placement)) placement.Setup();
@@ -46,11 +44,8 @@ namespace Ivayami.Puzzle {
         public override void SaveData() {
             if (SaveSystem.Instance?.Progress != null) {
                 if (TryGetComponent(out HeavyObjectPlacement placement)) {
-                    if (_dataCurrent.currentObjectName != placement.HeavyObjectCurrentName) {
-                        _dataCurrent.currentObjectName = placement.HeavyObjectCurrentName;
-                        SaveSystem.Instance.Progress.RecordSaveObject(ID, new Data(_heavyObjectParent.childCount > 0 ? _heavyObjectParent.GetChild(0).name : ""));
-                        Debug.Log(SaveSystem.Instance.Progress.GetSaveObjectOfType(ID, out Data data) ? $"{name}: '{data.currentObjectName}'" : "There was some error retrieving data just saved!");
-                    }
+                    _dataCurrent.currentObjectName = placement.HeavyObjectCurrentName;
+                    SaveSystem.Instance.Progress.RecordSaveObject(ID, new Data(_heavyObjectParent.childCount > 0 ? _heavyObjectParent.GetChild(0).name : ""));
                 }
             }
         }

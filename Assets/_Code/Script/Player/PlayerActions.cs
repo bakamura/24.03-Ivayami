@@ -249,6 +249,7 @@ namespace Ivayami.Player {
 
         private IEnumerator ReleaseInteractDelay(string key, float delay) {
             yield return new WaitForSeconds(delay);
+
             _interactBlock.Remove(key);
             _interactReleaseDelay.Remove(key);
         }
