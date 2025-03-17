@@ -570,6 +570,161 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7091670510503163159
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3835904641521010182}
+  - component: {fileID: 4324251115596197118}
+  - component: {fileID: 6777236334214038118}
+  - component: {fileID: 4589495273358606942}
+  - component: {fileID: 1554550693711069274}
+  m_Layer: 10
+  m_Name: AudioTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &3835904641521010182
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091670510503163159}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.81, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6722763917205085031}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4324251115596197118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091670510503163159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3ebbfea1ed71774c94f30b6a77477ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _audiosData:
+  - AudioReference:
+      Guid:
+        Data1: 848118908
+        Data2: 1232831865
+        Data3: 1061472189
+        Data4: 868766297
+      Path: event:/Environment_SFX/Loop_Fogueira
+    AllowFadeOut: 0
+    AttenuationRange:
+      Min: 7
+      Max: 20
+    OnAudioEnd:
+      m_PersistentCalls:
+        m_Calls: []
+    DrawGizmos: 1
+    MinRangGizmoColor: {r: 0, g: 1, b: 0, a: 1}
+    MaxRangGizmoColor: {r: 1, g: 0, b: 0, a: 1}
+  _playOnStart: 0
+  _replayAudioOnEnd: 0
+  _replayIntervalRange:
+    Min: 5
+    Max: 8
+--- !u!135 &6777236334214038118
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091670510503163159}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 10
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4589495273358606942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091670510503163159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerType: 0
+  _targetNeedToStayInside: 0
+  _executeEventOnDisable: 1
+  _delayToActivateEvent: 0
+  _optionalTag: 
+  _onExecute:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4324251115596197118}
+        m_TargetAssemblyTypeName: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1554550693711069274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7091670510503163159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerType: 1
+  _targetNeedToStayInside: 0
+  _executeEventOnDisable: 1
+  _delayToActivateEvent: 0
+  _optionalTag: 
+  _onExecute:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4324251115596197118}
+        m_TargetAssemblyTypeName: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8785665025698923584
 GameObject:
   m_ObjectHideFlags: 0
@@ -686,6 +841,7 @@ Transform:
   - {fileID: 382078134352934937}
   - {fileID: 5948375220474982972}
   - {fileID: 773017424442685125}
+  - {fileID: 3835904641521010182}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1591957855069955189
@@ -717,6 +873,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6722763917205085031}
     m_Modifications:
+    - target: {fileID: 1821369705965237995, guid: d2ab7d88501c00044837387c35010ce0, type: 3}
+      propertyPath: _tickFrequency
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821369705965237995, guid: d2ab7d88501c00044837387c35010ce0, type: 3}
+      propertyPath: _interpolateColor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821369705965237995, guid: d2ab7d88501c00044837387c35010ce0, type: 3}
+      propertyPath: _interpolateRange
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821369705965237995, guid: d2ab7d88501c00044837387c35010ce0, type: 3}
+      propertyPath: _interpolateIntensity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1821369705965237995, guid: d2ab7d88501c00044837387c35010ce0, type: 3}
+      propertyPath: _interpolationDuration
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5108353506062292241, guid: d2ab7d88501c00044837387c35010ce0, type: 3}
       propertyPath: m_LocalScale.x
       value: 0.2
