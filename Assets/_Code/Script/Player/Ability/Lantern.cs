@@ -13,7 +13,7 @@ namespace Ivayami.Player.Ability {
         [SerializeField] private LayerMask _lightableLayer;
         [SerializeField] private LayerMask _occlusionLayer;
         private bool _enabled = false;
-        private bool _focused = true; // Is inverted at start
+        private bool _focused; // Is inverted at start
         [SerializeField] private int _lightMaxHitNumber;
         [SerializeField, Range(0.01f, 0.5f)] private float _behaviourCheckInterval;
         private WaitForSeconds _behaviourCheckWait;
@@ -37,7 +37,11 @@ namespace Ivayami.Player.Ability {
             _lightsParent.gameObject.SetActive(false);
             _behaviourCheckWait = new WaitForSeconds(_behaviourCheckInterval);
 
-            FocusChange();
+            Focus(false);
+        }
+
+        private void Start() {
+            PlayerActions.Instance.onLanternFocus.AddListener(Focus);
         }
 
         private IEnumerator CheckInterval() {
@@ -91,16 +95,18 @@ namespace Ivayami.Player.Ability {
             }
         }
 
-        private void FocusChange() {
-            _focused = !_focused;
+        private void GravityRotate() {
+            transform.rotation = Quaternion.AngleAxis(transform.parent.eulerAngles.y, Vector3.up);
+        }
+
+        private void Focus(bool isFocusing) {
+            if (!_enabled) return;
+            _focused = isFocusing;
+            _wideOrigin.enabled = !_focused;
+            _focusedOrigin.enabled = _focused;
             Light light = (_focused ? _focusedOrigin : _wideOrigin);
             _coneAngleHalf = light.spotAngle / 2f;
             _lightDistance = light.range;
-            //Debug.Log($"Cone [{(_focused ? "F" : "Unf")}ocused]:\nAngleHalf - {_coneAngleHalf}\nRange - {_lightDistance}");
-        }
-
-        private void GravityRotate() {
-            transform.rotation = Quaternion.AngleAxis(transform.parent.eulerAngles.y, Vector3.up);
         }
 
     }
