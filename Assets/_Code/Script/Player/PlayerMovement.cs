@@ -55,6 +55,7 @@ namespace Ivayami.Player {
 
         [SerializeField] private Transform _visualTransform;
         [SerializeField, Range(0f, 0.99f)] private float _turnSmoothFactor;
+        private bool _useCameraRotaion;
 
         [Header("Collider")]
 
@@ -135,6 +136,7 @@ namespace Ivayami.Player {
         private void Start() {
             SceneController.Instance.OnAllSceneRequestEnd += RemoveCrouch;
             PlayerActions.Instance.onInteract.AddListener((animation) => BlockMovementFor(INTERACT_BLOCK_KEY, PlayerAnimation.Instance.GetInteractAnimationDuration(animation)));
+            PlayerActions.Instance.onLanternFocus.AddListener(value => _useCameraRotaion = value);
             PlayerStress.Instance.onStressChange.AddListener(OnStressChange);
             InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateHoldToRun);
             _maxStressCurrent = PlayerStress.Instance.MaxStress;
@@ -213,7 +215,7 @@ namespace Ivayami.Player {
 
         private void Rotate() {
             _cameraAimTargetRotator.eulerAngles = _cameraTransform.eulerAngles.y * Vector3.up;
-            _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
+            _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _useCameraRotaion ? Quaternion.Euler(0f, _cameraTransform.eulerAngles.y, 0f) : _targetAngle, _turnSmoothFactor);
         }
 
         private void ToggleWalkInput(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
