@@ -1,4 +1,5 @@
 using Cinemachine;
+using System.Collections;
 using UnityEngine;
 
 namespace Ivayami.Player {
@@ -13,13 +14,18 @@ namespace Ivayami.Player {
         public Transform CameraAimPoint => _cameraAimPoint;
         public Transform CameraAimRotator => _cameraAimRotator;
 
+        private CinemachineFreeLook.Orbit[] _defaultOrbits;
+        private CinemachineFreeLook.Orbit[] _targetOrbits;
+        [SerializeField] private float _orbitChangeDuration;
+
         protected override void Awake() {
             base.Awake();
-            
+
             FreeLookCam = GetComponent<CinemachineFreeLook>();
             InputProvider = GetComponent<CinemachineInputProvider>();
             MainCamera = Camera.main;
             CinemachineBrain = MainCamera.GetComponent<CinemachineBrain>();
+            _defaultOrbits = FreeLookCam.m_Orbits;
         }
 
         public void SetSensitivityX(float sensitivityX) {
@@ -30,15 +36,32 @@ namespace Ivayami.Player {
             FreeLookCam.m_YAxis.m_MaxSpeed = sensitivityY;
         }
 
-        public void UpdateCameraControls(bool isActive)
-        {
+        public void UpdateCameraControls(bool isActive) {
             InputProvider.enabled = isActive;
         }
 
-        public void InvertCamera(bool isActive)
-        {
+        public void InvertCamera(bool isActive) {
             FreeLookCam.m_YAxis.m_InvertInput = isActive;
         }
+
+        public void SetOrbit(CinemachineFreeLook.Orbit[] orbits = null) {
+            FreeLookCam.m_Orbits = orbits ?? _defaultOrbits;
+        }
+
+
+
+        //private IEnumerator ChangeOrbitInterpolate() {
+        //    float f = 0;
+        //    int i;
+        //    while (f < 1f) {
+        //        f += Time.deltaTime / _orbitChangeDuration;
+
+        //        for (i = 0; i < 3; i++) {
+        //            FreeLookCam.m_Orbits[i].m_Height = f;
+        //            FreeLookCam.m_Orbits[i].m_Radius = f;
+        //        }
+        //    }
+        //}
 
     }
 }

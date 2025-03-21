@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 using Ivayami.Puzzle;
 using Ivayami.Enemy;
 
@@ -9,21 +10,27 @@ namespace Ivayami.Player.Ability {
 
         [SerializeField] private Light _wideOrigin;
         [SerializeField] private Light _focusedOrigin;
-        [SerializeField] private GameObject _visuals;
+        [SerializeField] private Transform _visuals;
         [SerializeField] private LayerMask _lightableLayer;
         [SerializeField] private LayerMask _occlusionLayer;
         private bool _enabled = false;
-        private bool _focused; // Is inverted at start
         [SerializeField] private int _lightMaxHitNumber;
         [SerializeField, Range(0.01f, 0.5f)] private float _behaviourCheckInterval;
         private WaitForSeconds _behaviourCheckWait;
+
+        [Header("Focus")]
+
+        private bool _focused;
+        [SerializeField] private float _focusedCamDistance;
+        [SerializeField] private CinemachineFreeLook.Orbit[] _focusedCamOrbits;
+        [SerializeField] private float _focusedCamArmDistance;
 
         [Header("Cache")]
 
         private HashSet<Lightable> _illuminatedObjects = new HashSet<Lightable>();
         private HashSet<Lightable> _stopIlluminating = new HashSet<Lightable>();
         private Collider[] _lightHits;
-        
+
         private Transform _lightsParent;
         private float _coneAngleHalf;
         private float _lightDistance;
@@ -33,15 +40,20 @@ namespace Ivayami.Player.Ability {
 
         private void Awake() {
             _lightHits = new Collider[_lightMaxHitNumber];
-            _lightsParent = _wideOrigin.transform.parent;
-            _lightsParent.gameObject.SetActive(false);
             _behaviourCheckWait = new WaitForSeconds(_behaviourCheckInterval);
+            _lightsParent = _wideOrigin.transform.parent;
+            _visuals.gameObject.SetActive(false);
 
             Focus(false);
         }
 
         private void Start() {
             PlayerActions.Instance.onLanternFocus.AddListener(Focus);
+        }
+
+        private void Update() {
+            if (!_enabled || !_focused) return;
+            _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
         }
 
         private IEnumerator CheckInterval() {
@@ -55,8 +67,7 @@ namespace Ivayami.Player.Ability {
 
         public override void AbilityStart() {
             _enabled = !_enabled;
-            _lightsParent.gameObject.SetActive(_enabled);
-            _visuals.SetActive(_enabled);
+            _visuals.gameObject.SetActive(_enabled);
             PlayerAnimation.Instance.Hold(_enabled);
             if (_enabled) StartCoroutine(CheckInterval());
             else {
@@ -107,6 +118,9 @@ namespace Ivayami.Player.Ability {
             Light light = (_focused ? _focusedOrigin : _wideOrigin);
             _coneAngleHalf = light.spotAngle / 2f;
             _lightDistance = light.range;
+            PlayerCamera.Instance.SetOrbit(_focused ? _focusedCamOrbits : null);
+            CameraAimReposition.Instance.SetMaxDistance(_focused ? _focusedCamArmDistance : 0f);
+            if (!_focused) _visuals.localRotation = Quaternion.identity;
         }
 
     }
