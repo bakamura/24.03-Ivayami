@@ -75,6 +75,7 @@ namespace Ivayami.Player.Ability {
                 foreach (Lightable lightable in _illuminatedObjects) lightable.Iluminate(ILLUMINATION_KEY, false);
                 _illuminatedObjects.Clear();
                 LightFocuses.Instance.FocusRemove(ILLUMINATION_KEY);
+                Focus(false);
             }
         }
 
@@ -120,6 +121,7 @@ namespace Ivayami.Player.Ability {
             _lightDistance = light.range;
             PlayerCamera.Instance.SetOrbit(_focused ? _focusedCamOrbits : null);
             CameraAimReposition.Instance.SetMaxDistance(_focused ? _focusedCamArmDistance : 0f);
+            PlayerMovement.Instance.AllowRun(!isFocusing);
             if (!_focused) _visuals.localRotation = Quaternion.identity;
         }
 
