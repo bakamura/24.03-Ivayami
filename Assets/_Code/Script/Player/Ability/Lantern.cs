@@ -24,6 +24,14 @@ namespace Ivayami.Player.Ability {
         [SerializeField] private float _focusedCamDistance;
         [SerializeField] private CinemachineFreeLook.Orbit[] _focusedCamOrbits;
         [SerializeField] private float _focusedCamArmDistance;
+        [SerializeField, Min(1f)] private float _focusedDurationComsumptionMultiplier;
+
+        [Header("Header")]
+
+        [SerializeField, Min(0f)] private float _durationMaxBase;
+        [SerializeField, Min(0f)] private float _durationIncreaseFromItem;
+        private float _durationMax;
+        private float _durationCurrent;
 
         [Header("Cache")]
 
@@ -31,7 +39,7 @@ namespace Ivayami.Player.Ability {
         private HashSet<Lightable> _stopIlluminating = new HashSet<Lightable>();
         private Collider[] _lightHits;
 
-        private Transform _lightsParent;
+        private Transform _lightsOriginCurrent;
         private float _coneAngleHalf;
         private float _lightDistance;
 
@@ -41,19 +49,30 @@ namespace Ivayami.Player.Ability {
         private void Awake() {
             _lightHits = new Collider[_lightMaxHitNumber];
             _behaviourCheckWait = new WaitForSeconds(_behaviourCheckInterval);
-            _lightsParent = _wideOrigin.transform.parent;
+            _lightsOriginCurrent = _wideOrigin.transform;
             _visuals.gameObject.SetActive(false);
+            _durationMax = _durationMaxBase * (_durationIncreaseFromItem * PlayerInventory.Instance.CheckInventoryFor("ID").Amount); // Change the ID for the proper ID
 
             Focus(false);
         }
 
         private void Start() {
             PlayerActions.Instance.onLanternFocus.AddListener(Focus);
+            _focusedOrigin.transform.parent = PlayerCamera.Instance.MainCamera.transform;
+            _focusedOrigin.transform.localPosition = Vector3.Distance(_wideOrigin.transform.position, PlayerCamera.Instance.MainCamera.transform.position) * Vector3.forward;
         }
 
         private void Update() {
-            if (!_enabled || !_focused) return;
-            _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
+            if (!_enabled) return;
+            if (_focused) {
+                _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
+                _durationCurrent -= Time.deltaTime;
+            }
+            _durationCurrent -= _focusedDurationComsumptionMultiplier * Time.deltaTime;
+        }
+
+        private void OnDestroy() {
+            Destroy(_focusedOrigin);
         }
 
         private IEnumerator CheckInterval() {
@@ -82,18 +101,18 @@ namespace Ivayami.Player.Ability {
         public override void AbilityEnd() { }
 
         private void Illuminate() {
-            if (Physics.Raycast(_lightsParent.position, _lightsParent.forward, out RaycastHit hitLine, _lightDistance, _lightableLayer)) LightFocuses.Instance.FocusUpdate(ILLUMINATION_KEY, hitLine.point);
+            if (Physics.Raycast(_lightsOriginCurrent.position, _lightsOriginCurrent.forward, out RaycastHit hitLine, _lightDistance, _lightableLayer)) LightFocuses.Instance.FocusUpdate(ILLUMINATION_KEY, hitLine.point);
             else LightFocuses.Instance.FocusRemove(ILLUMINATION_KEY);
 
             _stopIlluminating.Clear();
             _stopIlluminating.UnionWith(_illuminatedObjects);
 
             Lightable lightable;
-            for (int i = 0; i < Physics.OverlapSphereNonAlloc(_lightsParent.position, _lightDistance, _lightHits, _lightableLayer); i++) {
+            for (int i = 0; i < Physics.OverlapSphereNonAlloc(_lightsOriginCurrent.position, _lightDistance, _lightHits, _lightableLayer); i++) {
                 if (_lightHits[i] != null && _lightHits[i].TryGetComponent(out lightable)) {
-                    Vector3 toTarget = _lightHits[i].transform.position - _lightsParent.position;
-                    if (Vector3.Angle(_lightsParent.forward, toTarget.normalized) <= _coneAngleHalf) {
-                        if (!Physics.Raycast(_lightsParent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer)) {
+                    Vector3 toTarget = _lightHits[i].transform.position - _lightsOriginCurrent.position;
+                    if (Vector3.Angle(_lightsOriginCurrent.forward, toTarget.normalized) <= _coneAngleHalf) {
+                        if (!Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer)) {
                             if (_illuminatedObjects.Add(lightable)) lightable.Iluminate(ILLUMINATION_KEY, true);
                             _stopIlluminating.Remove(lightable);
                         }
@@ -119,10 +138,16 @@ namespace Ivayami.Player.Ability {
             Light light = (_focused ? _focusedOrigin : _wideOrigin);
             _coneAngleHalf = light.spotAngle / 2f;
             _lightDistance = light.range;
+            _lightsOriginCurrent = light.transform;
             PlayerCamera.Instance.SetOrbit(_focused ? _focusedCamOrbits : null);
             CameraAimReposition.Instance.SetMaxDistance(_focused ? _focusedCamArmDistance : 0f);
             PlayerMovement.Instance.AllowRun(!isFocusing);
             if (!_focused) _visuals.localRotation = Quaternion.identity;
+        }
+
+        public void Fill(float fillAmount) {
+            _durationCurrent += fillAmount;
+            if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
         }
 
     }

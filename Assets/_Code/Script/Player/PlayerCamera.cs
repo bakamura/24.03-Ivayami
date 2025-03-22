@@ -16,7 +16,7 @@ namespace Ivayami.Player {
 
         private CinemachineFreeLook.Orbit[] _defaultOrbits;
         private CinemachineFreeLook.Orbit[] _targetOrbits;
-        [SerializeField] private float _orbitChangeDuration;
+        [SerializeField, Min(0.01f)] private float _orbitChangeDuration;
 
         protected override void Awake() {
             base.Awake();
@@ -45,23 +45,25 @@ namespace Ivayami.Player {
         }
 
         public void SetOrbit(CinemachineFreeLook.Orbit[] orbits = null) {
-            FreeLookCam.m_Orbits = orbits ?? _defaultOrbits;
+            _targetOrbits = orbits ?? _defaultOrbits;
+            StartCoroutine(ChangeOrbitInterpolate());
         }
 
+        private IEnumerator ChangeOrbitInterpolate() {
+            float interpolation = 0;
+            int i;
+            CinemachineFreeLook.Orbit[] orbitsInitial = FreeLookCam.m_Orbits;
+            while (interpolation < 1f) {
+                interpolation += Time.deltaTime / _orbitChangeDuration;
 
-
-        //private IEnumerator ChangeOrbitInterpolate() {
-        //    float f = 0;
-        //    int i;
-        //    while (f < 1f) {
-        //        f += Time.deltaTime / _orbitChangeDuration;
-
-        //        for (i = 0; i < 3; i++) {
-        //            FreeLookCam.m_Orbits[i].m_Height = f;
-        //            FreeLookCam.m_Orbits[i].m_Radius = f;
-        //        }
-        //    }
-        //}
+                for (i = 0; i < 3; i++) {
+                    FreeLookCam.m_Orbits[i].m_Height = Mathf.LerpUnclamped(orbitsInitial[i].m_Height, _targetOrbits[i].m_Height, interpolation);
+                    FreeLookCam.m_Orbits[i].m_Radius = Mathf.LerpUnclamped(orbitsInitial[i].m_Radius, _targetOrbits[i].m_Radius, interpolation);
+                }
+                yield return null;
+            }
+            FreeLookCam.m_Orbits = _targetOrbits;
+        }
 
     }
 }
