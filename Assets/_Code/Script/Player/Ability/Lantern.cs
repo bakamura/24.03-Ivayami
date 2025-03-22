@@ -83,6 +83,7 @@ namespace Ivayami.Player.Ability {
             _focusedOrigin.transform.parent = PlayerCamera.Instance.MainCamera.transform;
             _focusedOrigin.transform.localPosition = Vector3.Distance(_wideOrigin.transform.position, PlayerCamera.Instance.MainCamera.transform.position) * Vector3.forward;
             _focusedOrigin.transform.localRotation = Quaternion.identity;
+            _focusedOrigin.enabled = false;
         }
 
         public override void AbilityStart() {
