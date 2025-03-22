@@ -1,6 +1,6 @@
-using Cinemachine;
 using System.Collections;
 using UnityEngine;
+using Cinemachine;
 
 namespace Ivayami.Player {
     public class PlayerCamera : MonoSingleton<PlayerCamera> {
@@ -25,7 +25,7 @@ namespace Ivayami.Player {
             InputProvider = GetComponent<CinemachineInputProvider>();
             MainCamera = Camera.main;
             CinemachineBrain = MainCamera.GetComponent<CinemachineBrain>();
-            _defaultOrbits = FreeLookCam.m_Orbits;
+            _defaultOrbits = CloneOrbits(FreeLookCam.m_Orbits);
         }
 
         public void SetSensitivityX(float sensitivityX) {
@@ -44,12 +44,12 @@ namespace Ivayami.Player {
             FreeLookCam.m_YAxis.m_InvertInput = isActive;
         }
 
-        public void SetOrbit(CinemachineFreeLook.Orbit[] orbits = null) {
+        public void SetOrbits(CinemachineFreeLook.Orbit[] orbits = null) {
             _targetOrbits = orbits ?? _defaultOrbits;
-            StartCoroutine(ChangeOrbitInterpolate());
+            StartCoroutine(ChangeOrbitsInterpolate());
         }
 
-        private IEnumerator ChangeOrbitInterpolate() {
+        private IEnumerator ChangeOrbitsInterpolate() {
             float interpolation = 0;
             int i;
             CinemachineFreeLook.Orbit[] orbitsInitial = FreeLookCam.m_Orbits;
@@ -62,7 +62,13 @@ namespace Ivayami.Player {
                 }
                 yield return null;
             }
-            FreeLookCam.m_Orbits = _targetOrbits;
+            FreeLookCam.m_Orbits = CloneOrbits(_targetOrbits);
+        }
+
+        private CinemachineFreeLook.Orbit[] CloneOrbits(CinemachineFreeLook.Orbit[] orbits) {
+            CinemachineFreeLook.Orbit[] clone = new CinemachineFreeLook.Orbit[orbits.Length];
+            for (int i = 0; i < clone.Length; i++) clone[i] = orbits[i];
+            return clone;
         }
 
     }

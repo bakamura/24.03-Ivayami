@@ -139,7 +139,7 @@ namespace Ivayami.Player.Ability {
             _coneAngleHalf = light.spotAngle / 2f;
             _lightDistance = light.range;
             _lightsOriginCurrent = light.transform;
-            PlayerCamera.Instance.SetOrbit(_focused ? _focusedCamOrbits : null);
+            PlayerCamera.Instance.SetOrbits(_focused ? _focusedCamOrbits : null);
             CameraAimReposition.Instance.SetMaxDistance(_focused ? _focusedCamArmDistance : 0f);
             PlayerMovement.Instance.AllowRun(!isFocusing);
             if (!_focused) _visuals.localRotation = Quaternion.identity;
