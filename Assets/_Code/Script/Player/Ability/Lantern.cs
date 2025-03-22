@@ -56,12 +56,6 @@ namespace Ivayami.Player.Ability {
             Focus(false);
         }
 
-        private void Start() {
-            PlayerActions.Instance.onLanternFocus.AddListener(Focus);
-            _focusedOrigin.transform.parent = PlayerCamera.Instance.MainCamera.transform;
-            _focusedOrigin.transform.localPosition = Vector3.Distance(_wideOrigin.transform.position, PlayerCamera.Instance.MainCamera.transform.position) * Vector3.forward;
-        }
-
         private void Update() {
             if (!_enabled) return;
             if (_focused) {
@@ -84,7 +78,15 @@ namespace Ivayami.Player.Ability {
             }
         }
 
+        private void Setup() {
+            PlayerActions.Instance.onLanternFocus.AddListener(Focus);
+            _focusedOrigin.transform.parent = PlayerCamera.Instance.MainCamera.transform;
+            _focusedOrigin.transform.localPosition = Vector3.Distance(_wideOrigin.transform.position, PlayerCamera.Instance.MainCamera.transform.position) * Vector3.forward;
+            _focusedOrigin.transform.localRotation = Quaternion.identity;
+        }
+
         public override void AbilityStart() {
+            if (_focusedOrigin.transform.localPosition.z == 0) Setup(); // temp
             _enabled = !_enabled;
             _visuals.gameObject.SetActive(_enabled);
             PlayerAnimation.Instance.Hold(_enabled);
