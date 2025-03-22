@@ -215,7 +215,8 @@ namespace Ivayami.Player {
 
         private void Rotate() {
             _cameraAimTargetRotator.eulerAngles = _cameraTransform.eulerAngles.y * Vector3.up;
-            _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _useCameraRotaion ? Quaternion.Euler(0f, _cameraTransform.eulerAngles.y, 0f) : _targetAngle, _turnSmoothFactor);
+            if (_useCameraRotaion) _targetAngle = Quaternion.Euler(0f, _cameraTransform.eulerAngles.y, 0f);
+            _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
         private void ToggleWalkInput(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
