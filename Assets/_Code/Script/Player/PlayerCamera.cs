@@ -46,6 +46,7 @@ namespace Ivayami.Player {
 
         public void SetOrbits(CinemachineFreeLook.Orbit[] orbits = null) {
             _targetOrbits = orbits ?? _defaultOrbits;
+            StopAllCoroutines(); //
             StartCoroutine(ChangeOrbitsInterpolate());
         }
 
