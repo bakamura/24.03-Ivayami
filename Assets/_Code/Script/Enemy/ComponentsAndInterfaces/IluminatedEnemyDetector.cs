@@ -193,13 +193,19 @@ namespace Ivayami.Enemy
         private void OnDrawGizmosSelected()
         {
             //if (_lightBehaviour == LightBehaviours.Paralise) return;
-            Gizmos.color = _gizmoColor;
-            Gizmos.DrawWireSphere(transform.position, _detectLightRange);
             EnemyLight[] lights = FindObjectsOfType<EnemyLight>();
-            foreach (EnemyLight light in lights)
+            if(lights.Length > 0)
             {
-                Gizmos.color = new Color(_gizmoColor.r, _gizmoColor.g, _gizmoColor.b, light.DebugColorAlpha);
-                Gizmos.DrawSphere(light.transform.position, _detectLightRange);
+                foreach (EnemyLight light in lights)
+                {
+                    Gizmos.color = new Color(_gizmoColor.r, _gizmoColor.g, _gizmoColor.b, light.DebugColorAlpha);
+                    Gizmos.DrawSphere(light.transform.position, _detectLightRange);
+                }
+            }
+            else
+            {
+                Gizmos.color = _gizmoColor;
+                Gizmos.DrawWireSphere(transform.position, _detectLightRange);
             }
         }
 #endif
