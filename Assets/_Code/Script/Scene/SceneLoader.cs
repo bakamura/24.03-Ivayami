@@ -14,15 +14,26 @@ namespace Ivayami.Scene
         [SerializeField] private Color _gizmoColor = Color.red;
         private BoxCollider _boxCollider;
 #endif
-
+        private bool _isActive;
         private void OnTriggerEnter(Collider other)
         {
             SceneController.Instance.LoadScene(_sceneId, _onSceneLoad);
+            _isActive = true;
         }
 
         private void OnTriggerExit(Collider other)
         {
             SceneController.Instance.UnloadScene(_sceneId, _onSceneUnload);
+            _isActive = false;
+        }
+
+        private void OnDisable()
+        {
+            if (_isActive)
+            {
+                SceneController.Instance.UnloadScene(_sceneId, _onSceneUnload);
+                _isActive = false;
+            }
         }
 
         public void LoadScene()
@@ -45,6 +56,11 @@ namespace Ivayami.Scene
             _onAllScenesRequestEnd?.Invoke();
             SceneController.Instance.OnAllSceneRequestEnd -= HandleOnAllScenesUnload;
         }
+
+        //public void UpdateSceneLoadersActiveState(bool isActive)
+        //{
+        //    SceneLoadersManager.Instance.gameObject.SetActive(isActive);
+        //}
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
