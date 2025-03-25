@@ -1,25 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Ivayami.Enemy
 {
     public class EnemyLight : MonoBehaviour
     {
-        [SerializeField, Min(.02f)] private float _tickFrequency;
-        [SerializeField, Min(0f)] private float _range;
 #if UNITY_EDITOR
-        [SerializeField] private Color _debugColor;
+        [SerializeField, Range(0f, 1f)] private float _debugColorAlpha = .5f;
+        public float DebugColorAlpha => _debugColorAlpha;
 #endif
 
-
-
-#if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
+        private void OnEnable()
         {
-            Gizmos.color = _debugColor;
-            Gizmos.DrawSphere(transform.position, _range);
+            if (LightFocuses.Instance) LightFocuses.Instance.FocusUpdate(nameof(EnemyLight) + gameObject.name + GetInstanceID(), transform.position);
         }
-#endif
+
+        private void OnDisable()
+        {
+            if (LightFocuses.Instance) LightFocuses.Instance.FocusRemove(nameof(EnemyLight) + gameObject.name + GetInstanceID());
+        }
     }
 }
