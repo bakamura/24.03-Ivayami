@@ -325,7 +325,8 @@ namespace Ivayami.Player {
         }
 
         public void AddAdditionalVisuals(MeshRenderer[] additionalVisuals) {
-            _additionalVisualComponents.AddRange(additionalVisuals);
+            if (additionalVisuals?.Length > 0) _additionalVisualComponents.AddRange(additionalVisuals);
+            else Debug.LogWarning($"AddAdditionalVisuals() received null or empty array!");
         }
 
         public void ChangeRunSpeed(float val) {

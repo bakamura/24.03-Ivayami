@@ -50,9 +50,9 @@ namespace Ivayami.Player.Ability {
             _lightHits = new Collider[_lightMaxHitNumber];
             _behaviourCheckWait = new WaitForSeconds(_behaviourCheckInterval);
             _lightsOriginCurrent = _wideOrigin.transform;
+            PlayerMovement.Instance.AddAdditionalVisuals(GetComponentsInChildren<MeshRenderer>());
             _visuals.gameObject.SetActive(false);
             _durationMax = _durationMaxBase * (_durationIncreaseFromItem * PlayerInventory.Instance.CheckInventoryFor("ID").Amount); // Change the ID for the proper ID
-            PlayerMovement.Instance.AddAdditionalVisuals(GetComponentsInChildren<MeshRenderer>());
 
             Focus(false);
         }
@@ -94,11 +94,11 @@ namespace Ivayami.Player.Ability {
             PlayerAnimation.Instance.Hold(_enabled);
             if (_enabled) StartCoroutine(CheckInterval());
             else {
+                Focus(false);
                 StopAllCoroutines();
                 foreach (Lightable lightable in _illuminatedObjects) lightable.Iluminate(ILLUMINATION_KEY, false);
                 _illuminatedObjects.Clear();
                 LightFocuses.Instance.FocusRemove(ILLUMINATION_KEY);
-                Focus(false);
             }
         }
 
@@ -135,7 +135,7 @@ namespace Ivayami.Player.Ability {
         }
 
         private void Focus(bool isFocusing) {
-            if (!_enabled) return;
+            if (isFocusing && !_enabled) return;
             _focused = isFocusing;
             _wideOrigin.enabled = !_focused;
             _focusedOrigin.enabled = _focused;

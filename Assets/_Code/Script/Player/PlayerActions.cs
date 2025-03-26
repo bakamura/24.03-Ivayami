@@ -203,12 +203,11 @@ namespace Ivayami.Player {
         }
 
         public void AddAbility(PlayerAbility ability) {
-            PlayerAbility abilityInstance = Instantiate(ability);
-            Quaternion localRotation = abilityInstance.transform.rotation;
-            abilityInstance.transform.parent = HoldPointLeft;
-            abilityInstance.transform.localPosition = Vector3.zero;
-            abilityInstance.transform.localRotation = localRotation;
-            _abilities.Add(abilityInstance);
+            Quaternion localRotation = ability.transform.rotation;
+            ability.transform.parent = HoldPointLeft;
+            ability.transform.localPosition = Vector3.zero;
+            ability.transform.localRotation = localRotation;
+            _abilities.Add(ability);
 
             if (_abilityCurrent < 0) _abilityCurrent = 0;
         }
@@ -224,6 +223,17 @@ namespace Ivayami.Player {
         public bool CheckAbility(PlayerAbility abilityChecking) {
             foreach (PlayerAbility ability in _abilities) if (ability.GetType() == abilityChecking.GetType()) return true;
             return false;
+        }
+
+        public void ResetAbilities() {
+            foreach (AbilityGiver giver in FindObjectsOfType<AbilityGiver>()) {
+                foreach (PlayerAbility ability in _abilities)
+                    if (ability.GetType().Name == giver.name) {
+                        ability.transform.parent = giver.transform;
+                        break;
+                    }
+            }
+            _abilities.Clear();
         }
         #endregion
 
