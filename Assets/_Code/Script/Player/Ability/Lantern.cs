@@ -52,6 +52,7 @@ namespace Ivayami.Player.Ability {
             _lightsOriginCurrent = _wideOrigin.transform;
             _visuals.gameObject.SetActive(false);
             _durationMax = _durationMaxBase * (_durationIncreaseFromItem * PlayerInventory.Instance.CheckInventoryFor("ID").Amount); // Change the ID for the proper ID
+            PlayerMovement.Instance.AddAdditionalVisuals(GetComponentsInChildren<MeshRenderer>());
 
             Focus(false);
         }

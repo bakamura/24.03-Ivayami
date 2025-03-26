@@ -101,6 +101,7 @@ namespace Ivayami.Player {
         private CharacterController _characterController;
         private Transform _cameraTransform;
         private SkinnedMeshRenderer[] _visualComponents;
+        private List<MeshRenderer> _additionalVisualComponents = new List<MeshRenderer>();
         private byte _gravityFactor = 1;
         //private float _stickDeadzone = .125f;
 
@@ -318,9 +319,13 @@ namespace Ivayami.Player {
         }
 
         public void UpdateVisualsVisibility(bool isVisible) {
-            for (int i = 0; i < _visualComponents.Length; i++)
-                _visualComponents[i].enabled = isVisible;
+            for (int i = 0; i < _visualComponents.Length; i++) _visualComponents[i].enabled = isVisible;
+            for (int i = 0; i < _additionalVisualComponents.Count; i++) _additionalVisualComponents[i].enabled = isVisible;
             //_visualTransform.gameObject.SetActive(isVisible);
+        }
+
+        public void AddAdditionalVisuals(MeshRenderer[] additionalVisuals) {
+            _additionalVisualComponents.AddRange(additionalVisuals);
         }
 
         public void ChangeRunSpeed(float val) {
