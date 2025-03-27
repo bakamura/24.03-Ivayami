@@ -148,16 +148,16 @@ namespace Ivayami.Enemy
 
         private IEnumerator CheckForLightsCoroutine()
         {
-            Vector3 pos;
+            LightFocuses.LighData data;
             while (true)
             {
-                pos = LightFocuses.Instance.GetClosestPointTo(transform.position);
-                if (pos != Vector3.down && Vector3.Distance(transform.position, pos) <= _detectLightRange)
+                data = LightFocuses.Instance.GetClosestPointTo(transform.position);
+                if (data.IsValid() && Vector3.Distance(transform.position, data.Position) <= _detectLightRange + data.Radius)
                 {
                     if(_lightBehaviour == LightBehaviours.FollowLight)
                     {
                         _target.UpdateBehaviour(false, true, false);
-                        _target.ChangeTargetPoint(pos);
+                        _target.ChangeTargetPoint(data.Position);
                     }
                     else
                     {
@@ -193,20 +193,8 @@ namespace Ivayami.Enemy
         private void OnDrawGizmosSelected()
         {
             //if (_lightBehaviour == LightBehaviours.Paralise) return;
-            EnemyLight[] lights = FindObjectsOfType<EnemyLight>();
-            if(lights.Length > 0)
-            {
-                foreach (EnemyLight light in lights)
-                {
-                    Gizmos.color = new Color(_gizmoColor.r, _gizmoColor.g, _gizmoColor.b, light.DebugColorAlpha);
-                    Gizmos.DrawSphere(light.transform.position, _detectLightRange);
-                }
-            }
-            else
-            {
-                Gizmos.color = _gizmoColor;
-                Gizmos.DrawWireSphere(transform.position, _detectLightRange);
-            }
+            Gizmos.color = _gizmoColor;
+            Gizmos.DrawWireSphere(transform.position, _detectLightRange);
         }
 #endif
     }
