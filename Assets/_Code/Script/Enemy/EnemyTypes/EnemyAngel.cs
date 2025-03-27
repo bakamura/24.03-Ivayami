@@ -533,7 +533,7 @@ namespace Ivayami.Enemy
             {
                 _chaseTargetPatience = _delayToLoseTarget;
                 HandleAttackAnimationEnd();
-                _lastTargetPosition = _hitsCache[0].transform.position;
+                if(_hitsCache[0]) _lastTargetPosition = _hitsCache[0].transform.position;
             }
             UpdateMovement(isStopped);
         }
