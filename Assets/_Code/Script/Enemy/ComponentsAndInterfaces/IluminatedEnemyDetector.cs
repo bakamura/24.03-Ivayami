@@ -43,19 +43,21 @@ namespace Ivayami.Enemy
                 Debug.LogWarning("No Illuminated enemy found in hierarchy");
                 return;
             }
-            if (_lightBehaviour == LightBehaviours.Paralise)
-            {
-                onIlluminated.AddListener((isIlluminated) =>
-                {
-                    if (isIlluminated) Iluminate();
-                    else IluminateStop();
-                });
-            }
-            else
-            {
-                _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
-                _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
-            }
+            //if (_lightBehaviour == LightBehaviours.Paralise)
+            //{
+            //    onIlluminated.AddListener((isIlluminated) =>
+            //    {
+            //        if (isIlluminated) Iluminate();
+            //        else IluminateStop();
+            //    });
+            //}
+            //else
+            //{
+            //    _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
+            //    _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
+            //}
+            _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
+            _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
             _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
         }
 
@@ -73,7 +75,7 @@ namespace Ivayami.Enemy
         [ContextMenu("Iluminate")]
         private void Iluminate()
         {            
-            if (_lightBehaviour == LightBehaviours.Paralise)
+            if (!_isIliuminated)
             {
                 _isIliuminated = true;
                 _baseSpeed = _target.CurrentSpeed;
@@ -85,7 +87,7 @@ namespace Ivayami.Enemy
         [ContextMenu("StopIluminate")]
         private void IluminateStop()
         {
-            if (_lightBehaviour == LightBehaviours.Paralise)
+            if (_isIliuminated)
             {
                 _isIliuminated = false;
                 if (_iluminatedCoroutine != null)
@@ -152,12 +154,23 @@ namespace Ivayami.Enemy
                 pos = LightFocuses.Instance.GetClosestPointTo(transform.position);
                 if (pos != Vector3.down && Vector3.Distance(transform.position, pos) <= _detectLightRange)
                 {
-                    _target.UpdateBehaviour(false, true, false);
-                    _target.ChangeTargetPoint(pos);
+                    if(_lightBehaviour == LightBehaviours.FollowLight)
+                    {
+                        _target.UpdateBehaviour(false, true, false);
+                        _target.ChangeTargetPoint(pos);
+                    }
+                    else
+                    {
+                        Iluminate();
+                    }
                 }
                 else
                 {
-                    _target.UpdateBehaviour(true, true, false);
+                    if(_lightBehaviour == LightBehaviours.FollowLight)_target.UpdateBehaviour(true, true, false);
+                    else
+                    {
+                        IluminateStop();
+                    }
                 }
                 yield return _checkLightDelay;
             }
@@ -179,9 +192,21 @@ namespace Ivayami.Enemy
 
         private void OnDrawGizmosSelected()
         {
-            if (_lightBehaviour == LightBehaviours.Paralise) return;
-            Gizmos.color = _gizmoColor;
-            Gizmos.DrawWireSphere(transform.position, _detectLightRange);
+            //if (_lightBehaviour == LightBehaviours.Paralise) return;
+            EnemyLight[] lights = FindObjectsOfType<EnemyLight>();
+            if(lights.Length > 0)
+            {
+                foreach (EnemyLight light in lights)
+                {
+                    Gizmos.color = new Color(_gizmoColor.r, _gizmoColor.g, _gizmoColor.b, light.DebugColorAlpha);
+                    Gizmos.DrawSphere(light.transform.position, _detectLightRange);
+                }
+            }
+            else
+            {
+                Gizmos.color = _gizmoColor;
+                Gizmos.DrawWireSphere(transform.position, _detectLightRange);
+            }
         }
 #endif
     }

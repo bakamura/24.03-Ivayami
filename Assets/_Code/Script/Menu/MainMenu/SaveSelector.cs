@@ -17,7 +17,7 @@ namespace Ivayami.UI {
 
         //Game Entering
 
-        [field: SerializeField] public SceneLoader BaseTerrainLoader { get; private set; }
+        //[field: SerializeField] public SceneLoader BaseTerrainLoader { get; private set; }
         [field: SerializeField] public SceneLoader CutsceneLoader { get; private set; }
         [field: SerializeField] public SceneLoader MainMenuUnloader { get; private set; }
 
