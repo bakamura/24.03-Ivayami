@@ -625,7 +625,7 @@ namespace Ivayami.Enemy
                 if (_attackAreaInfos[i].MinInterval > _attackAreaInfos[i].MaxInterval) _attackAreaInfos[i].MinInterval = _attackAreaInfos[i].MaxInterval;
             }
             if (_distanceToFogAttack < _collision.radius + .2f) _distanceToFogAttack = _collision.radius + .2f;
-            _navMeshAgent.stoppingDistance = _distanceToFogAttack;
+            //_navMeshAgent.stoppingDistance = _distanceToFogAttack;
         }
 #endif
         #endregion
