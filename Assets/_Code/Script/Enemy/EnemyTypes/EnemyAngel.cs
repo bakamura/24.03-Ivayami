@@ -529,7 +529,12 @@ namespace Ivayami.Enemy
         {
             _canChaseTarget = canChaseTarget;
             _canWalkPath = canWalkPath;
-            if(!canWalkPath && !canChaseTarget) _chaseTargetPatience = _delayToLoseTarget;
+            if (!canWalkPath && !canChaseTarget)
+            {
+                _chaseTargetPatience = _delayToLoseTarget;
+                HandleAttackAnimationEnd();
+                _lastTargetPosition = _hitsCache[0].transform.position;
+            }
             UpdateMovement(isStopped);
         }
 
