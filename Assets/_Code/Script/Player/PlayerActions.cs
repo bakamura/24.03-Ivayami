@@ -9,6 +9,7 @@ using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
 using Ivayami.UI;
 using Ivayami.Dialogue;
+using System;
 
 namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -17,6 +18,7 @@ namespace Ivayami.Player {
 
         [SerializeField] private InputActionReference _interactInput;
         [SerializeField] private InputActionReference _abilityInput;
+        [SerializeField] private InputActionReference _lanternFocusInput;
         [SerializeField] private InputActionReference _useHealthItemInput;
         [SerializeField] private InputActionReference[] _pauseInputs;
         private InputActionMap _actionMapCurrent;
@@ -29,7 +31,7 @@ namespace Ivayami.Player {
         public UnityEvent<bool> onInteractLong = new UnityEvent<bool>();
         public UnityEvent<IInteractable> onInteractTargetChange = new UnityEvent<IInteractable>();
         public UnityEvent<string> onAbility = new UnityEvent<string>();
-        public UnityEvent<sbyte> onAbilityChange = new UnityEvent<sbyte>();
+        public UnityEvent<bool> onLanternFocus = new UnityEvent<bool>();
         public UnityEvent<string> onActionMapChange = new UnityEvent<string>();
 
         [Header("Interact")]
@@ -89,6 +91,8 @@ namespace Ivayami.Player {
             _interactInput.action.started += Interact;
             _interactInput.action.canceled += Interact;
             _abilityInput.action.started += Ability;
+            _lanternFocusInput.action.started += FocusToggle;
+            _lanternFocusInput.action.canceled += FocusToggle;
             //_changeAbilityInput.action.started += ChangeAbility;
             _useHealthItemInput.action.started += UseHealthItem;
             foreach (InputActionMap actionMap in _interactInput.asset.actionMaps) actionMap.Disable();
@@ -106,8 +110,8 @@ namespace Ivayami.Player {
             StartCoroutine(InteractObjectDetect());
         }
 
-        private void Interact(InputAction.CallbackContext input) {
-            if (input.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _interactBlock.Count == 0) {
+        private void Interact(InputAction.CallbackContext context) {
+            if (context.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _interactBlock.Count == 0) {
                 if (InteractableTarget != null) {
                     _interactAnimationCache = InteractableTarget.Interact();
                     Vector3 directionToInteractable = InteractableTarget.InteratctableFeedbacks.IconPosition - transform.position;
@@ -120,7 +124,7 @@ namespace Ivayami.Player {
                     else onInteract?.Invoke(_interactAnimationCache);
                 }
             }
-            else if (input.phase == InputActionPhase.Canceled && Interacting) {
+            else if (context.phase == InputActionPhase.Canceled && Interacting) {
                 if (InteractableTarget is IInteractableLong) {
                     PlayerMovement.Instance.BlockMovementFor("Wait Animation End", PlayerAnimation.Instance.GetInteractAnimationDuration(_interactAnimationCache));
                     PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, true);
@@ -158,22 +162,30 @@ namespace Ivayami.Player {
         }
 
         public void HeavyObjectHold(GameObject objToHold) {
-            if (objToHold != null) {
-                _heavyObjectCurrent = objToHold;
-                _heavyObjectCurrent.transform.parent = HoldPointHeavy;
-                _heavyObjectCurrent.transform.localPosition = Vector3.zero;
-                _heavyObjectCurrent.transform.rotation = Quaternion.identity;
-                if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = false;
-                _interactableDetector.onlyHeavyObjects = true;
+            if (_heavyObjectCurrent == null) {
+                if (objToHold != null) {
+                    _heavyObjectCurrent = objToHold;
+                    _heavyObjectCurrent.transform.parent = HoldPointHeavy;
+                    _heavyObjectCurrent.transform.localPosition = Vector3.zero;
+                    _heavyObjectCurrent.transform.localRotation = Quaternion.identity;
+                    if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = false;
+                    _interactableDetector.onlyHeavyObjects = true;
+                }
+                else Debug.LogWarning($"Tried to hold null object");
             }
+            else Debug.LogWarning($"Tried to hold '{objToHold?.name}' but is alraedy holding '{_heavyObjectCurrent.name}'");
         }
 
         public GameObject HeavyObjectRelease() {
-            if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = true;
-            GameObject releasedObject = _heavyObjectCurrent;
-            _heavyObjectCurrent = null;
-            _interactableDetector.onlyHeavyObjects = false;
-            return releasedObject;
+            if (_heavyObjectCurrent) {
+                if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = true;
+                GameObject releasedObject = _heavyObjectCurrent;
+                _heavyObjectCurrent = null;
+                _interactableDetector.onlyHeavyObjects = false;
+                return releasedObject;
+            }
+            Debug.LogWarning($"Tried to release null object");
+            return null;
         }
 
         #region Abilities
@@ -191,12 +203,11 @@ namespace Ivayami.Player {
         }
 
         public void AddAbility(PlayerAbility ability) {
-            PlayerAbility abilityInstance = Instantiate(ability);
-            Quaternion localRotation = abilityInstance.transform.rotation;
-            abilityInstance.transform.parent = HoldPointLeft;
-            abilityInstance.transform.localPosition = Vector3.zero;
-            abilityInstance.transform.localRotation = localRotation;
-            _abilities.Add(abilityInstance);
+            Quaternion localRotation = ability.transform.rotation;
+            ability.transform.parent = HoldPointLeft;
+            ability.transform.localPosition = Vector3.zero;
+            ability.transform.localRotation = localRotation;
+            _abilities.Add(ability);
 
             if (_abilityCurrent < 0) _abilityCurrent = 0;
         }
@@ -205,7 +216,6 @@ namespace Ivayami.Player {
             PlayerAbility abilityInList = _abilities.OrderBy(abilityIterator => abilityIterator.GetType() == ability.GetType()).First();
             if (_abilityCurrent >= _abilities.FindIndex((abilityIterator) => abilityIterator == abilityInList)) _abilityCurrent--;
             _abilities.Remove(abilityInList);
-            onAbilityChange?.Invoke(_abilityCurrent); // Update UI etc
 
             Logger.Log(LogType.Player, $"Ability Remove: {ability.name}");
         }
@@ -213,6 +223,17 @@ namespace Ivayami.Player {
         public bool CheckAbility(PlayerAbility abilityChecking) {
             foreach (PlayerAbility ability in _abilities) if (ability.GetType() == abilityChecking.GetType()) return true;
             return false;
+        }
+
+        public void ResetAbilities() {
+            foreach (AbilityGiver giver in FindObjectsOfType<AbilityGiver>()) {
+                foreach (PlayerAbility ability in _abilities)
+                    if (ability.GetType().Name == giver.name) {
+                        ability.transform.parent = giver.transform;
+                        break;
+                    }
+            }
+            _abilities.Clear();
         }
         #endregion
 
@@ -241,8 +262,14 @@ namespace Ivayami.Player {
 
         private IEnumerator ReleaseInteractDelay(string key, float delay) {
             yield return new WaitForSeconds(delay);
+
             _interactBlock.Remove(key);
             _interactReleaseDelay.Remove(key);
+        }
+
+        private void FocusToggle(InputAction.CallbackContext context) {
+            if (context.phase == InputActionPhase.Started) onLanternFocus.Invoke(true);
+            else if (context.phase == InputActionPhase.Canceled) onLanternFocus.Invoke(false);
         }
 
 #if UNITY_EDITOR

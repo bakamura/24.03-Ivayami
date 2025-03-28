@@ -5,6 +5,7 @@ using Ivayami.Player;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using System;
+using UnityEngine.EventSystems;
 
 namespace Ivayami.Puzzle
 {
@@ -117,6 +118,7 @@ namespace Ivayami.Puzzle
         {
             Setup();
             _onInteract?.Invoke();
+            EventSystem.current.SetSelectedGameObject(null);
             _interatctableFeedbacks.UpdateFeedbacks(false, true);
             UpdateInputs(true);
             SetCurrentSelected(_puzzleObjects[_currentPuzzleLayer][0]);

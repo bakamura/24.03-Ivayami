@@ -10,6 +10,9 @@ namespace Ivayami.Enemy
         [SerializeField, Min(0f)] private float _finalSpeed;
         [SerializeField, Min(0f)] private float _paraliseDuration;
         [SerializeField, Min(0f)] private float _interpolateDuration;
+        [SerializeField] private bool _willInterruptAttack;
+        [SerializeField] private EnemyAnimator _enemyAnimator;
+        [SerializeField, Min(0)] private int _paraliseAnimationRandomAmount;
         [SerializeField, Min(0f)] private float _detectLightRange;
         [SerializeField, Min(0.02f)] private float _checkLightTickFrequency = 1;
         [SerializeField] private Color _gizmoColor;
@@ -21,12 +24,14 @@ namespace Ivayami.Enemy
             FollowLight
         }
         private IIluminatedEnemy _target;
-        private WaitForSeconds _paraliseDelay;
         private WaitForSeconds _checkLightDelay;
         private Coroutine _iluminatedCoroutine;
         private Coroutine _checkForLightsCoroutine;
         private bool _isIliuminated;
+        private bool _hasParaliseAnim;
+        private bool _paraliseAnimationEnded = true;
         private float _baseSpeed;
+        private int _animIndex;
 
         protected override void Awake()
         {
@@ -38,25 +43,28 @@ namespace Ivayami.Enemy
                 Debug.LogWarning("No Illuminated enemy found in hierarchy");
                 return;
             }
-            if (_lightBehaviour == LightBehaviours.Paralise)
-            {
-                _paraliseDelay = new WaitForSeconds(_paraliseDuration);
-                onIlluminated.AddListener((isIlluminated) =>
-                {
-                    if (isIlluminated) Iluminate();
-                    else IluminateStop();
-                });
-            }
-            else
-            {
-                _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
-                _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
-            }
+            //if (_lightBehaviour == LightBehaviours.Paralise)
+            //{
+            //    onIlluminated.AddListener((isIlluminated) =>
+            //    {
+            //        if (isIlluminated) Iluminate();
+            //        else IluminateStop();
+            //    });
+            //}
+            //else
+            //{
+            //    _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
+            //    _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
+            //}
+            _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
+            _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
+            _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
         }
 
         private void OnDisable()
         {
-            if (_iluminatedCoroutine != null) IluminateStop();
+            if (_target == null) return;
+            IluminateStop();
             if (_checkForLightsCoroutine != null)
             {
                 StopCoroutine(_checkForLightsCoroutine);
@@ -66,31 +74,44 @@ namespace Ivayami.Enemy
 
         [ContextMenu("Iluminate")]
         private void Iluminate()
-        {
-            if (_lightBehaviour == LightBehaviours.Paralise)
+        {            
+            if (!_isIliuminated)
             {
                 _isIliuminated = true;
                 _baseSpeed = _target.CurrentSpeed;
-                _iluminatedCoroutine = StartCoroutine(IluminateCoroutine());
+                _animIndex = Random.Range(0, _paraliseAnimationRandomAmount);
+                _iluminatedCoroutine ??= StartCoroutine(IluminateCoroutine());
             }
         }
 
         [ContextMenu("StopIluminate")]
         private void IluminateStop()
         {
-            if (_lightBehaviour == LightBehaviours.Paralise)
+            if (_isIliuminated)
             {
-                StopCoroutine(_iluminatedCoroutine);
-                _iluminatedCoroutine = null;
                 _isIliuminated = false;
-                _target.ChangeSpeed(_baseSpeed);
-                _target.UpdateBehaviour(true, true, false);
+                if (_iluminatedCoroutine != null)
+                {
+                    StopCoroutine(_iluminatedCoroutine);
+                    _iluminatedCoroutine = null;
+                }
+                if (_hasParaliseAnim)
+                {
+                    _enemyAnimator.Paralise(false, false, HandleParaliseAnimationEnd, _animIndex);
+                }
+                else
+                {
+                    _target.ChangeSpeed(_baseSpeed);
+                    _target.UpdateBehaviour(true, true, false);
+                }
             }
         }
 
         private IEnumerator IluminateCoroutine()
         {
             float count;
+            WaitForFixedUpdate delay = new WaitForFixedUpdate();
+            WaitForSeconds paraliseDelay = new WaitForSeconds(_paraliseDuration);
             while (_isIliuminated)
             {
                 count = 0;
@@ -98,9 +119,9 @@ namespace Ivayami.Enemy
                 {
                     while (count < 1)
                     {
-                        count += Time.deltaTime / _interpolateDuration;
+                        count += Time.fixedDeltaTime / _interpolateDuration;
                         _target.ChangeSpeed(Mathf.Lerp(_baseSpeed, _finalSpeed, _interpolateCurve.Evaluate(count)));
-                        yield return null;
+                        yield return delay;
                     }
                 }
                 else
@@ -108,31 +129,59 @@ namespace Ivayami.Enemy
                     _target.ChangeSpeed(_finalSpeed);
                 }
                 _target.UpdateBehaviour(false, false, true);
-                _target.ChangeSpeed(0);
-                yield return _paraliseDelay;
-                _target.ChangeSpeed(_baseSpeed);
-                _target.UpdateBehaviour(true, true, false);
+                if (_hasParaliseAnim)
+                {
+                    _enemyAnimator.Paralise(true, _paraliseAnimationEnded && _willInterruptAttack, paraliseAnimationIndex: _animIndex);
+                    //Debug.Log("IliminateAnimStart");
+                    _paraliseAnimationEnded = false;
+                }
+                if (_paraliseDuration > 0)
+                {
+                    yield return paraliseDelay;
+                    _target.ChangeSpeed(_baseSpeed);
+                    _target.UpdateBehaviour(true, true, false);
+                }
+                else yield break;
             }
             _iluminatedCoroutine = null;
         }
 
         private IEnumerator CheckForLightsCoroutine()
         {
-            Vector3 pos;
+            LightFocuses.LighData data;
             while (true)
             {
-                pos = LightFocuses.Instance.GetClosestPointTo(transform.position);
-                if (pos != Vector3.down && Vector3.Distance(transform.position, pos) <= _detectLightRange)
+                data = LightFocuses.Instance.GetClosestPointTo(transform.position);
+                if (data.IsValid() && Vector3.Distance(transform.position, data.Position) <= _detectLightRange + data.Radius)
                 {
-                    _target.UpdateBehaviour(false, true, false);
-                    _target.ChangeTargetPoint(pos);
+                    if(_lightBehaviour == LightBehaviours.FollowLight)
+                    {
+                        _target.UpdateBehaviour(false, true, false);
+                        _target.ChangeTargetPoint(data.Position);
+                    }
+                    else
+                    {
+                        Iluminate();
+                    }
                 }
                 else
                 {
-                    _target.UpdateBehaviour(true, true, false);
+                    if(_lightBehaviour == LightBehaviours.FollowLight)_target.UpdateBehaviour(true, true, false);
+                    else
+                    {
+                        IluminateStop();
+                    }
                 }
                 yield return _checkLightDelay;
             }
+        }
+
+        private void HandleParaliseAnimationEnd()
+        {
+            _target.ChangeSpeed(_baseSpeed);
+            _target.UpdateBehaviour(true, true, false);
+            _paraliseAnimationEnded = true;
+            //Debug.Log("EndParaliseAnim");
         }
 
 #if UNITY_EDITOR
@@ -143,7 +192,7 @@ namespace Ivayami.Enemy
 
         private void OnDrawGizmosSelected()
         {
-            if (_lightBehaviour == LightBehaviours.Paralise) return;
+            //if (_lightBehaviour == LightBehaviours.Paralise) return;
             Gizmos.color = _gizmoColor;
             Gizmos.DrawWireSphere(transform.position, _detectLightRange);
         }

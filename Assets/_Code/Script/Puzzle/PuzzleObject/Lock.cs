@@ -60,6 +60,7 @@ namespace Ivayami.Puzzle
         [ContextMenu("Interact")]
         public PlayerActions.InteractAnimation Interact()
         {
+            if (!gameObject.activeInHierarchy) return PlayerActions.InteractAnimation.Default;
             _onInteract?.Invoke();
             //if (_interactionType == InteractionTypes.RequireItems)
             //{

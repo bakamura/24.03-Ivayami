@@ -66,7 +66,7 @@ namespace Ivayami.Save {
                 else Options = new SaveOptions();
                 loadSaveCallback?.Invoke();
 
-                Debug.Log($"No Save of type '{type.Name}' in {savePath}");
+                Debug.LogWarning($"No Save of type '{type.Name}' in {savePath}");
             }
         }
 
@@ -81,7 +81,6 @@ namespace Ivayami.Save {
                 if (File.Exists($"{_progressPath}/{ProgressFolderName}_{saveId}.sav")) {
                     Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/{ProgressFolderName}_{saveId}.sav");                    
                     yield return readTask;
-                    Debug.Log($"save file found in {_progressPath}/{ProgressFolderName}_{saveId}");
                     progressSaves.Add(JsonUtility.FromJson<SaveProgress>(Encryption.Decrypt(readTask.Result)));
                 }
                 saveId++;

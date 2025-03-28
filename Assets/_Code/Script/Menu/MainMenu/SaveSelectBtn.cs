@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.Localization.Components;
 using TMPro;
 using Ivayami.Save;
-using Ivayami.Scene;
 using Ivayami.Player;
 
 namespace Ivayami.UI {
@@ -35,15 +34,15 @@ namespace Ivayami.UI {
         private void EnterSaveWaitFadeIn() {
             SaveSystem.Instance.LoadProgress(_id, () => {
                 PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
-
                 SaveSelector.Instance.MainMenuUnloader.UnloadScene();
+                
                 if (_isFirstTime) {
-                    SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayerNextLoad;
                     SaveSelector.Instance.CutsceneLoader.LoadScene();
                 }
                 else {
-                    SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
-                    SaveSelector.Instance.BaseTerrainLoader.LoadScene();
+                    TeleportPlayer();
+                    //SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
+                    //SaveSelector.Instance.BaseTerrainLoader.LoadScene();
                 }
             });
         }
@@ -51,13 +50,13 @@ namespace Ivayami.UI {
         private void TeleportPlayer() {
             SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
             PlayerActions.Instance.ChangeInputMap("Player");
-            SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayer;
+            //SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayer;
         }
 
-        private void TeleportPlayerNextLoad() {
-            SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
-            SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayerNextLoad;
-        }
+        //private void TeleportPlayerNextLoad() {
+        //    SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
+        //    SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayerNextLoad;
+        //}
 
     }
 }

@@ -10,28 +10,31 @@ namespace Ivayami.Enemy
     public class EnemyPatrol : StressEntity, IIluminatedEnemy
     {
         //[Header("Enemy Parameters")]
-        [SerializeField, Min(0f)] private float _minDetectionRange;
+        [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
+        [SerializeField] private bool _startActive;
+
+        [SerializeField, Min(0f)] private float _chaseSpeed;
         [SerializeField, Min(0f)] private float _detectionRange;
-        [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
+        [SerializeField, Min(0f)] private float _minDetectionRange;
+        [SerializeField, Min(0f)] private float _minDetectionRangeInChase;
         [SerializeField, Range(0f, 180f)] private float _visionAngle = 60f;
         [SerializeField] private Vector3 _visionOffset;
-        [SerializeField, Min(0f)] private float _delayBetweenPatrolPoints;
+        [SerializeField] private LayerMask _targetLayer;
+        [SerializeField] private LayerMask _blockVisionLayer;
+
+        [SerializeField] private bool _goToLastTargetPosition;
+        [SerializeField] private bool _loseTargetWhenHidden = true;
+        [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
         [SerializeField, Min(0f)] private float _delayToStopSearchTarget;
         [SerializeField, Min(0f)] private float _delayToFinishTargetSearch;
-        [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
+        [SerializeField, Min(0f)] private float _delayBetweenPatrolPoints;
+        [SerializeField] private Vector3[] _patrolPoints;
+
         [SerializeField, Min(0f)] private float _stressIncreaseOnTargetDetected;
         [SerializeField, Min(0f)] private float _stressIncreaseWhileChasing;
         [SerializeField, Min(0f)] private float _stressMaxWhileChasing;
-        [SerializeField, Min(0f)] private float _chaseSpeed;
-        [SerializeField, Min(0f)] private float _minDetectionRangeInChase;
-        [SerializeField] private bool _startActive;
-        [SerializeField] private bool _goToLastTargetPosition;
-        [SerializeField] private bool _loseTargetWhenHidden = true;
         [SerializeField] private bool _attackTarget;
         [SerializeField] private HitboxInfo[] _attackAreaInfos;
-        [SerializeField] private LayerMask _targetLayer;
-        [SerializeField] private LayerMask _blockVisionLayer;
-        [SerializeField] private Vector3[] _patrolPoints;
 
         //[Header("Enemy Debug")]
         [SerializeField] private bool _debugLogsEnemyPatrol;
@@ -70,7 +73,7 @@ namespace Ivayami.Enemy
         }
         private EnemyAnimator m_enemyAnimator;
         private EnemySounds _enemySounds;
-        private HitboxAttack _hitboxAttack;
+        //private HitboxAttack _hitboxAttack;
         private CapsuleCollider _collision;
         private Collider[] _hitsCache = new Collider[1];
         private WaitForSeconds _behaviourTickDelay;
@@ -106,13 +109,13 @@ namespace Ivayami.Enemy
             _betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints - _behaviourTickFrequency);
             _endGoToLastTargetDelay = new WaitForSeconds(_delayToFinishTargetSearch - _behaviourTickFrequency);
             _enemySounds = GetComponent<EnemySounds>();
-            if (_attackTarget) _hitboxAttack = GetComponentInChildren<HitboxAttack>();
+            //if (_attackTarget) _hitboxAttack = GetComponentInChildren<HitboxAttack>();
 
             _initialPosition = transform.position;
             _initialRotation = transform.rotation;
             _baseSpeed = _navMeshAgent.speed;
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
-            else _baseStoppingDistance = _navMeshAgent.stoppingDistance;
+            _baseStoppingDistance = _navMeshAgent.stoppingDistance;
         }
 
         private void OnEnable()
@@ -255,7 +258,7 @@ namespace Ivayami.Enemy
                         }
                     }
                     _enemyAnimator.Chasing(_isChasing);
-                    _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude / _navMeshAgent.speed);
+                    _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude/* / _navMeshAgent.speed*/);
                 }                
                 yield return _behaviourTickDelay;
             }
@@ -290,7 +293,7 @@ namespace Ivayami.Enemy
         private void UpdateMovement(bool isStoped)
         {
             if (!_navMeshAgent.enabled) return;
-            _navMeshAgent.isStopped = isStoped;
+            if (_navMeshAgent.isOnNavMesh) _navMeshAgent.isStopped = isStoped;
             if (isStoped) _navMeshAgent.velocity = Vector3.zero;
             _enemyAnimator.Walking(isStoped ? 0 : _navMeshAgent.velocity.magnitude / _navMeshAgent.speed);
         }
@@ -327,21 +330,26 @@ namespace Ivayami.Enemy
         private void HandleAttackAnimationEnd()
         {
             //_navMeshAgent.isStopped = false;
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+            for(int i = 0; i < _attackAreaInfos.Length; i++)
+            {
+                _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+            }
             _isAttacking = false;
         }
 
         private void OnAnimationStepChange(float normalizedTime)
         {
+            int currentAnimIndex = _enemyAnimator.GetCurrentAttackAnimIndex();
             for (int i = 0; i < _attackAreaInfos.Length; i++)
             {
-                if (normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
+                if (_attackAreaInfos[i].AnimationIndex == currentAnimIndex && normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
                 {
-                    _hitboxAttack.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
-                    return;
+                    _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
+                    //return;
                 }
+                else _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
             }
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+            //_attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
         }
 
         public void ChangeSpeed(float speed)

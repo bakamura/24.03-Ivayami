@@ -44,7 +44,7 @@ namespace Ivayami.Save
         }
 
 #if UNITY_EDITOR
-        private void OnValidate()
+        protected virtual void OnValidate()
         {
             if (string.IsNullOrEmpty(ID)) ID = gameObject.name + "_"+ UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene().name + "_" + Mathf.Abs(this.GetInstanceID());
         }
