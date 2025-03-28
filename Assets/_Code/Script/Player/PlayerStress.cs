@@ -126,6 +126,7 @@ namespace Ivayami.Player {
                 SaveObject.UpdateSaveLock(false);
                 SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
                 SceneController.Instance.UnloadAllScenes(ReloadAndReset);
+                SceneLoadersManager.Instance.gameObject.SetActive(false);
             });
             SceneTransition.Instance.OnOpenEnd.RemoveListener(RespawnFailFade);
         }
@@ -136,7 +137,8 @@ namespace Ivayami.Player {
             //ResetStress();
             SaveObject.UpdateSaveLock(true);
             SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
-            SceneController.Instance.LoadScene("BaseTerrain"/*, onSceneLoaded*/);
+            SceneLoadersManager.Instance.gameObject.SetActive(true);
+            //SceneController.Instance.LoadScene("BaseTerrain"/*, onSceneLoaded*/);
             PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
         }
 

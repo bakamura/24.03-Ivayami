@@ -1,7 +1,7 @@
-using Ivayami.Player;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Ivayami.Player;
 
 namespace Ivayami.UI {
     public class CurrentAbility : MonoBehaviour {
@@ -32,7 +32,7 @@ namespace Ivayami.UI {
         }
 
         private void Start() {
-            PlayerActions.Instance.onAbilityChange.AddListener(DisplayCurrentAbility);
+            //PlayerActions.Instance.onAbilityChange.AddListener(DisplayCurrentAbility);
         }
 
         public void DisplayCurrentAbility(sbyte currentAbility) {

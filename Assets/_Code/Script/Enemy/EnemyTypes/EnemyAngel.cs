@@ -529,7 +529,12 @@ namespace Ivayami.Enemy
         {
             _canChaseTarget = canChaseTarget;
             _canWalkPath = canWalkPath;
-            if(!canWalkPath && !canChaseTarget) _chaseTargetPatience = _delayToLoseTarget;
+            if (!canWalkPath && !canChaseTarget)
+            {
+                _chaseTargetPatience = _delayToLoseTarget;
+                HandleAttackAnimationEnd();
+                if(_hitsCache[0]) _lastTargetPosition = _hitsCache[0].transform.position;
+            }
             UpdateMovement(isStopped);
         }
 
@@ -620,7 +625,7 @@ namespace Ivayami.Enemy
                 if (_attackAreaInfos[i].MinInterval > _attackAreaInfos[i].MaxInterval) _attackAreaInfos[i].MinInterval = _attackAreaInfos[i].MaxInterval;
             }
             if (_distanceToFogAttack < _collision.radius + .2f) _distanceToFogAttack = _collision.radius + .2f;
-            _navMeshAgent.stoppingDistance = _distanceToFogAttack;
+            //_navMeshAgent.stoppingDistance = _distanceToFogAttack;
         }
 #endif
         #endregion

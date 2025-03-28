@@ -6,13 +6,23 @@ using Ivayami.Enemy;
 [CustomEditor(typeof(IluminatedEnemyDetector))]
 public class IluminatedEnemyDetectorInspector : Editor
 {
-    SerializedProperty lightBehaviour, finalSpeed, paraliseDuration, interpolateDuration, willInterruptAttack, enemyAnimator, paraliseAnimationRandomAmount, interpolateCurve,  detectLightRange, checkLightTickFrequency, gizmoColor;
+    SerializedProperty lightBehaviour, finalSpeed, paraliseDuration, interpolateDuration, willInterruptAttack, enemyAnimator, paraliseAnimationRandomAmount, interpolateCurve, detectLightRange, checkLightTickFrequency, gizmoColor;
     public override void OnInspectorGUI()
     {
+        EditorGUILayout.LabelField("Basic Parameters", EditorStyles.boldLabel);
+        EditorGUILayout.Space(1);
+        EditorGUI.indentLevel++;
         EditorGUILayout.PropertyField(lightBehaviour, new GUIContent("Light Behaviour"));
-        //paralise
-        if(lightBehaviour.enumValueIndex == 0)
+        EditorGUILayout.PropertyField(detectLightRange, new GUIContent("Detection Light Range"));
+        EditorGUILayout.PropertyField(checkLightTickFrequency, new GUIContent("Check For Light Tick Frequency"));
+        EditorGUILayout.PropertyField(gizmoColor, new GUIContent("Gizmo Color"));
+        EditorGUI.indentLevel--;
+
+        if (lightBehaviour.enumValueIndex == 0)
         {
+            EditorGUILayout.LabelField("Paralise", EditorStyles.boldLabel);
+            EditorGUILayout.Space(1);
+            EditorGUI.indentLevel++;
             EditorGUILayout.PropertyField(enemyAnimator, new GUIContent("Enemy Animator"));
             EditorGUILayout.PropertyField(finalSpeed, new GUIContent("Final Speed"));
             EditorGUILayout.PropertyField(willInterruptAttack, new GUIContent("Will Interrupt Attack On Start", "The attack will be immediately interrupted when it enters in contact with light, works only if enemy has the paralise animation state"));
@@ -20,13 +30,7 @@ public class IluminatedEnemyDetectorInspector : Editor
             EditorGUILayout.PropertyField(interpolateDuration, new GUIContent("Slow Effect Interpolation Duration", "If value is 0 the enemy will have its speed change immediately"));
             EditorGUILayout.PropertyField(interpolateCurve, new GUIContent("Slow Effect Interpolation Curve"));
             EditorGUILayout.PropertyField(paraliseAnimationRandomAmount, new GUIContent("Paralise Animation Random", "The Range bettwen 0 and this value to select a random animation"));
-        }
-        //follow light
-        else if (lightBehaviour.enumValueIndex == 1)
-        {
-            EditorGUILayout.PropertyField(detectLightRange, new GUIContent("Detection Light Range"));
-            EditorGUILayout.PropertyField(checkLightTickFrequency, new GUIContent("Check For Light Tick Frequency"));
-            EditorGUILayout.PropertyField(gizmoColor, new GUIContent("Gizmo Color"));
+            EditorGUI.indentLevel--;
         }
         serializedObject.ApplyModifiedProperties();
     }

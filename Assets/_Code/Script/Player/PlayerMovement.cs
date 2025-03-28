@@ -55,6 +55,7 @@ namespace Ivayami.Player {
 
         [SerializeField] private Transform _visualTransform;
         [SerializeField, Range(0f, 0.99f)] private float _turnSmoothFactor;
+        private bool _useCameraRotaion;
 
         [Header("Collider")]
 
@@ -100,6 +101,7 @@ namespace Ivayami.Player {
         private CharacterController _characterController;
         private Transform _cameraTransform;
         private SkinnedMeshRenderer[] _visualComponents;
+        private List<MeshRenderer> _additionalVisualComponents = new List<MeshRenderer>();
         private byte _gravityFactor = 1;
         //private float _stickDeadzone = .125f;
 
@@ -135,6 +137,7 @@ namespace Ivayami.Player {
         private void Start() {
             SceneController.Instance.OnAllSceneRequestEnd += RemoveCrouch;
             PlayerActions.Instance.onInteract.AddListener((animation) => BlockMovementFor(INTERACT_BLOCK_KEY, PlayerAnimation.Instance.GetInteractAnimationDuration(animation)));
+            PlayerActions.Instance.onLanternFocus.AddListener(value => _useCameraRotaion = value);
             PlayerStress.Instance.onStressChange.AddListener(OnStressChange);
             InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateHoldToRun);
             _maxStressCurrent = PlayerStress.Instance.MaxStress;
@@ -213,6 +216,7 @@ namespace Ivayami.Player {
 
         private void Rotate() {
             _cameraAimTargetRotator.eulerAngles = _cameraTransform.eulerAngles.y * Vector3.up;
+            if (_useCameraRotaion) _targetAngle = Quaternion.Euler(0f, _cameraTransform.eulerAngles.y, 0f);
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
@@ -315,9 +319,14 @@ namespace Ivayami.Player {
         }
 
         public void UpdateVisualsVisibility(bool isVisible) {
-            for (int i = 0; i < _visualComponents.Length; i++)
-                _visualComponents[i].enabled = isVisible;
+            for (int i = 0; i < _visualComponents.Length; i++) _visualComponents[i].enabled = isVisible;
+            for (int i = 0; i < _additionalVisualComponents.Count; i++) _additionalVisualComponents[i].enabled = isVisible;
             //_visualTransform.gameObject.SetActive(isVisible);
+        }
+
+        public void AddAdditionalVisuals(MeshRenderer[] additionalVisuals) {
+            if (additionalVisuals?.Length > 0) _additionalVisualComponents.AddRange(additionalVisuals);
+            else Debug.LogWarning($"AddAdditionalVisuals() received null or empty array!");
         }
 
         public void ChangeRunSpeed(float val) {
