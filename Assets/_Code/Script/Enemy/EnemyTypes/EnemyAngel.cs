@@ -428,6 +428,12 @@ namespace Ivayami.Enemy
             }
             if (currentAnimIndex == 1 && normalizedTime >= _startLeapMovementInterval && !_isInLeapAnimation)
             {
+                if(!CheckForTarget(_visionAngle / 2f))
+                {
+                    _enemyAnimator.ForcePlayState("idle");
+                    HandleAttackAnimationEnd();
+                    return;
+                }
                 _isInLeapAnimation = true;
                 _navMeshAgent.enabled = false;
                 _initialLeapPosition = transform.position;
