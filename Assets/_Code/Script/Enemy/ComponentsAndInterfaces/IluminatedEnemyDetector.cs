@@ -198,12 +198,12 @@ namespace Ivayami.Enemy
             //if (_lightBehaviour == LightBehaviours.Paralise) return;
             Gizmos.color = _gizmoColor;
             Gizmos.DrawWireSphere(transform.position, _detectLightRange);
-            LightFocuses.LighData data = LightFocuses.Instance.GetClosestPointTo(transform.position);
-            if (!Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
-                Gizmos.color = Color.green;
-            else
-                Gizmos.color = Color.red;
-            Gizmos.DrawLine(transform.position, data.Position);
+            //LightFocuses.LighData data = LightFocuses.Instance.GetClosestPointTo(transform.position);
+            //if (!Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
+            //    Gizmos.color = Color.green;
+            //else
+            //    Gizmos.color = Color.red;
+            //Gizmos.DrawLine(transform.position, data.Position);
         }
 #endif
     }
