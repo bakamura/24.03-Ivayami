@@ -8,7 +8,7 @@ using System;
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
-    public class EnemyAngel : StressEntity, IIluminatedEnemy
+    public class EnemyAngel : StressEntity, IIluminatedEnemy, IEnemyWalkArea
     {
         [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
         [SerializeField] private bool _startActive;
@@ -24,10 +24,12 @@ namespace Ivayami.Enemy
 
         [SerializeField] private bool _goToLastTargetPosition;
         [SerializeField] private bool _loseTargetWhenHidden = true;
+        [SerializeField] private PatrolTypes _patrolType;
         [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
         [SerializeField, Min(0f)] private float _delayToStopSearchTarget;
         [SerializeField, Min(0f)] private float _delayToFinishTargetSearch;
         [SerializeField, Min(0f)] private float _delayBetweenPatrolPoints;
+        [SerializeField] private EnemyWalkArea _fixedWalkArea;
         [SerializeField] private Vector3[] _patrolPoints;
 
         //[SerializeField, Min(0f)] private float _stressIncreaseOnTargetDetected;
@@ -70,6 +72,11 @@ namespace Ivayami.Enemy
         //private RaycastHit _blockHit;
 #endif
 
+        private enum PatrolTypes
+        {
+            BasicPatrol,
+            EnemyWalkArea
+        }
         private NavMeshAgent _navMeshAgent
         {
             get
@@ -108,6 +115,8 @@ namespace Ivayami.Enemy
         private Coroutine _behaviourCoroutine;
         private Coroutine _leapCoroutine;
         private Coroutine _fallCoroutine;
+        private EnemyWalkArea _currentWalkArea;
+        private EnemyMovementData _currentMovementData;
         private Quaternion _initialRotation;
         private Vector3 _lastTargetPosition;
         private Vector3 _initialPosition;
@@ -129,6 +138,10 @@ namespace Ivayami.Enemy
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
 
+        public bool CanChangeWalkArea => !_fixedWalkArea;
+
+        public int ID => gameObject.GetInstanceID();
+
         protected override void Awake()
         {
             base.Awake();
@@ -143,6 +156,13 @@ namespace Ivayami.Enemy
 
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
             _baseStoppingDistance = _navMeshAgent.stoppingDistance;
+
+            if (_fixedWalkArea)
+            {
+                SetMovementData(_fixedWalkArea.MovementData);
+                SetWalkArea(_fixedWalkArea);
+                _fixedWalkArea.AddEnemyToArea(this, gameObject.name);
+            }
         }
 
         private void OnEnable()
@@ -226,7 +246,7 @@ namespace Ivayami.Enemy
                             _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
                             _isChasing = true;
                             if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());
-                            _navMeshAgent.speed = _chaseSpeed;
+                            SetToChaseSpeed();
                         }
                         _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                         _lastTargetPosition = _hitsCache[0].transform.position;
@@ -255,7 +275,7 @@ namespace Ivayami.Enemy
                                     UpdateMovement(true);
                                     _isChasing = false;
                                     _goToLastTargetPointPatience = 0;
-                                    _navMeshAgent.speed = _baseSpeed;
+                                    SetToWalkSpeed();
                                     yield return _endGoToLastTargetDelay;
                                     UpdateMovement(false);
                                 }
@@ -266,25 +286,51 @@ namespace Ivayami.Enemy
                         {
                             if (_canWalkPath)
                             {
-                                _navMeshAgent.speed = _baseSpeed;
+                                SetToWalkSpeed();
                                 _enemySounds.PlaySound(EnemySounds.SoundTypes.IdleScreams);
-                                _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
                                 if (_debugLogsEnemyPatrol) Debug.Log("Patroling");
-                                if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
+                                switch (_patrolType)
                                 {
-                                    if (_patrolPoints.Length > 1)
-                                    {
-                                        _enemyAnimator.Walking(0);
-                                        yield return _betweenPatrolPointsDelay;
-                                        currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
-                                        if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
-                                        else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
-                                        if (_debugLogsEnemyPatrol) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
-                                    }
-                                    else
-                                    {
-                                        if (transform.rotation != _initialRotation && _rotateCoroutine == null) _rotateCoroutine = StartCoroutine(RotateCoroutine(_initialRotation));
-                                    }
+                                    case PatrolTypes.BasicPatrol:
+                                        _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
+                                        if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
+                                        {
+                                            if (_patrolPoints.Length > 1)
+                                            {
+                                                _enemyAnimator.Walking(0);
+                                                yield return _betweenPatrolPointsDelay;
+                                                currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
+                                                if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
+                                                else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
+                                                if (_debugLogsEnemyPatrol) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
+                                            }
+                                            else
+                                            {
+                                                if (transform.rotation != _initialRotation && _rotateCoroutine == null) _rotateCoroutine = StartCoroutine(RotateCoroutine(_initialRotation));
+                                            }
+                                        }
+                                        break;
+                                    case PatrolTypes.EnemyWalkArea:
+                                        if (_currentWalkArea && _currentWalkArea.GetCurrentPoint(ID, out EnemyWalkArea.EnemyData point))
+                                        {                                            
+                                            if (Vector3.Distance(transform.position, point.Point.Position) <= _navMeshAgent.stoppingDistance)
+                                            {
+                                                _navMeshAgent.velocity = Vector3.zero;
+                                                _enemyAnimator.Walking(0);
+                                                yield return new WaitForSeconds(point.Point.DelayToNextPoint);
+                                                _navMeshAgent.SetDestination(_currentWalkArea.GoToNextPoint(ID).Point.Position);
+                                                if (_debugLogsEnemyPatrol)
+                                                {
+                                                    _currentWalkArea.GetCurrentPoint(ID, out point);
+                                                    Debug.Log($"Change Patrol Point to {point.CurrentPointIndex}");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                _navMeshAgent.SetDestination(point.Point.Position);
+                                            }
+                                        }
+                                        break;
                                 }
                             }
                         }
@@ -523,6 +569,29 @@ namespace Ivayami.Enemy
             _navMeshAgent.isStopped = false;
             _fallCoroutine = null;
         }
+
+        private void SetToChaseSpeed()
+        {
+            _navMeshAgent.speed = _currentMovementData ? _currentMovementData.ChaseSpeed : _chaseSpeed;
+        }
+
+        private void SetToWalkSpeed()
+        {
+            _navMeshAgent.speed = _currentMovementData ? _currentMovementData.WalkSpeed : _baseSpeed;
+        }
+
+        public void SetWalkArea(EnemyWalkArea area)
+        {
+            _currentWalkArea = area;
+        }
+
+        public void SetMovementData(EnemyMovementData data)
+        {
+            _currentMovementData = data;
+            _navMeshAgent.speed = _isChasing ? data.ChaseSpeed : data.WalkSpeed;
+            _navMeshAgent.acceleration = data.Acceleration;
+            _navMeshAgent.angularSpeed = data.RotationSpeed;
+        }
         #endregion
 
         #region IluminatedMethods
@@ -573,7 +642,7 @@ namespace Ivayami.Enemy
                 Gizmos.color = _minDistanceInChaseAreaColor;
                 Gizmos.DrawSphere(transform.position, _minDetectionRangeInChase);
             }
-            if (_drawPatrolPoints)
+            if (_drawPatrolPoints && _patrolType == PatrolTypes.BasicPatrol)
             {
                 Vector3 pos = _initialPosition != Vector3.zero ? _initialPosition : transform.position;
                 Gizmos.color = _patrolPointsColor;
@@ -603,7 +672,7 @@ namespace Ivayami.Enemy
                 Gizmos.color = _leapAttackColor;
                 Gizmos.DrawSphere(transform.position, _distanceToLeapAttack);
             }
-            if (_drawPredictPosition && Application.isPlaying)
+            if (_drawPredictPosition && Application.isPlaying && _hitsCache[0])
             {
                 Vector3 currentPlayerMovement = new Vector3(PlayerMovement.Instance.MovementDirection.x, 0, PlayerMovement.Instance.MovementDirection.z);
                 bool blocked = Physics.Raycast(new Ray(_hitsCache[0].transform.position + new Vector3(0, _navMeshAgent.height * .5f, 0), currentPlayerMovement.normalized), _predictDistance, _blockVisionLayer);
@@ -630,9 +699,9 @@ namespace Ivayami.Enemy
             {
                 if (_attackAreaInfos[i].MinInterval > _attackAreaInfos[i].MaxInterval) _attackAreaInfos[i].MinInterval = _attackAreaInfos[i].MaxInterval;
             }
-            if (_distanceToFogAttack < _collision.radius + .2f) _distanceToFogAttack = _collision.radius + .2f;
+            if (_distanceToFogAttack < _collision.radius + .2f) _distanceToFogAttack = _collision.radius + .2f;            
             //_navMeshAgent.stoppingDistance = _distanceToFogAttack;
-        }
+        }        
 #endif
         #endregion
     }

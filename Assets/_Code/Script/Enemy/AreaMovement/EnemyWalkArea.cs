@@ -16,6 +16,7 @@ namespace Ivayami.Enemy
         [SerializeField] private EnemyMovementData _movementData;
         //[SerializeField] private bool _ignoreYAxis;
         [SerializeField] private PatrolBehaviour _patrolBehaviour;
+        [SerializeField] private UnityEvent _onPatrolEnd;
         [SerializeField, Tooltip("if empty, will generate random point inside area")] private Point[] _points;
         [SerializeField] private float _delayToNextPoint;
 
@@ -24,7 +25,8 @@ namespace Ivayami.Enemy
         {
             RandomPoints,
             Loop,
-            BackAndForth
+            BackAndForth,
+            OnlyOnce
         }
         [Serializable]
         public struct PathCallback
@@ -48,7 +50,8 @@ namespace Ivayami.Enemy
                 return m_boxCollider;
             }
         }
-        private bool _pointsInitialized;
+        private bool _onPathEndEventTrigger;
+        //private bool _pointsInitialized;
         public EnemyMovementData MovementData => _movementData;
 
         [Serializable]
@@ -151,6 +154,25 @@ namespace Ivayami.Enemy
                         //if (_ignoreYAxis) temp.Point.Position = new Vector3(temp.Point.Position.x, 0, temp.Point.Position.z);
                         _enemiesCurrentPathPointDic[id] = temp;
                         return _enemiesCurrentPathPointDic[id];
+                    case PatrolBehaviour.OnlyOnce:
+                        temp = _enemiesCurrentPathPointDic[id];
+                        if(temp.CurrentPointIndex + 1 >= _points.Length)
+                        {
+                            if (!_onPathEndEventTrigger)
+                            {
+                                _onPatrolEnd?.Invoke();
+                                _onPathEndEventTrigger = true;
+                            }
+                            return _enemiesCurrentPathPointDic[id];
+                        }
+                        else
+                        {
+                            temp.CurrentPointIndex++;
+                            temp.Point = _points[temp.CurrentPointIndex];
+                            temp.Point.Position += transform.position;
+                            _enemiesCurrentPathPointDic[id] = temp;
+                        }
+                        return _enemiesCurrentPathPointDic[id];
                 }
             }
             return new EnemyData();
@@ -203,7 +225,7 @@ namespace Ivayami.Enemy
                     enemy.SetWalkArea(this);
                     if (_movementData) enemy.SetMovementData(_movementData);
                 }
-                EnemyData data = new EnemyData(new Point(), 1 ,-1);
+                EnemyData data = new EnemyData(new Point(), 1, -1);
                 _enemiesCurrentPathPointDic.Add(enemy.ID, data);
                 data = GoToNextPoint(enemy.ID);
 #if UNITY_EDITOR
@@ -217,7 +239,7 @@ namespace Ivayami.Enemy
         {
             if (_enemiesCurrentPathPointDic.ContainsKey(enemy.ID) && enemy.CanChangeWalkArea)
             {
-                if(enemy.CanChangeWalkArea) enemy.SetWalkArea(null);
+                if (enemy.CanChangeWalkArea) enemy.SetWalkArea(null);
                 _enemiesCurrentPathPointDic.Remove(enemy.ID);
             }
         }
@@ -225,7 +247,7 @@ namespace Ivayami.Enemy
         private void OnTriggerEnter(Collider other)
         {
             if (other.TryGetComponent<IEnemyWalkArea>(out IEnemyWalkArea temp))
-            {                
+            {
                 AddEnemyToArea(temp, other.gameObject.name);
             }
         }
@@ -266,6 +288,11 @@ namespace Ivayami.Enemy
                     }
                 }
             }
+        }
+
+        private void OnValidate()
+        {
+            if (TryGetComponent<Collider>(out Collider col)) col.isTrigger = true;
         }
 #endif
     }
