@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.000017039501, g: 0.000000025767097, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -727,7 +727,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneId: Cutscene_Initial
+  _sceneId: CutsceneSaveLuana
   _onSceneLoad:
     m_PersistentCalls:
       m_Calls: []
@@ -1375,6 +1375,18 @@ PrefabInstance:
     - target: {fileID: 3194268924047896570, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: _dialogue
       value: 
+      objectReference: {fileID: 11400000, guid: aee3ffe971d9e0a458e1108991edbc43, type: 2}
+    - target: {fileID: 3194268924047896570, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _activateOnce
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3194268924047896570, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _dialogueName
+      value: Dialogue Save Luana
+      objectReference: {fileID: 0}
+    - target: {fileID: 3194268924047896570, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: _lockPlayerInput
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4038557254148330237, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -1402,7 +1414,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 5a18ff23785136f4ea8047c4a2f114f2, type: 2}
     - target: {fileID: 5721016753906124718, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: m_SceneBindings.Array.size
-      value: 33
+      value: 34
       objectReference: {fileID: 0}
     - target: {fileID: 5721016753906124718, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: m_SceneBindings.Array.data[28].key
@@ -1425,6 +1437,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 4934657008469455394, guid: 5a18ff23785136f4ea8047c4a2f114f2, type: 2}
     - target: {fileID: 5721016753906124718, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_SceneBindings.Array.data[33].key
+      value: 
+      objectReference: {fileID: 7385436457323094509, guid: 5a18ff23785136f4ea8047c4a2f114f2, type: 2}
+    - target: {fileID: 5721016753906124718, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: m_SceneBindings.Array.data[28].value
       value: 
       objectReference: {fileID: 27648453}
@@ -1444,6 +1460,10 @@ PrefabInstance:
       propertyPath: m_SceneBindings.Array.data[32].value
       value: 
       objectReference: {fileID: 1211165957}
+    - target: {fileID: 5721016753906124718, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
+      propertyPath: m_SceneBindings.Array.data[33].value
+      value: 
+      objectReference: {fileID: 737778874}
     - target: {fileID: 6288267226879727766, guid: 3bb38593034375c439bba07727c0abe1, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
