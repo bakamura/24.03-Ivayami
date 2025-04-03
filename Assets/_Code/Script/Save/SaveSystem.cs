@@ -66,7 +66,7 @@ namespace Ivayami.Save {
                 else Options = new SaveOptions();
                 loadSaveCallback?.Invoke();
 
-                Debug.LogWarning($"No Save of type '{type.Name}' in {savePath}");
+                Debug.Log($"No Save of type '{type.Name}' in {savePath}");
             }
         }
 
