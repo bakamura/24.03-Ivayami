@@ -132,7 +132,7 @@ namespace Ivayami.Puzzle {
         }
 
         private void OnDestroy() {
-            if(PlayerActions.Instance.IsHoldingHeavyObject) PlayerActions.Instance.HeavyObjectRelease();
+            if(PlayerActions.Instance && PlayerActions.Instance.IsHoldingHeavyObject) PlayerActions.Instance.HeavyObjectRelease();
         }
 
     }
