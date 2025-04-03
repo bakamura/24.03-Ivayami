@@ -13,7 +13,7 @@ namespace Ivayami.Puzzle {
         {
             get
             {
-                if (!m_interactableFeedbacks) m_interactableFeedbacks = GetComponent<InteractableFeedbacks>();
+                if (!m_interactableFeedbacks) m_interactableFeedbacks = gameObject?.GetComponent<InteractableFeedbacks>();
                 return m_interactableFeedbacks;
             }
         }
