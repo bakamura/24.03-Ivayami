@@ -49,7 +49,7 @@ namespace Ivayami.Enemy
         private EnemyAnimator _enemyAnimator;
         private EnemySounds _enemySounds;
         private EnemyMovementData _currentMovementData;
-        private EnemyWalkArea _currenWalkArea;
+        private EnemyWalkArea _currentWalkArea;
         //private HitboxAttack _hitboxAttack;
         private CapsuleCollider _collision;
         private WaitForSeconds _behaviourTickDelay;
@@ -198,7 +198,7 @@ namespace Ivayami.Enemy
                     else
                     {
                         //Patrol
-                        if (_currenWalkArea && _currenWalkArea.GetCurrentPoint(ID, out EnemyWalkArea.EnemyData point))
+                        if (_currentWalkArea && _currentWalkArea.GetCurrentPoint(ID, out EnemyWalkArea.EnemyData point))
                         {
                             _navMeshAgent.speed = _currentMovementData.WalkSpeed;
                             if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(point.Point.Position.x, 0, point.Point.Position.z)) <= _navMeshAgent.stoppingDistance)
@@ -206,10 +206,10 @@ namespace Ivayami.Enemy
                                 _navMeshAgent.velocity = Vector3.zero;
                                 _enemyAnimator.Walking(0);
                                 yield return new WaitForSeconds(point.Point.DelayToNextPoint);
-                                _navMeshAgent.SetDestination(_currenWalkArea.GoToNextPoint(ID).Point.Position);
+                                _navMeshAgent.SetDestination(_currentWalkArea.GoToNextPoint(ID).Point.Position);
                                 if (_debugLogPoliceOfficer)
                                 {
-                                    _currenWalkArea.GetCurrentPoint(ID, out point);
+                                    _currentWalkArea.GetCurrentPoint(ID, out point);
                                     Debug.Log($"Change Patrol Point to {point.CurrentPointIndex}");
                                 }
                             }
@@ -391,7 +391,7 @@ namespace Ivayami.Enemy
 
         public void SetWalkArea(EnemyWalkArea area)
         {
-            _currenWalkArea = area;
+            _currentWalkArea = area;
         }
 
         private void HandlePointReachedCoroutine(/*bool stayInPath,*/ bool autoStartBehaviour, float durationInPlace, Transform target)

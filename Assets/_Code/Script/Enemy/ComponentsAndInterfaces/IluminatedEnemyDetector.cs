@@ -11,6 +11,7 @@ namespace Ivayami.Enemy
         [SerializeField, Min(0f)] private float _paraliseDuration;
         [SerializeField, Min(0f)] private float _interpolateDuration;
         [SerializeField] private bool _willInterruptAttack;
+        [SerializeField] private LayerMask _blockLayers;
         [SerializeField] private EnemyAnimator _enemyAnimator;
         [SerializeField, Min(0)] private int _paraliseAnimationRandomAmount;
         [SerializeField, Min(0f)] private float _detectLightRange;
@@ -152,7 +153,9 @@ namespace Ivayami.Enemy
             while (true)
             {
                 data = LightFocuses.Instance.GetClosestPointTo(transform.position);
-                if (data.IsValid() && Vector3.Distance(transform.position, data.Position) <= _detectLightRange + data.Radius)
+                if (data.IsValid() && 
+                    !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers) 
+                    && Vector3.Distance(transform.position, data.Position) <= _detectLightRange + data.Radius)
                 {
                     if(_lightBehaviour == LightBehaviours.FollowLight)
                     {
@@ -195,6 +198,12 @@ namespace Ivayami.Enemy
             //if (_lightBehaviour == LightBehaviours.Paralise) return;
             Gizmos.color = _gizmoColor;
             Gizmos.DrawWireSphere(transform.position, _detectLightRange);
+            //LightFocuses.LighData data = LightFocuses.Instance.GetClosestPointTo(transform.position);
+            //if (!Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
+            //    Gizmos.color = Color.green;
+            //else
+            //    Gizmos.color = Color.red;
+            //Gizmos.DrawLine(transform.position, data.Position);
         }
 #endif
     }
