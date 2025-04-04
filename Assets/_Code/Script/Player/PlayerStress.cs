@@ -25,8 +25,10 @@ namespace Ivayami.Player {
         [SerializeField] private float _stressRelieveDelay;
         private float _stressRelieveDelayTimer;
 
-        public float MaxStress => _stressMax;
-        public float StressCurrent => _stressCurrent;
+        public float MaxStress { get { return _stressMax; } }
+        public float StressCurrent { get { return _stressCurrent; } }
+
+        public bool StressIsMaxed { get { return _stressCurrent >= _stressMax; } }
 
         [Header("Fail")]
 
