@@ -18,6 +18,18 @@ namespace Ivayami.Save {
         private static string _progressPath;
         private static string _optionsPath;
         public const byte MaxSaveSlots = 5;
+        public bool CanSaveProgress
+        {
+            get
+            {
+                return _canSaveProgress;
+            }
+            set
+            {
+                _canSaveProgress = value;
+            }
+        }
+        private bool _canSaveProgress = true;
         private HashSet<SaveObject> _saveObjects = new HashSet<SaveObject>();
 
         protected override void Awake() {
@@ -90,6 +102,11 @@ namespace Ivayami.Save {
         }
 
         private void SaveProgress() {
+            if (!CanSaveProgress)
+            {
+                Debug.Log("Save Progress is Disable");
+                return;
+            }
             Progress.lastPlayedDate = DateTime.Now.ToString("dd/MM/yy [HH:mm]");
             StartCoroutine(WriteSaveRoutine($"{_progressPath}/{ProgressFolderName}_{Progress.id}.sav", typeof(SaveProgress)));
 
@@ -131,6 +148,5 @@ namespace Ivayami.Save {
             if (_saveObjects.Contains(saveObject)) _saveObjects.Remove(saveObject);
             else Debug.LogWarning($"The object {saveObject.name} is already unregistered");
         }
-
     }
 }
