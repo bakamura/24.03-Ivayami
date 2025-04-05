@@ -16,8 +16,8 @@ namespace Ivayami.UI
         [Range(0f, 99f)] public float InitialStress;
         //public bool OnlySaveSpawnPosition;
         public PlayerInventory.InventoryItemStack[] Items;
-        public AreaProgressData[] AreaProgress;
-        public AreaProgressData[] EntryProgress;
+        [AreaProgressData] public AreaProgressData[] AreaProgress;
+        [AreaProgressData] public AreaProgressData[] EntryProgress;
         private AreaProgress[] _entryProgressData;
         //private PlayProfile[] _playProfiles;
 
@@ -26,6 +26,12 @@ namespace Ivayami.UI
         {
             public AreaProgress AreaProgress;
             public int Step;
+
+            public AreaProgressData(AreaProgress progress, int step)
+            {
+                AreaProgress = progress;
+                Step = step;
+            }
         }
 
         private void OnValidate()
