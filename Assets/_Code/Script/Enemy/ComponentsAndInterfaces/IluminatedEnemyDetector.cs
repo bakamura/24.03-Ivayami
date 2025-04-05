@@ -74,14 +74,14 @@ namespace Ivayami.Enemy
         }
 
         [ContextMenu("Iluminate")]
-        private void Iluminate()
+        private void Iluminate(object lightType)
         {            
             if (!_isIliuminated)
             {
                 _isIliuminated = true;
                 _baseSpeed = _target.CurrentSpeed;
                 _animIndex = Random.Range(0, _paraliseAnimationRandomAmount);
-                _iluminatedCoroutine ??= StartCoroutine(IluminateCoroutine());
+                _iluminatedCoroutine ??= StartCoroutine(IluminateCoroutine(lightType));
             }
         }
 
@@ -103,12 +103,12 @@ namespace Ivayami.Enemy
                 else
                 {
                     _target.ChangeSpeed(_baseSpeed);
-                    _target.UpdateBehaviour(true, true, false);
+                    _target.UpdateBehaviour(true, true, false, null);
                 }
             }
         }
 
-        private IEnumerator IluminateCoroutine()
+        private IEnumerator IluminateCoroutine(object lightType)
         {
             float count;
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
@@ -129,7 +129,7 @@ namespace Ivayami.Enemy
                 {
                     _target.ChangeSpeed(_finalSpeed);
                 }
-                _target.UpdateBehaviour(false, false, true);
+                _target.UpdateBehaviour(false, false, true, lightType);
                 if (_hasParaliseAnim)
                 {
                     _enemyAnimator.Paralise(true, _paraliseAnimationEnded && _willInterruptAttack, paraliseAnimationIndex: _animIndex);
@@ -140,7 +140,7 @@ namespace Ivayami.Enemy
                 {
                     yield return paraliseDelay;
                     _target.ChangeSpeed(_baseSpeed);
-                    _target.UpdateBehaviour(true, true, false);
+                    _target.UpdateBehaviour(true, true, false, lightType);
                 }
                 else yield break;
             }
@@ -159,17 +159,17 @@ namespace Ivayami.Enemy
                 {
                     if(_lightBehaviour == LightBehaviours.FollowLight)
                     {
-                        _target.UpdateBehaviour(false, true, false);
+                        _target.UpdateBehaviour(false, true, false, null);
                         _target.ChangeTargetPoint(data.Position);
                     }
                     else
                     {
-                        Iluminate();
+                        Iluminate(data.Type);
                     }
                 }
                 else
                 {
-                    if(_lightBehaviour == LightBehaviours.FollowLight)_target.UpdateBehaviour(true, true, false);
+                    if(_lightBehaviour == LightBehaviours.FollowLight)_target.UpdateBehaviour(true, true, false, null);
                     else
                     {
                         IluminateStop();
@@ -182,7 +182,7 @@ namespace Ivayami.Enemy
         private void HandleParaliseAnimationEnd()
         {
             _target.ChangeSpeed(_baseSpeed);
-            _target.UpdateBehaviour(true, true, false);
+            _target.UpdateBehaviour(true, true, false, null);
             _paraliseAnimationEnded = true;
             //Debug.Log("EndParaliseAnim");
         }
@@ -198,12 +198,12 @@ namespace Ivayami.Enemy
             //if (_lightBehaviour == LightBehaviours.Paralise) return;
             Gizmos.color = _gizmoColor;
             Gizmos.DrawWireSphere(transform.position, _detectLightRange);
-            //LightFocuses.LighData data = LightFocuses.Instance.GetClosestPointTo(transform.position);
-            //if (!Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
-            //    Gizmos.color = Color.green;
-            //else
-            //    Gizmos.color = Color.red;
-            //Gizmos.DrawLine(transform.position, data.Position);
+            LightFocuses.LighData data = LightFocuses.Instance.GetClosestPointTo(transform.position);
+            if (!Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
+                Gizmos.color = Color.green;
+            else
+                Gizmos.color = Color.red;
+            Gizmos.DrawLine(transform.position, data.Position);
         }
 #endif
     }
