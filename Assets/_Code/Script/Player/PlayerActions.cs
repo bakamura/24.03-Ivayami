@@ -150,7 +150,7 @@ namespace Ivayami.Player {
                         }
                     }
                     if (InteractableTarget != _interactableClosestCache) {
-                        InteractableTarget?.InteratctableFeedbacks.UpdateFeedbacks(false);
+                        if(InteractableTarget as MonoBehaviour) InteractableTarget.InteratctableFeedbacks.UpdateFeedbacks(false);
                         InteractableTarget = _interactableClosestCache;
                         InteractableTarget?.InteratctableFeedbacks.UpdateFeedbacks(true);
                         onInteractTargetChange?.Invoke(InteractableTarget);
