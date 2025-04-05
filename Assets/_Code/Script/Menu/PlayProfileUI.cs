@@ -7,7 +7,7 @@ using Ivayami.Save;
 
 namespace Ivayami.UI
 {
-    public class PlayProfilesUI : MonoBehaviour
+    public class PlayProfileUI : MonoBehaviour
     {
         private TMP_Dropdown _dropdown;
         private PlayProfile[] _playProfiles;
@@ -19,6 +19,7 @@ namespace Ivayami.UI
         {
             _dropdown = GetComponentInChildren<TMP_Dropdown>();
             _mainMenuSceneUnloader = GetComponentInChildren<SceneLoader>();
+            _teleporter = GetComponentInChildren<ManualTeleporter>();
 
             _playProfiles = Resources.LoadAll<PlayProfile>("PlayProfiles");
 
@@ -39,20 +40,35 @@ namespace Ivayami.UI
             SceneTransition.Instance.OnOpenEnd.AddListener(StartPlayProfile);
             SceneTransition.Instance.Open();
         }
+        /// <summary>
+        /// to use in the Play Btn
+        /// </summary>
+        /// <param name="profile"></param>
+        public void StartPlayProfile(PlayProfile profile)
+        {
+            _currentProfile = profile;
+            StartPlayProfile();
+        }
 
         private void StartPlayProfile()
         {
+            SaveSystem.Instance.DeleteProgress(byte.MaxValue);
+            SaveSystem.Instance.LoadProgress(byte.MaxValue, OnSaveFileInitialized);            
+        }
+
+        private void OnSaveFileInitialized()
+        {
+            if(_currentProfile.InitialSavePoint != -1) SaveSystem.Instance.Progress.pointId = _currentProfile.InitialSavePoint;
             _teleporter.transform.SetPositionAndRotation(_currentProfile.PlayerStartPosition, Quaternion.Euler(0, _currentProfile.PlayerStartRotation, 0));
             PlayerStress.Instance.AddStress(_currentProfile.InitialStress);
-            SaveSystem.Instance.CanSaveProgress = _currentProfile.SaveIsActive;
-            for(int i = 0; i < _currentProfile.Items.Length; i++)
+            for (int i = 0; i < _currentProfile.Items.Length; i++)
             {
-                for(int a = 0; a < _currentProfile.Items[i].Amount; a++)
+                for (int a = 0; a < _currentProfile.Items[i].Amount; a++)
                 {
                     PlayerInventory.Instance.AddToInventory(_currentProfile.Items[i].Item, false, false);
                 }
             }
-            for(int i = 0; i < _currentProfile.AreaProgress.Length; i++)
+            for (int i = 0; i < _currentProfile.AreaProgress.Length; i++)
             {
                 SaveSystem.Instance.Progress.SaveProgressOfType(_currentProfile.AreaProgress[i].AreaProgress.Id, _currentProfile.AreaProgress[i].Step);
             }
@@ -60,8 +76,12 @@ namespace Ivayami.UI
             {
                 SaveSystem.Instance.Progress.SaveEntryProgressOfType(_currentProfile.AreaProgress[i].AreaProgress.Id, _currentProfile.AreaProgress[i].Step);
             }
+            //SaveSystem.Instance.OnlySaveSpawnPosition = _currentProfile.OnlySaveSpawnPosition;
             _teleporter.Teleport();
             PlayerActions.Instance.ChangeInputMap("Player");
+            PlayerMovement.Instance.ToggleMovement("MainMenu", true);
+            Pause.Instance.ToggleCanPause("MainMenu", true);
+            SavePoint.onSaveGame?.Invoke();
             _mainMenuSceneUnloader.UnloadScene();
         }
     }

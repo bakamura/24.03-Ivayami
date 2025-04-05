@@ -336,7 +336,7 @@ namespace Ivayami.Player {
         }
 
         public void RemoveAllBlockers() {
-            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+            //if (!IngameDebugConsole.DebugLogManager.Instance) return;
             _movementBlock.Clear();
         }
 

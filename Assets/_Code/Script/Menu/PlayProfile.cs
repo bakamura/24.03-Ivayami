@@ -8,14 +8,18 @@ namespace Ivayami.UI
     [CreateAssetMenu(menuName = "PlayProfile", fileName = "NewPlayProfile")]
     public class PlayProfile : ScriptableObject
     {
+        //[Tooltip("The index of this profile in the progression of the game, higher values indicate further progression in game")]public uint ProfileOrderInProgression;
+        //[Tooltip("If true will apply all previous profiles Items, AreaProgress and EntryProgress")] public bool UseLowerProgressionProfilesToUpdateProgression;
         public Vector3 PlayerStartPosition;
         [Range(-180f, 180f)] public float PlayerStartRotation;
+        [Min(-1), Tooltip("-1 equals no save point")] public int InitialSavePoint = -1;
         [Range(0f, 99f)] public float InitialStress;
-        public bool SaveIsActive;
+        //public bool OnlySaveSpawnPosition;
         public PlayerInventory.InventoryItemStack[] Items;
         public AreaProgressData[] AreaProgress;
         public AreaProgressData[] EntryProgress;
         private AreaProgress[] _entryProgressData;
+        //private PlayProfile[] _playProfiles;
 
         [System.Serializable]
         public struct AreaProgressData
@@ -49,6 +53,12 @@ namespace Ivayami.UI
                     }
                 }
             }
+
+            //if (_playProfiles == null || _playProfiles.Length == 0) _playProfiles = Resources.LoadAll<PlayProfile>("PlayProfiles");
+            //if(_playProfiles.FirstOrDefault(x => x.ProfileOrderInProgression == ProfileOrderInProgression && x != this) != null)
+            //{
+            //    for(int i = 0; i < )
+            //}
         }
     }
 }

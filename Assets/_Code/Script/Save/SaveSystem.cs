@@ -135,8 +135,8 @@ namespace Ivayami.Save {
         }
 
         public void DeleteProgress(byte saveId) {
-            string path = $"{_progressPath}/{ProgressFolderName}_{saveId}";
-            if (File.Exists(path)) File.Delete(path);
+            string path = $"{_progressPath}/{ProgressFolderName}_{saveId}.sav";
+            if (File.Exists(path)) File.Delete(path);            
         }
 
         public void RegisterSaveObject(SaveObject saveObject) {
