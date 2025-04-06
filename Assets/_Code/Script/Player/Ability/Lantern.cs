@@ -179,5 +179,14 @@ namespace Ivayami.Player.Ability
             if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
         }
 
+#if UNITY_EDITOR
+        private void OnDrawGizmos()
+        {
+            Mesh coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawMesh(coneMesh, _lightsOriginCurrent.transform.position, Quaternion.identity);
+        }
+#endif
+
     }
 }
