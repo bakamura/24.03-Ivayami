@@ -119,10 +119,8 @@ namespace Ivayami.Player.Ability
         }
 
         public override void AbilityEnd() { }
-
-        private void Illuminate()
-        {
-            if (Physics.Raycast(_lightsOriginCurrent.position, _lightsOriginCurrent.forward, out RaycastHit hitLine, _lightDistance, _lightableLayer)) LightFocuses.Instance.FocusUpdate(ILLUMINATION_KEY, new LightFocuses.LighData(hitLine.point));
+        private void Illuminate() {
+            if (Physics.Raycast(_lightsOriginCurrent.position, _lightsOriginCurrent.forward, out RaycastHit hitLine, _lightDistance, _lightableLayer)) LightFocuses.Instance.FocusUpdate(ILLUMINATION_KEY, new LightFocuses.LighData(this, hitLine.point));
             else LightFocuses.Instance.FocusRemove(ILLUMINATION_KEY);
 
             _stopIlluminating.Clear();

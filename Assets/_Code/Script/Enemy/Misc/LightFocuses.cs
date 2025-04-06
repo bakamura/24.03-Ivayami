@@ -11,14 +11,22 @@ namespace Ivayami.Enemy {
         private Dictionary<string, LighData> _focuses = new Dictionary<string, LighData>();
         public LighData[] Focuses { get { return _focuses.Values.ToArray(); } }
 
-        [System.Serializable]
+        [System.Serializable]        
         public struct LighData
         {
+            public object Type;
             public Vector3 Position;
             public float Radius;
             public static LighData Empty = new LighData();
-            public LighData(Vector3 pos, float radius = 0)
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <param name="type">EnemyLight, Lantern, null</param>
+            /// <param name="pos"></param>
+            /// <param name="radius"></param>
+            public LighData(object type, Vector3 pos, float radius = 0)
             {
+                Type = type;
                 Position = pos;
                 Radius = radius;
             }
