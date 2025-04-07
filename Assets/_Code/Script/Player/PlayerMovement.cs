@@ -50,6 +50,7 @@ namespace Ivayami.Player {
         private bool _canRun = true;
         private bool _canCrouch = true;
         private bool _holdToRun;
+        private bool _staminaRunBlock;
 
         [Header("Rotation")]
 
@@ -234,17 +235,18 @@ namespace Ivayami.Player {
         }
 
         private void ToggleWalk() {
-            if (_canRun) {
-                _running = !_running;
-                if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
-            }
+            _running = !_running;
+            WalkUpdate();
         }
 
         private void SetWalk(bool isRunning) {
-            if (_canRun) {
-                _running = isRunning;
-                if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
-            }
+            _running = isRunning;
+            WalkUpdate();
+        }
+
+        private void WalkUpdate() {
+            if (_running) _running = _canRun && !_staminaRunBlock;
+            if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
         }
 
         private void OnStressChange(float currentStress) {
@@ -262,10 +264,12 @@ namespace Ivayami.Player {
             if (!inStressRange) ResetStamina();
         }
 
+        // Unoptimized !!
         private void UpdateCurrentStamina(float value) {
             _staminaCurrent = Mathf.Clamp(_staminaCurrent + value * _maxStamina * Time.deltaTime, 0, _maxStamina);
-            if (_staminaCurrent <= 0) AllowRun(false);
-            else AllowRun(true);
+            if (_staminaCurrent <= 0) _staminaRunBlock = false;
+            else _staminaRunBlock = true;
+            WalkUpdate();
             onStaminaUpdate?.Invoke(_staminaCurrent / _maxStamina);
         }
 
@@ -274,7 +278,7 @@ namespace Ivayami.Player {
             onStaminaUpdate?.Invoke(1);
         }
 
-        public void AllowRun(bool allow) {
+        public void AllowRun(bool allow) { // Use stamina runblock
             if (!allow && _running) ToggleWalk();
             _canRun = allow;
         }
