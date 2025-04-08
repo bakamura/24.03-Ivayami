@@ -119,7 +119,10 @@ namespace Ivayami.Player.Ability {
                     Vector3 toTarget = _lightHits[i].transform.position - _lightsOriginCurrent.position;
                     if (Vector3.Angle(_lightsOriginCurrent.forward, toTarget.normalized) <= _coneAngleHalf) {
                         if (!Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer)) {
-                            if (_illuminatedObjects.Add(lightable)) lightable.Iluminate(ILLUMINATION_KEY, true);
+                            if (_illuminatedObjects.Add(lightable)) {
+                                lightable.Iluminate(ILLUMINATION_KEY, true);
+                                Debug.Log($"Illuminated {lightable.name}");
+                            }
                             _stopIlluminating.Remove(lightable);
                         }
                     }
@@ -129,6 +132,7 @@ namespace Ivayami.Player.Ability {
             foreach (Lightable lightableToStop in _stopIlluminating) {
                 lightableToStop.Iluminate(ILLUMINATION_KEY, false);
                 _illuminatedObjects.Remove(lightableToStop);
+                Debug.Log($"Remove Illuminated {lightableToStop.name}");
             }
         }
 
@@ -161,6 +165,12 @@ namespace Ivayami.Player.Ability {
             Mesh coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance);
             Gizmos.color = Color.yellow;
             Gizmos.DrawMesh(coneMesh, _lightsOriginCurrent.transform.position, Quaternion.Euler(FindFirstObjectByType<CinemachineFreeLook>().transform.eulerAngles.x, 0, 0));
+            Debug.Log(_illuminatedObjects.Count);
+            foreach (Lightable lightable in _illuminatedObjects) {
+                Vector3 toTarget = lightable.transform.position - _lightsOriginCurrent.position;
+                Gizmos.color = Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer) ? Color.green : Color.red;
+                Gizmos.DrawLine(_lightsOriginCurrent.position, lightable.transform.position);
+            }
         }
 #endif
 
