@@ -618,7 +618,7 @@ namespace Ivayami.Enemy
                 if (lightType is Ivayami.Player.Ability.Lantern)
                 {
                     _chaseTargetPatience = _delayToLoseTarget;
-                    _hitsCache[0] = PlayerMovement.Instance.GetComponent<CharacterController>();
+                    _hitsCache[0] = PlayerMovement.Instance.CharacterController;
                     _lastTargetPosition = _hitsCache[0].transform.position;
                 }
                 HandleAttackAnimationEnd();

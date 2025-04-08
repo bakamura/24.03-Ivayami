@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using Ivayami.Puzzle;
 
 namespace Ivayami.Enemy
 {
@@ -33,6 +32,7 @@ namespace Ivayami.Enemy
         private bool _paraliseAnimationEnded = true;
         private float _baseSpeed;
         private int _animIndex;
+        private LightFocuses.LightData _currentDirectLightData;
 
         protected override void Awake()
         {
@@ -44,19 +44,8 @@ namespace Ivayami.Enemy
                 Debug.LogWarning("No Illuminated enemy found in hierarchy");
                 return;
             }
-            //if (_lightBehaviour == LightBehaviours.Paralise)
-            //{
-            //    onIlluminated.AddListener((isIlluminated) =>
-            //    {
-            //        if (isIlluminated) Iluminate();
-            //        else IluminateStop();
-            //    });
-            //}
-            //else
-            //{
-            //    _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
-            //    _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
-            //}
+            if (_lightBehaviour == LightBehaviours.Paralise) onIlluminated.AddListener(UpdateDirectLight);
+
             _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
             _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
             _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
@@ -75,7 +64,7 @@ namespace Ivayami.Enemy
 
         [ContextMenu("Iluminate")]
         private void Iluminate(object lightType)
-        {            
+        {
             if (!_isIliuminated)
             {
                 _isIliuminated = true;
@@ -106,6 +95,11 @@ namespace Ivayami.Enemy
                     _target.UpdateBehaviour(true, true, false, null);
                 }
             }
+        }
+        //the light sent by Lantern
+        private void UpdateDirectLight(LightFocuses.LightData data)
+        {
+            _currentDirectLightData = data;
         }
 
         private IEnumerator IluminateCoroutine(object lightType)
@@ -149,32 +143,49 @@ namespace Ivayami.Enemy
 
         private IEnumerator CheckForLightsCoroutine()
         {
-            LightFocuses.LighData data;
+            LightFocuses.LightData data;
+            bool isIuminated;
             while (true)
             {
-                data = LightFocuses.Instance.GetClosestPointTo(transform.position);
-                if (data.IsValid() && 
-                    !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers) 
-                    && Vector3.Distance(transform.position, data.Position) <= _detectLightRange + data.Radius)
+                switch (_lightBehaviour)
                 {
-                    if(_lightBehaviour == LightBehaviours.FollowLight)
-                    {
-                        _target.UpdateBehaviour(false, true, false, null);
-                        _target.ChangeTargetPoint(data.Position);
-                    }
-                    else
-                    {
-                        Iluminate(data.Type);
-                    }
-                }
-                else
-                {
-                    if(_lightBehaviour == LightBehaviours.FollowLight)_target.UpdateBehaviour(true, true, false, null);
-                    else
-                    {
-                        IluminateStop();
-                    }
-                }
+                    case LightBehaviours.Paralise:
+                        isIuminated = false;
+                        if (_currentDirectLightData.IsValid())
+                        {
+                            isIuminated = true;
+                            data = _currentDirectLightData;
+                        }
+                        else
+                        {
+                            data = LightFocuses.Instance.GetClosestPointTo(transform.position, false);
+                            if (data.IsValid() &&
+                                !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers)
+                                && Vector3.Distance(transform.position, data.Position) <= _detectLightRange + data.Radius)
+                            {
+                                isIuminated = true;
+                            }
+                        }
+                        if (isIuminated) Iluminate(data.Type);
+                        else IluminateStop();
+                        break;
+                    case LightBehaviours.FollowLight:
+                        isIuminated = false;
+                        data = LightFocuses.Instance.GetClosestPointTo(transform.position);
+                        if (data.IsValid() &&
+                            !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers)
+                            && Vector3.Distance(transform.position, data.Position) <= _detectLightRange + data.Radius)
+                        {
+                            isIuminated = true;                            
+                        }
+                        if (isIuminated)
+                        {
+                            _target.UpdateBehaviour(false, true, false, data.Type);
+                            _target.ChangeTargetPoint(data.Position);
+                        }
+                        else _target.UpdateBehaviour(true, true, false, null);
+                        break;
+                }                
                 yield return _checkLightDelay;
             }
         }
@@ -198,7 +209,7 @@ namespace Ivayami.Enemy
             //if (_lightBehaviour == LightBehaviours.Paralise) return;
             Gizmos.color = _gizmoColor;
             Gizmos.DrawWireSphere(transform.position, _detectLightRange);
-            LightFocuses.LighData data = LightFocuses.Instance.GetClosestPointTo(transform.position);
+            LightFocuses.LightData data = LightFocuses.Instance.GetClosestPointTo(transform.position, _lightBehaviour == LightBehaviours.FollowLight);
             if (!Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
                 Gizmos.color = Color.green;
             else

@@ -804,6 +804,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 824531bb41ff14d4abf87152b15ef044, type: 2}
   _patrolBehaviour: 0
+  _onPatrolEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _points:
   - Position: {x: -0.4, y: 0, z: -2.72}
     DelayToNextPoint: 1
@@ -881,6 +884,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 824531bb41ff14d4abf87152b15ef044, type: 2}
   _patrolBehaviour: 0
+  _onPatrolEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _points:
   - Position: {x: -7.4, y: 0, z: 4.87}
     DelayToNextPoint: 1
@@ -2286,6 +2292,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 824531bb41ff14d4abf87152b15ef044, type: 2}
   _patrolBehaviour: 0
+  _onPatrolEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _points:
   - Position: {x: -14.08, y: 0, z: -2.72}
     DelayToNextPoint: 1
@@ -2990,6 +2999,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 6c7de0eae48e59546878afb2613c9b0b, type: 2}
   _patrolBehaviour: 0
+  _onPatrolEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _points:
   - Position: {x: -32.3, y: 0, z: -8.81}
     DelayToNextPoint: 1
@@ -3069,6 +3081,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 5a348f06105a5804bb902113ddc9d4de, type: 2}
   _patrolBehaviour: 0
+  _onPatrolEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _points:
   - Position: {x: 32.3, y: 0, z: -8.82}
     DelayToNextPoint: 1
@@ -4343,6 +4358,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _movementData: {fileID: 11400000, guid: 6c7de0eae48e59546878afb2613c9b0b, type: 2}
   _patrolBehaviour: 0
+  _onPatrolEnd:
+    m_PersistentCalls:
+      m_Calls: []
   _points:
   - Position: {x: 0, y: 0, z: -14.06}
     DelayToNextPoint: 0
@@ -4461,7 +4479,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.083333336
+  m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: c439c8bb99284524bb9c553831014ba0, type: 2}
   m_BuildHeightMesh: 0
@@ -6431,6 +6449,53 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1702692565
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1702692567}
+  - component: {fileID: 1702692566}
+  m_Layer: 0
+  m_Name: EnemyLigh
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1702692566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702692565}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3825fa98a248ffa40af4211209fffa6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _radius: 5
+  _debugColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 0.5019608}
+  _gizmoAlwaysOn: 1
+--- !u!4 &1702692567
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702692565}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.28, y: 1.153, z: 9.67}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1702982881
 GameObject:
   m_ObjectHideFlags: 0
@@ -8129,7 +8194,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.33333334
+  m_VoxelSize: 0.16666667
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: 313fb3c7e7fb5b1409913271796346b8, type: 2}
   m_BuildHeightMesh: 0
@@ -9851,3 +9916,4 @@ SceneRoots:
   - {fileID: 720838402}
   - {fileID: 5105522644307653758}
   - {fileID: 1273857068}
+  - {fileID: 1702692567}
