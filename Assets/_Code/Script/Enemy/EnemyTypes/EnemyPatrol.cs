@@ -357,7 +357,7 @@ namespace Ivayami.Enemy
             _navMeshAgent.speed = speed;
         }
 
-        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped)
+        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped, object lightType)
         {
             _canChaseTarget = canChaseTarget;
             _canWalkPath = canWalkPath;
