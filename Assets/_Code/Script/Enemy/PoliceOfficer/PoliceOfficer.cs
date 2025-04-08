@@ -98,7 +98,7 @@ namespace Ivayami.Enemy
 
         private IEnumerator InitializeAgent()
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
             _navMeshAgent.enabled = true;
             if (_startActive) StartBehaviour();
             _initializeCoroutine = null;
@@ -109,7 +109,7 @@ namespace Ivayami.Enemy
         {
             if (!_navMeshAgent.isOnNavMesh)
             {
-                Debug.LogWarning($"Enemy {name} of type {typeof(PoliceOfficer)} is not in a navmesh");
+                //Debug.LogWarning($"Enemy {name} of type {typeof(PoliceOfficer)} is not in a navmesh");
                 return;
             }
             if (!IsActive && _navMeshAgent.isOnNavMesh)
