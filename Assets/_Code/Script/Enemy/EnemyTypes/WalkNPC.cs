@@ -32,6 +32,11 @@ namespace Ivayami.Enemy
                 TryLookAtPlayer();
         }
 
+        private void OnDisable()
+        {
+            StopBehaviour();
+        }
+
         private void Setup()
         {
             if (_navMeshAgent) return;
