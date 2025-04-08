@@ -899,7 +899,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _paths.Array.data[0].LookAtPlayer
@@ -1235,7 +1235,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[2].OnPointReached.m_PersistentCalls.m_Calls.Array.size
@@ -1279,11 +1279,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
-      value: 1
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.data[2].m_Mode
@@ -1312,11 +1312,11 @@ PrefabInstance:
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 29999932}
+      objectReference: {fileID: 29999933}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 29999932}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
@@ -1387,11 +1387,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetActive
+      value: StopBehaviour
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
-      value: 
+      value: SetActive
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.data[2].m_MethodName
@@ -1419,11 +1419,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UnityEngine.GameObject, UnityEngine
+      value: Ivayami.Enemy.WalkNPC, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: UnityEngine.ParticleSystem, UnityEngine
+      value: UnityEngine.GameObject, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 8459383230384113821, guid: 9c695eefdcc9bfb43bd0a2062ec6a3be, type: 3}
       propertyPath: _pathsCallback.Array.data[1].OnPointReached.m_PersistentCalls.m_Calls.Array.data[2].m_TargetAssemblyTypeName
@@ -68349,19 +68349,7 @@ MonoBehaviour:
   _patrolBehaviour: 3
   _onPatrolEnd:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 29999932}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   _points:
   - Position: {x: 82.62, y: 350.46, z: 70.83}
     DelayToNextPoint: 0
