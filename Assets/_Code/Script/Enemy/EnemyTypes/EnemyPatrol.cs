@@ -140,7 +140,12 @@ namespace Ivayami.Enemy
         [ContextMenu("Start")]
         public void StartBehaviour()
         {
-            if (!IsActive)
+            if (!_navMeshAgent.isOnNavMesh)
+            {
+                Debug.LogWarning($"Enemy {name} of type {typeof(PoliceOfficer)} is not in a navmesh");
+                return;
+            }
+            if (!IsActive && _navMeshAgent.isOnNavMesh)
             {
                 if (!_navMeshAgent.enabled && _initializeCoroutine == null)
                 {
