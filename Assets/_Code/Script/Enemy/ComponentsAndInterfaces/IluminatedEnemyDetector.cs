@@ -42,32 +42,21 @@ namespace Ivayami.Enemy
         {
             if (!LightFocuses.Instance) return;
             base.Awake();
+            
             _target = GetComponentInParent<IIluminatedEnemy>();
             if (_target == null)
             {
                 Debug.LogWarning("No Illuminated enemy found in hierarchy");
                 return;
             }
-            onIlluminated.AddListener(IlluminateHandler);
-            //if (_lightBehaviour == LightBehaviours.Paralise)
-            //{
-            //    onIlluminated.AddListener((isIlluminated) =>
-            //    {
-            //        if (isIlluminated) Iluminate();
-            //        else IluminateStop();
-            //    });
-            //}
-            //else
-            //{
-            //    _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
-            //    _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
-            //}
+            _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
             _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
             _checkForLightsCoroutine = StartCoroutine(IlluminatedByFocusesCheck());
-            _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
+            
         }
 
         private void OnEnable() {
+            onIlluminated.AddListener(IlluminateHandler);
             LightFocuses.OnChange.AddListener(FocusesChangeHandle);
         }
 
@@ -80,6 +69,8 @@ namespace Ivayami.Enemy
                 StopCoroutine(_checkForLightsCoroutine);
                 _checkForLightsCoroutine = null;
             }
+            onIlluminated.RemoveListener(IlluminateHandler);
+            LightFocuses.OnChange.RemoveListener(FocusesChangeHandle);
         }
 
         private void IlluminateHandler(bool isIlluminated)
@@ -170,7 +161,6 @@ namespace Ivayami.Enemy
             _target.ChangeSpeed(_baseSpeed);
             _target.UpdateBehaviour(true, true, false);
             _paraliseAnimationEnded = true;
-            //Debug.Log("EndParaliseAnim");
         }
 
 #if UNITY_EDITOR
