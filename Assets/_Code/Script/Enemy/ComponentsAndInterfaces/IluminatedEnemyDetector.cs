@@ -28,11 +28,15 @@ namespace Ivayami.Enemy
         private WaitForSeconds _checkLightDelay;
         private Coroutine _iluminatedCoroutine;
         private Coroutine _checkForLightsCoroutine;
-        private bool _isIliuminated;
+        private bool _isIlluminated;
         private bool _hasParaliseAnim;
         private bool _paraliseAnimationEnded = true;
         private float _baseSpeed;
         private int _animIndex;
+
+        private bool _wasLitByFocuses;
+        private bool _isLitByFocuses;
+        private const string FOCUSES_KEY = "LightFocuses Illumination";
 
         protected override void Awake()
         {
@@ -44,6 +48,7 @@ namespace Ivayami.Enemy
                 Debug.LogWarning("No Illuminated enemy found in hierarchy");
                 return;
             }
+            onIlluminated.AddListener(IlluminateHandler);
             //if (_lightBehaviour == LightBehaviours.Paralise)
             //{
             //    onIlluminated.AddListener((isIlluminated) =>
@@ -58,14 +63,18 @@ namespace Ivayami.Enemy
             //    _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
             //}
             _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
-            _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
+            _checkForLightsCoroutine = StartCoroutine(IlluminatedByFocusesCheck());
             _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
+        }
+
+        private void OnEnable() {
+            LightFocuses.OnChange.AddListener(FocusesChangeHandle);
         }
 
         private void OnDisable()
         {
             if (_target == null) return;
-            IluminateStop();
+            IlluminateHandler(false);
             if (_checkForLightsCoroutine != null)
             {
                 StopCoroutine(_checkForLightsCoroutine);
@@ -73,51 +82,60 @@ namespace Ivayami.Enemy
             }
         }
 
-        [ContextMenu("Iluminate")]
-        private void Iluminate(object lightType)
+        private void IlluminateHandler(bool isIlluminated)
         {            
-            if (!_isIliuminated)
+            if (_isIlluminated != isIlluminated)
             {
-                _isIliuminated = true;
-                _baseSpeed = _target.CurrentSpeed;
-                _animIndex = Random.Range(0, _paraliseAnimationRandomAmount);
-                _iluminatedCoroutine ??= StartCoroutine(IluminateCoroutine(lightType));
-            }
-        }
-
-        [ContextMenu("StopIluminate")]
-        private void IluminateStop()
-        {
-            if (_isIliuminated)
-            {
-                _isIliuminated = false;
-                if (_iluminatedCoroutine != null)
-                {
-                    StopCoroutine(_iluminatedCoroutine);
-                    _iluminatedCoroutine = null;
+                _isIlluminated = isIlluminated;
+                if(_isIlluminated) {
+                    _iluminatedCoroutine ??= StartCoroutine(IluminateCoroutine());
                 }
-                if (_hasParaliseAnim)
-                {
-                    _enemyAnimator.Paralise(false, false, HandleParaliseAnimationEnd, _animIndex);
-                }
-                else
-                {
-                    _target.ChangeSpeed(_baseSpeed);
-                    _target.UpdateBehaviour(true, true, false, null);
+                else {
+                    if (_iluminatedCoroutine != null) {
+                        StopCoroutine(_iluminatedCoroutine);
+                        _iluminatedCoroutine = null;
+                    }
+                    if (_hasParaliseAnim) {
+                        _enemyAnimator.Paralise(false, false, HandleParaliseAnimationEnd, _animIndex);
+                    }
+                    else {
+                        _target.ChangeSpeed(_baseSpeed);
+                        _target.UpdateBehaviour(true, true, false);
+                    }
                 }
             }
         }
 
-        private IEnumerator IluminateCoroutine(object lightType)
+        private void FocusesChangeHandle() {
+            if (_lightBehaviour == LightBehaviours.FollowLight) {
+                _target.UpdateBehaviour(!_isLitByFocuses, true, false);
+                if (_isLitByFocuses) _target.ChangeTargetPoint(LightFocuses.Instance.GetClosestPointTo(transform.position).Position);
+            }
+        }
+
+        private IEnumerator IlluminatedByFocusesCheck()
         {
-            float count;
+            while (true)
+            {
+                _wasLitByFocuses = _isLitByFocuses;
+                _isLitByFocuses = LightFocuses.Instance.IsPointInsideLightRange(transform.position, _detectLightRange);
+                if (_wasLitByFocuses != _isLitByFocuses) Illuminate(FOCUSES_KEY, _isLitByFocuses);
+                
+                yield return _checkLightDelay;
+            }
+        }
+
+        private IEnumerator IluminateCoroutine()
+        {
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
             WaitForSeconds paraliseDelay = new WaitForSeconds(_paraliseDuration);
-            while (_isIliuminated)
+            _baseSpeed = _target.CurrentSpeed;
+            _animIndex = Random.Range(0, _paraliseAnimationRandomAmount);
+            while (_isIlluminated)
             {
-                count = 0;
                 if (_interpolateDuration > 0)
                 {
+                    float count = 0;
                     while (count < 1)
                     {
                         count += Time.fixedDeltaTime / _interpolateDuration;
@@ -129,60 +147,28 @@ namespace Ivayami.Enemy
                 {
                     _target.ChangeSpeed(_finalSpeed);
                 }
-                _target.UpdateBehaviour(false, false, true, lightType);
+
+                _target.UpdateBehaviour(false, false, true);
                 if (_hasParaliseAnim)
                 {
                     _enemyAnimator.Paralise(true, _paraliseAnimationEnded && _willInterruptAttack, paraliseAnimationIndex: _animIndex);
-                    //Debug.Log("IliminateAnimStart");
                     _paraliseAnimationEnded = false;
                 }
                 if (_paraliseDuration > 0)
                 {
                     yield return paraliseDelay;
                     _target.ChangeSpeed(_baseSpeed);
-                    _target.UpdateBehaviour(true, true, false, lightType);
+                    _target.UpdateBehaviour(true, true, false);
                 }
                 else yield break;
             }
             _iluminatedCoroutine = null;
         }
 
-        private IEnumerator CheckForLightsCoroutine()
-        {
-            LightFocuses.LighData data;
-            while (true)
-            {
-                data = LightFocuses.Instance.GetClosestPointTo(transform.position);
-                if (data.IsValid() && 
-                    !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers) 
-                    && Vector3.Distance(transform.position, data.Position) <= _detectLightRange + data.Radius)
-                {
-                    if(_lightBehaviour == LightBehaviours.FollowLight)
-                    {
-                        _target.UpdateBehaviour(false, true, false, null);
-                        _target.ChangeTargetPoint(data.Position);
-                    }
-                    else
-                    {
-                        Iluminate(data.Type);
-                    }
-                }
-                else
-                {
-                    if(_lightBehaviour == LightBehaviours.FollowLight)_target.UpdateBehaviour(true, true, false, null);
-                    else
-                    {
-                        IluminateStop();
-                    }
-                }
-                yield return _checkLightDelay;
-            }
-        }
-
         private void HandleParaliseAnimationEnd()
         {
             _target.ChangeSpeed(_baseSpeed);
-            _target.UpdateBehaviour(true, true, false, null);
+            _target.UpdateBehaviour(true, true, false);
             _paraliseAnimationEnded = true;
             //Debug.Log("EndParaliseAnim");
         }
@@ -198,7 +184,7 @@ namespace Ivayami.Enemy
             //if (_lightBehaviour == LightBehaviours.Paralise) return;
             Gizmos.color = _gizmoColor;
             Gizmos.DrawWireSphere(transform.position, _detectLightRange);
-            LightFocuses.LighData data = LightFocuses.Instance.GetClosestPointTo(transform.position);
+            LightFocuses.LightData data = LightFocuses.Instance.GetClosestPointTo(transform.position);
             if (!Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
                 Gizmos.color = Color.green;
             else
@@ -206,5 +192,6 @@ namespace Ivayami.Enemy
             Gizmos.DrawLine(transform.position, data.Position);
         }
 #endif
+
     }
 }
