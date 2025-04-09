@@ -7,13 +7,8 @@ namespace Ivayami.Enemy {
 
         protected HashSet<string> _illuminationSources { get; set; } = new HashSet<string>();
         public UnityEvent<bool> onIlluminated;
-        //public UnityEvent<LightFocuses.LightData> onIlluminated;
 
-        //protected virtual void Awake() {
-        //    if (!TryGetComponent(out Collider collider)) Debug.LogWarning($"There is no Collider associated with Lightable '{name}'");
-        //}
-
-        public void Iluminate(string key, bool illuminated/*, LightFocuses.LightData lightData*/) {
+        public void Illuminate(string key, bool illuminated) {
             if (illuminated) {
                 if (_illuminationSources.Add(key)) {
                     if (_illuminationSources.Count == 1) onIlluminated.Invoke(true);

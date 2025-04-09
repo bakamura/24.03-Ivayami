@@ -1,12 +1,12 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-//using UnityEngine.Events;
 
 namespace Ivayami.Enemy {
     public class LightFocuses : MonoSingleton<LightFocuses> {
 
-        //public static UnityEvent OnChange { get; private set; }
+        public static Action OnChange;
 
         private Dictionary<string, LightData> _lightAreaFocuses = new Dictionary<string, LightData>();
         private Dictionary<string, LightData> _lightPointFocuses = new Dictionary<string, LightData>();
@@ -41,21 +41,25 @@ namespace Ivayami.Enemy {
         public void LightAreaFocusUpdate(string key, LightData data) {
             if (_lightAreaFocuses.ContainsKey(key)) _lightAreaFocuses[key] = data;
             else _lightAreaFocuses.Add(key, data);
+            OnChange?.Invoke();
         }
 
         public void LightAreaFocusRemove(string key) {
             _lightAreaFocuses.Remove(key);
+            OnChange?.Invoke();
         }
 
         public void LightPointFocusUpdate(string key, LightData data)
         {
             if (_lightPointFocuses.ContainsKey(key)) _lightPointFocuses[key] = data;
             else _lightPointFocuses.Add(key, data);
+            OnChange?.Invoke();
         }
 
         public void LightPointFocusRemove(string key)
         {
             _lightPointFocuses.Remove(key);
+            OnChange?.Invoke();
         }
 
         public LightData GetClosestPointToAreaLight(Vector3 position) {

@@ -95,7 +95,7 @@ namespace Ivayami.Player.Ability {
             else {
                 Focus(false);
                 StopAllCoroutines();
-                foreach (Lightable lightable in _illuminatedObjects) lightable.Iluminate(ILLUMINATION_KEY, false);
+                foreach (Lightable lightable in _illuminatedObjects) lightable.Illuminate(ILLUMINATION_KEY, false);
                 _illuminatedObjects.Clear();
                 LightFocuses.Instance.LightPointFocusRemove(ILLUMINATION_KEY);
             }
@@ -118,7 +118,7 @@ namespace Ivayami.Player.Ability {
                     Vector3 toTarget = _lightHits[i].transform.position - _lightsOriginCurrent.position;
                     if (Vector3.Angle(_lightsOriginCurrent.forward, toTarget.normalized) <= _coneAngleHalf) {
                         if (!Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer)) {
-                            if (_illuminatedObjects.Add(lightable)) lightable.Iluminate(ILLUMINATION_KEY, true);
+                            if (_illuminatedObjects.Add(lightable)) lightable.Illuminate(ILLUMINATION_KEY, true);
                             _stopIlluminating.Remove(lightable);
                         }
                     }
@@ -126,7 +126,7 @@ namespace Ivayami.Player.Ability {
             }
 
             foreach (Lightable lightableToStop in _stopIlluminating) {
-                lightableToStop.Iluminate(ILLUMINATION_KEY, false);
+                lightableToStop.Illuminate(ILLUMINATION_KEY, false);
                 _illuminatedObjects.Remove(lightableToStop);
             }
         }
