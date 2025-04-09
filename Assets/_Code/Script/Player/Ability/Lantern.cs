@@ -169,7 +169,7 @@ namespace Ivayami.Player.Ability {
         private void OnDrawGizmos() {
             Mesh coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance);
             Gizmos.color = _coneColor;
-            Gizmos.DrawMesh(coneMesh, _lightsOriginCurrent.transform.position, Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0, 0));
+            Gizmos.DrawMesh(coneMesh, _lightsOriginCurrent.transform.position, Application.isPlaying ? Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0, 0) : Quaternion.identity);
 
 
             Debug.Log(_illuminatedObjects.Count);
