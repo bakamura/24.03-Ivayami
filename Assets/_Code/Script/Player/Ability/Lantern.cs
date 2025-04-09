@@ -152,6 +152,7 @@ namespace Ivayami.Player.Ability {
             PlayerCamera.Instance.SetOrbits(_focused ? _focusedCamOrbits : null);
             CameraAimReposition.Instance.SetMaxDistance(_focused ? _focusedCamArmDistance : 0f);
             PlayerMovement.Instance.AllowRun(!isFocusing);
+            PlayerMovement.Instance.useCameraRotaion = _focused;
             if (!_focused) _visuals.localRotation = Quaternion.identity;
         }
 
