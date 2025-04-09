@@ -175,7 +175,7 @@ namespace Ivayami.Enemy
         {
             StopBehaviour();
         }
-
+        #region BaseBehaviour
         private IEnumerator InitializeAgent()
         {
             yield return null;
@@ -413,6 +413,7 @@ namespace Ivayami.Enemy
             _navMeshAgent.stoppingDistance = _directContactWithTarget ? _collision.radius + _currentTargetColliderSizeFactor + .1f : _baseStoppingDistance;
             return _directContactWithTarget;
         }
+#endregion
 
         #region LeapAttack
         /// <summary>
@@ -609,13 +610,13 @@ namespace Ivayami.Enemy
             _navMeshAgent.speed = speed;
         }
 
-        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped, object lightType)
+        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped, bool forceTargetDetect)
         {
             _canChaseTarget = canChaseTarget;
             _canWalkPath = canWalkPath;
             if (!canWalkPath && !canChaseTarget)
             {
-                if (lightType is Ivayami.Player.Ability.Lantern)
+                if (forceTargetDetect)
                 {
                     _chaseTargetPatience = _delayToLoseTarget;
                     _hitsCache[0] = PlayerMovement.Instance.CharacterController;

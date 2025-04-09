@@ -32,12 +32,12 @@ namespace Ivayami.Enemy
         private bool _paraliseAnimationEnded = true;
         private float _baseSpeed;
         private int _animIndex;
-        private LightFocuses.LightData _currentDirectLightData;
+        private bool _reciveDirectLight;
 
-        protected override void Awake()
+        private void Awake()
         {
             if (!LightFocuses.Instance) return;
-            base.Awake();
+            //base.Awake();
             _target = GetComponentInParent<IIluminatedEnemy>();
             if (_target == null)
             {
@@ -46,9 +46,9 @@ namespace Ivayami.Enemy
             }
             if (_lightBehaviour == LightBehaviours.Paralise) onIlluminated.AddListener(UpdateDirectLight);
 
+            _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
             _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
             _checkForLightsCoroutine = StartCoroutine(CheckForLightsCoroutine());
-            _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
         }
 
         private void OnDisable()
@@ -63,14 +63,14 @@ namespace Ivayami.Enemy
         }
 
         [ContextMenu("Iluminate")]
-        private void Iluminate(object lightType)
+        private void Iluminate(bool forceTargetDetect)
         {
             if (!_isIliuminated)
             {
                 _isIliuminated = true;
                 _baseSpeed = _target.CurrentSpeed;
                 _animIndex = Random.Range(0, _paraliseAnimationRandomAmount);
-                _iluminatedCoroutine ??= StartCoroutine(IluminateCoroutine(lightType));
+                _iluminatedCoroutine ??= StartCoroutine(IluminateCoroutine(forceTargetDetect));
             }
         }
 
@@ -92,17 +92,17 @@ namespace Ivayami.Enemy
                 else
                 {
                     _target.ChangeSpeed(_baseSpeed);
-                    _target.UpdateBehaviour(true, true, false, null);
+                    _target.UpdateBehaviour(true, true, false, false);
                 }
             }
         }
         //the light sent by Lantern
-        private void UpdateDirectLight(LightFocuses.LightData data)
+        private void UpdateDirectLight(bool illuminated)
         {
-            _currentDirectLightData = data;
+            _reciveDirectLight = illuminated;
         }
 
-        private IEnumerator IluminateCoroutine(object lightType)
+        private IEnumerator IluminateCoroutine(bool forceTargetDetect)
         {
             float count;
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
@@ -123,7 +123,7 @@ namespace Ivayami.Enemy
                 {
                     _target.ChangeSpeed(_finalSpeed);
                 }
-                _target.UpdateBehaviour(false, false, true, lightType);
+                _target.UpdateBehaviour(false, false, true, forceTargetDetect);
                 if (_hasParaliseAnim)
                 {
                     _enemyAnimator.Paralise(true, _paraliseAnimationEnded && _willInterruptAttack, paraliseAnimationIndex: _animIndex);
@@ -134,7 +134,7 @@ namespace Ivayami.Enemy
                 {
                     yield return paraliseDelay;
                     _target.ChangeSpeed(_baseSpeed);
-                    _target.UpdateBehaviour(true, true, false, lightType);
+                    _target.UpdateBehaviour(true, true, false, forceTargetDetect);
                 }
                 else yield break;
             }
@@ -151,14 +151,15 @@ namespace Ivayami.Enemy
                 {
                     case LightBehaviours.Paralise:
                         isIuminated = false;
-                        if (_currentDirectLightData.IsValid())
+                        bool forceTargetDetect = false;
+                        if (_reciveDirectLight)
                         {
                             isIuminated = true;
-                            data = _currentDirectLightData;
+                            forceTargetDetect = true;
                         }
                         else
                         {
-                            data = LightFocuses.Instance.GetClosestPointTo(transform.position, false);
+                            data = LightFocuses.Instance.GetClosestPointToAreaLight(transform.position);
                             if (data.IsValid() &&
                                 !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers)
                                 && Vector3.Distance(transform.position, data.Position) <= _detectLightRange + data.Radius)
@@ -166,12 +167,12 @@ namespace Ivayami.Enemy
                                 isIuminated = true;
                             }
                         }
-                        if (isIuminated) Iluminate(data.Type);
+                        if (isIuminated) Iluminate(forceTargetDetect);
                         else IluminateStop();
                         break;
                     case LightBehaviours.FollowLight:
                         isIuminated = false;
-                        data = LightFocuses.Instance.GetClosestPointTo(transform.position);
+                        data = LightFocuses.Instance.GetClosestPointToAllLights(transform.position);
                         if (data.IsValid() &&
                             !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers)
                             && Vector3.Distance(transform.position, data.Position) <= _detectLightRange + data.Radius)
@@ -180,10 +181,10 @@ namespace Ivayami.Enemy
                         }
                         if (isIuminated)
                         {
-                            _target.UpdateBehaviour(false, true, false, data.Type);
+                            _target.UpdateBehaviour(false, true, false, false);
                             _target.ChangeTargetPoint(data.Position);
                         }
-                        else _target.UpdateBehaviour(true, true, false, null);
+                        else _target.UpdateBehaviour(true, true, false, false);
                         break;
                 }                
                 yield return _checkLightDelay;
@@ -193,7 +194,7 @@ namespace Ivayami.Enemy
         private void HandleParaliseAnimationEnd()
         {
             _target.ChangeSpeed(_baseSpeed);
-            _target.UpdateBehaviour(true, true, false, null);
+            _target.UpdateBehaviour(true, true, false, false);
             _paraliseAnimationEnded = true;
             //Debug.Log("EndParaliseAnim");
         }
@@ -209,7 +210,8 @@ namespace Ivayami.Enemy
             //if (_lightBehaviour == LightBehaviours.Paralise) return;
             Gizmos.color = _gizmoColor;
             Gizmos.DrawWireSphere(transform.position, _detectLightRange);
-            LightFocuses.LightData data = LightFocuses.Instance.GetClosestPointTo(transform.position, _lightBehaviour == LightBehaviours.FollowLight);
+            LightFocuses.LightData data = _lightBehaviour == LightBehaviours.Paralise ? 
+                LightFocuses.Instance.GetClosestPointToAreaLight(transform.position) : LightFocuses.Instance.GetClosestPointToAllLights(transform.position);
             if (!Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
                 Gizmos.color = Color.green;
             else

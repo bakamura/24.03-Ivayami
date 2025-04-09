@@ -4,7 +4,7 @@ namespace Ivayami.Enemy
 {
     public class EnemyLight : MonoBehaviour
     {
-        [SerializeField, Min(0f)] private float _radius;
+        [SerializeField, Min(0f), Tooltip("if is 0 will only interact with FollowLight enemies")] private float _radius;
         public float Radius => _radius;
 #if UNITY_EDITOR
         [SerializeField] private Color _debugColor = Color.yellow;
@@ -13,12 +13,18 @@ namespace Ivayami.Enemy
 
         private void OnEnable()
         {
-            if (LightFocuses.Instance) LightFocuses.Instance.FocusUpdate(nameof(EnemyLight) + gameObject.name + GetInstanceID(), new LightFocuses.LightData(this, transform.position, _radius));
+            if (!LightFocuses.Instance) return;
+            if (_radius > 0)
+                LightFocuses.Instance.LightAreaFocusUpdate(nameof(EnemyLight) + gameObject.name + GetInstanceID(), new LightFocuses.LightData(transform.position, _radius));
+            else
+                LightFocuses.Instance.LightPointFocusUpdate(nameof(EnemyLight) + gameObject.name + GetInstanceID(), new LightFocuses.LightData(transform.position));
         }
 
         private void OnDisable()
         {
-            if (LightFocuses.Instance) LightFocuses.Instance.FocusRemove(nameof(EnemyLight) + gameObject.name + GetInstanceID());
+            if (!LightFocuses.Instance) return;
+            if(_radius > 0) LightFocuses.Instance.LightAreaFocusRemove(nameof(EnemyLight) + gameObject.name + GetInstanceID());
+            else LightFocuses.Instance.LightPointFocusRemove(nameof(EnemyLight) + gameObject.name + GetInstanceID());
         }
 
 #if UNITY_EDITOR
