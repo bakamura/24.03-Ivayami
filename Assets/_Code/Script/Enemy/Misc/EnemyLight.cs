@@ -13,7 +13,7 @@ namespace Ivayami.Enemy
 
         private void OnEnable()
         {
-            if (LightFocuses.Instance) LightFocuses.Instance.FocusUpdate(nameof(EnemyLight) + gameObject.name + GetInstanceID(), new LightFocuses.LighData(this, transform.position, _radius));
+            if (LightFocuses.Instance) LightFocuses.Instance.FocusUpdate(nameof(EnemyLight) + gameObject.name + GetInstanceID(), new LightFocuses.LightData(this, transform.position, _radius));
         }
 
         private void OnDisable()

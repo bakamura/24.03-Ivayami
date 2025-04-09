@@ -45,7 +45,7 @@ namespace Ivayami.Player.Ability {
         private float _lightDistance;
 
 
-        private const string ILLUMINATION_KEY = "Lantern";
+        public const string ILLUMINATION_KEY = "Lantern";
 
         private void Awake() {
             _lightHits = new Collider[_lightMaxHitNumber];
@@ -98,7 +98,7 @@ namespace Ivayami.Player.Ability {
             else {
                 Focus(false);
                 StopAllCoroutines();
-                foreach (Lightable lightable in _illuminatedObjects) lightable.Iluminate(ILLUMINATION_KEY, false);
+                foreach (Lightable lightable in _illuminatedObjects) lightable.Illuminate(ILLUMINATION_KEY, false);
                 _illuminatedObjects.Clear();
                 LightFocuses.Instance.FocusRemove(ILLUMINATION_KEY);
             }
@@ -107,7 +107,7 @@ namespace Ivayami.Player.Ability {
         public override void AbilityEnd() { }
 
         private void Illuminate() {
-            if (Physics.Raycast(_lightsOriginCurrent.position, _lightsOriginCurrent.forward, out RaycastHit hitLine, _lightDistance, _lightableLayer)) LightFocuses.Instance.FocusUpdate(ILLUMINATION_KEY, new LightFocuses.LighData(this, hitLine.point));
+            if (Physics.Raycast(_lightsOriginCurrent.position, _lightsOriginCurrent.forward, out RaycastHit hitLine, _lightDistance, _lightableLayer)) LightFocuses.Instance.FocusUpdate(ILLUMINATION_KEY, new LightFocuses.LightData(this, hitLine.point));
             else LightFocuses.Instance.FocusRemove(ILLUMINATION_KEY);
 
             _stopIlluminating.Clear();
@@ -120,7 +120,7 @@ namespace Ivayami.Player.Ability {
                     if (Vector3.Angle(_lightsOriginCurrent.forward, toTarget.normalized) <= _coneAngleHalf) {
                         if (!Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer)) {
                             if (_illuminatedObjects.Add(lightable)) {
-                                lightable.Iluminate(ILLUMINATION_KEY, true);
+                                lightable.Illuminate(ILLUMINATION_KEY, true);
                                 Debug.Log($"Illuminated {lightable.name}");
                             }
                             _stopIlluminating.Remove(lightable);
@@ -130,7 +130,7 @@ namespace Ivayami.Player.Ability {
             }
 
             foreach (Lightable lightableToStop in _stopIlluminating) {
-                lightableToStop.Iluminate(ILLUMINATION_KEY, false);
+                lightableToStop.Illuminate(ILLUMINATION_KEY, false);
                 _illuminatedObjects.Remove(lightableToStop);
                 Debug.Log($"Remove Illuminated {lightableToStop.name}");
             }
@@ -161,10 +161,17 @@ namespace Ivayami.Player.Ability {
         }
 
 #if UNITY_EDITOR
+        [Header("Debug")]
+
+        [SerializeField] private Color _coneColor;
+        private Mesh _coneMesh;
+
         private void OnDrawGizmos() {
             Mesh coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance);
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawMesh(coneMesh, _lightsOriginCurrent.transform.position, Quaternion.Euler(FindFirstObjectByType<CinemachineFreeLook>().transform.eulerAngles.x, 0, 0));
+            Gizmos.color = _coneColor;
+            Gizmos.DrawMesh(coneMesh, _lightsOriginCurrent.transform.position, Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0, 0));
+
+
             Debug.Log(_illuminatedObjects.Count);
             foreach (Lightable lightable in _illuminatedObjects) {
                 Vector3 toTarget = lightable.transform.position - _lightsOriginCurrent.position;
