@@ -98,6 +98,7 @@ namespace Ivayami.Enemy {
         public LightData GetClosestPointToAllLights(Vector3 position)
         {
             LightData[] focuses = AreaFocuses;
+            focuses = focuses.Union(PointFocuses).ToArray();
             if (focuses.Length <= 0) return LightData.Empty;
             if (focuses.Length == 1) return focuses[0];
             int closest = 0;
