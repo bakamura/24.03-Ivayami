@@ -65,7 +65,7 @@ namespace Ivayami.Enemy {
         }
 
         public bool IsPointInsideLightRange(Vector3 position, float range) {
-            foreach(LightData lightData in _focuses.Values) if(Vector2.Distance(position, lightData.Position) < range + lightData.Radius) return true;
+            foreach(LightData lightData in _focuses.Values) if(Vector3.Distance(position, lightData.Position) < range + lightData.Radius) return true;
             return false;
         }
 

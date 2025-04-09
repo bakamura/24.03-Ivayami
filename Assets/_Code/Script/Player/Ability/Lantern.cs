@@ -172,8 +172,7 @@ namespace Ivayami.Player.Ability {
             Gizmos.color = _coneColor;
             Gizmos.DrawMesh(coneMesh, _lightsOriginCurrent.transform.position, Application.isPlaying ? Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0, 0) : Quaternion.identity);
 
-
-            Debug.Log(_illuminatedObjects.Count);
+            // To Fix (Indicator of check)
             foreach (Lightable lightable in _illuminatedObjects) {
                 Vector3 toTarget = lightable.transform.position - _lightsOriginCurrent.position;
                 Gizmos.color = Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer) ? Color.green : Color.red;

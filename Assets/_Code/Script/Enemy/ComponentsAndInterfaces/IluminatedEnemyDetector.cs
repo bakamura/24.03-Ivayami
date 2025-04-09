@@ -171,14 +171,10 @@ namespace Ivayami.Enemy
 
         private void OnDrawGizmosSelected()
         {
-            //if (_lightBehaviour == LightBehaviours.Paralise) return;
             Gizmos.color = _gizmoColor;
             Gizmos.DrawWireSphere(transform.position, _detectLightRange);
             LightFocuses.LightData data = LightFocuses.Instance.GetClosestPointTo(transform.position);
-            if (!Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
-                Gizmos.color = Color.green;
-            else
-                Gizmos.color = Color.red;
+            Gizmos.color = Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers) ? Color.red : Color.green;
             Gizmos.DrawLine(transform.position, data.Position);
         }
 #endif
