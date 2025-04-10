@@ -2,17 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Ivayami.Puzzle {
+namespace Ivayami.Enemy {
     public class Lightable : MonoBehaviour {
 
         protected HashSet<string> _illuminationSources { get; set; } = new HashSet<string>();
         public UnityEvent<bool> onIlluminated;
 
-        protected virtual void Awake() {
-            if (!TryGetComponent(out Collider collider)) Debug.LogWarning($"There is no Collider associated with Lightable '{name}'");
-        }
-
-        public void Iluminate(string key, bool illuminated) {
+        public void Illuminate(string key, bool illuminated) {
             if (illuminated) {
                 if (_illuminationSources.Add(key)) {
                     if (_illuminationSources.Count == 1) onIlluminated.Invoke(true);
@@ -27,5 +23,11 @@ namespace Ivayami.Puzzle {
             }
         }
 
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (!TryGetComponent(out Collider collider)) Debug.LogWarning($"There is no Collider associated with Lightable '{name}'");
+        }
+#endif
     }
 }
