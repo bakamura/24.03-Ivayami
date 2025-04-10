@@ -26,13 +26,15 @@ namespace Ivayami.Enemy
         private const float _tickFrequency = .5f;
         private bool _isTargetInside;
         private Coroutine _damageCoroutine;
+        private PlayerAnimation.DamageAnimation _currentDamageType;
 
-        public void UpdateHitbox(bool isActive, Vector3 center, Vector3 size, float stressIncreaseOnEnter, float stressIncreaseOnStay)
+        public void UpdateHitbox(bool isActive, Vector3 center, Vector3 size, float stressIncreaseOnEnter, float stressIncreaseOnStay, PlayerAnimation.DamageAnimation damageType)
         {
             _boxCollider.center = center;
             _boxCollider.size = size;
             _currentStressIncreaseOnEnter = stressIncreaseOnEnter;
             _currentStressIncreaseOnStay = stressIncreaseOnStay;
+            _currentDamageType = damageType;
             _boxCollider.enabled = isActive;
             if (!isActive) _isTargetInside = false;
             if (!_previousState && isActive) OnHitboxActivate?.Invoke();
@@ -45,7 +47,7 @@ namespace Ivayami.Enemy
             WaitForSeconds delay = new WaitForSeconds(_tickFrequency);
             while (_isTargetInside)
             {
-                PlayerStress.Instance.AddStress(_currentStressIncreaseOnStay * _tickFrequency);
+                PlayerStress.Instance.AddStress(_currentStressIncreaseOnStay * _tickFrequency, damageType : _currentDamageType);
                 yield return delay;
             }
             _damageCoroutine = null;
@@ -54,7 +56,7 @@ namespace Ivayami.Enemy
         private void OnTriggerEnter(Collider other)
         {
             _isTargetInside = true;
-            if (_currentStressIncreaseOnEnter > 0) PlayerStress.Instance.AddStress(_currentStressIncreaseOnEnter);
+            if (_currentStressIncreaseOnEnter > 0) PlayerStress.Instance.AddStress(_currentStressIncreaseOnEnter, damageType: _currentDamageType);
             if (_currentStressIncreaseOnStay > 0 && _damageCoroutine == null) _damageCoroutine = StartCoroutine(DamageCoroutine());            
             OnTargetHit?.Invoke();
         }
