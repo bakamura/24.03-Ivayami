@@ -277,7 +277,7 @@ namespace Ivayami.Enemy
             _isChasing = true;
             _enemyAnimator.Walking(0);
             _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
-            PlayerStress.Instance.AddStress(100, 79);
+            PlayerStress.Instance.AddStress(100, 79, PlayerAnimation.DamageAnimation.Mental);
             _enemyAnimator.TargetDetected(StartBehaviour);
         }
 
@@ -323,7 +323,7 @@ namespace Ivayami.Enemy
             //_hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
             for (int i = 0; i < _attackAreaInfos.Length; i++)
             {
-                _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+                _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
             }
             if (PlayerStress.Instance && PlayerStress.Instance.FailState)
             {
@@ -342,10 +342,10 @@ namespace Ivayami.Enemy
             {
                 if (_attackAreaInfos[i].AnimationIndex == currentAnimIndex && normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
                 {
-                    _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
+                    _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay, _attackAreaInfos[i].DamageType);
                     return;
                 }
-                else _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+                else _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
             }
             //_hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
         }
