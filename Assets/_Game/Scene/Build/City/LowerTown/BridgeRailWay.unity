@@ -4121,6 +4121,38 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 11c3ef25022252843b532550f32ff3b5, type: 3}
   m_PrefabInstance: {fileID: 337040264}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &338623935
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 338623936}
+  m_Layer: 0
+  m_Name: SciptedEvents
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &338623936
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 338623935}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1982842887}
+  m_Father: {fileID: 1262704406}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &339185056
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5502,7 +5534,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a430758e5d3add458125794bb7b3531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: Dialogue Triggers_City_2354736
+  _id: Dialogue Triggers_BridgeRailWay_814050
   _objectsToSave:
   - {fileID: 1372442565}
 --- !u!1001 &473966035
@@ -7017,6 +7049,7 @@ Transform:
   - {fileID: 27606765}
   - {fileID: 1262704406}
   - {fileID: 380649584}
+  - {fileID: 1892259171}
   m_Father: {fileID: 1531538277}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &634460048
@@ -13499,6 +13532,7 @@ Transform:
   m_Children:
   - {fileID: 1625852661}
   - {fileID: 462042318}
+  - {fileID: 338623936}
   m_Father: {fileID: 624864007}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1272586426
@@ -14353,7 +14387,6 @@ GameObject:
   - component: {fileID: 1372442566}
   - component: {fileID: 1372442569}
   - component: {fileID: 1372442568}
-  - component: {fileID: 1372442567}
   m_Layer: 10
   m_Name: NPCFinalChaseSequence
   m_TagString: Untagged
@@ -14376,38 +14409,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 462042318}
   m_LocalEulerAnglesHint: {x: 0, y: 84.427, z: 0}
---- !u!114 &1372442567
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1372442565}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _triggerType: 0
-  _targetNeedToStayInside: 0
-  _executeEventOnDisable: 1
-  _delayToActivateEvent: 0
-  _optionalTag: 
-  _onExecute:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1372442565}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1372442568
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14429,7 +14430,7 @@ MonoBehaviour:
       m_Calls: []
   _dialogueName: 4.TransitionToRestaurant
   _activateOnce: 1
-  _deactivateObjectOnFirstActivate: 0
+  _deactivateObjectOnFirstActivate: 1
   _lockPlayerInput: 0
 --- !u!65 &1372442569
 BoxCollider:
@@ -16960,7 +16961,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _events:
   - id: ActivateEnemy
-    InternalId: 4
+    InternalId: 1
     unityEvent:
       m_PersistentCalls:
         m_Calls:
@@ -17000,7 +17001,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-        - m_Target: {fileID: 0}
+        - m_Target: {fileID: 1982842890}
           m_TargetAssemblyTypeName: Ivayami.Player.PlayerMovementRef, Assembly-CSharp
           m_MethodName: AllowRun
           m_Mode: 6
@@ -17012,8 +17013,8 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 0}
-          m_TargetAssemblyTypeName: Ivayami.Player.PlayerFailEvent, Assembly-CSharp
+        - m_Target: {fileID: 1982842889}
+          m_TargetAssemblyTypeName: Ivayami.Player.PlayerStressEvent, Assembly-CSharp
           m_MethodName: SubscribeFailFade
           m_Mode: 1
           m_Arguments:
@@ -17229,6 +17230,57 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2.585208, y: 2.585589, z: 0.11391764}
   m_Center: {x: -0.029690087, y: 1.2907271, z: 0}
+--- !u!1 &1641652234
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1641652235}
+  - component: {fileID: 1641652236}
+  m_Layer: 0
+  m_Name: CityToToRestaurant
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &1641652235
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1641652234}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.317, y: 83.56016, z: 61.317}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1892259171}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1641652236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1641652234}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d130a63402c1b4449dcea371989edb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _teleportType: 0
+  _teleportTarget: {fileID: 0}
+  _onTeleportEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
+  _gizmoSize: 0.2
 --- !u!1 &1658946310
 GameObject:
   m_ObjectHideFlags: 0
@@ -18976,6 +19028,38 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1891582000}
   m_Mesh: {fileID: -2432090755550338912, guid: 2b9216961284feb48821832a7d70f5dc, type: 3}
+--- !u!1 &1892259170
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1892259171}
+  m_Layer: 0
+  m_Name: Teleports
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1892259171
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1892259170}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1641652235}
+  m_Father: {fileID: 624864007}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1908561937
 GameObject:
   m_ObjectHideFlags: 0
@@ -19354,7 +19438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a430758e5d3add458125794bb7b3531, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: FinalChaseSequence_City_2365404
+  _id: FinalChaseSequence_BridgeRailWay_815072
   _objectsToSave:
   - {fileID: 1541222085}
   - {fileID: 89668486}
@@ -19710,6 +19794,150 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1980230253}
   m_Mesh: {fileID: -2432090755550338912, guid: 11c3ef25022252843b532550f32ff3b5, type: 3}
+--- !u!1 &1982842886
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1982842887}
+  - component: {fileID: 1982842890}
+  - component: {fileID: 1982842889}
+  - component: {fileID: 1982842888}
+  m_Layer: 0
+  m_Name: PlayerRefRestaurant
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &1982842887
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982842886}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 338623936}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1982842888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982842886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f713dcd9c01619458a49d5544cc04f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1982842889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982842886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a0e91d93c629a145ad64a826788c481, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onFailEventSubscribeOnStart: 0
+  _uniqueEventOnFail: 1
+  _onFail:
+    m_PersistentCalls:
+      m_Calls: []
+  _onFailFadeEventSubscribeOnStart: 0
+  _uniqueEventOnFailFade: 1
+  _overrideFailLoad: 1
+  _onFailFade:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1982842890}
+        m_TargetAssemblyTypeName: Ivayami.Player.PlayerMovementRef, Assembly-CSharp
+        m_MethodName: ToggleMovement
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1541222085}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 89668486}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1982842888}
+        m_TargetAssemblyTypeName: Ivayami.Player.PlayerStressRef, Assembly-CSharp
+        m_MethodName: UpdateAutoStress
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1641652236}
+        m_TargetAssemblyTypeName: Ivayami.Scene.ManualTeleporter, Assembly-CSharp
+        m_MethodName: Teleport
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  _onStressChangeEventSubscribeOnStart: 0
+  _onStressChangeEvents: []
+--- !u!114 &1982842890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1982842886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2435c04b3ec98dd4ea49d5782274add2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockKey: ToRestaurant
 --- !u!1001 &1983298092
 PrefabInstance:
   m_ObjectHideFlags: 0
