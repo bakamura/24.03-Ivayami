@@ -3,10 +3,10 @@ using UnityEngine;
 using UnityEditor;
 using Ivayami.Enemy;
 
-[CustomEditor(typeof(IluminatedEnemyDetector))]
-public class IluminatedEnemyDetectorInspector : Editor
+[CustomEditor(typeof(IlluminatedEnemyDetector))]
+public class IlluminatedEnemyDetectorInspector : Editor
 {
-    SerializedProperty lightBehaviour, finalSpeed, paraliseDuration, interpolateDuration, willInterruptAttack, enemyAnimator, paraliseAnimationRandomAmount, interpolateCurve, detectLightRange, checkLightTickFrequency, gizmoColor, blockLayers;
+    SerializedProperty lightBehaviour, finalSpeed, paraliseDuration, interpolateDuration, willInterruptAttack, enemyAnimator, paraliseAnimationRandomAmount, interpolateCurve, detectLightRange, /*checkLightTickFrequency,*/ gizmoColor, blockLayers;
     public override void OnInspectorGUI()
     {
         EditorGUILayout.LabelField("Basic Parameters", EditorStyles.boldLabel);
@@ -14,7 +14,7 @@ public class IluminatedEnemyDetectorInspector : Editor
         EditorGUI.indentLevel++;
         EditorGUILayout.PropertyField(lightBehaviour, new GUIContent("Light Behaviour"));
         EditorGUILayout.PropertyField(detectLightRange, new GUIContent("Detection Light Range"));
-        EditorGUILayout.PropertyField(checkLightTickFrequency, new GUIContent("Check For Light Tick Frequency"));
+        //EditorGUILayout.PropertyField(checkLightTickFrequency, new GUIContent("Check For Light Tick Frequency"));
         EditorGUILayout.PropertyField(blockLayers, new GUIContent("Light Block Layers"));
         EditorGUILayout.PropertyField(gizmoColor, new GUIContent("Gizmo Color"));
         EditorGUI.indentLevel--;
@@ -47,7 +47,7 @@ public class IluminatedEnemyDetectorInspector : Editor
         paraliseAnimationRandomAmount = serializedObject.FindProperty("_paraliseAnimationRandomAmount");
         interpolateCurve = serializedObject.FindProperty("_interpolateCurve");
         detectLightRange = serializedObject.FindProperty("_detectLightRange");
-        checkLightTickFrequency = serializedObject.FindProperty("_checkLightTickFrequency");
+        //checkLightTickFrequency = serializedObject.FindProperty("_checkLightTickFrequency");
         gizmoColor = serializedObject.FindProperty("_gizmoColor");
         blockLayers = serializedObject.FindProperty("_blockLayers");
     }
