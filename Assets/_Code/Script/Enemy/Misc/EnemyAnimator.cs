@@ -132,6 +132,11 @@ namespace Ivayami.Enemy
             _animator.SetBool(CHASING_BOOL, isChasing);
         }
 
+        public void ForcePlayState(string stateName, int layer = 0)
+        {
+            _animator.Play(stateName, layer);
+        }
+
         public void PlayStepSound()
         {
             _enemySound.PlaySound(EnemySounds.SoundTypes.Steps);
