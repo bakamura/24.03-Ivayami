@@ -178,7 +178,7 @@ namespace Ivayami.Enemy
 
         private IEnumerator InitializeAgent()
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
             _navMeshAgent.enabled = true;
             if (_startActive) StartBehaviour();
             _initializeCoroutine = null;
@@ -187,7 +187,12 @@ namespace Ivayami.Enemy
         [ContextMenu("Start")]
         public void StartBehaviour()
         {
-            if (!IsActive)
+            if (!_navMeshAgent.isOnNavMesh)
+            {
+                //Debug.LogWarning($"Enemy {name} of type {typeof(EnemyAngel)} is not in a navmesh");
+                return;
+            }
+            if (!IsActive && _navMeshAgent.isOnNavMesh)
             {
                 if (!_navMeshAgent.enabled && _initializeCoroutine == null)
                 {
@@ -238,7 +243,7 @@ namespace Ivayami.Enemy
                     _chaseTargetPatience = Mathf.Clamp(_chaseTargetPatience - _behaviourTickFrequency, 0, _delayToLoseTarget);
                     if (CheckForTarget(halfVisionAngle)) _chaseTargetPatience = _delayToLoseTarget;
                     isStressAreaActive = _chaseTargetPatience <= 0;
-                    if (_canChaseTarget && _chaseTargetPatience > 0)
+                    if (_canChaseTarget && _chaseTargetPatience > 0 && _hitsCache[0])
                     {
                         if (!_isChasing)
                         {
@@ -312,7 +317,7 @@ namespace Ivayami.Enemy
                                         break;
                                     case PatrolTypes.EnemyWalkArea:
                                         if (_currentWalkArea && _currentWalkArea.GetCurrentPoint(ID, out EnemyWalkArea.EnemyData point))
-                                        {                                            
+                                        {
                                             if (Vector3.Distance(transform.position, point.Point.Position) <= _navMeshAgent.stoppingDistance)
                                             {
                                                 _navMeshAgent.velocity = Vector3.zero;
@@ -391,7 +396,11 @@ namespace Ivayami.Enemy
             }
             else isInMinRange = Physics.OverlapSphereNonAlloc(rayOrigin, currentMinRange, _hitsCache, _targetLayer, QueryTriggerInteraction.Ignore) > 0;
 
-            if (!_hitsCache[0]) return false;
+            if (!_hitsCache[0])
+            {
+                _directContactWithTarget = false;
+                return false;
+            }
 
             bool isHidden = (_loseTargetWhenHidden && PlayerMovement.Instance.hidingState != PlayerMovement.HidingState.None) || !_loseTargetWhenHidden;
             bool blockingVision = Physics.Raycast(rayOrigin, (targetCenter - rayOrigin).normalized, /*out _blockHit,*/ Vector3.Distance(rayOrigin, targetCenter), _blockVisionLayer, QueryTriggerInteraction.Ignore);
@@ -474,7 +483,7 @@ namespace Ivayami.Enemy
             }
             if (currentAnimIndex == 1 && normalizedTime >= _startLeapMovementInterval && !_isInLeapAnimation)
             {
-                if(!CheckForTarget(_visionAngle / 2f))
+                if (!CheckForTarget(_visionAngle / 2f))
                 {
                     _enemyAnimator.ForcePlayState("idle");
                     HandleAttackAnimationEnd();
@@ -496,7 +505,7 @@ namespace Ivayami.Enemy
             Vector3 dir = (_initialLeapPosition - _hitsCache[0].transform.position).normalized;
             Vector3 finalPos = GetFinalPos();
             Vector3 colliderSize;
-            transform.rotation = Quaternion.LookRotation(-dir);            
+            transform.rotation = Quaternion.LookRotation(-dir);
 
             while (count < 1)
             {
@@ -534,7 +543,7 @@ namespace Ivayami.Enemy
                     if (Physics.Raycast(new Ray(_hitsCache[0].transform.position + new Vector3(0, halfHeight, 0), currentPlayerMovement.normalized), _predictDistance, _blockVisionLayer))
                     {
                         finalPos = _hitsCache[0].transform.position + dir * (_navMeshAgent.radius + _currentTargetColliderSizeFactor);
-                        if(_debugLogsEnemyPatrol) Debug.Log("Position Blocked, Leap attack close to player");
+                        if (_debugLogsEnemyPatrol) Debug.Log("Position Blocked, Leap attack close to player");
                     }
                     else
                     {
@@ -600,15 +609,19 @@ namespace Ivayami.Enemy
             _navMeshAgent.speed = speed;
         }
 
-        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped)
+        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped, object lightType)
         {
             _canChaseTarget = canChaseTarget;
             _canWalkPath = canWalkPath;
             if (!canWalkPath && !canChaseTarget)
             {
-                _chaseTargetPatience = _delayToLoseTarget;
+                if (lightType is Ivayami.Player.Ability.Lantern)
+                {
+                    _chaseTargetPatience = _delayToLoseTarget;
+                    _hitsCache[0] = PlayerMovement.Instance.GetComponent<CharacterController>();
+                    _lastTargetPosition = _hitsCache[0].transform.position;
+                }
                 HandleAttackAnimationEnd();
-                if(_hitsCache[0]) _lastTargetPosition = _hitsCache[0].transform.position;
             }
             UpdateMovement(isStopped);
         }
@@ -699,9 +712,9 @@ namespace Ivayami.Enemy
             {
                 if (_attackAreaInfos[i].MinInterval > _attackAreaInfos[i].MaxInterval) _attackAreaInfos[i].MinInterval = _attackAreaInfos[i].MaxInterval;
             }
-            if (_distanceToFogAttack < _collision.radius + .2f) _distanceToFogAttack = _collision.radius + .2f;            
+            if (_distanceToFogAttack < _collision.radius + .2f) _distanceToFogAttack = _collision.radius + .2f;
             //_navMeshAgent.stoppingDistance = _distanceToFogAttack;
-        }        
+        }
 #endif
         #endregion
     }
