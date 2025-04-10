@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414738, b: 0.121078536, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.3069224, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -123,7 +123,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &172300538
+--- !u!1 &159030173
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,51 +131,182 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 172300540}
-  - component: {fileID: 172300539}
-  m_Layer: 0
-  m_Name: SceneLoader
+  - component: {fileID: 159030177}
+  - component: {fileID: 159030176}
+  - component: {fileID: 159030175}
+  - component: {fileID: 159030174}
+  - component: {fileID: 159030178}
+  m_Layer: 10
+  m_Name: ShakeDuringPlay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &172300539
+--- !u!114 &159030174
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 172300538}
+  m_GameObject: {fileID: 159030173}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
+  m_Script: {fileID: 11500000, guid: 7f648d29819bc194eb14ebe19d89395e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneId: TestCutsceneScene
-  _onSceneLoad:
+  _shakeDuration: 0
+  _shakeAmplitude: 8
+  _shakeAmplitudeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 1
+      outSlope: 1
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _shakeFrequency: 3
+  _shakeFrequencyCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &159030175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159030173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerType: 0
+  _targetNeedToStayInside: 0
+  _executeEventOnDisable: 1
+  _delayToActivateEvent: 0
+  _optionalTag: 
+  _onExecute:
     m_PersistentCalls:
-      m_Calls: []
-  _onSceneUnload:
-    m_PersistentCalls:
-      m_Calls: []
-  _drawGizmos: 0
-  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
---- !u!4 &172300540
+      m_Calls:
+      - m_Target: {fileID: 159030174}
+        m_TargetAssemblyTypeName: Ivayami.Misc.CameraShake, Assembly-CSharp
+        m_MethodName: StartScreenShake
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!65 &159030176
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159030173}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5, y: 5, z: 5}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &159030177
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 172300538}
+  m_GameObject: {fileID: 159030173}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 11.13, y: 0.70000005, z: -5.84}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1252014544}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &159030178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 159030173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerType: 1
+  _targetNeedToStayInside: 0
+  _executeEventOnDisable: 0
+  _delayToActivateEvent: 0
+  _optionalTag: 
+  _onExecute:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 159030174}
+        m_TargetAssemblyTypeName: Ivayami.Misc.CameraShake, Assembly-CSharp
+        m_MethodName: StopScreenShake
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &324111167
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,6 +317,7 @@ GameObject:
   m_Component:
   - component: {fileID: 324111169}
   - component: {fileID: 324111168}
+  - component: {fileID: 324111170}
   m_Layer: 0
   m_Name: CameraFirst
   m_TagString: Untagged
@@ -205,7 +337,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fddd3369896713646ad1e21d820b85bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _changeCameraFocus: 0
+  _lookAtPlayer: 0
+  _followPlayer: 0
+  _lookAtTarget: {fileID: 0}
+  _followTarget: {fileID: 0}
   Duration: 1
+  _hidePlayerModel: 0
   PositionCurve:
     serializedVersion: 2
     m_Curve:
@@ -269,6 +407,69 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1809793658}
   m_LocalEulerAnglesHint: {x: 0, y: 25.91, z: 0}
+--- !u!114 &324111170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 324111167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f648d29819bc194eb14ebe19d89395e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _shakeDuration: 0
+  _shakeAmplitude: 3
+  _shakeAmplitudeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _shakeFrequency: 1
+  _shakeFrequencyCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &397605301
 GameObject:
   m_ObjectHideFlags: 0
@@ -522,6 +723,7 @@ GameObject:
   m_Component:
   - component: {fileID: 760915331}
   - component: {fileID: 760915330}
+  - component: {fileID: 760915332}
   m_Layer: 0
   m_Name: CameraSecond
   m_TagString: Untagged
@@ -541,7 +743,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fddd3369896713646ad1e21d820b85bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _changeCameraFocus: 0
+  _lookAtPlayer: 0
+  _followPlayer: 0
+  _lookAtTarget: {fileID: 0}
+  _followTarget: {fileID: 0}
   Duration: 0.5
+  _hidePlayerModel: 0
   PositionCurve:
     serializedVersion: 2
     m_Curve:
@@ -605,169 +813,126 @@ Transform:
   m_Children: []
   m_Father: {fileID: 468841439}
   m_LocalEulerAnglesHint: {x: 0, y: 215.16, z: 0}
---- !u!1 &767664530
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 767664536}
-  - component: {fileID: 767664535}
-  - component: {fileID: 767664533}
-  - component: {fileID: 767664532}
-  - component: {fileID: 767664531}
-  m_Layer: 0
-  m_Name: LoadCutscene
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &767664531
+--- !u!114 &760915332
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 767664530}
+  m_GameObject: {fileID: 760915329}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
+  m_Script: {fileID: 11500000, guid: 7f648d29819bc194eb14ebe19d89395e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _duration: 1
-  _fadeCurve:
+  _shakeDuration: 0
+  _shakeAmplitude: 10
+  _shakeAmplitudeCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
-      outSlope: 1
-      tangentMode: 0
+      outSlope: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 1
+      inSlope: 0
       outSlope: 0
-      tangentMode: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _onFadeEnd:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 172300539}
-        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
-        m_MethodName: LoadScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &767664532
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 767664530}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afa73645d83a4ff468463eb130652fe7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &767664533
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 767664530}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _triggerType: 0
-  _delayToActivateEvent: 0
-  _onExecute:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 767664532}
-        m_TargetAssemblyTypeName: Ivayami.Scene.PlayerLockInput, Assembly-CSharp
-        m_MethodName: LockInput
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 767664531}
-        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
-        m_MethodName: FadeIn
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _optionalTag: 
---- !u!65 &767664535
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 767664530}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
+  _shakeFrequency: 1
+  _shakeFrequencyCurve:
     serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 2, y: 2, z: 2}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!4 &767664536
-Transform:
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!1001 &866265736
+PrefabInstance:
   m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 767664530}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.26, y: 0, z: -8.79}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 901799231}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3611810495540687994, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
+      propertyPath: m_Name
+      value: DirectionalLight
+      objectReference: {fileID: 0}
+    - target: {fileID: 6138412974554593158, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6138412974554593158, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6138412974554593158, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6138412974554593158, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.8754261
+      objectReference: {fileID: 0}
+    - target: {fileID: 6138412974554593158, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.40821788
+      objectReference: {fileID: 0}
+    - target: {fileID: 6138412974554593158, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.23456968
+      objectReference: {fileID: 0}
+    - target: {fileID: 6138412974554593158, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.10938163
+      objectReference: {fileID: 0}
+    - target: {fileID: 6138412974554593158, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6138412974554593158, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6138412974554593158, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0a87286905201494ca1430e3a8d0cf71, type: 3}
 --- !u!1 &895919411
 GameObject:
   m_ObjectHideFlags: 0
@@ -843,7 +1008,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -873,7 +1038,7 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 895919411}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &901799230
+--- !u!1 &1252014543
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -881,38 +1046,60 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 901799231}
-  - component: {fileID: 901799233}
-  - component: {fileID: 901799232}
+  - component: {fileID: 1252014544}
+  - component: {fileID: 1252014547}
+  - component: {fileID: 1252014546}
+  - component: {fileID: 1252014545}
   m_Layer: 0
-  m_Name: Cylinder
+  m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &901799231
+--- !u!4 &1252014544
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 901799230}
+  m_GameObject: {fileID: 1252014543}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 767664536}
+  m_Father: {fileID: 159030177}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &901799232
+--- !u!135 &1252014545
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252014543}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!23 &1252014546
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 901799230}
+  m_GameObject: {fileID: 1252014543}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -948,14 +1135,14 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!33 &901799233
+--- !u!33 &1252014547
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 901799230}
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+  m_GameObject: {fileID: 1252014543}
+  m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1001 &1596657976
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1008,6 +1195,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Activable
       objectReference: {fileID: 0}
+    - target: {fileID: 1083082279422291863, guid: d1b266de568a3294396463be5ead590a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1043,9 +1234,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dialogue: {fileID: 11400000, guid: d98a62077d7295c449bc21f0af841c39, type: 2}
+  _dialogue: {fileID: 11400000, guid: 896cbea4f7049274a911a671da63be77, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  _dialogueName: TestScreenShake
   _activateOnce: 0
-  _lockPlayerInput: 0
+  _deactivateObjectOnFirstActivate: 0
+  _lockPlayerInput: 1
 --- !u!65 &1776415144
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1145,14 +1344,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ce7252930447ab4388cd206f5ba0d23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _debugLogs: 0
   _events:
-  - id: first
+  - id: StartShake
+    InternalId: 1
     unityEvent:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 324111168}
-          m_TargetAssemblyTypeName: Paranapiacaba.Misc.CameraTransitionInfo, Assembly-CSharp
+          m_TargetAssemblyTypeName: Ivayami.Dialogue.CameraAnimationInfo, Assembly-CSharp
           m_MethodName: StartMovement
           m_Mode: 1
           m_Arguments:
@@ -1163,13 +1362,38 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - id: second
+        - m_Target: {fileID: 324111170}
+          m_TargetAssemblyTypeName: Ivayami.Misc.CameraShake, Assembly-CSharp
+          m_MethodName: StartScreenShake
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - id: StopShake
+    InternalId: 2
     unityEvent:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 760915330}
-          m_TargetAssemblyTypeName: Paranapiacaba.Misc.CameraTransitionInfo, Assembly-CSharp
+          m_TargetAssemblyTypeName: Ivayami.Dialogue.CameraAnimationInfo, Assembly-CSharp
           m_MethodName: StartMovement
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 760915332}
+          m_TargetAssemblyTypeName: Ivayami.Misc.CameraShake, Assembly-CSharp
+          m_MethodName: StartScreenShake
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -1271,7 +1495,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1309,5 +1533,5 @@ SceneRoots:
   - {fileID: 737047347}
   - {fileID: 1776415145}
   - {fileID: 1596657976}
-  - {fileID: 767664536}
-  - {fileID: 172300540}
+  - {fileID: 159030177}
+  - {fileID: 866265736}
