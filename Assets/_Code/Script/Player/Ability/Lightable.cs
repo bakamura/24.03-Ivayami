@@ -3,17 +3,13 @@ using UnityEngine;
 using UnityEngine.Events;
 using Ivayami.Player.Ability;
 
-namespace Ivayami.Puzzle {
+namespace Ivayami.Enemy {
     public class Lightable : MonoBehaviour {
 
         protected HashSet<string> _illuminationSources { get; set; } = new HashSet<string>();
         public UnityEvent<bool> onIlluminated;
         public UnityEvent<bool> onIlluminatedByLantern;
         public bool IsIlluminatedByLantern { get { return _illuminationSources.Contains(Lantern.ILLUMINATION_KEY); } }
-
-        protected virtual void Awake() {
-            if (!TryGetComponent(out Collider collider)) Debug.LogWarning($"There is no Collider associated with Lightable '{name}'");
-        }
 
         public void Illuminate(string key, bool illuminated) {
             if (illuminated) {
@@ -36,5 +32,11 @@ namespace Ivayami.Puzzle {
             }
         }
 
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (!TryGetComponent(out Collider collider)) Debug.LogWarning($"There is no Collider associated with Lightable '{name}'");
+        }
+#endif
     }
 }

@@ -120,8 +120,10 @@ namespace Ivayami.Enemy
 
         private void OnEnable()
         {
-            if (!_navMeshAgent.enabled && _initializeCoroutine == null) _initializeCoroutine = StartCoroutine(InitializeAgent());
-            if (_startActive && _initializeCoroutine == null) StartBehaviour();
+            if (!_navMeshAgent.enabled && _initializeCoroutine == null) 
+                _initializeCoroutine = StartCoroutine(InitializeAgent());
+            if (_startActive && _initializeCoroutine == null) 
+                StartBehaviour();
         }
 
         private void OnDisable()
@@ -131,7 +133,7 @@ namespace Ivayami.Enemy
 
         private IEnumerator InitializeAgent()
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
             _navMeshAgent.enabled = true;
             if (_startActive) StartBehaviour();
             _initializeCoroutine = null;
@@ -140,7 +142,12 @@ namespace Ivayami.Enemy
         [ContextMenu("Start")]
         public void StartBehaviour()
         {
-            if (!IsActive)
+            if (!_navMeshAgent.isOnNavMesh)
+            {
+                //Debug.LogWarning($"Enemy {name} of type {typeof(EnemyPatrol)} is not in a navmesh");
+                return;
+            }
+            if (!IsActive && _navMeshAgent.isOnNavMesh)
             {
                 if (!_navMeshAgent.enabled && _initializeCoroutine == null)
                 {
@@ -188,7 +195,7 @@ namespace Ivayami.Enemy
                             //{
                             //    _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
                             //});
-                            PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
+                            PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected, damageType : PlayerAnimation.DamageAnimation.Mental);
                             _isChasing = true;
                             if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());
                             _navMeshAgent.speed = _chaseSpeed;
@@ -332,7 +339,7 @@ namespace Ivayami.Enemy
             //_navMeshAgent.isStopped = false;
             for(int i = 0; i < _attackAreaInfos.Length; i++)
             {
-                _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+                _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
             }
             _isAttacking = false;
         }
@@ -344,10 +351,10 @@ namespace Ivayami.Enemy
             {
                 if (_attackAreaInfos[i].AnimationIndex == currentAnimIndex && normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
                 {
-                    _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
+                    _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay, _attackAreaInfos[i].DamageType);
                     //return;
                 }
-                else _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+                else _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
             }
             //_attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
         }
@@ -357,7 +364,7 @@ namespace Ivayami.Enemy
             _navMeshAgent.speed = speed;
         }
 
-        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped)
+        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped, bool forceTargetDetect)
         {
             _canChaseTarget = canChaseTarget;
             _canWalkPath = canWalkPath;

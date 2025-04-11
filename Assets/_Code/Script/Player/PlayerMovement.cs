@@ -110,6 +110,7 @@ namespace Ivayami.Player {
 
         public Vector3 VisualForward { get { return _visualTransform.forward; } }
         public Vector3 MovementDirection { get { return _movementCache; } }
+        public CharacterController CharacterController { get { return _characterController; } }
 #if UNITY_EDITOR
         public float MaxStamina => _maxStamina;
 #endif
@@ -339,7 +340,7 @@ namespace Ivayami.Player {
         }
 
         public void RemoveAllBlockers() {
-            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+            //if (!IngameDebugConsole.DebugLogManager.Instance) return;
             _movementBlock.Clear();
         }
 

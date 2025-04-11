@@ -64,10 +64,11 @@ namespace Ivayami.Player {
             else if (_stressCurrent > _stressRelieveMinValue) RelieveStressAuto();
         }
 
-        public void AddStress(float amount, float capValue = -1) {
+        public void AddStress(float amount, float capValue = -1, PlayerAnimation.DamageAnimation damageType = PlayerAnimation.DamageAnimation.None) {
             if (!_failState && _stressCurrent < (capValue >= 0 ? capValue : _stressMax)) {
                 _stressCurrent = Mathf.Clamp(_stressCurrent + amount, 0, capValue >= 0 ? capValue : _stressMax);
                 onStressChange.Invoke(_stressCurrent);
+                PlayerAnimation.Instance.TakeDamage(damageType, _failState);
                 _stressRelieveDelayTimer = _stressRelieveDelay;
 
                 Logger.Log(LogType.Player, $"Stress Meter: {_stressCurrent}/{_stressMax}");
@@ -77,7 +78,7 @@ namespace Ivayami.Player {
 
         public void SetStress(float value) {
             _stressCurrent = Mathf.Clamp(value, 0, _stressMax);
-            AddStress(0);
+            AddStress(0, damageType : PlayerAnimation.DamageAnimation.Mental);
         }
 
         private void RelieveStressAuto() {
