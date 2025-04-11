@@ -47,9 +47,6 @@ namespace Ivayami.Enemy
                 return;
             }
             _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
-            _checkLightDelay = new WaitForSeconds(_checkLightTickFrequency);
-            _checkForLightsCoroutine = StartCoroutine(IlluminatedByFocusesCheck());
-            
         }
 
         private void OnEnable()
@@ -96,7 +93,7 @@ namespace Ivayami.Enemy
 
         private void ParaliseEnd()
         {
-            while (true)
+            if (_isIliuminated)
             {
                 _isIliuminated = false;
                 if (_slowMovementCoroutine != null)
@@ -122,15 +119,14 @@ namespace Ivayami.Enemy
 
         private IEnumerator SlowMovementCoroutine(bool forceTargetDetect)
         {
+            float count;
             WaitForFixedUpdate delay = new WaitForFixedUpdate();
             WaitForSeconds paraliseDelay = new WaitForSeconds(_paraliseDuration);
-            _baseSpeed = _target.CurrentSpeed;
-            _animIndex = Random.Range(0, _paraliseAnimationRandomAmount);
-            while (_isIlluminated)
+            while (_isIliuminated)
             {
+                count = 0;
                 if (_interpolateDuration > 0)
                 {
-                    float count = 0;
                     while (count < 1)
                     {
                         count += Time.fixedDeltaTime / _interpolateDuration;
@@ -165,6 +161,7 @@ namespace Ivayami.Enemy
             _target.ChangeSpeed(_baseSpeed);
             _target.UpdateBehaviour(true, true, false, false);
             _paraliseAnimationEnded = true;
+            //Debug.Log("EndParaliseAnim");
         }
 
         private void HandleChangePointLight()
@@ -220,6 +217,7 @@ namespace Ivayami.Enemy
 
         private void OnDrawGizmosSelected()
         {
+            //if (_lightBehaviour == LightBehaviours.Paralise) return;
             Gizmos.color = _gizmoColor;
             Gizmos.DrawWireSphere(transform.position, _detectLightRange);
             if (_currentLightData.IsValid())
@@ -229,7 +227,6 @@ namespace Ivayami.Enemy
             if (_currentLightData.IsValid()) Gizmos.DrawLine(transform.position, _currentLightData.Position);
         }
 #endif
-
     }
 }
 

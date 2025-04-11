@@ -4,7 +4,6 @@ using UnityEngine.AI;
 using Ivayami.Player;
 using Ivayami.Audio;
 using System;
-using Ivayami.Puzzle;
 
 namespace Ivayami.Enemy
 {
@@ -146,7 +145,6 @@ namespace Ivayami.Enemy
         protected override void Awake()
         {
             base.Awake();
-
             _behaviourTickDelay = new WaitForSeconds(_behaviourTickFrequency);
             _betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints - _behaviourTickFrequency);
             _endGoToLastTargetDelay = new WaitForSeconds(_delayToFinishTargetSearch - _behaviourTickFrequency);
@@ -165,8 +163,6 @@ namespace Ivayami.Enemy
                 SetWalkArea(_fixedWalkArea);
                 _fixedWalkArea.AddEnemyToArea(this, gameObject.name);
             }
-
-            GetComponentInChildren<Lightable>().onIlluminatedByLantern.AddListener((isIlluminated) => { if (!isIlluminated) LanternRemoveHandle(); });
         }
 
         private void OnEnable()
@@ -629,12 +625,6 @@ namespace Ivayami.Enemy
                 HandleAttackAnimationEnd();
             }
             UpdateMovement(isStopped);
-        }
-
-        private void LanternRemoveHandle() {
-            _chaseTargetPatience = _delayToLoseTarget;
-            _hitsCache[0] = PlayerMovement.Instance.GetComponent<CharacterController>();
-            _lastTargetPosition = _hitsCache[0].transform.position;
         }
 
         public void ChangeTargetPoint(Vector3 targetPoint)
