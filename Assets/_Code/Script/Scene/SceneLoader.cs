@@ -5,7 +5,7 @@ using Ivayami.Player;
 namespace Ivayami.Scene
 {
     public class SceneLoader : MonoBehaviour
-    {        
+    {
         [SceneDropdown, SerializeField] private string _sceneId;
         [SerializeField] private bool _changeSkybox;
         [SerializeField] private PlayerCamera.CameraBackgroundTypes _backgroundType;
@@ -18,20 +18,17 @@ namespace Ivayami.Scene
         [SerializeField] private Color _gizmoColor = Color.red;
         private BoxCollider _boxCollider;
 #endif
-        private bool _isActive;        
+        private bool _isActive;
+
         private void OnTriggerEnter(Collider other)
         {
-            SceneController.Instance.LoadScene(_sceneId, _onSceneLoad);
-            if (_changeSkybox)
-            {
-                PlayerCamera.Instance.SetSkybox(_backgroundType, _backgroundColor);
-            }
+            LoadScene();
             _isActive = true;
         }
 
         private void OnTriggerExit(Collider other)
         {
-            SceneController.Instance.UnloadScene(_sceneId, _onSceneUnload);
+            UnloadScene();
             _isActive = false;
         }
 
@@ -39,13 +36,14 @@ namespace Ivayami.Scene
         {
             if (_isActive)
             {
-                SceneController.Instance.UnloadScene(_sceneId, _onSceneUnload);
+                UnloadScene();
                 _isActive = false;
             }
         }
 
         public void LoadScene()
         {
+            if (_changeSkybox) PlayerCamera.Instance.SetSkybox(_backgroundType, _backgroundColor);
             SceneController.Instance.LoadScene(_sceneId, _onSceneLoad);
         }
 
@@ -64,11 +62,6 @@ namespace Ivayami.Scene
             _onAllScenesRequestEnd?.Invoke();
             SceneController.Instance.OnAllSceneRequestEnd -= HandleOnAllScenesUnload;
         }
-
-        //public void UpdateSceneLoadersActiveState(bool isActive)
-        //{
-        //    SceneLoadersManager.Instance.gameObject.SetActive(isActive);
-        //}
 
 #if UNITY_EDITOR
         private void OnDrawGizmos()
