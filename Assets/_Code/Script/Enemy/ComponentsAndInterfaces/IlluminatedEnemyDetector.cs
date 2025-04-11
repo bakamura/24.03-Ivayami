@@ -7,6 +7,7 @@ namespace Ivayami.Enemy
     {
         [SerializeField] private LightBehaviours _lightBehaviour;
         [SerializeField, Min(0f)] private float _finalSpeed;
+        [SerializeField, Min(.02f)] private float _checkLightTickFrequency = .3f;
         [SerializeField, Min(0f)] private float _paraliseDuration;
         [SerializeField, Min(0f)] private float _interpolateDuration;
         [SerializeField] private bool _willInterruptAttack;
@@ -14,7 +15,6 @@ namespace Ivayami.Enemy
         [SerializeField] private EnemyAnimator _enemyAnimator;
         [SerializeField, Min(0)] private int _paraliseAnimationRandomAmount;
         [SerializeField, Min(0f)] private float _detectLightRange;
-        //[SerializeField, Min(0.02f)] private float _checkLightTickFrequency = 1;
         [SerializeField] private Color _gizmoColor;
         [SerializeField] private AnimationCurve _interpolateCurve;
 
@@ -25,6 +25,7 @@ namespace Ivayami.Enemy
         }
         private IIluminatedEnemy _target;
         private Coroutine _slowMovementCoroutine;
+        private Coroutine _checkForLightCoroutine;
         private bool _isIliuminated;
         private bool _hasParaliseAnim;
         private bool _paraliseAnimationEnded = true;
@@ -52,31 +53,19 @@ namespace Ivayami.Enemy
         private void OnEnable()
         {
             if (!LightFocuses.Instance) return;
-            if (_lightBehaviour == LightBehaviours.Paralise)
-            {
-                onIlluminated.AddListener(UpdateDirectLight);
-                LightFocuses.OnChange += HandleChangeAreaLight;
-                HandleChangeAreaLight();
-            }
-            else
-            {
-                LightFocuses.OnChange += HandleChangePointLight;
-                HandleChangePointLight();
-            }
+            if (_lightBehaviour == LightBehaviours.Paralise) onIlluminated.AddListener(UpdateDirectLight);
+            _checkForLightCoroutine = StartCoroutine(CheckForLightCoroutine());
         }
 
         private void OnDisable()
         {
             if (!LightFocuses.Instance) return;
-            if (_lightBehaviour == LightBehaviours.Paralise)
+            if (_lightBehaviour == LightBehaviours.Paralise) ParaliseEnd();
+            else _target.UpdateBehaviour(true, true, false, false);
+            if (_checkForLightCoroutine != null)
             {
-                LightFocuses.OnChange -= HandleChangeAreaLight;
-                ParaliseEnd();
-            }
-            else
-            {
-                LightFocuses.OnChange -= HandleChangePointLight;
-                _target.UpdateBehaviour(true, true, false, false);
+                StopCoroutine(_checkForLightCoroutine);
+                _checkForLightCoroutine = null;
             }
         }
 
@@ -115,6 +104,24 @@ namespace Ivayami.Enemy
         private void UpdateDirectLight(bool illuminated)
         {
             _reciveDirectLight = illuminated;
+        }
+
+        private IEnumerator CheckForLightCoroutine()
+        {
+            WaitForSeconds delay = new WaitForSeconds(_checkLightTickFrequency);
+            while (true)
+            {
+                switch (_lightBehaviour)
+                {
+                    case LightBehaviours.Paralise:
+                        HandleChangeAreaLight();
+                        break;
+                    case LightBehaviours.FollowLight:
+                        HandleChangePointLight();
+                        break;
+                }
+                yield return delay;
+            }
         }
 
         private IEnumerator SlowMovementCoroutine(bool forceTargetDetect)

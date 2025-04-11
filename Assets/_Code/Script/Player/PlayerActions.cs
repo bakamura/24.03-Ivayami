@@ -190,7 +190,7 @@ namespace Ivayami.Player {
 
         #region Abilities
         private void Ability(InputAction.CallbackContext input) {
-            if (_abilityCurrent >= 0) {
+            if (_abilityCurrent >= 0 && !PlayerStress.Instance.StressIsMaxed) {
                 if (input.phase == InputActionPhase.Started) {
                     _abilities[_abilityCurrent].AbilityStart();
                     onAbility?.Invoke(_abilities[_abilityCurrent].GetType().Name);
