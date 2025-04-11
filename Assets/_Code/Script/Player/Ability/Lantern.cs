@@ -130,7 +130,6 @@ namespace Ivayami.Player.Ability {
             foreach (Lightable lightableToStop in _stopIlluminating) {
                 lightableToStop.Illuminate(ILLUMINATION_KEY, false);
                 _illuminatedObjects.Remove(lightableToStop);
-                Debug.Log($"Remove Illuminated {lightableToStop.name}");
             }
         }
 
@@ -166,15 +165,20 @@ namespace Ivayami.Player.Ability {
         private Mesh _coneMesh;
 
         private void OnDrawGizmos() {
-            Mesh coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance);
+            //if(_coneMesh == default) _coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance); // Doesnt work for rotation for some reason so eeeh
+            _coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance);
             Gizmos.color = _coneColor;
-            Gizmos.DrawMesh(coneMesh, _lightsOriginCurrent.transform.position, Application.isPlaying ? Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0, 0) : Quaternion.identity);
+            Gizmos.DrawMesh(_coneMesh, _lightsOriginCurrent.transform.position, _focused ? Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0, 0) : Quaternion.identity);
 
-            // To Fix (Indicator of check)
-            foreach (Lightable lightable in _illuminatedObjects) {
-                Vector3 toTarget = lightable.transform.position - _lightsOriginCurrent.position;
-                Gizmos.color = Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer) ? Color.green : Color.red;
-                Gizmos.DrawLine(_lightsOriginCurrent.position, lightable.transform.position);
+            Lightable lightable;
+            for (int i = 0; i < Physics.OverlapSphereNonAlloc(_lightsOriginCurrent.position, _lightDistance, _lightHits, _lightableLayer); i++) {
+                if (_lightHits[i] != null && _lightHits[i].TryGetComponent(out lightable)) {
+                    Vector3 toTarget = _lightHits[i].transform.position - _lightsOriginCurrent.position;
+                    if (Vector3.Angle(_lightsOriginCurrent.forward, toTarget.normalized) <= _coneAngleHalf) {
+                        Gizmos.color = Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer) ? Color.red : Color.green;
+                        Gizmos.DrawLine(_lightsOriginCurrent.position, lightable.transform.position);
+                    }
+                }
             }
         }
 #endif
