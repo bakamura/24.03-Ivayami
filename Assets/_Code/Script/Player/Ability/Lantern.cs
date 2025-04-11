@@ -24,6 +24,7 @@ namespace Ivayami.Player.Ability {
         [SerializeField] private CinemachineFreeLook.Orbit[] _focusedCamOrbits;
         [SerializeField] private float _focusedCamArmDistance;
         [SerializeField, Min(1f)] private float _focusedDurationComsumptionMultiplier;
+        [SerializeField, Min(1f)] private float _focusedSourceDistance;
 
         [Header("Header")]
 
@@ -43,7 +44,7 @@ namespace Ivayami.Player.Ability {
         private float _lightDistance;
 
 
-        private const string ILLUMINATION_KEY = "Lantern";
+        public const string ILLUMINATION_KEY = "Lantern";
 
         private void Awake() {
             _lightHits = new Collider[_lightMaxHitNumber];
@@ -80,8 +81,9 @@ namespace Ivayami.Player.Ability {
 
         private void Setup() {
             PlayerActions.Instance.onLanternFocus.AddListener(Focus);
+            PlayerStress.Instance.onFail.AddListener(() => { if (_enabled) AbilityStart(); });
             _focusedOrigin.transform.parent = PlayerCamera.Instance.MainCamera.transform;
-            _focusedOrigin.transform.localPosition = Vector3.Distance(_wideOrigin.transform.position, PlayerCamera.Instance.MainCamera.transform.position) * Vector3.forward;
+            _focusedOrigin.transform.localPosition = _focusedSourceDistance * Vector3.forward;
             _focusedOrigin.transform.localRotation = Quaternion.identity;
             _focusedOrigin.enabled = false;
         }
@@ -147,6 +149,7 @@ namespace Ivayami.Player.Ability {
             PlayerCamera.Instance.SetOrbits(_focused ? _focusedCamOrbits : null);
             CameraAimReposition.Instance.SetMaxDistance(_focused ? _focusedCamArmDistance : 0f);
             PlayerMovement.Instance.AllowRun(!isFocusing);
+            PlayerMovement.Instance.useCameraRotaion = _focused;
             if (!_focused) _visuals.localRotation = Quaternion.identity;
         }
 
@@ -154,6 +157,31 @@ namespace Ivayami.Player.Ability {
             _durationCurrent += fillAmount;
             if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
         }
+
+#if UNITY_EDITOR
+        [Header("Debug")]
+
+        [SerializeField] private Color _coneColor;
+        private Mesh _coneMesh;
+
+        private void OnDrawGizmos() {
+            //if(_coneMesh == default) _coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance); // Doesnt work for rotation for some reason so eeeh
+            _coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance);
+            Gizmos.color = _coneColor;
+            Gizmos.DrawMesh(_coneMesh, _lightsOriginCurrent.transform.position, _focused ? Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0, 0) : Quaternion.identity);
+
+            Lightable lightable;
+            for (int i = 0; i < Physics.OverlapSphereNonAlloc(_lightsOriginCurrent.position, _lightDistance, _lightHits, _lightableLayer); i++) {
+                if (_lightHits[i] != null && _lightHits[i].TryGetComponent(out lightable)) {
+                    Vector3 toTarget = _lightHits[i].transform.position - _lightsOriginCurrent.position;
+                    if (Vector3.Angle(_lightsOriginCurrent.forward, toTarget.normalized) <= _coneAngleHalf) {
+                        Gizmos.color = Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer) ? Color.red : Color.green;
+                        Gizmos.DrawLine(_lightsOriginCurrent.position, lightable.transform.position);
+                    }
+                }
+            }
+        }
+#endif
 
     }
 }

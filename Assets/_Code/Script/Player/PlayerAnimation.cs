@@ -80,7 +80,7 @@ namespace Ivayami.Player
             PlayerStress.Instance.onFail.AddListener(Fail);
             PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
-            PlayerActions.Instance.onAbility.AddListener(Trigger);
+            //PlayerActions.Instance.onAbility.AddListener(Trigger);
         }
 
         public float GetInteractAnimationDuration(PlayerActions.InteractAnimation animation)
