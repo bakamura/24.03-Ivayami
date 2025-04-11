@@ -107,9 +107,9 @@ namespace Ivayami.Player.Ability {
 
         private void Illuminate() {
             if (Physics.Raycast(_lightsOriginCurrent.position, _lightsOriginCurrent.forward, out RaycastHit hitLine, _lightDistance, _lightableLayer))
-                LightFocuses.Instance.LightPointFocusUpdate(ILLUMINATION_KEY, new LightFocuses.LightData(hitLine.point));            
+                LightFocuses.Instance.LightPointFocusUpdate(ILLUMINATION_KEY, new LightFocuses.LightData(hitLine.point));
             else
-                LightFocuses.Instance.LightPointFocusRemove(ILLUMINATION_KEY);            
+                LightFocuses.Instance.LightPointFocusRemove(ILLUMINATION_KEY);
 
             _stopIlluminating.Clear();
             _stopIlluminating.UnionWith(_illuminatedObjects);
@@ -165,18 +165,20 @@ namespace Ivayami.Player.Ability {
         private Mesh _coneMesh;
 
         private void OnDrawGizmos() {
-            //if(_coneMesh == default) _coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance); // Doesnt work for rotation for some reason so eeeh
-            _coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance);
-            Gizmos.color = _coneColor;
-            Gizmos.DrawMesh(_coneMesh, _lightsOriginCurrent.transform.position, _focused ? Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0, 0) : Quaternion.identity);
+            if (Application.isPlaying) {
+                //if(_coneMesh == default) _coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance); // Doesnt work for rotation for some reason so eeeh
+                _coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance);
+                Gizmos.color = _coneColor;
+                Gizmos.DrawMesh(_coneMesh, _lightsOriginCurrent.transform.position, _focused ? Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0, 0) : Quaternion.identity);
 
-            Lightable lightable;
-            for (int i = 0; i < Physics.OverlapSphereNonAlloc(_lightsOriginCurrent.position, _lightDistance, _lightHits, _lightableLayer); i++) {
-                if (_lightHits[i] != null && _lightHits[i].TryGetComponent(out lightable)) {
-                    Vector3 toTarget = _lightHits[i].transform.position - _lightsOriginCurrent.position;
-                    if (Vector3.Angle(_lightsOriginCurrent.forward, toTarget.normalized) <= _coneAngleHalf) {
-                        Gizmos.color = Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer) ? Color.red : Color.green;
-                        Gizmos.DrawLine(_lightsOriginCurrent.position, lightable.transform.position);
+                Lightable lightable;
+                for (int i = 0; i < Physics.OverlapSphereNonAlloc(_lightsOriginCurrent.position, _lightDistance, _lightHits, _lightableLayer); i++) {
+                    if (_lightHits[i] != null && _lightHits[i].TryGetComponent(out lightable)) {
+                        Vector3 toTarget = _lightHits[i].transform.position - _lightsOriginCurrent.position;
+                        if (Vector3.Angle(_lightsOriginCurrent.forward, toTarget.normalized) <= _coneAngleHalf) {
+                            Gizmos.color = Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer) ? Color.red : Color.green;
+                            Gizmos.DrawLine(_lightsOriginCurrent.position, lightable.transform.position);
+                        }
                     }
                 }
             }
