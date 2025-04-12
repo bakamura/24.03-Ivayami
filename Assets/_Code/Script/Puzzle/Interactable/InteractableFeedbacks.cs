@@ -48,6 +48,11 @@ namespace Ivayami.Puzzle
             //setup materials
             if (_materials == null || forceRecalcMaterials)
             {
+                if(forceRecalcMaterials) {
+                    for (int i = 0; i < _materials.Count; i++) {
+                        _materials[i].SetColor(_colorVarName, _baseColors[i]);
+                    }
+                }
                 _materials = new List<Material>();
                 _baseColors = new List<Color>();
                 if (_applyToChildrens)
