@@ -15,6 +15,8 @@ namespace Ivayami.Puzzle
         private Vector4 _initialValue;
         private static readonly int PARAMETER = Shader.PropertyToID("_SoftParticleFadeParams");
 
+        public float LerpDuration => _duration;
+
         [ContextMenu("Start")]
         public void StartLerp()
         {
