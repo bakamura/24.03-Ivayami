@@ -48,6 +48,11 @@ namespace Ivayami.Puzzle
             //setup materials
             if (_materials == null || forceRecalcMaterials)
             {
+                if(forceRecalcMaterials) {
+                    for (int i = 0; i < _materials.Count; i++) {
+                        _materials[i].SetColor(_colorVarName, _baseColors[i]);
+                    }
+                }
                 _materials = new List<Material>();
                 _baseColors = new List<Color>();
                 if (_applyToChildrens)
@@ -115,6 +120,10 @@ namespace Ivayami.Puzzle
                     _icon.sprite = _defaultIcon;
                 }
             }
+        }
+
+        public void ForceRecalcMaterials() {
+            UpdateFeedbacks(_showingInputIcon, false, true);
         }
 
         public void PlayInteractionAnimation()

@@ -80,7 +80,7 @@ namespace Ivayami.Player
             PlayerStress.Instance.onFail.AddListener(Fail);
             PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
-            PlayerActions.Instance.onAbility.AddListener(Trigger);
+            //PlayerActions.Instance.onAbility.AddListener(Trigger);
         }
 
         public float GetInteractAnimationDuration(PlayerActions.InteractAnimation animation)
@@ -188,17 +188,17 @@ namespace Ivayami.Player
         {
             if (damageType == DamageAnimation.None) return;
             _animator.SetFloat(DAMAGE_TYPE, (float)damageType);
-            if (failState)
-            {
-                _animator.SetLayerWeight(_damageMentalLayer, 0);
-                _animator.SetLayerWeight(_damagePhysicalLayer, 0);
-            }
-            else
-            {
-                _animator.SetLayerWeight(_damageMentalLayer, damageType == DamageAnimation.Mental ? 1 : 0);
-                _animator.SetLayerWeight(_damagePhysicalLayer, damageType == DamageAnimation.Physical ? 1 : 0);
-                _animator.SetTrigger(TAKE_DAMAGE);
-            }
+            //if (failState)
+            //{
+            //    _animator.SetLayerWeight(_damageMentalLayer, 0);
+            //    _animator.SetLayerWeight(_damagePhysicalLayer, 0);
+            //}
+            //else
+            //{
+            //    _animator.SetLayerWeight(_damageMentalLayer, damageType == DamageAnimation.Mental ? 1 : 0);
+            //    _animator.SetLayerWeight(_damagePhysicalLayer, damageType == DamageAnimation.Physical ? 1 : 0);
+            //    _animator.SetTrigger(TAKE_DAMAGE);
+            //}
         }
     }
 }

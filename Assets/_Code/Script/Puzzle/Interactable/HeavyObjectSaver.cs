@@ -60,7 +60,7 @@ namespace Ivayami.Puzzle {
                 else Debug.LogError($"Heavy Saver Couldn't get HeavyPlacement in '{name}'");
             }
             else Debug.LogError($"Heavy Saver couldn't get object from other script through reflection!");
-#endif
         }
+#endif
     }
 }
