@@ -16,7 +16,7 @@ public class InteractableDetector : MonoBehaviour {
 
     public List<IInteractable> InteractablesDetected {
         get {
-            _interactablesDetected.RemoveAll(interactable => (interactable as MonoBehaviour) == null || !interactable.gameObject.activeInHierarchy);
+            _interactablesDetected.RemoveAll(interactable => (interactable as MonoBehaviour) == null || !interactable.gameObject.activeInHierarchy || !interactable.gameObject.GetComponent<Collider>().enabled);
             List<IInteractable> interactables = _interactablesDetected;
             if (onlyHeavyObjects) {
                 HeavyObjectPlacement tmp;
@@ -32,12 +32,18 @@ public class InteractableDetector : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other) {
         if (!other.isTrigger) {
+            if (other.TryGetComponent(out IInteractable debug)) Debug.Log($"Added: {debug.gameObject.name}");
             if (other.TryGetComponent(out IInteractable interactable)) _interactablesDetected.Add(interactable);
             else Debug.LogWarning($"InteractableDetector couldn't get IInteractable from {other.name}, check if layer is misatributed");
         }
     }
 
     private void OnTriggerExit(Collider other) {
+        if (other.TryGetComponent(out IInteractable debug)) {
+            if (_interactablesDetected.Contains(debug)) Debug.Log($"Removed: {debug.gameObject.name}");
+            else Debug.Log($"Remove Failed: {debug.gameObject.name} - Wasn't in list");
+        }
+        else Debug.Log($"Remove Failed: {other.name} - Hadn't attached IInteractable");
         if (other.TryGetComponent(out IInteractable interactable) && _interactablesDetected.Contains(interactable)) _interactablesDetected.Remove(interactable);
     }
 
