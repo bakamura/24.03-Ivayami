@@ -122,6 +122,10 @@ namespace Ivayami.Puzzle
             }
         }
 
+        public void ForceRecalcMaterials() {
+            UpdateFeedbacks(_showingInputIcon, false, true);
+        }
+
         public void PlayInteractionAnimation()
         {
             _interactionAnimation.Play(PULSE, 0);

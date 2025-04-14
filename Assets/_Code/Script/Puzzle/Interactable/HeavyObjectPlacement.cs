@@ -86,7 +86,7 @@ namespace Ivayami.Puzzle {
             PlayerStress.Instance.onFail.AddListener(RemovePlayerObject);
             PlayerAnimation.Instance.HeavyHold(true);
             onCollect.Invoke(true);
-            _interactableFeedbacks.UpdateFeedbacks(true, false, true);
+            _interactableFeedbacks.ForceRecalcMaterials();
         }
 
         public bool TryPlace() {
@@ -112,7 +112,7 @@ namespace Ivayami.Puzzle {
             PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
             PlayerAnimation.Instance.HeavyHold(false);
             onCollect.Invoke(false);
-            _interactableFeedbacks.UpdateFeedbacks(true, false, true);
+            _interactableFeedbacks.ForceRecalcMaterials();
         }
 
         private void CheckForActivation() {
