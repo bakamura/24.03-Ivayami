@@ -268,7 +268,7 @@ namespace Ivayami.Player {
         private void UpdateCurrentStamina(float value) {
             _staminaCurrent = Mathf.Clamp(_staminaCurrent + value * _maxStamina * Time.deltaTime, 0, _maxStamina);
             if (_staminaCurrent <= 0) _staminaRunBlock = false;
-            else _staminaRunBlock = true;
+            else if(_staminaCurrent == _maxStamina * _minStaminaToRun) _staminaRunBlock = true;
             WalkUpdate();
             onStaminaUpdate?.Invoke(_staminaCurrent / _maxStamina);
         }
