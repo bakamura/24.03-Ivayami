@@ -25,8 +25,10 @@ namespace Ivayami.Player {
         [SerializeField] private float _stressRelieveDelay;
         private float _stressRelieveDelayTimer;
 
-        public float MaxStress => _stressMax;
-        public float StressCurrent => _stressCurrent;
+        public float MaxStress { get { return _stressMax; } }
+        public float StressCurrent { get { return _stressCurrent; } }
+
+        public bool StressIsMaxed { get { return _stressCurrent >= _stressMax; } }
 
         [Header("Fail")]
 
@@ -62,10 +64,11 @@ namespace Ivayami.Player {
             else if (_stressCurrent > _stressRelieveMinValue) RelieveStressAuto();
         }
 
-        public void AddStress(float amount, float capValue = -1) {
+        public void AddStress(float amount, float capValue = -1, PlayerAnimation.DamageAnimation damageType = PlayerAnimation.DamageAnimation.None) {
             if (!_failState && _stressCurrent < (capValue >= 0 ? capValue : _stressMax)) {
                 _stressCurrent = Mathf.Clamp(_stressCurrent + amount, 0, capValue >= 0 ? capValue : _stressMax);
                 onStressChange.Invoke(_stressCurrent);
+                PlayerAnimation.Instance.TakeDamage(damageType, _failState);
                 _stressRelieveDelayTimer = _stressRelieveDelay;
 
                 Logger.Log(LogType.Player, $"Stress Meter: {_stressCurrent}/{_stressMax}");
@@ -75,7 +78,7 @@ namespace Ivayami.Player {
 
         public void SetStress(float value) {
             _stressCurrent = Mathf.Clamp(value, 0, _stressMax);
-            AddStress(0);
+            AddStress(0, damageType : PlayerAnimation.DamageAnimation.Mental);
         }
 
         private void RelieveStressAuto() {
@@ -126,6 +129,7 @@ namespace Ivayami.Player {
                 SaveObject.UpdateSaveLock(false);
                 SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
                 SceneController.Instance.UnloadAllScenes(ReloadAndReset);
+                SceneLoadersManager.Instance.gameObject.SetActive(false);
             });
             SceneTransition.Instance.OnOpenEnd.RemoveListener(RespawnFailFade);
         }
@@ -136,7 +140,8 @@ namespace Ivayami.Player {
             //ResetStress();
             SaveObject.UpdateSaveLock(true);
             SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
-            SceneController.Instance.LoadScene("BaseTerrain"/*, onSceneLoaded*/);
+            SceneLoadersManager.Instance.gameObject.SetActive(true);
+            //SceneController.Instance.LoadScene("BaseTerrain"/*, onSceneLoaded*/);
             PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
         }
 

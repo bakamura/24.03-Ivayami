@@ -31,8 +31,9 @@ namespace Ivayami.UI
         private Coroutine _currentItemActionCoroutine;
         private int _currentSelectedIndex;
         private bool _isActive;
+        private bool _canOpen = true;
 
-        public bool IsActive => _isActive;
+        public bool IsActive => _isActive;        
 
         protected override void Awake()
         {
@@ -51,6 +52,7 @@ namespace Ivayami.UI
         /// </summary>
         public void UpdateUI(bool isActive)
         {
+            if (!_canOpen) return;
             _isActive = isActive;
             if (_isActive) _onShowUI?.Invoke();
             UpdateInputs();
@@ -147,7 +149,8 @@ namespace Ivayami.UI
 
         private void HandleInputMapChange(string mapId)
         {
-            if (mapId != "Player" && IsActive) UpdateUI(false);
+            _canOpen = string.Equals(mapId, "Player");
+            if (!_canOpen && IsActive) UpdateUI(false);
         }
     }
 }

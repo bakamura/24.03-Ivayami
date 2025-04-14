@@ -9,11 +9,9 @@ using UnityEngine.Events;
 namespace Ivayami.Puzzle {
     public class HidingSpot : MonoBehaviour, IInteractable {
 
-        public InteractableFeedbacks InteratctableFeedbacks
-        {
-            get
-            {
-                if (!m_interactableFeedbacks) m_interactableFeedbacks = GetComponent<InteractableFeedbacks>();
+        public InteractableFeedbacks InteratctableFeedbacks {
+            get {
+                if (!m_interactableFeedbacks) m_interactableFeedbacks = gameObject?.GetComponent<InteractableFeedbacks>();
                 return m_interactableFeedbacks;
             }
         }
@@ -43,10 +41,8 @@ namespace Ivayami.Puzzle {
         private static int SPEED = Animator.StringToHash("Speed");
         private bool _inputActive;
 
-        private void Setup()
-        {
-            if (_delayChangeCamera == null)
-            {
+        private void Setup() {
+            if (_delayChangeCamera == null) {
                 _objectAnimator = GetComponentInChildren<Animator>();
                 _delayChangeCamera = new WaitForSeconds(PlayerAnimation.Instance.GetInteractAnimationDuration(_interactionType) - _hidingCam.Duration);
                 _objectAnimator.SetFloat(SPEED, PlayerAnimation.Instance.GetInteractAnimationSpeed(_interactionType));
@@ -82,59 +78,51 @@ namespace Ivayami.Puzzle {
             _hidingCam.ExitDialogueCamera();
             _hiddenCam.StartMovement();
             _inputActive = true;
-            PlayerMovement.Instance.hidingState = _hiddenType; 
+            PlayerMovement.Instance.hidingState = _hiddenType;
             ReturnAction.Instance.Set(Exit);
             _exitInput.action.started += HandleExit;
             _exitInput.action.Enable();
             PlayerMovement.Instance.ToggleMovement(nameof(HidingSpot), false);
             _hideCoroutine = null;
-        }        
+        }
 
-        private void OnPlayerDeath()
-        {
-            if (_inputActive)
-            {
-                _exitInput.action.started -= HandleExit;
-                PlayerMovement.Instance.ToggleMovement(nameof(HidingSpot), true);
-            }
-            _inputActive = false;
-            PlayerStress.Instance.onFail.RemoveListener(OnPlayerDeath);
+        private void OnPlayerDeath() {
+            StartCoroutine(RemovePlayer());
             _objectAnimator.speed = 0;
-            PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
-            PlayerActions.Instance.ChangeInputMap("Player");
-            Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
-            PlayerAnimation.Instance.InteractLong(false);
-            if (_hideCoroutine != null)
-            {
+            if (_hideCoroutine != null) {
                 StopCoroutine(_hideCoroutine);
                 _hideCoroutine = null;
             }
-            _hiddenCam.ExitDialogueCamera();
             _hidingCam.ExitDialogueCamera();
         }
 
-        private void HandleExit(InputAction.CallbackContext obj)
-        {
+        private void HandleExit(InputAction.CallbackContext obj) {
             Exit();
         }
 
-        public void Exit()
-        {
-            if (_inputActive)
-            {
+        private void Exit() {
+            StartCoroutine(RemovePlayer());
+            InteratctableFeedbacks.UpdateFeedbacks(true, true);
+            PlayerAnimation.Instance.GoToIdle();
+        }
+
+        private IEnumerator RemovePlayer() {
+            if (_inputActive) {
                 _exitInput.action.started -= HandleExit;
                 PlayerMovement.Instance.ToggleMovement(nameof(HidingSpot), true);
             }
             _inputActive = false;
             PlayerStress.Instance.onFail.RemoveListener(OnPlayerDeath);
-            PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
             PlayerActions.Instance.ChangeInputMap("Player");
-            Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
-            InteratctableFeedbacks.UpdateFeedbacks(true, true);
-            PlayerAnimation.Instance.GoToIdle();
             PlayerAnimation.Instance.InteractLong(false);
-
+            Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
+            ReturnAction.Instance.Set(null);
             _hiddenCam.ExitDialogueCamera();
+
+            yield return null;
+
+            PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
         }
+
     }
 }

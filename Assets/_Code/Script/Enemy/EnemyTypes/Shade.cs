@@ -43,7 +43,7 @@ namespace Ivayami.Enemy
         {
             if (_playerInsideArea && !_inCooldown)
             {
-                PlayerStress.Instance.AddStress(_stressIncrease);
+                PlayerStress.Instance.AddStress(_stressIncrease, damageType : PlayerAnimation.DamageAnimation.Mental);
                 if (_hideCoroutine != null)
                 {
                     StopCoroutine(_hideCoroutine);
