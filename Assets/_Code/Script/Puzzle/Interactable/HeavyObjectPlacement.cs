@@ -4,7 +4,7 @@ using Ivayami.Player;
 using System.Collections;
 
 namespace Ivayami.Puzzle {
-    [RequireComponent(typeof(HeavyObjectSaver), typeof(HeavyObjectSounds)]
+    [RequireComponent(typeof(HeavyObjectSaver), typeof(HeavyObjectSounds))]
     public class HeavyObjectPlacement : Activator, IInteractable {
 
         public static UnityEvent<bool> onCollect = new UnityEvent<bool>();
