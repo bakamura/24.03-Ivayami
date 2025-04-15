@@ -113,6 +113,7 @@ namespace Ivayami.Player {
         public CharacterController CharacterController { get { return _characterController; } }
 #if UNITY_EDITOR
         public float MaxStamina => _maxStamina;
+        public bool StaminaRunBlock => _staminaRunBlock;
 #endif
 
         protected override void Awake() {
@@ -153,8 +154,6 @@ namespace Ivayami.Player {
         private void MoveDirection(InputAction.CallbackContext input) {
             Vector2 value = input.ReadValue<Vector2>();
             _inputCache = value;
-            //if (value.magnitude > _stickDeadzone) _inputCache = value;
-            //else _inputCache = Vector2.zero;
 
             Logger.Log(LogType.Player, $"Movement Input Change: {input.ReadValue<Vector2>()}");
         }
@@ -267,8 +266,8 @@ namespace Ivayami.Player {
         // Unoptimized !!
         private void UpdateCurrentStamina(float value) {
             _staminaCurrent = Mathf.Clamp(_staminaCurrent + value * _maxStamina * Time.deltaTime, 0, _maxStamina);
-            if (_staminaCurrent <= 0) _staminaRunBlock = false;
-            else if(_staminaCurrent == _maxStamina * _minStaminaToRun) _staminaRunBlock = true;
+            if (_staminaCurrent <= 0) _staminaRunBlock = true;
+            else if(_staminaCurrent >= _maxStamina * _minStaminaToRun) _staminaRunBlock = false;
             WalkUpdate();
             onStaminaUpdate?.Invoke(_staminaCurrent / _maxStamina);
         }
