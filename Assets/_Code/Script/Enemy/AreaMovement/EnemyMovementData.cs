@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Ivayami.Enemy
 {
-    [CreateAssetMenu(menuName = "Enemy/MovementData", fileName = "NewMovementData")]
+    [CreateAssetMenu(menuName = "Ivayami/Gameplay/EnemyMovementData", fileName = "NewEnemyMovementData")]
     public class EnemyMovementData : ScriptableObject
     {
         [SerializeField, Min(0f)] private float _acceleration;
