@@ -8,6 +8,7 @@ namespace Ivayami.Scene
 {
     public sealed class ClockTower : MonoBehaviour
     {
+        [SerializeField] private bool _debugLogs;
         [SerializeField] private ClockTowerEventRules[] _events;
 
         private List<ClockTowerEventRules> _currentValidRules = new List<ClockTowerEventRules>();
@@ -17,14 +18,14 @@ namespace Ivayami.Scene
 
         private struct ClockTowerEventActive
         {
-            public ClockTowerEventRules Rules;
-            public GameObject Instance;
+            public readonly ClockTowerEventRules Rules;
+            public ClockTowerEvent Instance;
             public static ClockTowerEventActive Empty = new ClockTowerEventActive();
 
-            public ClockTowerEventActive(ClockTowerEventRules rules, GameObject instance)
+            public ClockTowerEventActive(ClockTowerEventRules rules)
             {
                 Rules = rules;
-                Instance = instance;
+                Instance = null;
             }
         }
 
@@ -50,7 +51,7 @@ namespace Ivayami.Scene
                 StopCoroutine(_eventIntervalCoroutine);
                 _eventIntervalCoroutine = null;
             }
-            _currentEventActive.Rules.ClockTowerEvent.InterruptEvent();
+            if(_currentEventActive.Instance) _currentEventActive.Instance.InterruptEvent();
         }
 
         private void OnDestroy()
@@ -71,7 +72,7 @@ namespace Ivayami.Scene
         {
             if (_currentEventActive.Instance)
             {
-                Destroy(_currentEventActive.Instance);
+                Destroy(_currentEventActive.Instance.gameObject);
                 _currentEventActive = ClockTowerEventActive.Empty;
             }
         }
@@ -83,15 +84,16 @@ namespace Ivayami.Scene
 
         private IEnumerator EventIntervalCoroutine()
         {
-            _currentEventActive = new ClockTowerEventActive(_currentValidRules[Random.Range(0, _currentValidRules.Count)], null);
-            _currentEventActive.Rules.ClockTowerEvent.OnEndEvent += DestroyCurrentEvent;
-            _currentEventActive.Rules.ClockTowerEvent.OnEndEvent += StartNewEvent;
-            _currentEventActive.Rules.ClockTowerEvent.OnInterruptEvent += DestroyCurrentEvent;
-            WaitForSeconds delay = new WaitForSeconds(Random.Range(_currentEventActive.Rules.EventIntervalToStartRange.Min, _currentEventActive.Rules.EventIntervalToStartRange.Max));
+            _currentEventActive = new ClockTowerEventActive(_currentValidRules[Random.Range(0, _currentValidRules.Count)]);
+            float time = Random.Range(_currentEventActive.Rules.EventIntervalToStartRange.Min, _currentEventActive.Rules.EventIntervalToStartRange.Max);
+            WaitForSeconds delay = new WaitForSeconds(time);
+            if(_debugLogs) Debug.Log($"Event {_currentEventActive.Rules.name} selected, will start after {time} seconds");
             yield return delay;
-            GameObject instance = Instantiate(_currentEventActive.Instance, transform);
-            _currentEventActive.Instance = instance;            
-            _currentEventActive.Rules.ClockTowerEvent.StartEvent(_currentEventActive.Rules.EventDuration);
+            _currentEventActive.Instance = Instantiate(_currentEventActive.Rules.ClockTowerEvent.gameObject, transform).GetComponent<ClockTowerEvent>();
+            _currentEventActive.Instance.OnEndEvent += DestroyCurrentEvent;
+            _currentEventActive.Instance.OnEndEvent += StartNewEvent;
+            _currentEventActive.Instance.OnInterruptEvent += DestroyCurrentEvent;            
+            _currentEventActive.Instance.StartEvent(_currentEventActive.Rules.EventDuration, _debugLogs);
             _sound.Play();
             _eventIntervalCoroutine = null;
         }

@@ -9,20 +9,25 @@ namespace Ivayami.Scene
         public Action OnEndEvent;
         public Action OnInterruptEvent;
         private Coroutine _eventDurationCoroutine;
+        private bool _debugLogs;
 
-        public virtual void StartEvent(float duration)
+        public virtual void StartEvent(float duration, bool debugLogs)
         {
+            _debugLogs = debugLogs;
+            if(_debugLogs) Debug.Log($"Event {name} started, will end in {duration} seconds");
             _eventDurationCoroutine = StartCoroutine(EventDurationCoroutine(duration));
         }
 
-        public virtual void StopEvent()
-        {            
+        protected virtual void StopEvent()
+        {
+            if (_debugLogs) Debug.Log($"Event {name} ended");
             OnEndEvent?.Invoke();
             OnEndEvent = null;
         }
 
         public virtual void InterruptEvent()
         {
+            if (_debugLogs) Debug.Log($"Event {name} interrupted");
             if (_eventDurationCoroutine != null)
             {
                 StopCoroutine(_eventDurationCoroutine);

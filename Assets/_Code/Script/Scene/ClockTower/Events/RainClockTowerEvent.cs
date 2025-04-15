@@ -11,19 +11,19 @@ namespace Ivayami.Scene
         {
             get
             {
-                if (!m_sound) GetComponent<SoundEffectTrigger>();
+                if (!m_sound) m_sound = GetComponent<SoundEffectTrigger>();
                 return m_sound;
             }
         }
         private SoundEffectTrigger m_sound;
-        public override void StartEvent(float duration)
+        public override void StartEvent(float duration, bool debugLogs)
         {
             _sound.Play();
             _rainParticles.Play();
-            base.StartEvent(duration);
+            base.StartEvent(duration, debugLogs);
         }
 
-        public override void StopEvent()
+        protected override void StopEvent()
         {
             _sound.Stop();
             _rainParticles.Stop();
@@ -38,6 +38,7 @@ namespace Ivayami.Scene
 
         public override void InterruptEvent()
         {
+            Destroy(_rainParticles.gameObject);
             base.InterruptEvent();
         }
     }

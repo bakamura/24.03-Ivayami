@@ -8,16 +8,21 @@ namespace Ivayami.Scene
         [SerializeField] private InterpolateFogShader _startEventFogValue;
         [SerializeField] private InterpolateFogShader _endEventFogValue;
         [SerializeField] private InterpolateFogShader _interuptedEventFogValue;
-        public override void StartEvent(float duration)
+        public override void StartEvent(float duration, bool debugLogs)
         {
             _startEventFogValue.StartLerp();
-            base.StartEvent(duration + _startEventFogValue.LerpDuration);
+            base.StartEvent(duration + _startEventFogValue.LerpDuration, debugLogs);
         }
 
-        public override void StopEvent()
+        protected override void StopEvent()
         {
             _endEventFogValue.StartLerp();
-            Invoke(nameof(base.StopEvent), _endEventFogValue.LerpDuration);
+            Invoke(nameof(EndDelay), _endEventFogValue.LerpDuration);
+        }       
+
+        private void EndDelay()
+        {
+            base.StopEvent();
         }
 
         public override void InterruptEvent()
