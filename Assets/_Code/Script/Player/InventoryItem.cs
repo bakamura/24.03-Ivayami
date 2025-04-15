@@ -3,7 +3,7 @@ using UnityEngine.Localization.Settings;
 using Ivayami.Localization;
 
 namespace Ivayami.Player {
-    [CreateAssetMenu(menuName = "Inventory/Item")]
+    [CreateAssetMenu(menuName = "Ivayami/Gameplay/InventoryItem")]
     public class InventoryItem : ScriptableObject {
 
 #if UNITY_EDITOR
