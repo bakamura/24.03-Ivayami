@@ -43,6 +43,7 @@ GameObject:
   - component: {fileID: 4859924945528160580}
   - component: {fileID: 7418855959422873853}
   - component: {fileID: 1040043797951580494}
+  - component: {fileID: 4680374781297645303}
   - component: {fileID: 3144278112034996825}
   m_Layer: 6
   m_Name: HeavyPlacement
@@ -101,7 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5101876d8b98d2e4b94b905088810843, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 
+  _id: HeavyPlacement_Temple_267808
   _heavyObjectParent: {fileID: 5054257160953266595}
 --- !u!114 &1040043797951580494
 MonoBehaviour:
@@ -118,10 +119,39 @@ MonoBehaviour:
   onActivate:
     m_PersistentCalls:
       m_Calls: []
+  onCollectInstance:
+    m_PersistentCalls:
+      m_Calls: []
   _correctName: 
   _placementPos: {fileID: 5054257160953266595}
   _interactPopup: {fileID: 4026715549243372098}
   _pickupAnimationPoint: 0.2
+--- !u!114 &4680374781297645303
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9021545941367577086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 484a9d8ded44c2f479afafc3aa3aa403, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _collectSoundReference:
+  - Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  _placeSoundReference:
+  - Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
 --- !u!114 &3144278112034996825
 MonoBehaviour:
   m_ObjectHideFlags: 0
