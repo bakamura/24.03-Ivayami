@@ -8,6 +8,7 @@ public class DebugShowStress : MonoBehaviour {
 #if UNITY_EDITOR
     [SerializeField] private TextMeshProUGUI _stressText;
     [SerializeField] private Image _stressBar;
+    [SerializeField] private TextMeshProUGUI _runBlockerIndicator;
     [SerializeField] private TextMeshProUGUI _staminaText;
     [SerializeField] private Image _staminaBar;
 
@@ -16,6 +17,7 @@ public class DebugShowStress : MonoBehaviour {
         PlayerStress.Instance.onStressChange.AddListener((stress) => {
             _stressText.text = stress.ToString();
             _stressBar.fillAmount = stress / PlayerStress.Instance.MaxStress;
+            _runBlockerIndicator.text = PlayerMovement.Instance.StaminaRunBlock ? "true" : "false";
         });
         PlayerMovement.Instance.onStaminaUpdate.AddListener((stamina) =>
         {
