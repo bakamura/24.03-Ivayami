@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Ivayami.Player
 {
-    [CreateAssetMenu(menuName = "Inventory/ItemAction/HealOverTime")]
+    [CreateAssetMenu(menuName = "Ivayami/Gameplay/ItemAction/HealOverTime")]
     public class HealOverTime : ItemUsageAction
     {
         [field: SerializeField, Range(0f, 1f)] public float TotalHealAmount { get; private set; }

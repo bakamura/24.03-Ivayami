@@ -3,7 +3,7 @@ using UnityEngine;
 using Ivayami.Player;
 
 namespace Ivayami.UI {
-    [CreateAssetMenu(menuName = "InputIcons")]
+    [CreateAssetMenu(menuName = "Ivayami/UI/InputIcons")]
     public class InputIcons : ScriptableObject {
 
         [SerializeField] private Sprite[] _icons;
