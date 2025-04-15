@@ -3,7 +3,7 @@ using Ivayami.Save;
 
 namespace Ivayami.Scene
 {
-    [CreateAssetMenu(fileName = "NewClockTowerEventRule", menuName = "Ivayami/ClockTowerEventRule")]
+    [CreateAssetMenu(fileName = "NewClockTowerEventRule", menuName = "Ivayami/Gameplay/ClockTowerEventRule")]
     public class ClockTowerEventRules : ScriptableObject
     {
         [SerializeField, ProgressStep] private ProgressTriggerEvent.ProgressConditionInfo[] _progressConditions;
