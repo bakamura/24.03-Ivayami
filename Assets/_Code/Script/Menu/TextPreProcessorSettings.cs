@@ -1,7 +1,7 @@
 using UnityEngine;
 
 namespace Ivayami.UI {
-    [CreateAssetMenu(menuName ="Texts/PreProcessorSettings")]
+    [CreateAssetMenu(menuName = "Ivayami/UI/TextsPreProcessorSettings")]
     public class TextPreProcessorSettings : ScriptableObject {
 
         [field: SerializeField] public TextTag[] TextTags { get; private set; }

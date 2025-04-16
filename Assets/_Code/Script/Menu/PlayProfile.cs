@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Ivayami.UI
 {
-    [CreateAssetMenu(menuName = "PlayProfile", fileName = "NewPlayProfile")]
+    [CreateAssetMenu(menuName = "Ivayami/Debug/PlayProfile", fileName = "NewPlayProfile")]
     public class PlayProfile : ScriptableObject
     {
         //[Tooltip("The index of this profile in the progression of the game, higher values indicate further progression in game")]public uint ProfileOrderInProgression;

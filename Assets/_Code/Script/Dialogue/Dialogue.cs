@@ -5,7 +5,7 @@ using UnityEngine.Localization;
 
 namespace Ivayami.Dialogue
 {
-    [CreateAssetMenu(menuName = "DialogueSystem/Dialogue")]
+    [CreateAssetMenu(menuName = "Ivayami/UI/Dialogue")]
     public class Dialogue : ScriptableObject
     {
         [HideInInspector] public int ID => GetInstanceID();
