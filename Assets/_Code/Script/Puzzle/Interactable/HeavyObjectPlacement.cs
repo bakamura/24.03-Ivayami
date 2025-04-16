@@ -1,7 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using Ivayami.Player;
-using System.Collections;
+using Ivayami.Audio;
 
 namespace Ivayami.Puzzle {
     [RequireComponent(typeof(HeavyObjectSaver), typeof(HeavyObjectSounds))]
