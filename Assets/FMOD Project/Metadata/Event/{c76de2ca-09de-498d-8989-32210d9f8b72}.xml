@@ -5,7 +5,7 @@
 			<value>Anjo_Grunhido</value>
 		</property>
 		<property name="outputFormat">
-			<value>0</value>
+			<value>1</value>
 		</property>
 		<relationship name="folder">
 			<destination>{baa1da2d-afb6-4eba-94e5-7a4d82b1fd36}</destination>
@@ -30,6 +30,9 @@
 		</relationship>
 		<relationship name="parameters">
 			<destination>{06dc93dc-10b1-4487-9069-bfcefad692c5}</destination>
+		</relationship>
+		<relationship name="banks">
+			<destination>{3caf7ad3-0b11-4f29-adde-f4907b508c90}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixer" id="{9ccdcbc2-4fcc-41d9-a6d2-d83b7f62d6c3}">
@@ -96,7 +99,28 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{22990a99-ef84-4661-bdfe-e3b416c7f222}" />
-	<object class="MultiSound" id="{f6ca9383-bde4-44fd-827b-6c9e30accec8}" />
+	<object class="MultiSound" id="{f6ca9383-bde4-44fd-827b-6c9e30accec8}">
+		<relationship name="sounds">
+			<destination>{68ae2399-f422-46ca-b128-9e6cdf4b1154}</destination>
+			<destination>{2ffcf268-80b3-4591-92c3-03cbf191369f}</destination>
+			<destination>{eebbcca6-6631-4b08-9758-4cb789d9855d}</destination>
+		</relationship>
+	</object>
 	<object class="MixerBusFader" id="{239558f4-000a-4d5a-999d-a87febd104c1}" />
 	<object class="MixerBusFader" id="{dee885b2-9c67-426b-a3f9-246ad37705eb}" />
+	<object class="SingleSound" id="{68ae2399-f422-46ca-b128-9e6cdf4b1154}">
+		<relationship name="audioFile">
+			<destination>{e998cb20-f18f-4a5f-9247-3776506c0dc8}</destination>
+		</relationship>
+	</object>
+	<object class="SingleSound" id="{2ffcf268-80b3-4591-92c3-03cbf191369f}">
+		<relationship name="audioFile">
+			<destination>{e87d9e95-4011-419b-a2d7-e61184883e77}</destination>
+		</relationship>
+	</object>
+	<object class="SingleSound" id="{eebbcca6-6631-4b08-9758-4cb789d9855d}">
+		<relationship name="audioFile">
+			<destination>{593e0446-63f7-417d-b92a-43429a306188}</destination>
+		</relationship>
+	</object>
 </objects>
