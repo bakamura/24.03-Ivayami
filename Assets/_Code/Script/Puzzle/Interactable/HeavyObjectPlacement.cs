@@ -1,16 +1,20 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using Ivayami.Player;
-using System.Collections;
+using Ivayami.Audio;
 
 namespace Ivayami.Puzzle {
+    [RequireComponent(typeof(HeavyObjectSaver), typeof(HeavyObjectSounds))]
     public class HeavyObjectPlacement : Activator, IInteractable {
 
         public static UnityEvent<bool> onCollect = new UnityEvent<bool>();
+        public UnityEvent<bool> onCollectInstance = new UnityEvent<bool>();
 
         [SerializeField] private string _correctName;
         [SerializeField] private Transform _placementPos;
         private GameObject _heavyObjectCurrent;
+        public string HeavyObjectCurrentName { get { return _heavyObjectCurrent?.name; } }
         private Collider _collider;
         [SerializeField] private GameObject _interactPopup;
 
@@ -24,12 +28,9 @@ namespace Ivayami.Puzzle {
         public InteractableFeedbacks InteratctableFeedbacks { get { return _interactableFeedbacks; } }
 
         private void Awake() {
-            if (_placementPos) {
-                if (_placementPos.childCount > 0) _heavyObjectCurrent = _placementPos.GetChild(0).gameObject;
-            }
-            else Debug.LogError($"{name} has no _placementPos assigned!");
             if (!TryGetComponent<InteractableFeedbacks>(out _interactableFeedbacks)) Debug.LogError($"'{name}' has no InteractableFeedbacks attached to!");
             if (!TryGetComponent<Collider>(out _collider)) Debug.LogError($"'{name}' has no Collider attached to!");
+            onCollectInstance.AddListener((isCollecting) => onCollect.Invoke(isCollecting));
             onCollect.AddListener((isCollecting) => {
                 bool shouldShow = _heavyObjectCurrent ^ isCollecting;
                 _collider.enabled = shouldShow;
@@ -38,11 +39,25 @@ namespace Ivayami.Puzzle {
         }
 
         private void Start() {
-            _collider.enabled = _heavyObjectCurrent;
-            _interactPopup.SetActive(_heavyObjectCurrent);
-            float interactAnimDuration = PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.HeavyPickup);
+            float interactAnimDuration = PlayerAnimation.Instance ? PlayerAnimation.Instance.GetInteractAnimationDuration(PlayerActions.InteractAnimation.HeavyPickup) : 1f;
             _collectWait = new WaitForSeconds(interactAnimDuration * _pickupAnimationPoint);
             _placeWait = new WaitForSeconds(interactAnimDuration * (1f - _pickupAnimationPoint));
+        }
+
+        public void Setup() {
+            StartCoroutine(SetupRoutine());
+        }
+
+        private IEnumerator SetupRoutine() {
+            yield return null;
+
+            if (_placementPos) {
+                if (_placementPos.childCount > 0) _heavyObjectCurrent = _placementPos.GetChild(0).gameObject;
+            }
+            else Debug.LogError($"{name} has no _placementPos assigned!");
+            bool enabled = _heavyObjectCurrent != null;
+            _collider.enabled = enabled;
+            _interactPopup.SetActive(enabled);
         }
 
         public PlayerActions.InteractAnimation Interact() {
@@ -73,7 +88,8 @@ namespace Ivayami.Puzzle {
             PlayerMovement.Instance.AllowCrouch(false);
             PlayerStress.Instance.onFail.AddListener(RemovePlayerObject);
             PlayerAnimation.Instance.HeavyHold(true);
-            onCollect.Invoke(true);
+            onCollectInstance.Invoke(true);
+            _interactableFeedbacks.ForceRecalcMaterials();
         }
 
         public bool TryPlace() {
@@ -98,7 +114,8 @@ namespace Ivayami.Puzzle {
             PlayerMovement.Instance.AllowCrouch(true);
             PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
             PlayerAnimation.Instance.HeavyHold(false);
-            onCollect.Invoke(false);
+            onCollectInstance.Invoke(false);
+            _interactableFeedbacks.ForceRecalcMaterials();
         }
 
         private void CheckForActivation() {
@@ -115,6 +132,10 @@ namespace Ivayami.Puzzle {
             PlayerMovement.Instance.AllowCrouch(true);
             PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
             PlayerAnimation.Instance.HeavyHold(false);
+        }
+
+        private void OnDestroy() {
+            if(PlayerActions.Instance && PlayerActions.Instance.IsHoldingHeavyObject) PlayerActions.Instance.HeavyObjectRelease();
         }
 
     }

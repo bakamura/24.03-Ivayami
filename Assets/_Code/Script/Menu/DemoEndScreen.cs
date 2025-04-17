@@ -1,15 +1,13 @@
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using Ivayami.Player;
 
 namespace Ivayami.UI {
     public class DemoEndScreen : MonoBehaviour {
 
-        [SerializeField] private ScreenFade _unloadFadeIn;
+        [SerializeField] private string _mainMenuBtnName;
         private const string PAUSE_KEY = "DemoEndScreen";
-
-        private void Awake() {
-            DontDestroyOnLoad(gameObject);
-        }
 
         public void Show() {
             GetComponent<MenuGroup>().CloseCurrentThenOpen(GetComponent<Fade>());
@@ -18,13 +16,10 @@ namespace Ivayami.UI {
         }
 
         public void GoToMainMenu() {
-            GetComponentInChildren<ScreenFade>().FadeIn();
             Pause.Instance.ToggleCanPause(PAUSE_KEY, true);
+
+            FindObjectsByType<Button>(FindObjectsSortMode.None).First(btn => btn.name == _mainMenuBtnName).onClick.Invoke();
         }
         
-        public void DestroyThis() {
-            Destroy(gameObject);
-        }
-
     }
 }

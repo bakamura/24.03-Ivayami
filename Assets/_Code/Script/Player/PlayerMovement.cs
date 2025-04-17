@@ -50,11 +50,13 @@ namespace Ivayami.Player {
         private bool _canRun = true;
         private bool _canCrouch = true;
         private bool _holdToRun;
+        private bool _staminaRunBlock;
 
         [Header("Rotation")]
 
         [SerializeField] private Transform _visualTransform;
         [SerializeField, Range(0f, 0.99f)] private float _turnSmoothFactor;
+        public bool useCameraRotaion;
 
         [Header("Collider")]
 
@@ -100,14 +102,18 @@ namespace Ivayami.Player {
         private CharacterController _characterController;
         private Transform _cameraTransform;
         private SkinnedMeshRenderer[] _visualComponents;
+        private List<MeshRenderer> _additionalVisualComponents = new List<MeshRenderer>();
         private byte _gravityFactor = 1;
         //private float _stickDeadzone = .125f;
 
         private const string INTERACT_BLOCK_KEY = "Interact";
 
         public Vector3 VisualForward { get { return _visualTransform.forward; } }
+        public Vector3 MovementDirection { get { return _movementCache; } }
+        public CharacterController CharacterController { get { return _characterController; } }
 #if UNITY_EDITOR
         public float MaxStamina => _maxStamina;
+        public bool StaminaRunBlock => _staminaRunBlock;
 #endif
 
         protected override void Awake() {
@@ -148,8 +154,6 @@ namespace Ivayami.Player {
         private void MoveDirection(InputAction.CallbackContext input) {
             Vector2 value = input.ReadValue<Vector2>();
             _inputCache = value;
-            //if (value.magnitude > _stickDeadzone) _inputCache = value;
-            //else _inputCache = Vector2.zero;
 
             Logger.Log(LogType.Player, $"Movement Input Change: {input.ReadValue<Vector2>()}");
         }
@@ -212,6 +216,7 @@ namespace Ivayami.Player {
 
         private void Rotate() {
             _cameraAimTargetRotator.eulerAngles = _cameraTransform.eulerAngles.y * Vector3.up;
+            if (useCameraRotaion) _targetAngle = Quaternion.Euler(0f, _cameraTransform.eulerAngles.y, 0f);
             _visualTransform.rotation = Quaternion.Slerp(_visualTransform.rotation, _targetAngle, _turnSmoothFactor);
         }
 
@@ -229,17 +234,18 @@ namespace Ivayami.Player {
         }
 
         private void ToggleWalk() {
-            if (_canRun) {
-                _running = !_running;
-                if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
-            }
+            _running = !_running;
+            WalkUpdate();
         }
 
         private void SetWalk(bool isRunning) {
-            if (_canRun) {
-                _running = isRunning;
-                if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
-            }
+            _running = isRunning;
+            WalkUpdate();
+        }
+
+        private void WalkUpdate() {
+            if (_running) _running = _canRun && !_staminaRunBlock;
+            if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
         }
 
         private void OnStressChange(float currentStress) {
@@ -257,10 +263,12 @@ namespace Ivayami.Player {
             if (!inStressRange) ResetStamina();
         }
 
+        // Unoptimized !!
         private void UpdateCurrentStamina(float value) {
             _staminaCurrent = Mathf.Clamp(_staminaCurrent + value * _maxStamina * Time.deltaTime, 0, _maxStamina);
-            if (_staminaCurrent <= 0) AllowRun(false);
-            else AllowRun(true);
+            if (_staminaCurrent <= 0) _staminaRunBlock = true;
+            else if(_staminaCurrent >= _maxStamina * _minStaminaToRun) _staminaRunBlock = false;
+            WalkUpdate();
             onStaminaUpdate?.Invoke(_staminaCurrent / _maxStamina);
         }
 
@@ -269,7 +277,7 @@ namespace Ivayami.Player {
             onStaminaUpdate?.Invoke(1);
         }
 
-        public void AllowRun(bool allow) {
+        public void AllowRun(bool allow) { // Use stamina runblock
             if (!allow && _running) ToggleWalk();
             _canRun = allow;
         }
@@ -314,9 +322,14 @@ namespace Ivayami.Player {
         }
 
         public void UpdateVisualsVisibility(bool isVisible) {
-            for (int i = 0; i < _visualComponents.Length; i++)
-                _visualComponents[i].enabled = isVisible;
+            for (int i = 0; i < _visualComponents.Length; i++) _visualComponents[i].enabled = isVisible;
+            for (int i = 0; i < _additionalVisualComponents.Count; i++) _additionalVisualComponents[i].enabled = isVisible;
             //_visualTransform.gameObject.SetActive(isVisible);
+        }
+
+        public void AddAdditionalVisuals(MeshRenderer[] additionalVisuals) {
+            if (additionalVisuals?.Length > 0) _additionalVisualComponents.AddRange(additionalVisuals);
+            else Debug.LogWarning($"AddAdditionalVisuals() received null or empty array!");
         }
 
         public void ChangeRunSpeed(float val) {
@@ -326,7 +339,7 @@ namespace Ivayami.Player {
         }
 
         public void RemoveAllBlockers() {
-            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+            //if (!IngameDebugConsole.DebugLogManager.Instance) return;
             _movementBlock.Clear();
         }
 

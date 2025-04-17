@@ -7,7 +7,7 @@ namespace Ivayami.Enemy
     [CustomEditor(typeof(EnemyWalkArea))]
     public class EnemyWalkAreaInspector : Editor
     {
-        SerializedProperty movementData, patrolBehaviour, points, delayToNextPoint, debugDraw, gizmoSize, debugColor;
+        SerializedProperty movementData, patrolBehaviour, points, delayToNextPoint, onPatrolEnd, debugDraw, gizmoSize, debugColor;
         public override void OnInspectorGUI()
         {
             EditorGUILayout.PropertyField(movementData, new GUIContent("Movement Data"));
@@ -19,8 +19,8 @@ namespace Ivayami.Enemy
             else
             {
                 EditorGUILayout.PropertyField(delayToNextPoint, new GUIContent("Delay To Next Point"));
-            }            
-
+            }
+            if (patrolBehaviour.enumValueIndex == 3) EditorGUILayout.PropertyField(onPatrolEnd, new GUIContent("On Patrol End", "Will only play once"));
             EditorGUILayout.PropertyField(debugDraw, new GUIContent("Draw Gizmos"));
             EditorGUILayout.PropertyField(gizmoSize, new GUIContent("Gizmos Size"));
             EditorGUILayout.PropertyField(debugColor, new GUIContent("Gizmos Color"));
@@ -34,6 +34,7 @@ namespace Ivayami.Enemy
             patrolBehaviour = serializedObject.FindProperty("_patrolBehaviour");
             points = serializedObject.FindProperty("_points");
             delayToNextPoint = serializedObject.FindProperty("_delayToNextPoint");
+            onPatrolEnd = serializedObject.FindProperty("_onPatrolEnd");
             debugDraw = serializedObject.FindProperty("_debugDraw");
             gizmoSize = serializedObject.FindProperty("_gizmoSize");
             debugColor = serializedObject.FindProperty("_debugColor");

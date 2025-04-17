@@ -49,8 +49,8 @@ namespace Ivayami.Enemy
         private EnemyAnimator _enemyAnimator;
         private EnemySounds _enemySounds;
         private EnemyMovementData _currentMovementData;
-        private EnemyWalkArea _currenWalkArea;
-        private HitboxAttack _hitboxAttack;
+        private EnemyWalkArea _currentWalkArea;
+        //private HitboxAttack _hitboxAttack;
         private CapsuleCollider _collision;
         private WaitForSeconds _behaviourTickDelay;
         private Collider[] _hitsCache = new Collider[1];
@@ -79,7 +79,7 @@ namespace Ivayami.Enemy
             _behaviourTickDelay = new WaitForSeconds(_behaviourTickFrequency);
             _enemyAnimator = GetComponentInChildren<EnemyAnimator>();
             _enemySounds = GetComponent<EnemySounds>();
-            _hitboxAttack = GetComponentInChildren<HitboxAttack>();
+            //_hitboxAttack = GetComponentInChildren<HitboxAttack>();
             _halfVisionAngle = _visionAngle / 2f;
 
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
@@ -98,7 +98,7 @@ namespace Ivayami.Enemy
 
         private IEnumerator InitializeAgent()
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
             _navMeshAgent.enabled = true;
             if (_startActive) StartBehaviour();
             _initializeCoroutine = null;
@@ -107,7 +107,12 @@ namespace Ivayami.Enemy
         [ContextMenu("Start")]
         public void StartBehaviour()
         {
-            if (!IsActive)
+            if (!_navMeshAgent.isOnNavMesh)
+            {
+                //Debug.LogWarning($"Enemy {name} of type {typeof(PoliceOfficer)} is not in a navmesh");
+                return;
+            }
+            if (!IsActive && _navMeshAgent.isOnNavMesh)
             {
                 if (!_navMeshAgent.enabled)
                 {
@@ -127,7 +132,7 @@ namespace Ivayami.Enemy
                 StopTargetPointReachedCoroutine();
                 _isChasing = false;
                 _chaseTargetPatience = 0;
-                _navMeshAgent.isStopped = true;
+                if(_navMeshAgent.isOnNavMesh) _navMeshAgent.isStopped = true;
                 _navMeshAgent.velocity = Vector3.zero;
                 _enemyAnimator.Walking(0);
                 isStressAreaActive = false;
@@ -198,7 +203,7 @@ namespace Ivayami.Enemy
                     else
                     {
                         //Patrol
-                        if (_currenWalkArea && _currenWalkArea.GetCurrentPoint(ID, out EnemyWalkArea.EnemyData point))
+                        if (_currentWalkArea && _currentWalkArea.GetCurrentPoint(ID, out EnemyWalkArea.EnemyData point))
                         {
                             _navMeshAgent.speed = _currentMovementData.WalkSpeed;
                             if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(point.Point.Position.x, 0, point.Point.Position.z)) <= _navMeshAgent.stoppingDistance)
@@ -206,10 +211,10 @@ namespace Ivayami.Enemy
                                 _navMeshAgent.velocity = Vector3.zero;
                                 _enemyAnimator.Walking(0);
                                 yield return new WaitForSeconds(point.Point.DelayToNextPoint);
-                                _navMeshAgent.SetDestination(_currenWalkArea.GoToNextPoint(ID).Point.Position);
+                                _navMeshAgent.SetDestination(_currentWalkArea.GoToNextPoint(ID).Point.Position);
                                 if (_debugLogPoliceOfficer)
                                 {
-                                    _currenWalkArea.GetCurrentPoint(ID, out point);
+                                    _currentWalkArea.GetCurrentPoint(ID, out point);
                                     Debug.Log($"Change Patrol Point to {point.CurrentPointIndex}");
                                 }
                             }
@@ -272,7 +277,7 @@ namespace Ivayami.Enemy
             _isChasing = true;
             _enemyAnimator.Walking(0);
             _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
-            PlayerStress.Instance.AddStress(100, 79);
+            PlayerStress.Instance.AddStress(100, 79, PlayerAnimation.DamageAnimation.Mental);
             _enemyAnimator.TargetDetected(StartBehaviour);
         }
 
@@ -315,7 +320,11 @@ namespace Ivayami.Enemy
 
         private void OnAttackAnimationEnd()
         {
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+            //_hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+            for (int i = 0; i < _attackAreaInfos.Length; i++)
+            {
+                _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
+            }
             if (PlayerStress.Instance && PlayerStress.Instance.FailState)
             {
                 _enemyAnimator.Walking(0);
@@ -328,15 +337,17 @@ namespace Ivayami.Enemy
 
         private void OnAnimationStepChange(float normalizedTime)
         {
+            int currentAnimIndex = _enemyAnimator.GetCurrentAttackAnimIndex();
             for (int i = 0; i < _attackAreaInfos.Length; i++)
             {
-                if (normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
+                if (_attackAreaInfos[i].AnimationIndex == currentAnimIndex && normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
                 {
-                    _hitboxAttack.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
+                    _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay, _attackAreaInfos[i].DamageType);
                     return;
                 }
+                else _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
             }
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+            //_hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
         }
 
         private IEnumerator DetectTargetPointOffBehaviourReachedCoroutine(Vector3 finalPos, /*bool stayInPath,*/ bool autoStartBehaviour, float durationInPlace)
@@ -385,7 +396,7 @@ namespace Ivayami.Enemy
 
         public void SetWalkArea(EnemyWalkArea area)
         {
-            _currenWalkArea = area;
+            _currentWalkArea = area;
         }
 
         private void HandlePointReachedCoroutine(/*bool stayInPath,*/ bool autoStartBehaviour, float durationInPlace, Transform target)
@@ -449,17 +460,17 @@ namespace Ivayami.Enemy
             {
                 if (_attackAreaInfos[i].MinInterval > _attackAreaInfos[i].MaxInterval) _attackAreaInfos[i].MinInterval = _attackAreaInfos[i].MaxInterval;
             }
-            if (!_hitboxAttack)
-            {
-                _hitboxAttack = GetComponentInChildren<HitboxAttack>();
-                if (!_hitboxAttack)
-                {
-                    Debug.Log("To make enemy attack please add a HitboxAttack component as child");
-                    //GameObject go = new GameObject("HitboxAttackArea");
-                    //go.transform.parent = transform;
-                    //_hitboxAttack = go.AddComponent<HitboxAttack>();
-                }
-            }
+            //if (!_hitboxAttack)
+            //{
+            //    _hitboxAttack = GetComponentInChildren<HitboxAttack>();
+            //    if (!_hitboxAttack)
+            //    {
+            //        Debug.Log("To make enemy attack please add a HitboxAttack component as child");
+            //        //GameObject go = new GameObject("HitboxAttackArea");
+            //        //go.transform.parent = transform;
+            //        //_hitboxAttack = go.AddComponent<HitboxAttack>();
+            //    }
+            //}
         }
 #endif
         #endregion
