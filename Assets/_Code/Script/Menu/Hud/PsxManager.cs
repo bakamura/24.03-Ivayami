@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 //using System.Collections;
 using PSX;
 
-public class PsxScaler : MonoSingleton<PsxScaler> {
+public class PsxManager : MonoSingleton<PsxManager> {
 
     //[SerializeField] private float _heightPixelation;
     //[SerializeField, Min(0f)] private float _windowResizeCheckInterval;
@@ -15,12 +15,15 @@ public class PsxScaler : MonoSingleton<PsxScaler> {
     //private float _ditheringScaleBase;
     //private Pixelation _pixelation;
     private Dithering _dithering;
+    public Fog PSXFog { get; private set; }
     //private const float _baseResolutionFactor = 1920f / 1080f;
 
     protected override void Awake() {
         //_pixelation = GetComponent<Volume>().profile.components.FirstOrDefault(component => component.GetType() == typeof(Pixelation)) as Pixelation;
         base.Awake();
-        _dithering = GetComponent<Volume>().profile.components.FirstOrDefault(component => component.GetType() == typeof(Dithering)) as Dithering;
+        Volume volume = GetComponent<Volume>();
+        _dithering = volume.profile.components.FirstOrDefault(component => component.GetType() == typeof(Dithering)) as Dithering;
+        PSXFog = volume.profile.components.FirstOrDefault(component => component.GetType() == typeof(Fog)) as Fog;
         //_ditheringScaleBase = _dithering.ditherScale.value;
 
         //_pixelation.widthPixelation.Override(_heightPixelation);
