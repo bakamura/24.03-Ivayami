@@ -16,7 +16,7 @@ public class InteractableDetector : MonoBehaviour {
 
     public List<IInteractable> InteractablesDetected {
         get {
-            _interactablesDetected.RemoveAll(interactable => (interactable as MonoBehaviour) == null || !interactable.gameObject.activeInHierarchy);
+            _interactablesDetected.RemoveAll(interactable => (interactable as MonoBehaviour) == null || !interactable.gameObject.activeInHierarchy || !interactable.gameObject.GetComponent<Collider>().enabled);
             List<IInteractable> interactables = _interactablesDetected;
             if (onlyHeavyObjects) {
                 HeavyObjectPlacement tmp;

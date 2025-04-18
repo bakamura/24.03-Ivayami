@@ -1,13 +1,15 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using Ivayami.Player;
-using System.Collections;
+using Ivayami.Audio;
 
 namespace Ivayami.Puzzle {
-    [RequireComponent(typeof(HeavyObjectSaver))]
+    [RequireComponent(typeof(HeavyObjectSaver), typeof(HeavyObjectSounds))]
     public class HeavyObjectPlacement : Activator, IInteractable {
 
         public static UnityEvent<bool> onCollect = new UnityEvent<bool>();
+        public UnityEvent<bool> onCollectInstance = new UnityEvent<bool>();
 
         [SerializeField] private string _correctName;
         [SerializeField] private Transform _placementPos;
@@ -28,6 +30,7 @@ namespace Ivayami.Puzzle {
         private void Awake() {
             if (!TryGetComponent<InteractableFeedbacks>(out _interactableFeedbacks)) Debug.LogError($"'{name}' has no InteractableFeedbacks attached to!");
             if (!TryGetComponent<Collider>(out _collider)) Debug.LogError($"'{name}' has no Collider attached to!");
+            onCollectInstance.AddListener((isCollecting) => onCollect.Invoke(isCollecting));
             onCollect.AddListener((isCollecting) => {
                 bool shouldShow = _heavyObjectCurrent ^ isCollecting;
                 _collider.enabled = shouldShow;
@@ -85,8 +88,8 @@ namespace Ivayami.Puzzle {
             PlayerMovement.Instance.AllowCrouch(false);
             PlayerStress.Instance.onFail.AddListener(RemovePlayerObject);
             PlayerAnimation.Instance.HeavyHold(true);
-            onCollect.Invoke(true);
-            _interactableFeedbacks.UpdateFeedbacks(true, false, true);
+            onCollectInstance.Invoke(true);
+            _interactableFeedbacks.ForceRecalcMaterials();
         }
 
         public bool TryPlace() {
@@ -111,8 +114,8 @@ namespace Ivayami.Puzzle {
             PlayerMovement.Instance.AllowCrouch(true);
             PlayerStress.Instance.onFail.RemoveListener(RemovePlayerObject);
             PlayerAnimation.Instance.HeavyHold(false);
-            onCollect.Invoke(false);
-            _interactableFeedbacks.UpdateFeedbacks(true, false, true);
+            onCollectInstance.Invoke(false);
+            _interactableFeedbacks.ForceRecalcMaterials();
         }
 
         private void CheckForActivation() {

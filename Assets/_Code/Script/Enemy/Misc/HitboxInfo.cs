@@ -1,4 +1,5 @@
 using UnityEngine;
+using Ivayami.Player;
 
 namespace Ivayami.Enemy
 {
@@ -6,6 +7,7 @@ namespace Ivayami.Enemy
     public struct HitboxInfo
     {
         public HitboxAttack Hitbox;
+        public PlayerAnimation.DamageAnimation DamageType;
         [Range(0,1)] public int AnimationIndex;
         [Range(0, 1)] public float MinInterval;
         [Range(0, 1)] public float MaxInterval;
