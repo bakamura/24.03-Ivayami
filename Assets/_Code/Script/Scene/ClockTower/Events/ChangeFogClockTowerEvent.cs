@@ -1,5 +1,5 @@
 using UnityEngine;
-using Ivayami.Puzzle;
+using Ivayami.Misc;
 
 namespace Ivayami.Scene
 {
