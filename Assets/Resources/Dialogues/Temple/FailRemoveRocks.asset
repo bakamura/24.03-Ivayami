@@ -10,61 +10,45 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6d43efec3b0567347981156f15ba3089, type: 3}
-  m_Name: RockCollapse
+  m_Name: FailRemoveRocks
   m_EditorClassIdentifier: 
   dialogue:
   - AnnouncerName:
       m_TableReference:
-        m_TableCollectionName: 
+        m_TableCollectionName: Announcers
       m_TableEntryReference:
         m_KeyId: 0
-        m_Key: 
+        m_Key: Cynthia
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
     Speeches:
     - Language: English (en)
-      content: 
+      content: (The cave ceiling collapsed...)
     - Language: Portuguese (pt)
-      content: 
-    FilterTags: 
-    EventId: RockCollapse
-    FixedDurationInSpeech: 5
-  - AnnouncerName:
-      m_TableReference:
-        m_TableCollectionName: GUID:ea4a5249c84797c44b8edd6d351ffeee
-      m_TableEntryReference:
-        m_KeyId: 402950565888
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-    Speeches:
-    - Language: English (en)
-      content: Oh god damn it...
-    - Language: Portuguese (pt)
-      content: "Ah n\xE3o \xE9 poss\xEDvel..."
+      content: (O teto da caverna desabou...)
     FilterTags: 
     EventId: 
-    FixedDurationInSpeech: 1
+    FixedDurationInSpeech: 0
   - AnnouncerName:
       m_TableReference:
-        m_TableCollectionName: GUID:ea4a5249c84797c44b8edd6d351ffeee
+        m_TableCollectionName: Announcers
       m_TableEntryReference:
-        m_KeyId: 402950565888
-        m_Key: 
+        m_KeyId: 0
+        m_Key: Cynthia
       m_FallbackState: 0
       m_WaitForCompletion: 0
       m_LocalVariables: []
     Speeches:
     - Language: English (en)
-      content: How the hell am I gonna get out now?!
+      content: (But the rocks are loose, maybe I can remove them with some help.)
     - Language: Portuguese (pt)
-      content: Como diabos vou sair daqui agora?!
+      content: "(Mas essas pedras est\xE3o soltas, talvez eu consiga empurrar elas
+        se eu tiver ajuda.)"
     FilterTags: 
     EventId: 
-    FixedDurationInSpeech: 1
-  onEndEventId: RockCollapseEnd
+    FixedDurationInSpeech: 0
+  onEndEventId: 
   references:
     version: 2
     RefIds: []
