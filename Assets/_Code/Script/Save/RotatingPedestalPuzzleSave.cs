@@ -1,9 +1,7 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Ivayami.Puzzle;
-using System.Linq;
 
 namespace Ivayami.Save
 {
