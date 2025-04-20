@@ -25,6 +25,8 @@ namespace Ivayami.Misc
         private static readonly int FOG_SPHERE_DISTANCE = Shader.PropertyToID("_SoftParticleFadeParams");
         private static readonly int FOG_SPHERE_COLOR = Shader.PropertyToID("_BaseColor");
 
+        public float LerpDuration => _duration;
+
         [ContextMenu("Start")]
         public void StartLerp()
         {
