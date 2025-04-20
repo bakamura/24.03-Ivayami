@@ -1,10 +1,14 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Ivayami.Puzzle
 {
     public class TempleDoorAnimation : MonoBehaviour
     {
         [SerializeField] private string _boolName;
+        [SerializeField] private UnityEvent _onOpen;
+        [SerializeField] private UnityEvent _onClose;
+
         private Animator _animator
         {
             get
@@ -26,6 +30,9 @@ namespace Ivayami.Puzzle
 
         public void SetBool(bool value)
         {
+            bool previousVal = _animator.GetBool(_boolHash);
+            if (value && !previousVal) _onOpen?.Invoke();
+            else if (!value && previousVal) _onClose?.Invoke();
             _animator.SetBool(_boolHash, value);
         }
     }
