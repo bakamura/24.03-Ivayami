@@ -5127,10 +5127,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
-  m_Height: 2.1
+  m_Radius: 0.6
+  m_Height: 3
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0.5477661, z: 0}
 --- !u!195 &3361060639584483573
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -5171,10 +5171,10 @@ MonoBehaviour:
   _drawGizmos: 0
   _behaviourTickFrequency: 0.2
   _startActive: 1
-  _chaseSpeed: 10
+  _chaseSpeed: 9
   _detectionRange: 15
   _minDetectionRange: 7
-  _minDetectionRangeInChase: 15
+  _minDetectionRangeInChase: 9
   _visionAngle: 60
   _visionOffset: {x: 0, y: 1, z: 0}
   _targetLayer:
@@ -5368,11 +5368,11 @@ MonoBehaviour:
   - SoundType: 4
     AudioReference:
       Guid:
-        Data1: 2034609853
-        Data2: 1331710665
-        Data3: 86432941
-        Data4: 644500951
-      Path: event:/Monster_sfx/Passos monstro
+        Data1: 1675623726
+        Data2: 1241803320
+        Data3: 686739620
+        Data4: -2130034058
+      Path: event:/Monster_sfx/Anjo_Mausouleu/Anjo_Passos
     AttenuationRange:
       Min: 3
       Max: 24
@@ -5523,16 +5523,20 @@ MonoBehaviour:
   onIlluminated:
     m_PersistentCalls:
       m_Calls: []
+  onIlluminatedByLantern:
+    m_PersistentCalls:
+      m_Calls: []
   _lightBehaviour: 0
   _finalSpeed: 0
+  _checkLightTickFrequency: 0.3
   _paraliseDuration: 0
   _interpolateDuration: 0
   _willInterruptAttack: 1
   _blockLayers:
     serializedVersion: 2
-    m_Bits: 9
+    m_Bits: 8
   _enemyAnimator: {fileID: 8052367091888512825}
-  _paraliseAnimationRandomAmount: 3
+  _paraliseAnimationRandomAmount: 2
   _detectLightRange: 7
   _gizmoColor: {r: 1, g: 0.4189905, b: 0, a: 1}
   _interpolateCurve:
