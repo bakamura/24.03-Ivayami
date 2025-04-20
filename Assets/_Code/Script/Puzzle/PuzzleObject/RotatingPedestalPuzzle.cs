@@ -6,6 +6,7 @@ using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using System;
 using UnityEngine.EventSystems;
+using Ivayami.Save;
 
 namespace Ivayami.Puzzle
 {
@@ -42,6 +43,9 @@ namespace Ivayami.Puzzle
         private List<Vector3[]> _debugGizmoPositions;
 #endif
 
+        public RotatingObjectData[] RotatingObjects => _rotatingObjects;
+        public List<RotatingPedestalPuzzleObject[]> PuzzleObjects => _puzzleObjects;
+
         [Serializable]
         private struct SolutionData
         {
@@ -54,7 +58,7 @@ namespace Ivayami.Puzzle
             public UnityEvent OnActivate;
         }
         [Serializable]
-        private struct RotatingObjectData
+        public struct RotatingObjectData
         {
             public Transform Transform;
 #if UNITY_EDITOR
@@ -77,23 +81,9 @@ namespace Ivayami.Puzzle
         {
             FillDebugGizmoPositions();
         }
-
-        private void FillDebugGizmoPositions()
-        {
-            _debugGizmoPositions = new List<Vector3[]>();
-            for (int i = 0; i < _rotatingObjects.Length; i++)
-            {
-                RotatingPedestalPuzzleObject[] totalAmountPossible = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPedestalPuzzleObject>(true);
-                _debugGizmoPositions.Add(new Vector3[totalAmountPossible.Length]);
-                for (int a = 0; a < totalAmountPossible.Length; a++)
-                {
-                    if (totalAmountPossible[a].transform) _debugGizmoPositions[i][a] = totalAmountPossible[a].transform.position;
-                }
-            }
-        }
 #endif
 
-        private void Setup()
+        public void Setup()
         {
             if (_puzzleObjects == null)
             {
@@ -217,6 +207,7 @@ namespace Ivayami.Puzzle
                 _rotatingObjects[rotatingObjectIndex].Transform.localEulerAngles = new Vector3(0, Mathf.LerpAngle(initialAngle, initialAngle + _rotationAmount, count), 0);
                 yield return delay;
             }
+            _rotatingObjects[rotatingObjectIndex].Transform.localEulerAngles.Set(0, initialAngle + _rotationAmount, 0);
             _rotationAnimations.Remove(rotatingObjectIndex);
             UpdatePuzzleObjectsIndex(rotatingObjectIndex);
             CheckForSolutionsCompleted();
@@ -270,6 +261,24 @@ namespace Ivayami.Puzzle
                 _onNoSolutionMeet?.Invoke();
                 _triggerNoSolution = true;
             }
+        }
+
+        public void LoadData(RotatingPedestalPuzzleSave.Data data)
+        {
+            Setup();
+            int i;
+            for (i = 0; i < data.LayersRotations.Length; i++)
+            {
+                _rotatingObjects[i].Transform.localEulerAngles =  new Vector3(0, data.LayersRotations[i], 0);
+                for (int a = 0; a < Math.Floor(data.LayersRotations[i] / _rotationAmount); a++) 
+                    UpdatePuzzleObjectsIndex(i);
+            }
+
+            for (i = 0; i < data.PuzzleObjectsWithItemsIndex.Length; i++)
+            {
+                _puzzleObjects[data.PuzzleObjectsWithItemsIndex[i].LayerIndex][data.PuzzleObjectsWithItemsIndex[i].ObjectIndex].UpdateItem(_itemUsed, false);
+            }
+            CheckForSolutionsCompleted();
         }
 
 #if UNITY_EDITOR
@@ -326,6 +335,20 @@ namespace Ivayami.Puzzle
                         if (_solutions[i].PuzzleLayer[a].Solution.Length > size)
                             Array.Resize(ref _solutions[i].PuzzleLayer[a].Solution, size);
                     }
+                }
+            }
+        }
+
+        private void FillDebugGizmoPositions()
+        {
+            _debugGizmoPositions = new List<Vector3[]>();
+            for (int i = 0; i < _rotatingObjects.Length; i++)
+            {
+                RotatingPedestalPuzzleObject[] totalAmountPossible = _rotatingObjects[i].Transform.GetComponentsInChildren<RotatingPedestalPuzzleObject>(true);
+                _debugGizmoPositions.Add(new Vector3[totalAmountPossible.Length]);
+                for (int a = 0; a < totalAmountPossible.Length; a++)
+                {
+                    if (totalAmountPossible[a].transform) _debugGizmoPositions[i][a] = totalAmountPossible[a].transform.position;
                 }
             }
         }
