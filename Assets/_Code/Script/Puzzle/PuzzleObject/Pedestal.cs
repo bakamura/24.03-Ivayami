@@ -3,6 +3,7 @@ using Ivayami.Player;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using Ivayami.Save;
 
 namespace Ivayami.Puzzle
 {
@@ -26,6 +27,7 @@ namespace Ivayami.Puzzle
         public InteractableFeedbacks InteratctableFeedbacks => _interactableFeedbacks;
         public DeliverUI DeliverUI => _deliverUI;
         public ActivatorAnimated ActivatorAnimation => _activatorAnimated;
+        public string CurrentItemName => _currentItem.name;
         private void Awake()
         {
             _interactableFeedbacks = GetComponent<InteractableFeedbacks>();
@@ -80,12 +82,18 @@ namespace Ivayami.Puzzle
         {
             if (_currentItemVisual) Destroy(_currentItemVisual);
             _currentItemVisual = Instantiate(item.Model, _itemVisualPosition);
-            _currentItemVisual.transform.localScale = item.Model.transform.lossyScale;            
+            _currentItemVisual.transform.localScale = item.Model.transform.lossyScale;
             _currentItemVisual.transform.localRotation = Quaternion.Euler(-_itemVisualPosition.transform.localRotation.eulerAngles.x, 0, -_itemVisualPosition.transform.localRotation.eulerAngles.z);
             _currentItem = item;
             IsActive = true;
-            ExitInteraction();
+            if (_deliverUI.IsActive) ExitInteraction();
             onActivate?.Invoke();
+        }
+
+        public void LoadData(DeliverUISave.Data deliverUIData, InventoryItem item)
+        {
+            //_deliverUI.LoadData(deliverUIData);
+            HandleItemDeliver(item);
         }
 
         public void DeactivatePedestal()
