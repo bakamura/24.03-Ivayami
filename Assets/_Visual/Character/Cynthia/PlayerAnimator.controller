@@ -757,9 +757,9 @@ AnimatorStateTransition:
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0.2
+  m_TransitionDuration: 1.5
   m_TransitionOffset: 0
-  m_ExitTime: 1
+  m_ExitTime: 0.8
   m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
@@ -855,7 +855,7 @@ BlendTree:
   m_Childs:
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: 4886ba19fb9e18d428172de8d38ff475, type: 2}
-    m_Threshold: 70
+    m_Threshold: 65
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
@@ -863,7 +863,7 @@ BlendTree:
     m_Mirror: 0
   - serializedVersion: 2
     m_Motion: {fileID: 7400000, guid: 91734c26a4e8f2943a0a102bf26cda08, type: 2}
-    m_Threshold: 72
+    m_Threshold: 75
     m_Position: {x: 0, y: 0}
     m_TimeScale: 1
     m_CycleOffset: 0
@@ -871,8 +871,8 @@ BlendTree:
     m_Mirror: 0
   m_BlendParameter: StressCurrent
   m_BlendParameterY: MoveSpeed
-  m_MinThreshold: 70
-  m_MaxThreshold: 72
+  m_MinThreshold: 65
+  m_MaxThreshold: 75
   m_UseAutomaticThresholds: 0
   m_NormalizedBlendValues: 0
   m_BlendType: 0
@@ -2715,6 +2715,37 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!206 &6359207143281435642
+BlendTree:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Blend Tree
+  m_Childs:
+  - serializedVersion: 2
+    m_Motion: {fileID: -3100369314251171874, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+    m_Threshold: 70
+    m_Position: {x: 0, y: 0}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: MoveSpeed
+    m_Mirror: 0
+  - serializedVersion: 2
+    m_Motion: {fileID: -6606866276159917438, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+    m_Threshold: 72
+    m_Position: {x: 0, y: 0}
+    m_TimeScale: 1
+    m_CycleOffset: 0
+    m_DirectBlendParameter: MoveSpeed
+    m_Mirror: 0
+  m_BlendParameter: StressCurrent
+  m_BlendParameterY: MoveSpeed
+  m_MinThreshold: 70
+  m_MaxThreshold: 72
+  m_UseAutomaticThresholds: 0
+  m_NormalizedBlendValues: 0
+  m_BlendType: 0
 --- !u!1101 &6477776869835255608
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -2864,7 +2895,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: -3100369314251171874, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+  m_Motion: {fileID: 6359207143281435642}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
