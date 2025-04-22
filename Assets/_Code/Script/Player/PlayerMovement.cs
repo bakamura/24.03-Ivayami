@@ -138,7 +138,7 @@ namespace Ivayami.Player {
         }
 
         private void Start() {
-            SceneController.Instance.OnAllSceneRequestEnd += RemoveCrouch;
+            //SceneController.Instance.OnAllSceneRequestEnd += RemoveCrouch;
             PlayerActions.Instance.onInteract.AddListener((animation) => BlockMovementFor(INTERACT_BLOCK_KEY, PlayerAnimation.Instance.GetInteractAnimationDuration(animation)));
             PlayerStress.Instance.onStressChange.AddListener(OnStressChange);
             InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateHoldToRun);
@@ -197,7 +197,7 @@ namespace Ivayami.Player {
             }
         }
 
-        private void RemoveCrouch() {
+        public void RemoveCrouch() {
             if (Crouching) ToggleCrouch();
         }
 
