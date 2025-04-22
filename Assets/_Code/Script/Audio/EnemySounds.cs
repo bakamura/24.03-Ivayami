@@ -33,10 +33,10 @@ namespace Ivayami.Audio
             [Tooltip("If checked the audio will stop playing whenever a new sound starts that is marked with this option")] public bool CanBeStoped;
             public bool ReplayAudioOnEnd;
             public Range ReplayIntervalRange;
-            [HideInInspector] public EventInstance AudioInstance;
-            [HideInInspector] public Coroutine DelayToReplayCoroutine;
-            [HideInInspector] public AudioCallbackData CallbackData;
-            [HideInInspector] public bool WaitingForReplay;
+            [NonSerialized] public EventInstance AudioInstance;
+            [NonSerialized] public Coroutine DelayToReplayCoroutine;
+            [NonSerialized] public AudioCallbackData CallbackData;
+            [NonSerialized] public bool WaitingForReplay;
 #if UNITY_EDITOR
             [Tooltip("Can draw only with 3D sounds")] public bool DrawGizmos;
             public Color MinRangGizmoColor;
