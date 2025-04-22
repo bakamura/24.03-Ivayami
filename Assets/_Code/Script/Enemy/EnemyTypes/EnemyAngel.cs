@@ -4,6 +4,7 @@ using UnityEngine.AI;
 using Ivayami.Player;
 using Ivayami.Audio;
 using System;
+using UnityEngine.Events;
 
 namespace Ivayami.Enemy
 {
@@ -43,6 +44,7 @@ namespace Ivayami.Enemy
         [SerializeField, Min(1f)] private float _leapAttackJumpHeight;
         [SerializeField] private AnimationCurve _leapAttackHeightCurve;
         [SerializeField, Min(0f)] private float _leapAttackPredictDistance;
+        [SerializeField] private UnityEvent _onLeapAttackLand;
         [SerializeField, Min(0f)] private float _fallDuration;
         [SerializeField] private HitboxInfo[] _attackAreaInfos;
 
@@ -248,7 +250,7 @@ namespace Ivayami.Enemy
                         if (!_isChasing)
                         {
                             if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
-                            _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
+                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, () => _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing));
                             _isChasing = true;
                             if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());
                             SetToChaseSpeed();
@@ -528,6 +530,7 @@ namespace Ivayami.Enemy
                 }
                 yield return delay;
             }
+            _onLeapAttackLand?.Invoke();
             _leapCoroutine = null;
 
             Vector3 GetFinalPos()
@@ -575,6 +578,7 @@ namespace Ivayami.Enemy
                 transform.position = Vector3.Lerp(transform.position, finalPos, count);
                 yield return delay;
             }
+            _onLeapAttackLand?.Invoke();
             _navMeshAgent.enabled = true;
             _navMeshAgent.isStopped = false;
             _fallCoroutine = null;
