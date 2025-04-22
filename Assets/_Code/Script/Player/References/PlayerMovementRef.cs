@@ -17,5 +17,9 @@ namespace Ivayami.Player {
             PlayerMovement.Instance.BlockMovementFor(_blockKey, seconds);
         }
 
+        public void RemoveCrouch() {
+            PlayerMovement.Instance.RemoveCrouch();
+        }
+
     }
 }
