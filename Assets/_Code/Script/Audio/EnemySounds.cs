@@ -121,7 +121,7 @@ namespace Ivayami.Audio
                     if (currentSound != null)
                     {
                         currentSound.AudioInstance.getPlaybackState(out state);
-                        UnityEngine.Debug.Log($"the sound {currentSound.SoundType} is {state}");
+                        //UnityEngine.Debug.Log($"the sound {currentSound.SoundType} is {state}");
                     }
                     if (currentSound == null || (currentSound != null && state == PLAYBACK_STATE.PLAYING && currentSound.CanPlayMultipleTimes))
                     {
