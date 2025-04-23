@@ -15766,7 +15766,7 @@ MonoBehaviour:
   _dialogueName: SaveTutorial
   _activateOnce: 1
   _deactivateObjectOnFirstActivate: 1
-  _lockPlayerInput: 1
+  _lockPlayerInput: 0
 --- !u!1001 &455815041
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17851,6 +17851,7 @@ Transform:
   m_Children:
   - {fileID: 1950141792}
   - {fileID: 644208719}
+  - {fileID: 922757936}
   m_Father: {fileID: 1916554221}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &535716140
@@ -29219,6 +29220,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9ee6cfd5419f8f840a73fa5644782381, type: 3}
   m_PrefabInstance: {fileID: 922439814}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &922757935
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 922757936}
+  - component: {fileID: 922757937}
+  m_Layer: 0
+  m_Name: PlayerRef
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &922757936
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 922757935}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 531890832}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &922757937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 922757935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2435c04b3ec98dd4ea49d5782274add2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockKey: null
 --- !u!1001 &928824705
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -65082,6 +65128,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 922757937}
+          m_TargetAssemblyTypeName: Ivayami.Player.PlayerMovementRef, Assembly-CSharp
+          m_MethodName: AllowRun
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - id: SaveTutorialEnd
     InternalId: 2
     unityEvent:
@@ -65098,6 +65156,18 @@ MonoBehaviour:
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
+          m_CallState: 2
+        - m_Target: {fileID: 922757937}
+          m_TargetAssemblyTypeName: Ivayami.Player.PlayerMovementRef, Assembly-CSharp
+          m_MethodName: AllowRun
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
           m_CallState: 2
 --- !u!114 &1916554223
 MonoBehaviour:
@@ -66127,10 +66197,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fddd3369896713646ad1e21d820b85bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _changeCameraFocus: 0
+  _changeCameraFocus: 1
   _lookAtPlayer: 0
   _followPlayer: 1
-  _lookAtTarget: {fileID: 0}
+  _lookAtTarget: {fileID: 644208719}
   _followTarget: {fileID: 0}
   Duration: 4
   _hidePlayerModel: 0
