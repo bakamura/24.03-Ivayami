@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -12970,7 +12970,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _events:
   - id: CatHideInBush
-    InternalId: 6
+    InternalId: 1
     unityEvent:
       m_PersistentCalls:
         m_Calls:
@@ -13047,7 +13047,7 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
   - id: CatRunaway
-    InternalId: 7
+    InternalId: 2
     unityEvent:
       m_PersistentCalls:
         m_Calls:
@@ -22865,38 +22865,6 @@ Transform:
   - {fileID: 2082576939}
   m_Father: {fileID: 746703498}
   m_LocalEulerAnglesHint: {x: 0, y: -86.08, z: 0.99}
---- !u!1 &665535441
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 665535442}
-  m_Layer: 0
-  m_Name: Enemy Entry Progress
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &665535442
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 665535441}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 109.5057, y: 343.89395, z: 72.67449}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 986332177}
-  m_Father: {fileID: 712741586}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &666690635
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24473,7 +24441,6 @@ Transform:
   - {fileID: 399557935}
   - {fileID: 775947696}
   - {fileID: 1052228753}
-  - {fileID: 665535442}
   m_Father: {fileID: 876102473}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &716913992
@@ -31992,106 +31959,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3830918126417863534, guid: 9a424c80a3c90664493a92c2e8c84d26, type: 3}
   m_PrefabInstance: {fileID: 985966376}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &986332176
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 986332177}
-  - component: {fileID: 986332180}
-  - component: {fileID: 986332179}
-  - component: {fileID: 986332178}
-  m_Layer: 0
-  m_Name: Scourged Entry
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &986332177
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 986332176}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.7, y: 8.02, z: -2.6804733}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 665535442}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &986332178
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 986332176}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 686c3b17621a93a43a9d81301393d367, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _areaProgress: {fileID: 11400000, guid: 75b08e2d230397345a16187933eb2e76, type: 2}
---- !u!114 &986332179
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 986332176}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _triggerType: 0
-  _targetNeedToStayInside: 0
-  _executeEventOnDisable: 1
-  _delayToActivateEvent: 0
-  _optionalTag: 
-  _onExecute:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 986332178}
-        m_TargetAssemblyTypeName: Ivayami.Save.SaveProgressRef, Assembly-CSharp
-        m_MethodName: SetEntryProgressTo
-        m_Mode: 3
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!65 &986332180
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 986332176}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 3, y: 3, z: 20}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &996647110
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -52,8 +52,8 @@ namespace Ivayami.UI
 
         private void StartPlayProfile()
         {
-            SaveSystem.Instance.DeleteProgress(byte.MaxValue);
-            SaveSystem.Instance.LoadProgress(byte.MaxValue, OnSaveFileInitialized);            
+            SaveSystem.Instance.DeleteProgress(4);
+            SaveSystem.Instance.LoadProgress(4, OnSaveFileInitialized);            
         }
 
         private void OnSaveFileInitialized()

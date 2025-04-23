@@ -5,6 +5,6 @@ public static class ShaderTerminalCommands
     [ConsoleMethod("UpdateDithering", "", "value")]
     public static void UpdateDithering(float value)
     {
-        PsxScaler.Instance.ChangeDitheringScale(value);
+        PsxManager.Instance.ChangeDitheringScale(value);
     }
 }

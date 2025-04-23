@@ -7787,11 +7787,11 @@ PrefabInstance:
     - target: {fileID: 2959493235240761457, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[4].m_Target
       value: 
-      objectReference: {fileID: 1360946053}
+      objectReference: {fileID: 587292454}
     - target: {fileID: 2959493235240761457, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[5].m_Target
       value: 
-      objectReference: {fileID: 1360946053}
+      objectReference: {fileID: 0}
     - target: {fileID: 2959493235240761457, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       propertyPath: onActivate.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2
@@ -8726,7 +8726,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7900531684030502157, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 300
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7900531684030502157, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -9081,7 +9081,10 @@ PrefabInstance:
     - {fileID: 987507778545866, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7819979270802992687, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 587292454}
   m_SourcePrefab: {fileID: 100100000, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
 --- !u!4 &587292452 stripped
 Transform:
@@ -9093,6 +9096,38 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7819979270802992687, guid: f5a96e8a30dc1be4da15ebdda9ea06a4, type: 3}
   m_PrefabInstance: {fileID: 587292451}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &587292454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 587292453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _delayToFadeOut: 0
+  _beforeFade:
+    m_PersistentCalls:
+      m_Calls: []
+  _afterFade:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1583062446}
+        m_TargetAssemblyTypeName: Ivayami.Scene.ManualTeleporter, Assembly-CSharp
+        m_MethodName: Teleport
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _duration: 1
 --- !u!1001 &591605984
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11481,13 +11516,41 @@ MonoBehaviour:
   m_GameObject: {fileID: 855173203}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9a430758e5d3add458125794bb7b3531, type: 3}
+  m_Script: {fileID: 11500000, guid: d74e5c4dd631c2d4f9b5d9951c476bf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: PoliceStationBackDoor_PoliceStationBlock_826828
-  _objectsToSave:
-  - {fileID: 1360946051}
-  - {fileID: 587292453}
+  _triggerOnStart: 1
+  _progressConditions:
+  - AreaProgress: {fileID: 11400000, guid: 65580a89390179348964cebd784b7170, type: 2}
+    ProgressStepMin: 1
+    ProgressStepMax: 1
+  _onTrigger:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 587292453}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1360946051}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!1001 &873126229
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11709,7 +11772,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1144198098}
-  - {fileID: 923444279}
   m_Father: {fileID: 301712867}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &907350818
@@ -11872,127 +11934,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 9ee6cfd5419f8f840a73fa5644782381, type: 3}
   m_PrefabInstance: {fileID: 918131460}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &923444278
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 923444279}
-  - component: {fileID: 923444283}
-  - component: {fileID: 923444282}
-  - component: {fileID: 923444281}
-  - component: {fileID: 923444280}
-  m_Layer: 0
-  m_Name: ExitFromPoliceStationBackEntrance(SetAreaProgress_Luana_2)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
-  m_IsActive: 1
---- !u!4 &923444279
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 923444278}
-  serializedVersion: 2
-  m_LocalRotation: {x: 4.5746165e-10, y: 0.018037206, z: -0.00014737711, w: 0.99983734}
-  m_LocalPosition: {x: 242.059, y: 351.11, z: 179.259}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 904497609}
-  m_LocalEulerAnglesHint: {x: 0, y: 2.067, z: -0.017}
---- !u!114 &923444280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 923444278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 692332b1b4bbfff4894a4d52b27b27e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &923444281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 923444278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d74e5c4dd631c2d4f9b5d9951c476bf0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _triggerOnStart: 0
-  _progressConditions:
-  - AreaProgress: {fileID: 11400000, guid: f3e635ecc67e29f4e9076a0ae28f63c3, type: 2}
-    ProgressStepMin: 1
-    ProgressStepMax: 1
-  _onTrigger:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 923444280}
-        m_TargetAssemblyTypeName: Ivayami.UI.InfoUpdateIndicatorRef, Assembly-CSharp
-        m_MethodName: DisplayMapUpdate
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &923444282
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 923444278}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aac85a56f977a09419cd6c3c1df8cb43, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _triggerType: 0
-  _targetNeedToStayInside: 0
-  _executeEventOnDisable: 1
-  _delayToActivateEvent: 0
-  _optionalTag: 
-  _onExecute:
-    m_PersistentCalls:
-      m_Calls: []
-  _framesUntilDeactivate: 3
---- !u!65 &923444283
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 923444278}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 4, y: 2.3383484, z: 4}
-  m_Center: {x: 0, y: 0.6691742, z: 0}
 --- !u!1001 &925803856
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -14726,7 +14667,6 @@ GameObject:
   - component: {fileID: 1144198103}
   - component: {fileID: 1144198102}
   - component: {fileID: 1144198101}
-  - component: {fileID: 1144198100}
   - component: {fileID: 1144198099}
   m_Layer: 0
   m_Name: ExitFromPoliceStationFrontEntrance(SetAreaProgress_Luana_2)
@@ -14762,38 +14702,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 692332b1b4bbfff4894a4d52b27b27e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1144198100
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1144198097}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d74e5c4dd631c2d4f9b5d9951c476bf0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _triggerOnStart: 0
-  _progressConditions:
-  - AreaProgress: {fileID: 11400000, guid: f3e635ecc67e29f4e9076a0ae28f63c3, type: 2}
-    ProgressStepMin: 1
-    ProgressStepMax: 1
-  _onTrigger:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1144198099}
-        m_TargetAssemblyTypeName: Ivayami.UI.InfoUpdateIndicatorRef, Assembly-CSharp
-        m_MethodName: DisplayMapUpdate
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 1
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1144198101
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17233,23 +17141,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _interactSoundReference.Path
-      value: event:/Environment_SFX/Porta_madeira/Porta de madeira abrindo
+      value: event:/Puzzle_SFX/Fail to puzzle
       objectReference: {fileID: 0}
     - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _interactSoundReference.Guid.Data1
-      value: -439978140
+      value: -2107407734
       objectReference: {fileID: 0}
     - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _interactSoundReference.Guid.Data2
-      value: 1305829120
+      value: 1176837851
       objectReference: {fileID: 0}
     - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _interactSoundReference.Guid.Data3
-      value: -2115770222
+      value: 220537750
       objectReference: {fileID: 0}
     - target: {fileID: 1546796881142053769, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _interactSoundReference.Guid.Data4
-      value: -203164609
+      value: -2143912616
       objectReference: {fileID: 0}
     - target: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -17293,11 +17201,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 877af5c9c78a6414c89c8302d1966387, type: 2}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 6
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -17314,19 +17222,19 @@ PrefabInstance:
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
-      objectReference: {fileID: 1360946050}
+      objectReference: {fileID: 1735332341}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
-      objectReference: {fileID: 1360946053}
+      objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
-      objectReference: {fileID: 1360946053}
+      objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[3].m_Target
       value: 
-      objectReference: {fileID: 1360946053}
+      objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
@@ -17345,7 +17253,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: set_enabled
+      value: StartDialogue
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
@@ -17361,7 +17269,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UnityEngine.Collider, UnityEngine
+      value: Ivayami.Dialogue.DialogueTrigger, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 3994434172388237482, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       propertyPath: _onInteract.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
@@ -17490,11 +17398,11 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 1257347051849839360, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1360946053}
+      addedObject: {fileID: 1735332340}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
 --- !u!65 &1360946050 stripped
 BoxCollider:
@@ -17511,38 +17419,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6808678908838556611, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
   m_PrefabInstance: {fileID: 1360946049}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1360946053
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1360946051}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _delayToFadeOut: 0
-  _beforeFade:
-    m_PersistentCalls:
-      m_Calls: []
-  _afterFade:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1583062446}
-        m_TargetAssemblyTypeName: Ivayami.Scene.ManualTeleporter, Assembly-CSharp
-        m_MethodName: Teleport
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  _duration: 1
 --- !u!1001 &1374233814
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20626,6 +20502,61 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: df9f13f7d00230f4d98fb548de8efe94, type: 3}
   m_PrefabInstance: {fileID: 1730601606}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1735332339
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1735332340}
+  - component: {fileID: 1735332341}
+  m_Layer: 6
+  m_Name: Dialogue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1735332340
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1735332339}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1360946052}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1735332341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1735332339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dialogue: {fileID: 11400000, guid: bc29424290a2f5740887ee85f24a2a47, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  _dialogueName: TryOpenCrowbarDoor
+  _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
+  _lockPlayerInput: 1
 --- !u!1001 &1736927432
 PrefabInstance:
   m_ObjectHideFlags: 0

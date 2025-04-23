@@ -29,13 +29,14 @@ namespace Ivayami.Audio
             public SoundTypes SoundType;
             public EventReference AudioReference;
             public Range AttenuationRange;
-            public bool CanPlayMultipleTimes;
+            [Tooltip("The audio can have multiples of itself playing or play with other audio at the same time")] public bool CanPlayMultipleTimes;
             [Tooltip("If checked the audio will stop playing whenever a new sound starts that is marked with this option")] public bool CanBeStoped;
             public bool ReplayAudioOnEnd;
             public Range ReplayIntervalRange;
-            [HideInInspector] public EventInstance AudioInstance;
-            [HideInInspector] public Coroutine DelayToReplayCoroutine;
-            [HideInInspector] public AudioCallbackData CallbackData;
+            [NonSerialized] public EventInstance AudioInstance;
+            [NonSerialized] public Coroutine DelayToReplayCoroutine;
+            [NonSerialized] public AudioCallbackData CallbackData;
+            [NonSerialized] public bool WaitingForReplay;
 #if UNITY_EDITOR
             [Tooltip("Can draw only with 3D sounds")] public bool DrawGizmos;
             public Color MinRangGizmoColor;
@@ -83,8 +84,11 @@ namespace Ivayami.Audio
             TakeDamage,
             IdleScreams,
             Chasing,
-            Steps
+            Steps,
+            Attack
         }
+
+        //public void PlaySound(int soundType) => PlaySound((SoundTypes)soundType, null);
 
         public void PlaySound(SoundTypes soundType, Action OnAudioEnd = null)
         {
@@ -114,7 +118,11 @@ namespace Ivayami.Audio
                 if (soundType == _audiosData[i].SoundType)
                 {
                     GetValidSoundEventInList(_currentSoundData, soundType, out currentSound);
-                    if (currentSound != null) currentSound.AudioInstance.getPlaybackState(out state);
+                    if (currentSound != null)
+                    {
+                        currentSound.AudioInstance.getPlaybackState(out state);
+                        //UnityEngine.Debug.Log($"the sound {currentSound.SoundType} is {state}");
+                    }
                     if (currentSound == null || (currentSound != null && state == PLAYBACK_STATE.PLAYING && currentSound.CanPlayMultipleTimes))
                     {
                         TimelineInfo info = new TimelineInfo();
@@ -129,9 +137,10 @@ namespace Ivayami.Audio
                         _currentSoundData.Add(currentSound);
                         willPlaySound = true;
                     }
-                    else if (currentSound != null && currentSound.ReplayAudioOnEnd && state == PLAYBACK_STATE.STOPPED)
+                    else if (currentSound != null && currentSound.ReplayAudioOnEnd && !currentSound.WaitingForReplay && (state == PLAYBACK_STATE.STOPPED || state == PLAYBACK_STATE.STOPPING))
                     {
                         willPlaySound = true;
+                        currentSound.WaitingForReplay = true;
                     }
                     break;
                 }
@@ -230,12 +239,6 @@ namespace Ivayami.Audio
             _hasDoneSetup = false;
         }
 
-        private IEnumerator ReplayDelayCoroutine(SoundTypes type, Range range)
-        {
-            yield return new WaitForSeconds(UnityEngine.Random.Range(range.Min, range.Max));
-            PlaySound(type);
-        }
-
         private IEnumerator UpdateCoroutine()
         {
             WaitForSeconds delay = new WaitForSeconds(_updateTick);
@@ -251,22 +254,30 @@ namespace Ivayami.Audio
                         {
                             if (_debugLog) UnityEngine.Debug.Log($"Audio End Replay Audio {_currentSoundData[i].SoundType}");
                             _currentSoundData[i].DelayToReplayCoroutine =
-                                StartCoroutine(ReplayDelayCoroutine(_currentSoundData[i].SoundType, _currentSoundData[i].ReplayIntervalRange));
+                                StartCoroutine(ReplayDelayCoroutine(_currentSoundData[i]));
                         }
                     }
                 }
                 yield return delay;
             }
         }
+
+        private IEnumerator ReplayDelayCoroutine(SoundEventData data)
+        {
+            yield return new WaitForSeconds(UnityEngine.Random.Range(data.ReplayIntervalRange.Min, data.ReplayIntervalRange.Max));
+            data.DelayToReplayCoroutine = null;
+            data.WaitingForReplay = false;
+            PlaySound(data.SoundType);
+        }
         /// <summary>
-        /// Returns True if has removed the event from the list
+        /// This method will play the event that was added in the OnAuidoEnd at PlaySound, if itis not in Replay will be removed from list. Returns true if the sound was removed
         /// </summary>
         /// <param name="eventIndex"></param>
         /// <returns></returns>
         private bool PlayAudioEventCallback(int eventIndex, bool forceRemoveFromList)
         {
             SoundEventData data = _currentSoundData[eventIndex];
-            bool result = false;
+            bool removeFromCurrentSoundsList = false;
             if (data.ReplayAudioOnEnd && data.DelayToReplayCoroutine != null)
             {
                 StopCoroutine(data.DelayToReplayCoroutine);
@@ -275,11 +286,11 @@ namespace Ivayami.Audio
             if (!data.ReplayAudioOnEnd || forceRemoveFromList)
             {
                 _currentSoundData.RemoveAt(eventIndex);
-                result = true;
+                removeFromCurrentSoundsList = true;
             }
             if (_debugLog && data.CallbackData.UnityCallback != null) UnityEngine.Debug.Log($"Audio Callback End {data.SoundType}");
             data.CallbackData.UnityCallback?.Invoke();
-            return result;
+            return removeFromCurrentSoundsList;
         }
         [MonoPInvokeCallback(typeof(RESULT))]
         private static RESULT HandleOnAudioEnd(EVENT_CALLBACK_TYPE type, IntPtr instancePtr, IntPtr parameterPtr)
