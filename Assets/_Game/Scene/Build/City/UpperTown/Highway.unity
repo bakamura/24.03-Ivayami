@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414738, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1480,6 +1480,42 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5131989823477817137, guid: ebbf88c132dae444b8e8eb9a5b8764a9, type: 3}
   m_PrefabInstance: {fileID: 115815873}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &150829312
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 150829313}
+  m_Layer: 0
+  m_Name: EndRoadFogTriggers
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &150829313
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 150829312}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2292796724741658850}
+  - {fileID: 565617774}
+  - {fileID: 1686106407}
+  - {fileID: 673999487}
+  - {fileID: 1577356702}
+  m_Father: {fileID: 1189117233}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &155514630
 GameObject:
   m_ObjectHideFlags: 0
@@ -6734,7 +6770,7 @@ Transform:
   m_Children:
   - {fileID: 1023759697}
   - {fileID: 793446478}
-  m_Father: {fileID: 1189117233}
+  m_Father: {fileID: 150829313}
   m_LocalEulerAnglesHint: {x: 0, y: 38.915, z: 0}
 --- !u!65 &565617775
 BoxCollider:
@@ -7642,7 +7678,7 @@ GameObject:
   - component: {fileID: 616361107}
   - component: {fileID: 616361108}
   m_Layer: 0
-  m_Name: Teleporter
+  m_Name: TeleportPlayerBackToRoad
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8141,7 +8177,7 @@ Transform:
   m_Children:
   - {fileID: 1242807246}
   - {fileID: 393824205}
-  m_Father: {fileID: 1189117233}
+  m_Father: {fileID: 150829313}
   m_LocalEulerAnglesHint: {x: 0, y: 38.915, z: 0}
 --- !u!65 &673999488
 BoxCollider:
@@ -15201,11 +15237,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 393347882}
-  - {fileID: 2292796724741658850}
-  - {fileID: 565617774}
-  - {fileID: 1686106407}
-  - {fileID: 673999487}
-  - {fileID: 1577356702}
+  - {fileID: 150829313}
   m_Father: {fileID: 655224623}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1199348444
@@ -19482,7 +19514,7 @@ GameObject:
   - component: {fileID: 1577356702}
   - component: {fileID: 1577356704}
   - component: {fileID: 1577356703}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: TeleporterTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19502,7 +19534,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1189117233}
+  m_Father: {fileID: 150829313}
   m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
 --- !u!114 &1577356703
 MonoBehaviour:
@@ -20910,7 +20942,7 @@ Transform:
   m_Children:
   - {fileID: 870709573}
   - {fileID: 1853854817}
-  m_Father: {fileID: 1189117233}
+  m_Father: {fileID: 150829313}
   m_LocalEulerAnglesHint: {x: 0, y: 38.915, z: 0}
 --- !u!65 &1686106408
 BoxCollider:
@@ -27131,7 +27163,7 @@ Transform:
   m_Children:
   - {fileID: 5840831214375427644}
   - {fileID: 8316033973706034650}
-  m_Father: {fileID: 1189117233}
+  m_Father: {fileID: 150829313}
   m_LocalEulerAnglesHint: {x: 0, y: 38.915, z: 0}
 --- !u!135 &2826792800535162014
 SphereCollider:
