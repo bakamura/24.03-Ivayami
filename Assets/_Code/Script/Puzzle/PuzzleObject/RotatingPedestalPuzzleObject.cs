@@ -10,6 +10,8 @@ namespace Ivayami.Puzzle
         private InteractableFeedbacks _interatctableFeedbacks;
         private bool _hasItem;
 
+        public bool HasItem => _hasItem;
+
         [HideInInspector] public sbyte Index;
         public InteractableFeedbacks InteratctableFeedbacks
         {
@@ -20,18 +22,18 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public void UpdateItem(InventoryItem item)
+        public void UpdateItem(InventoryItem item, bool checkForItem = true)
         {
-            if (!_hasItem && PlayerInventory.Instance.CheckInventoryFor(item.name).Item)
+            if (!_hasItem && (PlayerInventory.Instance.CheckInventoryFor(item.name).Item || !checkForItem))
             {
                 _itemInDisplay.SetActive(true);
-                PlayerInventory.Instance.RemoveFromInventory(item);
+                if (checkForItem) PlayerInventory.Instance.RemoveFromInventory(item);
                 _hasItem = true;
             }
             else if (_hasItem)
             {
                 _itemInDisplay.SetActive(false);
-                PlayerInventory.Instance.AddToInventory(item);
+                if (checkForItem) PlayerInventory.Instance.AddToInventory(item);
                 _hasItem = false;
             }
         }

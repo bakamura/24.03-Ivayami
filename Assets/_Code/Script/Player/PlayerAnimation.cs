@@ -26,6 +26,7 @@ namespace Ivayami.Player
         //    { PlayerActions.InteractAnimation.Default, Animator.StringToHash("Interact") },
         //    { PlayerActions.InteractAnimation.EnterLocker, Animator.StringToHash("EnterLocker") },
         //};
+        private static int STRESS_CURRENT = Animator.StringToHash("StressCurrent");
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
         private static int HOLDING = Animator.StringToHash("Holding");
         private static int HEAVY_HOLDING = Animator.StringToHash("HeavyHolding");
@@ -77,6 +78,7 @@ namespace Ivayami.Player
             PlayerMovement.Instance.onMovement.AddListener(MoveAnimation);
             PlayerMovement.Instance.onCrouch.AddListener(Crouch);
             PlayerMovement.Instance.onStaminaUpdate.AddListener(Stamina);
+            PlayerStress.Instance.onStressChange.AddListener(StressCurrent);
             PlayerStress.Instance.onFail.AddListener(Fail);
             PlayerActions.Instance.onInteract.AddListener(Interact);
             PlayerActions.Instance.onInteractLong.AddListener(InteractLong);
@@ -163,6 +165,10 @@ namespace Ivayami.Player
         public void Sit()
         {
             _animator.SetTrigger(SIT);
+        }
+
+        private void StressCurrent(float stressCurrent) {
+            _animator.SetFloat(STRESS_CURRENT, stressCurrent);
         }
 
         private void Fail()

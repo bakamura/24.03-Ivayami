@@ -10,6 +10,7 @@ using Ivayami.Puzzle;
 using Ivayami.UI;
 using Ivayami.Dialogue;
 using System;
+using Ivayami.Save;
 
 namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -208,6 +209,7 @@ namespace Ivayami.Player {
             ability.transform.localPosition = Vector3.zero;
             ability.transform.localRotation = localRotation;
             _abilities.Add(ability);
+            SaveSystem.Instance.Progress.AddAbility(ability.name);
 
             if (_abilityCurrent < 0) _abilityCurrent = 0;
         }
@@ -216,6 +218,7 @@ namespace Ivayami.Player {
             PlayerAbility abilityInList = _abilities.OrderBy(abilityIterator => abilityIterator.GetType() == ability.GetType()).First();
             if (_abilityCurrent >= _abilities.FindIndex((abilityIterator) => abilityIterator == abilityInList)) _abilityCurrent--;
             _abilities.Remove(abilityInList);
+            SaveSystem.Instance.Progress.RemoveAbility(ability.name);
 
             Logger.Log(LogType.Player, $"Ability Remove: {ability.name}");
         }
@@ -234,6 +237,7 @@ namespace Ivayami.Player {
                     }
             }
             _abilities.Clear();
+            _abilityCurrent = -1;
         }
         #endregion
 
