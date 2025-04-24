@@ -158,6 +158,10 @@ namespace Ivayami.Player.Ability {
             if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
         }
 
+        public void ForceTurnOff() {
+            if (_enabled) AbilityStart();
+        }
+
 #if UNITY_EDITOR
         [Header("Debug")]
 
