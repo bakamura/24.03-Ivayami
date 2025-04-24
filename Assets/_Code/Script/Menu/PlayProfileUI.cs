@@ -72,9 +72,9 @@ namespace Ivayami.UI
             {
                 SaveSystem.Instance.Progress.SaveProgressOfType(_currentProfile.AreaProgress[i].AreaProgress.Id, _currentProfile.AreaProgress[i].Step);
             }
-            for (int i = 0; i < _currentProfile.AreaProgress.Length; i++)
+            for (int i = 0; i < _currentProfile.EntryProgress.Length; i++)
             {
-                SaveSystem.Instance.Progress.SaveEntryProgressOfType(_currentProfile.AreaProgress[i].AreaProgress.Id, _currentProfile.AreaProgress[i].Step);
+                SaveSystem.Instance.Progress.SaveEntryProgressOfType(_currentProfile.EntryProgress[i].AreaProgress.Id, _currentProfile.EntryProgress[i].Step);
             }
             //SaveSystem.Instance.OnlySaveSpawnPosition = _currentProfile.OnlySaveSpawnPosition;
             _teleporter.Teleport();
