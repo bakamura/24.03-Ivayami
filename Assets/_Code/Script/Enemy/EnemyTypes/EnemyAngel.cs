@@ -5,6 +5,7 @@ using Ivayami.Player;
 using Ivayami.Audio;
 using System;
 using UnityEngine.Events;
+using System.Collections.Generic;
 
 namespace Ivayami.Enemy
 {
@@ -117,7 +118,7 @@ namespace Ivayami.Enemy
         private Coroutine _behaviourCoroutine;
         private Coroutine _leapCoroutine;
         private Coroutine _fallCoroutine;
-        private EnemyWalkArea _currentWalkArea;
+        private List<EnemyWalkArea> _currentWalkAreas = new List<EnemyWalkArea>();
         private EnemyMovementData _currentMovementData;
         private Quaternion _initialRotation;
         private Vector3 _lastTargetPosition;
@@ -140,8 +141,6 @@ namespace Ivayami.Enemy
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
 
-        public bool CanChangeWalkArea => !_fixedWalkArea;
-
         public int ID => gameObject.GetInstanceID();
 
         protected override void Awake()
@@ -159,12 +158,7 @@ namespace Ivayami.Enemy
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
             _baseStoppingDistance = _navMeshAgent.stoppingDistance;
 
-            if (_fixedWalkArea)
-            {
-                SetMovementData(_fixedWalkArea.MovementData);
-                SetWalkArea(_fixedWalkArea);
-                _fixedWalkArea.AddEnemyToArea(this, gameObject.name);
-            }
+            if (_fixedWalkArea) _fixedWalkArea.AddEnemyToArea(this, gameObject.name);
         }
 
         private void OnEnable()
@@ -318,17 +312,17 @@ namespace Ivayami.Enemy
                                         }
                                         break;
                                     case PatrolTypes.EnemyWalkArea:
-                                        if (_currentWalkArea && _currentWalkArea.GetCurrentPoint(ID, out EnemyWalkArea.EnemyData point))
+                                        if (_currentWalkAreas.Count > 0 && _currentWalkAreas[^1].GetCurrentPoint(ID, out EnemyWalkArea.EnemyData point))
                                         {
                                             if (Vector3.Distance(transform.position, point.Point.Position) <= _navMeshAgent.stoppingDistance)
                                             {
                                                 _navMeshAgent.velocity = Vector3.zero;
                                                 _enemyAnimator.Walking(0);
                                                 yield return new WaitForSeconds(point.Point.DelayToNextPoint);
-                                                _navMeshAgent.SetDestination(_currentWalkArea.GoToNextPoint(ID).Point.Position);
+                                                _navMeshAgent.SetDestination(_currentWalkAreas[^1].GoToNextPoint(ID).Point.Position);
                                                 if (_debugLogsEnemyPatrol)
                                                 {
-                                                    _currentWalkArea.GetCurrentPoint(ID, out point);
+                                                    _currentWalkAreas[^1].GetCurrentPoint(ID, out point);
                                                     Debug.Log($"Change Patrol Point to {point.CurrentPointIndex}");
                                                 }
                                             }
@@ -415,7 +409,7 @@ namespace Ivayami.Enemy
             _navMeshAgent.stoppingDistance = _directContactWithTarget ? _collision.radius + _currentTargetColliderSizeFactor + .1f : _baseStoppingDistance;
             return _directContactWithTarget;
         }
-#endregion
+        #endregion
 
         #region LeapAttack
         /// <summary>
@@ -594,9 +588,31 @@ namespace Ivayami.Enemy
             _navMeshAgent.speed = _currentMovementData ? _currentMovementData.WalkSpeed : _baseSpeed;
         }
 
-        public void SetWalkArea(EnemyWalkArea area)
+        public bool SetWalkArea(EnemyWalkArea area)
         {
-            _currentWalkArea = area;
+            if (_fixedWalkArea == area && !_currentWalkAreas.Contains(area))
+            {
+                _currentWalkAreas.Add(area);
+                return true;
+            }
+            if (!_fixedWalkArea)
+            {
+                if (!_currentWalkAreas.Contains(area))
+                {
+                    _currentWalkAreas.Add(area);
+                    return true;
+                }
+                if (_currentWalkAreas.Contains(area))
+                {
+                    if (_currentWalkAreas.Count - 1 <= 0) return false;
+                    else
+                    {
+                        _currentWalkAreas.Remove(area);
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public void SetMovementData(EnemyMovementData data)

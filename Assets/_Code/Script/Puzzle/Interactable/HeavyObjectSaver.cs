@@ -35,7 +35,7 @@ namespace Ivayami.Puzzle {
                         Resources.UnloadUnusedAssets();
                     }
                 }
-                else Debug.Log($"'{name}' found no Save Instance");
+                //else Debug.Log($"'{name}' found no Save Instance");
             }
             if (_dataCurrent == null) _dataCurrent = new Data(_heavyObjectParent.childCount > 0 ? _heavyObjectParent.GetChild(0).name : "");
             if (TryGetComponent(out HeavyObjectPlacement placement)) placement.Setup();
