@@ -8,8 +8,8 @@ namespace Ivayami.Player
 
         [SerializeField, Range(0, 1), Tooltip("Percentage of Stamina to start animation")] private float _startTiredAnimThreshold = .1f;
         [SerializeField, Min(0)] private int _staminaAnimationLayer = 1;
-        [SerializeField, Min(0)] private int _damageMentalLayer = 2;
-        [SerializeField, Min(0)] private int _damagePhysicalLayer = 3;
+        //[SerializeField, Min(0)] private int _damageMentalLayer = 2;
+        //[SerializeField, Min(0)] private int _damagePhysicalLayer = 3;
         [SerializeField] private AnimationInfo[] _interactAnimations;
         private Dictionary<PlayerActions.InteractAnimation, AnimationInfo> _interactAnimationDuration = new Dictionary<PlayerActions.InteractAnimation, AnimationInfo>();
 
