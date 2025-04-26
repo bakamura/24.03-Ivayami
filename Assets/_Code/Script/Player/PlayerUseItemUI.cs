@@ -149,7 +149,12 @@ namespace Ivayami.UI
 
         private void HandleInputMapChange(string mapId)
         {
-            _canOpen = string.Equals(mapId, "Player");
+            CanOpenUI(string.Equals(mapId, "Player"));
+        }
+
+        public void CanOpenUI(bool canOpen)
+        {
+            _canOpen = canOpen;
             if (!_canOpen && IsActive) UpdateUI(false);
         }
     }

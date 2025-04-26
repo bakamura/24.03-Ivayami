@@ -57,6 +57,7 @@ namespace Ivayami.Save {
             SaveSystem.Instance.Progress.pointId = _pointId;
             onSaveGame?.Invoke();
 
+            PlayerUseItemUI.Instance.CanOpenUI(false);
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
             Pause.Instance.ToggleCanPause(BLOCK_KEY, false);
             _interactableIcon.SetActive(false);
@@ -125,6 +126,7 @@ namespace Ivayami.Save {
 
             _interactableIcon.SetActive(true);
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true);
+            PlayerUseItemUI.Instance.CanOpenUI(true);
         }
 
 #if UNITY_EDITOR
