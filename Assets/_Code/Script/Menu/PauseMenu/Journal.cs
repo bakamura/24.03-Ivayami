@@ -116,12 +116,15 @@ namespace Ivayami.UI {
         }
 
         public void FocusFirstChapter() {
-            GameObject btnGO = _storySelectionContainer.GetChild(0).gameObject;
-            btnGO.GetComponent<Button>().onClick.Invoke();
-            _displayMenuGroup.SetSelected(btnGO);
-            _noEntriesMenuGroup.CloseCurrent();
+            if (_storySelectionContainer.childCount > 0){
+                GameObject btnGO = _storySelectionContainer.GetChild(0).gameObject;
+                btnGO.GetComponent<Button>().onClick.Invoke();
+                _displayMenuGroup.SetSelected(btnGO);
+                _noEntriesMenuGroup.CloseCurrent();
+                Logger.Log(LogType.UI, $"Journal - Focus First Chapter");
+            }
+            else Debug.LogWarning("No Btn Found for Story Section");
 
-            Logger.Log(LogType.UI, $"Journal - Focus First Chapter");
         }
 
         public void FocusFirstCharacter() {
