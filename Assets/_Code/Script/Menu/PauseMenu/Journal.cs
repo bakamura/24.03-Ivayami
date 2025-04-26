@@ -116,21 +116,27 @@ namespace Ivayami.UI {
         }
 
         public void FocusFirstChapter() {
-            GameObject btnGO = _storySelectionContainer.GetChild(0).gameObject;
-            btnGO.GetComponent<Button>().onClick.Invoke();
-            _displayMenuGroup.SetSelected(btnGO);
-            _noEntriesMenuGroup.CloseCurrent();
-
-            Logger.Log(LogType.UI, $"Journal - Focus First Chapter");
+            if (_storySelectionContainer.childCount > 0)
+            {
+                GameObject btnGO = _storySelectionContainer.GetChild(0).gameObject;
+                btnGO.GetComponent<Button>().onClick.Invoke();
+                _displayMenuGroup.SetSelected(btnGO);
+                _noEntriesMenuGroup.CloseCurrent();
+                Logger.Log(LogType.UI, $"Journal - Focus First Chapter");
+            }
+            else Debug.LogWarning("No Btn found in Story section");
         }
 
         public void FocusFirstCharacter() {
-            GameObject btnGO = _characterSelectionContainer.GetChild(0).gameObject;
-            btnGO.GetComponent<Button>().onClick.Invoke();
-            _displayMenuGroup.SetSelected(btnGO);
-            _noEntriesMenuGroup.CloseCurrent();
-
-            Logger.Log(LogType.UI, $"Journal - Focus First Character");
+            if(_characterSelectionContainer.childCount > 0)
+            {
+                GameObject btnGO = _characterSelectionContainer.GetChild(0).gameObject;
+                btnGO.GetComponent<Button>().onClick.Invoke();
+                _displayMenuGroup.SetSelected(btnGO);
+                _noEntriesMenuGroup.CloseCurrent();
+                Logger.Log(LogType.UI, $"Journal - Focus First Character");
+            }
+            else Debug.LogWarning("No Btn found in Character section");
         }
 
         public void FocusFirstDocument() {
