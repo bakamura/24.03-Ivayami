@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Localization;
+using Ivayami.Save;
 
 namespace Ivayami.UI
 {
@@ -46,6 +47,8 @@ namespace Ivayami.UI
         {
             PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
             PlayerStress.Instance.onFail.AddListener(() => { if (IsActive) UpdateUI(false); });
+            SavePoint.onSaveGameWithAnimation.AddListener(HandleOnSaveGameWithAnimation);
+            SavePoint.onSaveSequenceEnd.AddListener(HandleOnSaveSequenceEnd);
         }
         /// <summary>
         /// Open And Closes the UI
@@ -152,7 +155,17 @@ namespace Ivayami.UI
             CanOpenUI(string.Equals(mapId, "Player"));
         }
 
-        public void CanOpenUI(bool canOpen)
+        private void HandleOnSaveSequenceEnd()
+        {
+            CanOpenUI(true);
+        }
+
+        private void HandleOnSaveGameWithAnimation()
+        {
+            CanOpenUI(false);
+        }
+
+        private void CanOpenUI(bool canOpen)
         {
             _canOpen = canOpen;
             if (!_canOpen && IsActive) UpdateUI(false);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using Ivayami.Enemy;
+using Ivayami.Save;
 
 namespace Ivayami.Player.Ability {
     public class Lantern : PlayerAbility {
@@ -42,6 +43,7 @@ namespace Ivayami.Player.Ability {
         private Transform _lightsOriginCurrent;
         private float _coneAngleHalf;
         private float _lightDistance;
+        private bool _canActivate = true;
 
 
         public const string ILLUMINATION_KEY = "Lantern";
@@ -57,6 +59,13 @@ namespace Ivayami.Player.Ability {
             Focus(false);
         }
 
+        private void Start()
+        {
+            PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
+            SavePoint.onSaveGameWithAnimation.AddListener(HandleOnSaveGameWithAnimation);
+            SavePoint.onSaveSequenceEnd.AddListener(HandleOnSaveSequenceEnd);
+        }
+
         private void Update() {
             if (!_enabled) return;
             if (_focused) {
@@ -67,6 +76,9 @@ namespace Ivayami.Player.Ability {
         }
 
         private void OnDestroy() {
+            PlayerActions.Instance.onActionMapChange.RemoveListener(HandleInputMapChange);
+            SavePoint.onSaveGameWithAnimation.RemoveListener(HandleOnSaveGameWithAnimation);
+            SavePoint.onSaveSequenceEnd.RemoveListener(HandleOnSaveSequenceEnd);
             Destroy(_focusedOrigin);
         }
 
@@ -90,6 +102,7 @@ namespace Ivayami.Player.Ability {
 
         public override void AbilityStart() {
             if (_focusedOrigin.transform.localPosition.z == 0) Setup(); // temp
+            if (!_canActivate) return;
             _enabled = !_enabled;
             _visuals.gameObject.SetActive(_enabled);
             PlayerAnimation.Instance.Hold(_enabled);
@@ -160,6 +173,27 @@ namespace Ivayami.Player.Ability {
 
         public void ForceTurnOff() {
             if (_enabled) AbilityStart();
+        }
+
+        private void HandleInputMapChange(string mapId)
+        {
+            CanActivate(string.Equals(mapId, "Player"));
+        }
+
+        private void HandleOnSaveSequenceEnd()
+        {
+            CanActivate(true);
+        }
+
+        private void HandleOnSaveGameWithAnimation()
+        {
+            CanActivate(false);
+        }
+
+        private void CanActivate(bool canActivate)
+        {
+            if (!canActivate) ForceTurnOff();
+            _canActivate = canActivate;
         }
 
 #if UNITY_EDITOR
