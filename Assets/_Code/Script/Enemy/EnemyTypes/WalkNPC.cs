@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using Ivayami.Player;
 using UnityEngine.AI;
+using System.Collections.Generic;
 
 namespace Ivayami.Enemy
 {
@@ -20,16 +21,15 @@ namespace Ivayami.Enemy
         private Coroutine _walkCoroutine;
         private NavMeshAgent _navMeshAgent;
         //private EnemyMovementData _currentMovementData;
-        private EnemyWalkArea _currenWalkArea;
+        private List<EnemyWalkArea> _currentWalkAreas = new List<EnemyWalkArea>();
 
         public int ID => gameObject.GetInstanceID();
-
-        public bool CanChangeWalkArea => _fixedWalkArea;
 
         private void Start()
         {
             if (PlayerMovement.Instance && _lookAtPlayerOnStart)
                 TryLookAtPlayer();
+            if (_fixedWalkArea) _fixedWalkArea.AddEnemyToArea(this, gameObject.name);
         }
 
         private void OnDisable()
@@ -43,12 +43,6 @@ namespace Ivayami.Enemy
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _navMeshAgent.enabled = true;
             _animator = GetComponentInChildren<EnemyAnimator>();
-            if (_fixedWalkArea)
-            {
-                if (_fixedWalkArea.MovementData) SetMovementData(_fixedWalkArea.MovementData);
-                SetWalkArea(_fixedWalkArea);
-                _fixedWalkArea.AddEnemyToArea(this, gameObject.name);
-            }           
         }
         //private void OnTriggerEnter(Collider other)
         //{
@@ -85,13 +79,13 @@ namespace Ivayami.Enemy
         private IEnumerator WalkCoroutine()
         {
             EnemyWalkArea.EnemyData currentPoint;
-            while (_currenWalkArea && !_navMeshAgent.isStopped && _currenWalkArea.GetCurrentPoint(ID, out currentPoint))
+            while (_currentWalkAreas.Count > 0 && !_navMeshAgent.isStopped && _currentWalkAreas[^1].GetCurrentPoint(ID, out currentPoint))
             {
                 _animator.Walking(_navMeshAgent.velocity.magnitude);
                 if (Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(currentPoint.Point.Position.x, 0, currentPoint.Point.Position.z)) <= _navMeshAgent.stoppingDistance)
                 {
                     yield return new WaitForSeconds(currentPoint.Point.DelayToNextPoint);
-                    _navMeshAgent.SetDestination(_currenWalkArea.GoToNextPoint(ID).Point.Position);
+                    _navMeshAgent.SetDestination(_currentWalkAreas[^1].GoToNextPoint(ID).Point.Position);
                     //Debug.Log($"Index {currentPoint.CurrentPointIndex}, going to next point");
                     for (int i = 0; i < _pathsCallback.Length; i++)
                     {
@@ -119,9 +113,31 @@ namespace Ivayami.Enemy
             transform.rotation = rot;
         }
 
-        public void SetWalkArea(EnemyWalkArea area)
+        public bool SetWalkArea(EnemyWalkArea area)
         {
-            _currenWalkArea = area;
+            if (_fixedWalkArea == area && !_currentWalkAreas.Contains(area))
+            {
+                _currentWalkAreas.Add(area);
+                return true;
+            }
+            if (!_fixedWalkArea)
+            {
+                if (!_currentWalkAreas.Contains(area))
+                {
+                    _currentWalkAreas.Add(area);
+                    return true;
+                }
+                if (_currentWalkAreas.Contains(area))
+                {
+                    if (_currentWalkAreas.Count - 1 <= 0) return false;
+                    else
+                    {
+                        _currentWalkAreas.Remove(area);
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public void SetMovementData(EnemyMovementData data)

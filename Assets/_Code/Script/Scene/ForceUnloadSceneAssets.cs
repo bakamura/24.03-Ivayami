@@ -21,7 +21,7 @@ namespace Ivayami.Scene
 
         private void HandleOnStartUnloadScene(string sceneId)
         {
-            if (string.Equals(gameObject.scene.name, sceneId)) DestroyAll();
+            if (this != null && string.Equals(gameObject.scene.name, sceneId)) DestroyAll();
         }
     }
 }

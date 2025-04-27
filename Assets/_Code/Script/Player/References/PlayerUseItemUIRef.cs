@@ -44,30 +44,35 @@ namespace Ivayami.UI
         #region Subscribe
         public void SubscribeOnHealActivation()
         {
+            if (_onHealActivationEventSubscribed) return;
             PlayerUseItemUI.Instance.OnHealActivation.AddListener(_onHealActivation.Invoke);
             _onHealActivationEventSubscribed = true;
         }
 
         public void SubscribeOnHealEnd()
         {
+            if (_onHealEndEventSubscribed) return;
             PlayerUseItemUI.Instance.OnHealEnd.AddListener(_onHealEnd.Invoke);
             _onHealEndEventSubscribed = true;
         }
 
         public void SubscribeOnNotRequiredItem()
         {
+            if (_onNotRequiredItemEventSubscribed) return;
             PlayerUseItemUI.Instance.OnNotRequiredItem.AddListener(_onNotRequiredItem.Invoke);
             _onNotRequiredItemEventSubscribed = true;
         }
 
         public void SubscribeOnAlreadyHealing()
         {
+            if (_onAlreadyHealingEventSubscribed) return;
             PlayerUseItemUI.Instance.OnAlreadyHealing.AddListener(_onAlreadyHealing.Invoke);
             _onAlreadyHealingEventSubscribed = true;
         }
 
         public void SubscribeOnNotEnoughStressToHeal()
         {
+            if (_onNotRequiredItemEventSubscribed) return;
             PlayerUseItemUI.Instance.OnNotEnoughStressToHeal.AddListener(_onNotEnoughStressToHeal.Invoke);
             _onNotEnoughStressToHealEventSubscribed = true;
         }
@@ -76,30 +81,35 @@ namespace Ivayami.UI
         #region Unsibscribe
         public void UnsubscribeOnHealActivation()
         {
+            if (!_onHealActivationEventSubscribed) return;
             PlayerUseItemUI.Instance.OnHealActivation.RemoveListener(_onHealActivation.Invoke);
             _onHealActivationEventSubscribed = false;
         }
 
         public void UnsubscribeOnHealEnd()
         {
+            if (!_onHealEndEventSubscribed) return;
             PlayerUseItemUI.Instance.OnHealEnd.RemoveListener(_onHealEnd.Invoke);
             _onHealEndEventSubscribed = false;
         }
 
         public void UnsubscribeOnNotRequiredItem()
         {
+            if (!_onNotRequiredItemEventSubscribed) return;
             PlayerUseItemUI.Instance.OnNotRequiredItem.RemoveListener(_onNotRequiredItem.Invoke);
             _onNotRequiredItemEventSubscribed = false;
         }
 
         public void UnsubscribeOnAlreadyHealing()
         {
+            if (!_onAlreadyHealingEventSubscribed) return;
             PlayerUseItemUI.Instance.OnAlreadyHealing.RemoveListener(_onAlreadyHealing.Invoke);
             _onAlreadyHealingEventSubscribed = false;
         }
 
         public void UnsubscribeOnNotEnoughStressToHeal()
         {
+            if (!_onNotEnoughStressToHealEventSubscribed) return;
             PlayerUseItemUI.Instance.OnNotEnoughStressToHeal.RemoveListener(_onNotEnoughStressToHeal.Invoke);
             _onNotEnoughStressToHealEventSubscribed = false;
         }
