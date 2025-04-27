@@ -107,10 +107,10 @@ namespace Ivayami.Puzzle
         public PlayerActions.InteractAnimation Interact()
         {
             Setup();
-            _onInteract?.Invoke();
             //EventSystem.current.SetSelectedGameObject(null);
             _interatctableFeedbacks.UpdateFeedbacks(false, true);
             UpdateInputs(true);
+            _onInteract?.Invoke();
             SetCurrentSelected(_puzzleObjects[_currentPuzzleLayer][0]);
             return PlayerActions.InteractAnimation.Default;
         }
