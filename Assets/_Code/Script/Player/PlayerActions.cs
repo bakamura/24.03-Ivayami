@@ -11,6 +11,7 @@ using Ivayami.UI;
 using Ivayami.Dialogue;
 using System;
 using Ivayami.Save;
+using UnityEngine.EventSystems;
 
 namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -250,6 +251,7 @@ namespace Ivayami.Player {
             _actionMapCurrent = mapId != null ? _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId) : null;
             _actionMapCurrent?.Enable();
             Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId == "Player" ? CursorLockMode.Locked : CursorLockMode.None;
+            if (string.Equals(mapId, "Player")) EventSystem.current.SetSelectedGameObject(null);
             if (_actionMapCurrent != null) onActionMapChange?.Invoke(_actionMapCurrent.name);
         }
 
