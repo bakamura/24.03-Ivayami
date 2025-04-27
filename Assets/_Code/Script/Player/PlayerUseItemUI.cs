@@ -18,8 +18,9 @@ namespace Ivayami.UI
         public UnityEvent OnNotEnoughStressToHeal;
 
         [Header("General Callbacks")]
-        [SerializeField] private UnityEvent _onShowUI;
-        [SerializeField] private UnityEvent _onChangeOption;
+        public UnityEvent OnShowUI;
+        public UnityEvent OnChangeOption;
+        public UnityEvent OnHideUI;
 
         [Header("Components")]
         [SerializeField] private InputActionReference _navigateUIInput;
@@ -57,7 +58,8 @@ namespace Ivayami.UI
         {
             if (!_canOpen) return;
             _isActive = isActive;
-            if (_isActive) _onShowUI?.Invoke();
+            if (_isActive) OnShowUI?.Invoke();
+            else OnHideUI?.Invoke();
             UpdateInputs();
             UpdateVisuals();
         }
@@ -134,7 +136,7 @@ namespace Ivayami.UI
                 _currentSelectedIndex += input.y > 0 ? 1 : -1;
                 LoopValueByArraySize(ref _currentSelectedIndex, _possibleOptions.Length);
                 UpdateItemIcon();
-                _onChangeOption?.Invoke();
+                OnChangeOption?.Invoke();
             }
         }
 

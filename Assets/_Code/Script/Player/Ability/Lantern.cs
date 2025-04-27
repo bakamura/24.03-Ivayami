@@ -4,6 +4,7 @@ using UnityEngine;
 using Cinemachine;
 using Ivayami.Enemy;
 using Ivayami.Save;
+using Ivayami.UI;
 
 namespace Ivayami.Player.Ability {
     public class Lantern : PlayerAbility {
@@ -64,10 +65,12 @@ namespace Ivayami.Player.Ability {
             PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
             SavePoint.onSaveGameWithAnimation.AddListener(HandleOnSaveGameWithAnimation);
             SavePoint.onSaveSequenceEnd.AddListener(HandleOnSaveSequenceEnd);
+            PlayerUseItemUI.Instance.OnShowUI.AddListener(HandleOnShowUseItemUI);
+            PlayerUseItemUI.Instance.OnHideUI.AddListener(HandleOnHideUseItemUI);
         }
 
         private void Update() {
-            if (!_enabled) return;
+            if (!_enabled || !_canActivate) return;
             if (_focused) {
                 _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
                 _durationCurrent -= Time.deltaTime;
@@ -79,6 +82,8 @@ namespace Ivayami.Player.Ability {
             PlayerActions.Instance.onActionMapChange.RemoveListener(HandleInputMapChange);
             SavePoint.onSaveGameWithAnimation.RemoveListener(HandleOnSaveGameWithAnimation);
             SavePoint.onSaveSequenceEnd.RemoveListener(HandleOnSaveSequenceEnd);
+            PlayerUseItemUI.Instance.OnShowUI.RemoveListener(HandleOnShowUseItemUI);
+            PlayerUseItemUI.Instance.OnHideUI.RemoveListener(HandleOnHideUseItemUI);
             Destroy(_focusedOrigin);
         }
 
@@ -102,8 +107,8 @@ namespace Ivayami.Player.Ability {
 
         public override void AbilityStart() {
             if (_focusedOrigin.transform.localPosition.z == 0) Setup(); // temp
-            if (!_canActivate) return;
             _enabled = !_enabled;
+            if (!_canActivate) return;
             _visuals.gameObject.SetActive(_enabled);
             PlayerAnimation.Instance.Hold(_enabled);
             if (_enabled) StartCoroutine(CheckInterval());
@@ -173,7 +178,7 @@ namespace Ivayami.Player.Ability {
 
         public void ForceTurnOff() {
             if (_enabled) AbilityStart();
-        }
+        }        
 
         private void HandleInputMapChange(string mapId)
         {
@@ -187,12 +192,32 @@ namespace Ivayami.Player.Ability {
 
         private void HandleOnSaveGameWithAnimation()
         {
+            ForceTurnOff();
             CanActivate(false);
+        }
+
+        private void HandleOnShowUseItemUI()
+        {
+            if (_enabled)
+            {
+                ForceTurnOff();
+                _enabled = true;
+            }
+            CanActivate(false);
+        }
+
+        private void HandleOnHideUseItemUI()
+        {
+            CanActivate(true);
+            if (_enabled)
+            {
+                _enabled = false;
+                AbilityStart();
+            }
         }
 
         private void CanActivate(bool canActivate)
         {
-            if (!canActivate) ForceTurnOff();
             _canActivate = canActivate;
         }
 
