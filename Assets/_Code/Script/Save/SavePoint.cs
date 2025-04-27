@@ -22,6 +22,8 @@ namespace Ivayami.Save {
         public static Dictionary<int, SavePoint> Points { get; private set; } = new Dictionary<int, SavePoint>();
         public static UnityEvent onSaveGame = new UnityEvent();
         public static UnityEvent onCantSaveGame = new UnityEvent();
+        public static UnityEvent onSaveGameWithAnimation = new UnityEvent();
+        public static UnityEvent onSaveSequenceEnd = new UnityEvent();
         private bool _canSave = true;
 
         [SerializeField] private InputActionReference _movementInput;
@@ -56,8 +58,7 @@ namespace Ivayami.Save {
         private void Save() {
             SaveSystem.Instance.Progress.pointId = _pointId;
             onSaveGame?.Invoke();
-
-            PlayerUseItemUI.Instance.CanOpenUI(false);
+            
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
             Pause.Instance.ToggleCanPause(BLOCK_KEY, false);
             _interactableIcon.SetActive(false);
@@ -75,6 +76,7 @@ namespace Ivayami.Save {
                 Logger.Log(LogType.Save, "SavePoint Cannot Save");
                 return PlayerActions.InteractAnimation.Default;
             }
+            onSaveGameWithAnimation?.Invoke();
             Save();
             return PlayerActions.InteractAnimation.Default;
         }
@@ -126,7 +128,7 @@ namespace Ivayami.Save {
 
             _interactableIcon.SetActive(true);
             PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true);
-            PlayerUseItemUI.Instance.CanOpenUI(true);
+            onSaveSequenceEnd?.Invoke();
         }
 
 #if UNITY_EDITOR
