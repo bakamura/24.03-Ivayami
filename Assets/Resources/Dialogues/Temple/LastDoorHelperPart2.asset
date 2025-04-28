@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d43efec3b0567347981156f15ba3089, type: 3}
+  m_Name: LastDoorHelperPart2
+  m_EditorClassIdentifier: 
+  dialogue:
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: GUID:ea4a5249c84797c44b8edd6d351ffeee
+      m_TableEntryReference:
+        m_KeyId: 402950565888
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - Language: English (en)
+      content: (Come to think of it, this is the only chamber in this place were
+        <#e35540>moonlight</color> actually hits...)
+    - Language: Portuguese (pt)
+      content: "(Parando pra pensar, essa \xE9 a unica sala no templo em que bate
+        a <#e35540>luz da lua</color>...)"
+    FilterTags: 
+    EventId: LookMoonlight
+    FixedDurationInSpeech: 2
+  - AnnouncerName:
+      m_TableReference:
+        m_TableCollectionName: GUID:ea4a5249c84797c44b8edd6d351ffeee
+      m_TableEntryReference:
+        m_KeyId: 402950565888
+        m_Key: 
+      m_FallbackState: 0
+      m_WaitForCompletion: 0
+      m_LocalVariables: []
+    Speeches:
+    - Language: English (en)
+      content: (There's something about the place <#e35540>where the this light hits</color>.
+        Maybe the shape of the light that forms isn't a coincidence afterall...)
+    - Language: Portuguese (pt)
+      content: "(Tem algo importante sobre o lugar onde essa <#e35540>luz est\xE1
+        batendo</color>. Talvez o formato da luz que forma n\xE3o seja uma coincidencia...)"
+    FilterTags: 
+    EventId: 
+    FixedDurationInSpeech: 2
+  onEndEventId: LookMoonlightEnd
+  references:
+    version: 2
+    RefIds: []

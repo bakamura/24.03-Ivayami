@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6d43efec3b0567347981156f15ba3089, type: 3}
-  m_Name: LastDoorHelper
+  m_Name: LastMuralHelper
   m_EditorClassIdentifier: 
   dialogue:
   - AnnouncerName:
@@ -24,13 +24,13 @@ MonoBehaviour:
       m_LocalVariables: []
     Speeches:
     - Language: English (en)
-      content: (Alright, I've got <#e35540>5 crystals</color> now, but still no Luana...)
+      content: (These murals really are everywhere... I wonder what they say.)
     - Language: Portuguese (pt)
-      content: "(T\xE1 eu consegui <#e35540>5 cristais</color> j\xE1, mas ainda nada
-        da Luana...)"
+      content: "(Esses murais realmente est\xE3o em toda parte... Me pergunto o que
+        eles querem dizer.)"
     FilterTags: 
     EventId: 
-    FixedDurationInSpeech: 2
+    FixedDurationInSpeech: 1
   - AnnouncerName:
       m_TableReference:
         m_TableCollectionName: GUID:ea4a5249c84797c44b8edd6d351ffeee
@@ -42,32 +42,13 @@ MonoBehaviour:
       m_LocalVariables: []
     Speeches:
     - Language: English (en)
-      content: (There must be something in this chamber I'm missing.)
+      content: (That, or the <#e35540>symbols next to them</color>.)
     - Language: Portuguese (pt)
-      content: "(Tem que ter alguma coisa nessa c\xE2mara que eu n\xE3o percebi ainda.)"
+      content: "(Eles, ou os <#e35540>s\xEDmbolos ao lado</color>.)"
     FilterTags: 
     EventId: 
     FixedDurationInSpeech: 2
-  - AnnouncerName:
-      m_TableReference:
-        m_TableCollectionName: GUID:ea4a5249c84797c44b8edd6d351ffeee
-      m_TableEntryReference:
-        m_KeyId: 402950565888
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-    Speeches:
-    - Language: English (en)
-      content: (Come to think of it, this is the only chamber in this place were
-        <#e35540>moonlight</color> actually hits...)
-    - Language: Portuguese (pt)
-      content: "(Parando pra pensar, essa \xE9 a unica sala no templo em que bate
-        a <#e35540>luz da lua</color>...)"
-    FilterTags: 
-    EventId: 
-    FixedDurationInSpeech: 2
-  onEndEventId: 
+  onEndEventId: LookMoonlightEnd
   references:
     version: 2
     RefIds: []
