@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,6 @@ using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
 using Ivayami.UI;
 using Ivayami.Dialogue;
-using System;
 using Ivayami.Save;
 using UnityEngine.EventSystems;
 
@@ -250,6 +250,7 @@ namespace Ivayami.Player {
             _actionMapCurrent?.Disable();
             _actionMapCurrent = mapId != null ? _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId) : null;
             _actionMapCurrent?.Enable();
+            if(mapId != "Menu") EventSystem.current.SetSelectedGameObject(null);
             Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId == "Player" ? CursorLockMode.Locked : CursorLockMode.None;
             if (string.Equals(mapId, "Player")) EventSystem.current.SetSelectedGameObject(null);
             if (_actionMapCurrent != null) onActionMapChange?.Invoke(_actionMapCurrent.name);
