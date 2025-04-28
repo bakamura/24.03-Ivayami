@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -19,6 +18,7 @@ namespace Ivayami.Puzzle {
         [SerializeField] private Button _previousPageBtn;
         private List<TextMeshProUGUI> _contents = new List<TextMeshProUGUI>();
         private int _pageCurrent;
+        private int _pageLimitCurrent;
 
         protected override void Awake() {
             base.Awake();
@@ -30,23 +30,50 @@ namespace Ivayami.Puzzle {
         public void ShowReadable(string title, string content) {
             _title.SetEntry(title);
             int contentIndex = 0;
-            int overflowIndex;
-            while (content.Length > 0) {
+            int contentBreakPoint;
+            string openTag = "";
+            while (true) {
                 if (_contents.Count <= contentIndex) _contents.Add(Instantiate(_content, _content.transform.parent));
-                _contents[contentIndex].text = content;
+                _contents[contentIndex].text = openTag + content;
                 _contents[contentIndex].ForceMeshUpdate();
                 _contents[contentIndex].gameObject.SetActive(false);
 
-                overflowIndex = _contents[contentIndex].firstOverflowCharacterIndex;
-                content = overflowIndex > 0 ? content.Substring(overflowIndex) : string.Empty;
-                if (content.Length > 0) {
-                    _contents[contentIndex].text = _contents[contentIndex].text.Substring(0, overflowIndex);
+                contentBreakPoint = _contents[contentIndex].firstOverflowCharacterIndex;
+                if (contentBreakPoint != -1) {
+                    contentBreakPoint = FindSafeBreakPoint(_contents[contentIndex].text, contentBreakPoint);
+                    _contents[contentIndex].text = _contents[contentIndex].text.Substring(0, contentBreakPoint);
+                    content = content.Substring(contentBreakPoint);
+                    openTag = FindOpenRichText(_contents[contentIndex].text);
                     contentIndex++;
+                }
+                else {
+                    _pageLimitCurrent = contentIndex;
+                    break;
                 }
             }
 
             ChangePage(0);
             Menu.Open();
+        }
+
+        public int FindSafeBreakPoint(string text, int currentBreakPoint) {
+            int newBreakPoint = currentBreakPoint;
+            while (newBreakPoint > 0) {
+                if (text[newBreakPoint] == '>') return currentBreakPoint;
+                if (text[newBreakPoint] == '<') {
+                    newBreakPoint--;
+                    return newBreakPoint;
+                }
+
+                newBreakPoint--;
+            }
+            return currentBreakPoint;
+        }
+
+        public string FindOpenRichText(string text) {
+            int openIndex = text.LastIndexOf('<');
+            if (openIndex == -1 || text[openIndex + 1] == '/') return "";
+            return text.Substring(openIndex).Substring(0, text.LastIndexOf('>'));
         }
 
         private void ChangePage(int pageToOpen) {
@@ -57,7 +84,7 @@ namespace Ivayami.Puzzle {
         }
 
         public void PageNext() {
-            if (_pageCurrent + 1 < _contents.Count) ChangePage(_pageCurrent + 1);
+            if (_pageCurrent < _pageLimitCurrent) ChangePage(_pageCurrent + 1);
         }
 
         public void PagePrevious() {
@@ -73,5 +100,6 @@ namespace Ivayami.Puzzle {
                 else _closeBtn.Select();
             }
         }
+
     }
 }
