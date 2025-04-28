@@ -53,6 +53,7 @@ namespace Ivayami.Puzzle {
             }
 
             ChangePage(0);
+            bool isMultiPage = _pageLimitCurrent != 0;
             Menu.Open();
         }
 
@@ -92,7 +93,7 @@ namespace Ivayami.Puzzle {
         }
 
         private void UpdateButtonStates() {
-            _nextPageBtn.gameObject.SetActive(_pageCurrent + 1 < _contents.Count);
+            _nextPageBtn.gameObject.SetActive(_pageCurrent < _pageLimitCurrent);
             _previousPageBtn.gameObject.SetActive(_pageCurrent > 0);
             if (EventSystem.current.currentSelectedGameObject && !EventSystem.current.currentSelectedGameObject.activeInHierarchy) {
                 if (_nextPageBtn.gameObject.activeInHierarchy) _nextPageBtn.Select();
