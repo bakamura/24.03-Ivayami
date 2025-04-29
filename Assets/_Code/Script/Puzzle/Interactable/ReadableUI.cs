@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
-using Ivayami.UI;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Localization.Components;
+using Ivayami.UI;
 
 namespace Ivayami.Puzzle {
     public class ReadableUI : MonoSingleton<ReadableUI> {
@@ -35,6 +35,7 @@ namespace Ivayami.Puzzle {
             while (true) {
                 if (_contents.Count <= contentIndex) _contents.Add(Instantiate(_content, _content.transform.parent));
                 _contents[contentIndex].text = openTag + content;
+                _contents[contentIndex].gameObject.SetActive(true);
                 _contents[contentIndex].ForceMeshUpdate();
                 _contents[contentIndex].gameObject.SetActive(false);
 
@@ -53,7 +54,6 @@ namespace Ivayami.Puzzle {
             }
 
             ChangePage(0);
-            bool isMultiPage = _pageLimitCurrent != 0;
             Menu.Open();
         }
 
