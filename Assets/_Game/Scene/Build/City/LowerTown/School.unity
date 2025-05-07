@@ -13566,6 +13566,7 @@ Transform:
   - {fileID: 1990507896}
   - {fileID: 816490959}
   - {fileID: 1131990184}
+  - {fileID: 741863207}
   m_Father: {fileID: 152417357}
   m_LocalEulerAnglesHint: {x: 0, y: 7.209, z: 0}
 --- !u!1001 &362075236
@@ -32902,6 +32903,59 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 977867784966346004, guid: f3fb1e9ff83ac5b409331306838dc9a5, type: 3}
   m_PrefabInstance: {fileID: 738377106}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &741863206
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 741863207}
+  - component: {fileID: 741863208}
+  m_Layer: 3
+  m_Name: Collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 109
+  m_IsActive: 1
+--- !u!4 &741863207
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741863206}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 361787443}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &741863208
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 741863206}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.53327, y: 0.6430359, z: 5.0950937}
+  m_Center: {x: 0.026678296, y: 0.24665833, z: 2.047549}
 --- !u!1001 &754460894
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37440,6 +37494,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 298818310}
     m_Modifications:
+    - target: {fileID: 594171244962109876, guid: db5975405e2a8f64eaf2b0f454e06659, type: 3}
+      propertyPath: _detectionRange
+      value: 13
+      objectReference: {fileID: 0}
     - target: {fileID: 594171244962109876, guid: db5975405e2a8f64eaf2b0f454e06659, type: 3}
       propertyPath: _drawPatrolPoints
       value: 1
