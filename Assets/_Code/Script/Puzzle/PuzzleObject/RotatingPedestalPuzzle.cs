@@ -7,6 +7,8 @@ using UnityEngine.InputSystem;
 using System;
 using UnityEngine.EventSystems;
 using Ivayami.Save;
+using UnityEngine.UI;
+using TMPro;
 
 namespace Ivayami.Puzzle
 {
@@ -25,15 +27,17 @@ namespace Ivayami.Puzzle
         [SerializeField] private bool _playNoSolutionEventOnceBySolution;
         [SerializeField] private UnityEvent _onNoSolutionMeet;
         [SerializeField] private PuzzleSolutionEvent[] _solutions;
+        [SerializeField] private Image _itemUIIcon;
+        [SerializeField] private TMP_Text _itemAmountText;
 #if UNITY_EDITOR
         [SerializeField] private bool _drawGizmos;
 #endif
 
         private sbyte _currentPuzzleLayer;
         private sbyte _currentPuzzleObjectSelectedIndex;
-        //private float _currentInputCooldown;
+        private const float _navigateInputCooldown = .1f;
+        private float _navigateInputCurrentCooldown;
         private bool _triggerNoSolution;
-        //private const float _inputCooldown = .1f;
         private InteractableFeedbacks _interatctableFeedbacks;
         private RotatingPedestalPuzzleObject _currentSelected;
         private List<RotatingPedestalPuzzleObject[]> _puzzleObjects;
@@ -87,6 +91,7 @@ namespace Ivayami.Puzzle
         {
             if (_puzzleObjects == null)
             {
+                _itemUIIcon.sprite = _itemUsed.Sprite;
                 _totalPuzzleObjectsInLayer = new byte[_rotatingObjects.Length];
                 _puzzleObjects = new List<RotatingPedestalPuzzleObject[]>();
                 for (int i = 0; i < _rotatingObjects.Length; i++)
@@ -110,6 +115,7 @@ namespace Ivayami.Puzzle
             //EventSystem.current.SetSelectedGameObject(null);
             _interatctableFeedbacks.UpdateFeedbacks(false, true);
             UpdateInputs(true);
+            UpdateItemUI();
             _onInteract?.Invoke();
             SetCurrentSelected(_puzzleObjects[_currentPuzzleLayer][0]);
             return PlayerActions.InteractAnimation.Default;
@@ -122,27 +128,29 @@ namespace Ivayami.Puzzle
 
         private void HandleNavigationUI(InputAction.CallbackContext obj)
         {
-            //if (Time.time - _currentInputCooldown < _inputCooldown) return;
-            //_currentInputCooldown = Time.time;
+            bool inputCooldown = Time.time - _navigateInputCurrentCooldown >= _navigateInputCooldown;            
             Vector2 input = obj.ReadValue<Vector2>();
-            if (Mathf.Abs(input.y) == 1)
+            if (Mathf.Abs(input.y) == 1 && inputCooldown)
             {
                 _currentPuzzleLayer += (sbyte)input.y;
                 LoopValueByArraySize(ref _currentPuzzleLayer, _rotatingObjects.Length);
                 _currentPuzzleObjectSelectedIndex = 0;
                 SetCurrentSelected(_puzzleObjects[_currentPuzzleLayer][_currentPuzzleObjectSelectedIndex]);
+                _navigateInputCurrentCooldown = Time.time;
             }
-            else if (Mathf.Abs(input.x) == 1)
+            else if (Mathf.Abs(input.x) == 1 && inputCooldown)
             {
                 _currentPuzzleObjectSelectedIndex += (sbyte)input.x;
                 LoopValueByArraySize(ref _currentPuzzleObjectSelectedIndex, _puzzleObjects[_currentPuzzleLayer].Length);
                 SetCurrentSelected(_puzzleObjects[_currentPuzzleLayer][_currentPuzzleObjectSelectedIndex]);
+                _navigateInputCurrentCooldown = Time.time;
             }
         }
 
         private void HandleConfirmInput(InputAction.CallbackContext obj)
         {
             _currentSelected.UpdateItem(_itemUsed);
+            UpdateItemUI();
             CheckForSolutionsCompleted();
         }
 
@@ -261,6 +269,11 @@ namespace Ivayami.Puzzle
                 _onNoSolutionMeet?.Invoke();
                 _triggerNoSolution = true;
             }
+        }
+
+        private void UpdateItemUI()
+        {
+            _itemAmountText.text = PlayerInventory.Instance.CheckInventoryFor(_itemUsed.name).Amount.ToString();
         }
 
         public void LoadData(RotatingPedestalPuzzleSave.Data data)
