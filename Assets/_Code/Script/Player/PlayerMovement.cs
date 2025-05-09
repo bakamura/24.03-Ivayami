@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using Ivayami.Scene;
 using Ivayami.Save;
 
 namespace Ivayami.Player {
@@ -121,7 +120,7 @@ namespace Ivayami.Player {
 
             _movementInput.action.performed += MoveDirection;
             _movementInput.action.canceled += MoveDirection;
-            _walkToggleInput.action.started += ToggleWalkInput;
+            _walkToggleInput.action.performed += ToggleWalkInput;
             _crouchInput.action.started += Crouch;
 
             _acceleration = Time.fixedDeltaTime / _accelerationDuration;
@@ -178,12 +177,12 @@ namespace Ivayami.Player {
 
         private void Crouch(InputAction.CallbackContext input) {
             if (CanMove) {
-                if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) ToggleCrouch();
+                if (!Physics.Raycast(transform.position, transform.up, _walkColliderHeight, _terrain)) ToggleCrouch(true);
                 else Logger.Log(LogType.Player, $"Crouch Toggle Fail: Terrain Above");
             }
         }
 
-        private void ToggleCrouch() {
+        private void ToggleCrouch(bool removeRun) {
             if (_canCrouch) {
                 Crouching = !Crouching;
                 _movementSpeedMax = Crouching ? _crouchSpeedMax : (_running ? _movementSpeedRun : _movementSpeedWalk);
@@ -191,6 +190,7 @@ namespace Ivayami.Player {
 
                 if (_crouchRoutine != null) StopCoroutine(_crouchRoutine);
                 _crouchRoutine = StartCoroutine(CrouchSmoothHeightRoutine());
+                if (removeRun) SetWalk(false);
 
                 onCrouch?.Invoke(Crouching);
 
@@ -199,7 +199,7 @@ namespace Ivayami.Player {
         }
 
         public void RemoveCrouch() {
-            if (Crouching) ToggleCrouch();
+            if (Crouching) ToggleCrouch(true);
         }
 
         private IEnumerator CrouchSmoothHeightRoutine() {
@@ -223,7 +223,7 @@ namespace Ivayami.Player {
 
         private void ToggleWalkInput(InputAction.CallbackContext input = new InputAction.CallbackContext()) {
             if (_staminaCurrent > _maxStamina * _minStaminaToRun) {
-                if (!_holdToRun) ToggleWalk();
+                if (!_holdToRun) SetWalk(!_running);//ToggleWalk();
                 else SetWalk(true);
             }
         }
@@ -234,10 +234,10 @@ namespace Ivayami.Player {
             }
         }
 
-        private void ToggleWalk() {
-            _running = !_running;
-            WalkUpdate();
-        }
+        //private void ToggleWalk() {
+        //    _running = !_running;
+        //    WalkUpdate();
+        //}
 
         private void SetWalk(bool isRunning) {
             _running = isRunning;
@@ -245,7 +245,8 @@ namespace Ivayami.Player {
         }
 
         private void WalkUpdate() {
-            if (_running) _running = _canRun && !_staminaRunBlock;
+            if (_running) _running = _canRun && !_staminaRunBlock;                            
+            if (_running && Crouching) ToggleCrouch(false);
             if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
         }
 
@@ -279,12 +280,12 @@ namespace Ivayami.Player {
         }
 
         public void AllowRun(bool allow) { // Use stamina runblock
-            if (!allow && _running) ToggleWalk();
+            if (!allow && _running) SetWalk(false);//ToggleWalk();
             _canRun = allow;
         }
 
         public void AllowCrouch(bool allow) {
-            if (!allow && Crouching) ToggleCrouch();
+            if (!allow && Crouching) ToggleCrouch(true);
             _canCrouch = allow;
         }
 
