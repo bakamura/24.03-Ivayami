@@ -5,7 +5,6 @@ using Ivayami.Player;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using System;
-using UnityEngine.EventSystems;
 using Ivayami.Save;
 using UnityEngine.UI;
 using TMPro;
