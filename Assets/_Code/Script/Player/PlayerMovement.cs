@@ -102,7 +102,7 @@ namespace Ivayami.Player {
         private CharacterController _characterController;
         private Transform _cameraTransform;
         private SkinnedMeshRenderer[] _visualComponents;
-        private byte _gravityFactor = 1;
+        private float _gravityFactor = 1;
 
         private Action<bool> _onUpdateVisuals;
 
@@ -164,11 +164,21 @@ namespace Ivayami.Player {
             _speedCurrent = Mathf.Clamp(_speedCurrent + (_inputCache.sqrMagnitude > 0 ? _acceleration : -_decceleration), 0, _movementSpeedMax); // Could use _decceleration when above max speed
             _directionCache = (_targetAngle * Vector3.forward).normalized * _speedCurrent;
             _movementCache[0] = _directionCache[0];
-            _movementCache[1] = _characterController.isGrounded ? Physics.gravity.y / 10f * _gravityFactor : Mathf.Clamp(_movementCache[1] + (Physics.gravity.y * Time.deltaTime), -50f, Physics.gravity.y / 10f) * _gravityFactor;
+            _movementCache[1] = CalculateGravity();
             _movementCache[2] = _directionCache[2];
             _characterController.Move(_movementCache * Time.deltaTime);
 
             onMovement?.Invoke(_speedCurrent * _inputCache, GetCurrentSpeedValue());
+        }
+
+        private float CalculateGravity()
+        {
+            if (Math.Abs(_gravityFactor) != 1)
+                return _gravityFactor;            
+            if (_characterController.isGrounded)
+                return Physics.gravity.y / 10f * _gravityFactor;
+            else
+                return Mathf.Clamp(_movementCache[1] + (Physics.gravity.y * Time.deltaTime), -50f, Physics.gravity.y / 10f) * _gravityFactor;            
         }
 
         private float GetCurrentSpeedValue()
@@ -356,8 +366,8 @@ namespace Ivayami.Player {
             _movementBlock.Clear();
         }
 
-        public void UpdatePlayerGravity(bool isActive) {
-            _gravityFactor = (byte)(isActive ? 1 : 0);
+        public void UpdatePlayerGravity(sbyte direction, float speed) {
+            _gravityFactor = direction * speed;
         }
 
         public void ChangeHoldToRun(bool isActive) {
