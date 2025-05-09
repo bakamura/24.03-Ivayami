@@ -9,7 +9,7 @@ namespace Ivayami.Puzzle
     {
         [SerializeField] private Color _highlightedColor = new Color(0.03921569f, 0.03921569f, 0.03921569f, 1);
         [SerializeField] private bool _applyToChildrens = true;
-        private static Sprite[] _interactionIcons;
+        [SerializeField] private InputIcons _interactionIcons;
         
         private List<Material> _materials;
         private List<Color> _baseColors;
@@ -23,9 +23,9 @@ namespace Ivayami.Puzzle
         private static int PULSE = Animator.StringToHash("pulse");
         public Vector3 IconPosition {  get { return _icon.gameObject.transform.position; } }
 
-        private void Awake() {
-            if(_interactionIcons == null) _interactionIcons = Resources.Load<InputIcons>("InputIcons/InteractablePopup").Icons;
-        }
+        //private void Awake() {
+        //    if(_interactionIcons == null) _interactionIcons = Resources.Load<InputIcons>("InputIcons/InteractablePopup").Icons;
+        //}
 
         private void Start()
         {
@@ -35,7 +35,7 @@ namespace Ivayami.Puzzle
         private void Update()
         {
             if (_icon && _cameraTransform && _icon.enabled)
-                _icon.transform.rotation = Quaternion.LookRotation(_cameraTransform.forward);
+                _icon.transform.rotation = Quaternion.LookRotation(_cameraTransform.forward, _cameraTransform.up);
         }
 
         private void OnDestroy()
@@ -43,11 +43,16 @@ namespace Ivayami.Puzzle
             if (InputCallbacks.Instance && _icon && _showingInputIcon) InputCallbacks.Instance.UnsubscribeToOnChangeControls(UpdateVisualIcon);
         }
 
-        private void SetupMaterials()
+        private void SetupMaterials(bool forceRecalcMaterials = false)
         {
             //setup materials
-            if (_materials == null)
+            if (_materials == null || forceRecalcMaterials)
             {
+                if(forceRecalcMaterials) {
+                    for (int i = 0; i < _materials.Count; i++) {
+                        _materials[i].SetColor(_colorVarName, _baseColors[i]);
+                    }
+                }
                 _materials = new List<Material>();
                 _baseColors = new List<Color>();
                 if (_applyToChildrens)
@@ -96,9 +101,9 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public void UpdateFeedbacks(bool isActive, bool forcePopupIconActivationUpdate = false)
+        public void UpdateFeedbacks(bool isActive, bool forcePopupIconActivationUpdate = false, bool forceRecalcMaterials = false)
         {
-            SetupMaterials();
+            SetupMaterials(forceRecalcMaterials);
             SetupIcon();
             for (int i = 0; i < _materials.Count; i++)
             {
@@ -117,6 +122,10 @@ namespace Ivayami.Puzzle
             }
         }
 
+        public void ForceRecalcMaterials() {
+            UpdateFeedbacks(_showingInputIcon, false, true);
+        }
+
         public void PlayInteractionAnimation()
         {
             _interactionAnimation.Play(PULSE, 0);
@@ -125,7 +134,7 @@ namespace Ivayami.Puzzle
         private void UpdateVisualIcon(InputCallbacks.ControlType controlType)
         {
             SetupIcon();
-            _icon.sprite = _interactionIcons[(int)controlType];
+            _icon.sprite = _interactionIcons.Icons[(int)controlType];
         }
 
         //private void OnValidate()

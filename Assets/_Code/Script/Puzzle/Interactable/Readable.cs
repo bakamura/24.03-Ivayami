@@ -3,7 +3,7 @@ using UnityEngine.Localization.Settings;
 using Ivayami.Localization;
 
 namespace Ivayami.Puzzle {
-    [CreateAssetMenu(menuName = "Texts/Readable")]
+    [CreateAssetMenu(menuName = "Ivayami/UI/Readable")]
     public class Readable : ScriptableObject {
 
 #if UNITY_EDITOR
@@ -11,7 +11,7 @@ namespace Ivayami.Puzzle {
 #endif
         public string GetDisplayName()
         {
-            return LocalizationSettings.StringDatabase.GetLocalizedString("Items", $"{name}/Name");
+            return $"{name}/Name";
         }
 
         public string GetDisplayDescription()

@@ -11,6 +11,7 @@ namespace Ivayami.Save {
         public float cameraSensitivityX = 0.5f;
         public float cameraSensitivityY = 0.5f;
         public float cameraDeadzone = .125f;
+        public float movementDeadzone = .125f;
 
         public bool invertCamera;
         public bool holdToRun;

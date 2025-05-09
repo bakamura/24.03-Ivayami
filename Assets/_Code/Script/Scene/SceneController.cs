@@ -15,11 +15,13 @@ namespace Ivayami.Scene
         private Dictionary<string, int> _chapterPointers;
         private List<SceneData> _sceneList = new List<SceneData>();
         private Queue<SceneUpdateRequestData> _sceneUpdateRequests = new Queue<SceneUpdateRequestData>();
+        private bool _canUpdateScenes = true;
 
         public Action OnAllSceneRequestEnd;
         public Action<string> OnLoadScene;
         public Action<string> OnUnloadScene;
-        public Action OnStartLoadAnyScene;
+        public Action<string> OnStartUnloadScene;
+        public Action<string> OnStartLoadScene;
 #if UNITY_EDITOR
         public Action OnAllSceneRequestEndDebug;
 #endif
@@ -30,12 +32,14 @@ namespace Ivayami.Scene
             public string SceneName;
             public bool IsLoaded;
             public bool IsBeingLoaded;
+            public bool SetActiveScene;
 
-            public SceneData(string sceneName)
+            public SceneData(string sceneName, bool setActiveScene)
             {
                 SceneName = sceneName;
                 IsBeingLoaded = false;
                 IsLoaded = false;
+                SetActiveScene = setActiveScene;
             }
         }
 
@@ -80,30 +84,31 @@ namespace Ivayami.Scene
                     _mainMenuSceneName = Ivayami.debug.CustomSettingsHandler.CurrentSceneName;
                 }
 #endif
-                LoadScene(_mainMenuSceneName);
+                LoadScene(_mainMenuSceneName, true);
             }
         }
 
-        public void LoadScene(string sceneId, UnityEvent onSceneLoad = null)
+        public void LoadScene(string sceneId, bool setActiveScene, UnityEvent onSceneLoad = null)
         {
-            SceneData data = UpdateSceneList(sceneId);
+            SceneData data = UpdateSceneList(sceneId, setActiveScene);
             if (data.IsBeingLoaded || data.IsLoaded)
             {
                 Debug.LogWarning($"Tried to Load scene {sceneId} but it is already loaded");
                 return;
             }
-            OnStartLoadAnyScene?.Invoke();
+            OnStartLoadScene?.Invoke(sceneId);
             StartLoad(data, onSceneLoad);
         }
 
         public void UnloadScene(string sceneId, UnityEvent onSceneUnload = null)
         {
-            SceneData data = UpdateSceneList(sceneId);
+            SceneData data = UpdateSceneList(sceneId, false);
             if (data.IsBeingLoaded || !data.IsLoaded)
             {
                 Debug.LogWarning($"Tried to Unload scene {sceneId} but it is already Unloaded");
                 return;
             }
+            OnStartUnloadScene?.Invoke(sceneId);
             StartLoad(data, onSceneUnload);
         }
 
@@ -117,6 +122,7 @@ namespace Ivayami.Scene
         public void UnloadAllScenes(Action onAllScenesUnload)
         {
             OnAllSceneRequestEnd += onAllScenesUnload;
+            //SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(0));
             for (int i = 0; i < _sceneList.Count; i++)
             {
                 if (_sceneList[i].IsLoaded) UnloadScene(_sceneList[i].SceneName);
@@ -125,18 +131,21 @@ namespace Ivayami.Scene
 
         private void UpdateScene(SceneData data)
         {
-            if (_debugLogs)
+            if (_canUpdateScenes)
             {
-                if (data.IsLoaded) Debug.Log($"Unloading Scene {data.SceneName}");
-                else Debug.Log($"Loading Scene {data.SceneName}");
+                if (_debugLogs)
+                {
+                    if (data.IsLoaded) Debug.Log($"Unloading Scene {data.SceneName}");
+                    else Debug.Log($"Loading Scene {data.SceneName}");
+                }
+                AsyncOperation operation;
+                if (data.IsLoaded) operation = SceneManager.UnloadSceneAsync(data.SceneName);
+                else operation = SceneManager.LoadSceneAsync(data.SceneName, LoadSceneMode.Additive);
+                if (operation != null) operation.completed += HandleOnSceneUpdate;
             }
-            AsyncOperation operation;
-            if (data.IsLoaded) operation = SceneManager.UnloadSceneAsync(data.SceneName);
-            else operation = SceneManager.LoadSceneAsync(data.SceneName, LoadSceneMode.Additive);
-            if (operation != null) operation.completed += HandleOnSceneUpdate;
         }
 
-        private SceneData UpdateSceneList(string sceneName)
+        private SceneData UpdateSceneList(string sceneName, bool setActiveScene)
         {
             for (int i = 0; i < _sceneList.Count; i++)
             {
@@ -145,7 +154,7 @@ namespace Ivayami.Scene
                     return _sceneList[i];
                 }
             }
-            SceneData temp = new SceneData(sceneName);
+            SceneData temp = new SceneData(sceneName, setActiveScene);
             _sceneList.Add(temp);
             return temp;
         }
@@ -167,6 +176,7 @@ namespace Ivayami.Scene
             if (requestData.SceneData.IsLoaded)
             {
                 OnLoadScene?.Invoke(requestData.SceneData.SceneName);
+                if (requestData.SceneData.SetActiveScene) SceneManager.SetActiveScene(SceneManager.GetSceneByName(requestData.SceneData.SceneName));
                 if (_debugLogs) Debug.Log($"Scene Loaded {requestData.SceneData.SceneName}");
             }
             else
@@ -187,6 +197,13 @@ namespace Ivayami.Scene
 #endif
             }
         }
+
+        public void UpdateSceneControllerActiveState(bool canUpdateScenes)
+        {
+            _canUpdateScenes = canUpdateScenes;
+            if (canUpdateScenes && _sceneUpdateRequests.Count > 0) UpdateScene(_sceneUpdateRequests.Peek().SceneData);
+        }
+
 #if UNITY_EDITOR
         private System.Collections.IEnumerator WaitEndOfFrameCoroutine()
         {

@@ -10,7 +10,7 @@ namespace Ivayami.Puzzle
     [CustomEditor(typeof(InteractableObjectsGroup))]
     public class InteractableObjectsGroupInspector : Editor
     {
-        SerializedProperty cancelInteractionInput, options, onInteract, onCancelInteraction;
+        SerializedProperty cancelInteractionInput, buttonsInteractAutoWithInteractable, options, onInteract, onCancelInteraction;
         [Serializable]
         public class SaveSceneChanges
         {
@@ -22,12 +22,13 @@ namespace Ivayami.Puzzle
         public override void OnInspectorGUI()
         {
             EditorGUILayout.PropertyField(cancelInteractionInput, new GUIContent("Cancel Interaction Input"));
+            EditorGUILayout.PropertyField(buttonsInteractAutoWithInteractable, new GUIContent("Button Auto Interact With Interactable", "If True teh button will automaticaly interact with the defined interactable and close the InteractableObjectsGroup UI"));
             EditorGUILayout.PropertyField(options, new GUIContent("Buttons Configuration"));
             EditorGUILayout.PropertyField(onInteract, new GUIContent("On Interact"));
             EditorGUILayout.PropertyField(onCancelInteraction, new GUIContent("On Cancel Interaction"));
 
             if (Application.isPlaying && GUILayout.Button("SaveUIChangesDuringPlay")) Save();
-            if (!Application.isPlaying && File.Exists($"{Application.persistentDataPath}/ChangesDuringPlay/{nameof(InteractableObjectsGroup)}") && GUILayout.Button("LoadUIChangesDuringPlay")) Load();
+            if (!Application.isPlaying && File.Exists($"{Application.persistentDataPath}/{nameof(InteractableObjectsGroup)}ChangesDuringPlay") && GUILayout.Button("LoadUIChangesDuringPlay")) Load();
 
             serializedObject.ApplyModifiedProperties();
         }
@@ -37,6 +38,7 @@ namespace Ivayami.Puzzle
             InteractableObjectsGroup instance = target as InteractableObjectsGroup;
             instance.UpdateButtonsArray();
             cancelInteractionInput = serializedObject.FindProperty("_cancelInteractionInput");
+            buttonsInteractAutoWithInteractable = serializedObject.FindProperty("_buttonsInteractAutoWithInteractable");
             options = serializedObject.FindProperty("_options");
             onInteract = serializedObject.FindProperty("_onInteract");
             onCancelInteraction = serializedObject.FindProperty("_onCancelInteraction");

@@ -16,6 +16,7 @@ namespace Ivayami.Enemy
         [SerializeField] private EnemyMovementData _movementData;
         //[SerializeField] private bool _ignoreYAxis;
         [SerializeField] private PatrolBehaviour _patrolBehaviour;
+        [SerializeField] private UnityEvent _onPatrolEnd;
         [SerializeField, Tooltip("if empty, will generate random point inside area")] private Point[] _points;
         [SerializeField] private float _delayToNextPoint;
 
@@ -24,7 +25,8 @@ namespace Ivayami.Enemy
         {
             RandomPoints,
             Loop,
-            BackAndForth
+            BackAndForth,
+            OnlyOnce
         }
         [Serializable]
         public struct PathCallback
@@ -48,8 +50,8 @@ namespace Ivayami.Enemy
                 return m_boxCollider;
             }
         }
-        private bool _pointsInitialized;
-        public EnemyMovementData MovementData => _movementData;
+        private bool _onPathEndEventTrigger;
+        //private bool _pointsInitialized;
 
         [Serializable]
         public struct Point
@@ -151,6 +153,25 @@ namespace Ivayami.Enemy
                         //if (_ignoreYAxis) temp.Point.Position = new Vector3(temp.Point.Position.x, 0, temp.Point.Position.z);
                         _enemiesCurrentPathPointDic[id] = temp;
                         return _enemiesCurrentPathPointDic[id];
+                    case PatrolBehaviour.OnlyOnce:
+                        temp = _enemiesCurrentPathPointDic[id];
+                        if (temp.CurrentPointIndex + 1 >= _points.Length)
+                        {
+                            if (!_onPathEndEventTrigger)
+                            {
+                                _onPatrolEnd?.Invoke();
+                                _onPathEndEventTrigger = true;
+                            }
+                            return _enemiesCurrentPathPointDic[id];
+                        }
+                        else
+                        {
+                            temp.CurrentPointIndex++;
+                            temp.Point = _points[temp.CurrentPointIndex];
+                            temp.Point.Position += transform.position;
+                            _enemiesCurrentPathPointDic[id] = temp;
+                        }
+                        return _enemiesCurrentPathPointDic[id];
                 }
             }
             return new EnemyData();
@@ -196,14 +217,10 @@ namespace Ivayami.Enemy
         public void AddEnemyToArea(IEnemyWalkArea enemy, string enemyName)
         {
             //InitializePointsIndex();
-            if (!_enemiesCurrentPathPointDic.ContainsKey(enemy.ID))
+            if (!_enemiesCurrentPathPointDic.ContainsKey(enemy.ID) && enemy.SetWalkArea(this))
             {
-                if (enemy.CanChangeWalkArea)
-                {
-                    enemy.SetWalkArea(this);
-                    if (_movementData) enemy.SetMovementData(_movementData);
-                }
-                EnemyData data = new EnemyData(new Point(), 1 ,-1);
+                if (_movementData) enemy.SetMovementData(_movementData);
+                EnemyData data = new EnemyData(new Point(), 1, -1);
                 _enemiesCurrentPathPointDic.Add(enemy.ID, data);
                 data = GoToNextPoint(enemy.ID);
 #if UNITY_EDITOR
@@ -213,11 +230,10 @@ namespace Ivayami.Enemy
             }
         }
 
-        public void RemoveEnemyFromArea(IEnemyWalkArea enemy)
+        private void RemoveEnemyFromArea(IEnemyWalkArea enemy)
         {
-            if (_enemiesCurrentPathPointDic.ContainsKey(enemy.ID) && enemy.CanChangeWalkArea)
+            if (_enemiesCurrentPathPointDic.ContainsKey(enemy.ID) && enemy.SetWalkArea(this))
             {
-                if(enemy.CanChangeWalkArea) enemy.SetWalkArea(null);
                 _enemiesCurrentPathPointDic.Remove(enemy.ID);
             }
         }
@@ -225,7 +241,7 @@ namespace Ivayami.Enemy
         private void OnTriggerEnter(Collider other)
         {
             if (other.TryGetComponent<IEnemyWalkArea>(out IEnemyWalkArea temp))
-            {                
+            {
                 AddEnemyToArea(temp, other.gameObject.name);
             }
         }
@@ -266,6 +282,11 @@ namespace Ivayami.Enemy
                     }
                 }
             }
+        }
+
+        private void OnValidate()
+        {
+            if (TryGetComponent<Collider>(out Collider col)) col.isTrigger = true;
         }
 #endif
     }

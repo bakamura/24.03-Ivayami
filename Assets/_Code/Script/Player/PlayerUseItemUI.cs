@@ -1,9 +1,9 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.Events;
 using Ivayami.Player;
-using Ivayami.Save;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.Localization;
+using Ivayami.Save;
 
 namespace Ivayami.UI
 {
@@ -11,15 +11,16 @@ namespace Ivayami.UI
     public class PlayerUseItemUI : MonoSingleton<PlayerUseItemUI>
     {
         [Header("Heal Callbacks")]
-        [SerializeField] private UnityEvent _onHealActivation;
-        [SerializeField] private UnityEvent _onHealEnd;
-        [SerializeField] private UnityEvent _onNotRequiredItem;
-        [SerializeField] private UnityEvent _onAlreadyHealing;
-        [SerializeField] private UnityEvent _onNotEnoughStressToHeal;
+        public UnityEvent OnHealActivation;
+        public UnityEvent OnHealEnd;
+        public UnityEvent OnNotRequiredItem;
+        public UnityEvent OnAlreadyHealing;
+        public UnityEvent OnNotEnoughStressToHeal;
 
         [Header("General Callbacks")]
-        [SerializeField] private UnityEvent _onShowUI;
-        [SerializeField] private UnityEvent _onChangeOption;
+        public UnityEvent OnShowUI;
+        public UnityEvent OnChangeOption;
+        public UnityEvent OnHideUI;
 
         [Header("Components")]
         [SerializeField] private InputActionReference _navigateUIInput;
@@ -32,8 +33,9 @@ namespace Ivayami.UI
         private Coroutine _currentItemActionCoroutine;
         private int _currentSelectedIndex;
         private bool _isActive;
+        private bool _canOpen = true;
 
-        public bool IsActive => _isActive;
+        public bool IsActive => _isActive;        
 
         protected override void Awake()
         {
@@ -46,14 +48,18 @@ namespace Ivayami.UI
         {
             PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
             PlayerStress.Instance.onFail.AddListener(() => { if (IsActive) UpdateUI(false); });
+            SavePoint.onSaveGameWithAnimation.AddListener(HandleOnSaveGameWithAnimation);
+            SavePoint.onSaveSequenceEnd.AddListener(HandleOnSaveSequenceEnd);
         }
         /// <summary>
         /// Open And Closes the UI
         /// </summary>
         public void UpdateUI(bool isActive)
         {
+            if (!_canOpen) return;
             _isActive = isActive;
-            if (_isActive) _onShowUI?.Invoke();
+            if (_isActive) OnShowUI?.Invoke();
+            else OnHideUI?.Invoke();
             UpdateInputs();
             UpdateVisuals();
         }
@@ -64,11 +70,13 @@ namespace Ivayami.UI
             {
                 _navigateUIInput.action.performed += HandleNavigateUI;
                 _confirmOptionInput.action.started += HandleConfirmOption;
+                PlayerActions.Instance.ToggleInteract(nameof(PlayerUseItemUI), false);
             }
             else
             {
                 _navigateUIInput.action.performed -= HandleNavigateUI;
                 _confirmOptionInput.action.started -= HandleConfirmOption;
+                PlayerActions.Instance.ToggleInteract(nameof(PlayerUseItemUI), true);
             }
         }
 
@@ -92,19 +100,19 @@ namespace Ivayami.UI
             PlayerInventory.InventoryItemStack stack = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[_currentSelectedIndex].name);
             if (!stack.Item)
             {
-                _onNotRequiredItem?.Invoke();
+                OnNotRequiredItem?.Invoke();
                 UpdateUI(false);
                 return;
             }
             else if (_currentItemActionCoroutine != null)
             {
-                _onAlreadyHealing?.Invoke();
+                OnAlreadyHealing?.Invoke();
                 UpdateUI(false);
                 return;
             }
             else if (PlayerStress.Instance.StressCurrent == 0)
             {
-                _onNotEnoughStressToHeal?.Invoke();
+                OnNotEnoughStressToHeal?.Invoke();
                 UpdateUI(false);
                 return;
             }
@@ -117,7 +125,7 @@ namespace Ivayami.UI
             _isActive = false;
             UpdateInputs();
             UpdateVisuals();
-            _onHealActivation?.Invoke();
+            OnHealActivation?.Invoke();
         }
 
         private void HandleNavigateUI(InputAction.CallbackContext context)
@@ -128,7 +136,7 @@ namespace Ivayami.UI
                 _currentSelectedIndex += input.y > 0 ? 1 : -1;
                 LoopValueByArraySize(ref _currentSelectedIndex, _possibleOptions.Length);
                 UpdateItemIcon();
-                _onChangeOption?.Invoke();
+                OnChangeOption?.Invoke();
             }
         }
 
@@ -141,12 +149,28 @@ namespace Ivayami.UI
         private void HandleItemActionEnd()
         {
             _currentItemActionCoroutine = null;
-            _onHealEnd?.Invoke();
+            OnHealEnd?.Invoke();
         }
 
         private void HandleInputMapChange(string mapId)
         {
-            if (mapId != "Player" && IsActive) UpdateUI(false);
+            CanOpenUI(string.Equals(mapId, "Player"));
+        }
+
+        private void HandleOnSaveSequenceEnd()
+        {
+            CanOpenUI(true);
+        }
+
+        private void HandleOnSaveGameWithAnimation()
+        {
+            CanOpenUI(false);
+        }
+
+        private void CanOpenUI(bool canOpen)
+        {
+            _canOpen = canOpen;
+            if (!_canOpen && IsActive) UpdateUI(false);
         }
     }
 }

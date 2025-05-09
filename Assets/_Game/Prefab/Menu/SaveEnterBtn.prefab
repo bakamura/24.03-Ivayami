@@ -160,9 +160,10 @@ GameObject:
   - component: {fileID: 4220634798056004275}
   - component: {fileID: 8807575485515224604}
   - component: {fileID: 9009659851899204278}
+  - component: {fileID: 3345419502508435609}
   - component: {fileID: 167667731651574490}
   m_Layer: 5
-  m_Name: ChapterText (TMP)
+  m_Name: StateText (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -284,6 +285,46 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &3345419502508435609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6968831403497824868}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
+    m_TableEntryReference:
+      m_KeyId: 370328743817274
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9009659851899204278}
+        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
+        m_MethodName: set_text
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
 --- !u!114 &167667731651574490
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -552,29 +593,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81e0b2bbd1a03a948b0043ba1ee14f1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _statusText: {fileID: 9009659851899204278}
+  _statusTextEvent: {fileID: 3345419502508435609}
   _dateText: {fileID: 3369907496214620729}
-  _newGameString:
-    m_TableReference:
-      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
-    m_TableEntryReference:
-      m_KeyId: 370328743817273
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  _continueGameString:
-    m_TableReference:
-      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
-    m_TableEntryReference:
-      m_KeyId: 370328743817272
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!114 &7160020079212654608
 MonoBehaviour:
   m_ObjectHideFlags: 0

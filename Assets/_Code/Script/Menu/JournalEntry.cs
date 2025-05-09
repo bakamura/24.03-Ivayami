@@ -4,7 +4,7 @@ using UnityEngine.Localization.Settings;
 //using Ivayami.Puzzle;
 
 namespace Ivayami.UI {
-    [CreateAssetMenu(menuName = "Texts/JournalyEntry")]
+    [CreateAssetMenu(menuName = "Ivayami/UI/JournalyEntry")]
     public class JournalEntry : ScriptableObject {
 
 #if UNITY_EDITOR
@@ -31,12 +31,13 @@ namespace Ivayami.UI {
 
         public string GetDisplayName()
         {
-            return LocalizationSettings.StringDatabase.GetLocalizedString("Journal", $"{name}/Name");
+            //return LocalizationSettings.StringDatabase.GetLocalizedString("Journal", $"{name}/Name");
+            return $"{name}/Name";
         }
 
         public string GetDisplayDescription()
         {
-            return LocalizationSettings.StringDatabase.GetLocalizedString("Journal", $"{name}/Description_{(_progressType != null ? SaveSystem.Instance.Progress.GetEntryProgressOfType(_progressType.Id) : 0)}");
+            return LocalizationSettings.StringDatabase.GetLocalizedString("Journal", $"{name}/Description_{(_progressType.Id != "StoryEntryProgress" ? SaveSystem.Instance.Progress.GetEntryProgressOfType(_progressType.Id) - 1 : 0)}");
         }
 
         //public JournalEntry(Readable readable) {

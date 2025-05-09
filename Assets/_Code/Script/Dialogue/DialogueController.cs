@@ -50,7 +50,7 @@ namespace Ivayami.Dialogue
         public bool IsPaused { get; private set; }
         public Dialogue CurrentDialogue => _currentDialogue;
         public bool LockInput { get; private set; }
-        public Action OnDialogeStart;
+        public Action OnDialogueStart;
         public Action OnDialogueEnd;
         public Action OnSkipSpeech;
 
@@ -83,6 +83,16 @@ namespace Ivayami.Dialogue
             operation.completed += (AsyncOperation op) => { IsPaused = false; };
         }
 
+        private void Start()
+        {
+            PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
+        }
+
+        private void HandleInputMapChange(string arg0)
+        {
+            if (string.Equals(arg0, "Menu") && _currentDialogue) StopDialogue();
+        }
+
         #region BaseStructure
         public void StartDialogue(string dialogueName, bool lockInput)
         {
@@ -107,7 +117,7 @@ namespace Ivayami.Dialogue
                 _currentSpeechIndex = 0;
                 _currentDialogue = dialogue;
                 PlayerStress.Instance.onFail.AddListener(StopDialogue);
-                OnDialogeStart?.Invoke();
+                OnDialogueStart?.Invoke();
                 _writtingCoroutine = StartCoroutine(WrittingCoroutine(true));
             }
         }

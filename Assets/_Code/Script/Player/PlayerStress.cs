@@ -19,14 +19,16 @@ namespace Ivayami.Player {
         [SerializeField] private float _stressMax;
         private float _stressCurrent;
         [SerializeField, Min(0f)] private float _stressRelieveMinValue;
+        public float StressRelieveMinValue { get { return _stressRelieveMinValue; } }
         [Tooltip("I can't really explain, but the higher the value the faster it relieves")]
         [SerializeField, Min(0f)] private float _stressRelieveFactor;
         [SerializeField] private float _stressRelieveDelay;
         private float _stressRelieveDelayTimer;
-        private bool _pauseStressRelieve = false;
 
-        public float MaxStress => _stressMax;
-        public float StressCurrent => _stressCurrent;
+        public float MaxStress { get { return _stressMax; } }
+        public float StressCurrent { get { return _stressCurrent; } }
+
+        public bool StressIsMaxed { get { return _stressCurrent >= _stressMax; } }
 
         [Header("Fail")]
 
@@ -45,8 +47,6 @@ namespace Ivayami.Player {
         private bool _isAutoRegenActive = true;
 
         private void Start() {
-            Pause.Instance.onPause.AddListener(() => _pauseStressRelieve = true);
-            Pause.Instance.onUnpause.AddListener(() => _pauseStressRelieve = false);
             onStressChange.AddListener(FailStateCheck);
             onFail.AddListener(() => StartCoroutine(DelayToRespawn()));
             onFailFade.AddListener(ResetStress);
@@ -59,24 +59,26 @@ namespace Ivayami.Player {
         }
 
         private void Update() {
-#if UNITY_EDITOR
             if (!_isAutoRegenActive) return;
-#endif
-            if (!_pauseStressRelieve) {
-                if (_stressRelieveDelayTimer > 0) _stressRelieveDelayTimer -= Time.deltaTime;
-                else if(_stressCurrent > _stressRelieveMinValue) RelieveStressAuto();
-            }
+            if (_stressRelieveDelayTimer > 0) _stressRelieveDelayTimer -= Time.deltaTime;
+            else if (_stressCurrent > _stressRelieveMinValue) RelieveStressAuto();
         }
 
-        public void AddStress(float amount, float capValue = -1) {
+        public void AddStress(float amount, float capValue = -1, PlayerAnimation.DamageAnimation damageType = PlayerAnimation.DamageAnimation.None) {
             if (!_failState && _stressCurrent < (capValue >= 0 ? capValue : _stressMax)) {
                 _stressCurrent = Mathf.Clamp(_stressCurrent + amount, 0, capValue >= 0 ? capValue : _stressMax);
                 onStressChange.Invoke(_stressCurrent);
+                PlayerAnimation.Instance.TakeDamage(damageType, _failState);
                 _stressRelieveDelayTimer = _stressRelieveDelay;
 
                 Logger.Log(LogType.Player, $"Stress Meter: {_stressCurrent}/{_stressMax}");
             }
             else if (_stressCurrent == capValue) _stressRelieveDelayTimer = _stressRelieveDelay;
+        }
+
+        public void SetStress(float value) {
+            _stressCurrent = Mathf.Clamp(value, 0, _stressMax);
+            AddStress(0, damageType : PlayerAnimation.DamageAnimation.Mental);
         }
 
         private void RelieveStressAuto() {
@@ -124,37 +126,41 @@ namespace Ivayami.Player {
 
             if (_overrideFailLoad) _overrideFailLoad = false;
             else SaveSystem.Instance.LoadProgress(SaveSystem.Instance.Progress.id, () => {
+                SaveObject.UpdateSaveLock(false);
                 SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
                 SceneController.Instance.UnloadAllScenes(ReloadAndReset);
-                });
+                SceneLoadersManager.Instance.gameObject.SetActive(false);
+            });
             SceneTransition.Instance.OnOpenEnd.RemoveListener(RespawnFailFade);
         }
 
         private void ReloadAndReset() {
             //UnityEvent onSceneLoaded = new UnityEvent();
             //onSceneLoaded.AddListener(() => SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport());
+            //ResetStress();
+            SaveObject.UpdateSaveLock(true);
             SceneController.Instance.OnAllSceneRequestEnd -= ReloadAndReset;
-            SceneController.Instance.LoadScene("BaseTerrain"/*, onSceneLoaded*/);
+            SceneLoadersManager.Instance.gameObject.SetActive(true);
+            //SceneController.Instance.LoadScene("BaseTerrain"/*, onSceneLoaded*/);
             PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
         }
 
-        public void UpdateAutoRegenerateStress(bool isActive)
-        {
-            if (!IngameDebugConsole.DebugLogManager.Instance) return;
+        public void UpdateAutoRegenerateStress(bool isActive) {
+            //if (!IngameDebugConsole.DebugLogManager.Instance) return;
             _isAutoRegenActive = isActive;
         }
 
-//#if UNITY_EDITOR
-//        private void EstimateRelieveDuration() {
-//            _stressCurrent = 100;
-//            int i = 0;
-//            while (_stressCurrent > 40) {
-//                _stressCurrent -= StressRelieveFormula(_stressCurrent);
-//                i++;
-//            }
-//            Debug.Log($"Estimated time to relieve stress{i}");
-//        }
-//#endif
+        //#if UNITY_EDITOR
+        //        private void EstimateRelieveDuration() {
+        //            _stressCurrent = 100;
+        //            int i = 0;
+        //            while (_stressCurrent > 40) {
+        //                _stressCurrent -= StressRelieveFormula(_stressCurrent);
+        //                i++;
+        //            }
+        //            Debug.Log($"Estimated time to relieve stress{i}");
+        //        }
+        //#endif
 
     }
 }

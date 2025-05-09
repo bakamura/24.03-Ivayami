@@ -60,6 +60,7 @@ namespace Ivayami.Puzzle
         [ContextMenu("Interact")]
         public PlayerActions.InteractAnimation Interact()
         {
+            if (!gameObject.activeInHierarchy) return PlayerActions.InteractAnimation.Default;
             _onInteract?.Invoke();
             //if (_interactionType == InteractionTypes.RequireItems)
             //{
@@ -124,6 +125,7 @@ namespace Ivayami.Puzzle
                 }
                 PlayerMovement.Instance.ToggleMovement(nameof(Lock), false);
                 PlayerActions.Instance.ChangeInputMap("Menu");
+                PlayerActions.Instance.ToggleInteract(nameof(Lock), false);
             }
             else
             {
@@ -139,6 +141,7 @@ namespace Ivayami.Puzzle
                 }
                 PlayerMovement.Instance.ToggleMovement(nameof(Lock), true);
                 PlayerActions.Instance.ChangeInputMap("Player");
+                PlayerActions.Instance.ToggleInteract(nameof(Lock), true);
             }
         }
         private void UpdateUIs(bool isActive)

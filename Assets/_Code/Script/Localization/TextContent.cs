@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace Ivayami.Localization
 {
     [System.Serializable]
@@ -5,6 +7,6 @@ namespace Ivayami.Localization
     {
         [ReadOnly] public string Language;
         public string Name;
-        public string Description;
+        [TextArea] public string Description;
     }
 }

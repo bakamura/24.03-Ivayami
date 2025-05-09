@@ -60,13 +60,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ChangeAbility",
-                    "type": "Value",
+                    "name": "LanternFocus",
+                    "type": "Button",
                     "id": "0d26cd16-ed5b-4cac-a2dc-a4dcb77ed9ed",
-                    "expectedControlType": "Vector2",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Item",
@@ -129,7 +129,7 @@
                     "id": "0c5b282e-cdc5-4f97-8ab1-b92988e13721",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "StickDeadzone(min=0.125,max=0.925)",
                     "groups": "Gamepad",
                     "action": "Movement",
                     "isComposite": false,
@@ -195,7 +195,7 @@
                     "id": "20fc692f-e650-4ce1-9a18-d54249018c95",
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "StickDeadzone(min=0.125,max=0.925)",
                     "groups": "Gamepad",
                     "action": "Camera",
                     "isComposite": false,
@@ -255,72 +255,6 @@
                     "action": "Ability",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "1b340583-1952-469c-bf5e-960e7d48a11e",
-                    "path": "<Gamepad>/dpad",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "ChangeAbility",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "Numbers",
-                    "id": "46c5ca4c-b8f5-4f6d-a338-b9f8807a3a64",
-                    "path": "2DVector(mode=1)",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ChangeAbility",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "up",
-                    "id": "c722e9f9-8621-4c59-8f56-ab9369e68aaa",
-                    "path": "<Keyboard>/1",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard + Mouse",
-                    "action": "ChangeAbility",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "down",
-                    "id": "06cad45f-dc1a-41b7-b02a-04bc5f13a438",
-                    "path": "<Keyboard>/2",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard + Mouse",
-                    "action": "ChangeAbility",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "e3448033-a172-40be-97c8-9d6c089d01bd",
-                    "path": "<Keyboard>/3",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard + Mouse",
-                    "action": "ChangeAbility",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "c8e97eb0-6613-48db-b11d-4109277ff462",
-                    "path": "<Keyboard>/4",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard + Mouse",
-                    "action": "ChangeAbility",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 },
                 {
                     "name": "",
@@ -574,6 +508,28 @@
                     "action": "NavigateUseItemUI",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "68316cf0-5c6f-414d-b3b7-c3519a95fae3",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "LanternFocus",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "11f116be-9a51-4559-8fc3-80a36f426d0c",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "LanternFocus",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -706,6 +662,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "QuickTimeButton",
+                    "type": "Button",
+                    "id": "cc0d741f-4ef8-4dd9-bef4-6e5b9b7d03bf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -714,7 +679,7 @@
                     "id": "4d8827fb-2368-46d8-a8a5-9414a148b2ce",
                     "path": "2DVector",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "StickDeadzone(min=0.125,max=0.925)",
                     "groups": "",
                     "action": "Navigate",
                     "isComposite": true,
@@ -1011,7 +976,7 @@
                     "id": "4ce3dfdf-1957-4c0a-b771-0bbdd8d832d0",
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "StickDeadzone(min=0.125,max=0.925)",
                     "groups": "Gamepad",
                     "action": "Scroll",
                     "isComposite": false,
@@ -1151,17 +1116,6 @@
                 },
                 {
                     "name": "",
-                    "id": "adb955a5-b845-4146-82cb-997f9c72533f",
-                    "path": "<Gamepad>/rightStick",
-                    "interactions": "",
-                    "processors": "InvertVector2",
-                    "groups": "Gamepad",
-                    "action": "MapDrag",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "404b3192-187e-4b31-9012-cbeff1b1b5e7",
                     "path": "<Mouse>/scroll",
                     "interactions": "",
@@ -1176,7 +1130,7 @@
                     "id": "4405bf6d-eb0c-41f2-b23d-2d5ec000c982",
                     "path": "2DVector",
                     "interactions": "",
-                    "processors": "",
+                    "processors": "StickDeadzone(min=0.125,max=0.925)",
                     "groups": "",
                     "action": "MapZoom",
                     "isComposite": true,
@@ -1225,6 +1179,39 @@
                     "action": "MapZoom",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "adb955a5-b845-4146-82cb-997f9c72533f",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "StickDeadzone(min=0.125,max=0.925),InvertVector2",
+                    "groups": "Gamepad",
+                    "action": "MapDrag",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5f4af664-0b0f-4f7c-8baf-5e06358632d2",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "QuickTimeButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a033b59f-8408-4bdf-ae44-f306907735aa",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "QuickTimeButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
