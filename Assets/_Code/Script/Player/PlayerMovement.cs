@@ -102,9 +102,9 @@ namespace Ivayami.Player {
         private CharacterController _characterController;
         private Transform _cameraTransform;
         private SkinnedMeshRenderer[] _visualComponents;
-        private List<MeshRenderer> _additionalVisualComponents = new List<MeshRenderer>();
         private byte _gravityFactor = 1;
-        //private float _stickDeadzone = .125f;
+
+        private Action<bool> _onUpdateVisuals;
 
         private const string INTERACT_BLOCK_KEY = "Interact";
 
@@ -333,13 +333,16 @@ namespace Ivayami.Player {
 
         public void UpdateVisualsVisibility(bool isVisible) {
             for (int i = 0; i < _visualComponents.Length; i++) _visualComponents[i].enabled = isVisible;
-            for (int i = 0; i < _additionalVisualComponents.Count; i++) _additionalVisualComponents[i].enabled = isVisible;
-            //_visualTransform.gameObject.SetActive(isVisible);
+            _onUpdateVisuals?.Invoke(isVisible);
         }
 
-        public void AddAdditionalVisuals(MeshRenderer[] additionalVisuals) {
-            if (additionalVisuals?.Length > 0) _additionalVisualComponents.AddRange(additionalVisuals);
-            else Debug.LogWarning($"AddAdditionalVisuals() received null or empty array!");
+        public void AddAdditionalVisuals(Action<bool> method) {
+            _onUpdateVisuals += method;
+        }
+
+        public void RemoveAdditionalVisuals(Action<bool> method)
+        {
+            _onUpdateVisuals -= method;
         }
 
         public void ChangeRunSpeed(float val) {
@@ -356,10 +359,6 @@ namespace Ivayami.Player {
         public void UpdatePlayerGravity(bool isActive) {
             _gravityFactor = (byte)(isActive ? 1 : 0);
         }
-
-        //public void ChangeStickDeadzone(float value) {
-        //    _stickDeadzone = Mathf.Clamp(value, 0.1f, .5f);
-        //}
 
         public void ChangeHoldToRun(bool isActive) {
             _holdToRun = isActive;
