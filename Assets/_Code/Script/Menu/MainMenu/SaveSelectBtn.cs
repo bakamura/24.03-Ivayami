@@ -35,7 +35,7 @@ namespace Ivayami.UI {
         private void EnterSaveWaitFadeIn() {
             SaveSystem.Instance.LoadProgress(_id, () => {
                 PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
-                AbilityGiverRef giverRef = new AbilityGiverRef();
+                AbilityGiverRef giverRef = gameObject.AddComponent<AbilityGiverRef>();
                 if (SaveSystem.Instance?.Progress?.abilities?.Length > 0) foreach (string ability in SaveSystem.Instance.Progress.abilities) giverRef.GiveAbility(ability);
                 SaveSelector.Instance.MainMenuUnloader.UnloadScene();
                 
