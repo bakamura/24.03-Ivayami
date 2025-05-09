@@ -17,9 +17,10 @@ namespace Ivayami.Player {
 
         [Header("Events")]
 
-        public UnityEvent<Vector2> onMovement = new UnityEvent<Vector2>();
+        public UnityEvent<Vector2, float> onMovement = new UnityEvent<Vector2, float>();
         public UnityEvent<bool> onCrouch = new UnityEvent<bool>();
         public UnityEvent<float> onStaminaUpdate = new UnityEvent<float>();
+        public UnityEvent<bool> onRunToggle;
 
         [Header("Movement")]
 
@@ -152,10 +153,10 @@ namespace Ivayami.Player {
         }
 
         private void MoveDirection(InputAction.CallbackContext input) {
-            Vector2 value = input.ReadValue<Vector2>();
+            Vector2 value = input.ReadValue<Vector2>().normalized;
             _inputCache = value;
 
-            Logger.Log(LogType.Player, $"Movement Input Change: {input.ReadValue<Vector2>()}");
+            Logger.Log(LogType.Player, $"Movement Input Change: {input.ReadValue<Vector2>().normalized}");
         }
 
         private void Move() {
@@ -167,7 +168,13 @@ namespace Ivayami.Player {
             _movementCache[2] = _directionCache[2];
             _characterController.Move(_movementCache * Time.deltaTime);
 
-            onMovement?.Invoke(_speedCurrent * _inputCache);
+            onMovement?.Invoke(_speedCurrent * _inputCache, GetCurrentSpeedValue());
+        }
+
+        private float GetCurrentSpeedValue()
+        {
+            if (Crouching) return _crouchSpeedMax;
+            return _running? _movementSpeedRun : _movementSpeedWalk;
         }
 
         private void SetColliderHeight(float height) {
@@ -247,6 +254,7 @@ namespace Ivayami.Player {
         private void WalkUpdate() {
             if (_running) _running = _canRun && !_staminaRunBlock;                            
             if (_running && Crouching) ToggleCrouch(false);
+            onRunToggle?.Invoke(_running);
             if (!Crouching) _movementSpeedMax = _running ? _movementSpeedRun : _movementSpeedWalk;
         }
 
@@ -297,7 +305,7 @@ namespace Ivayami.Player {
 
             if (_movementBlock.Count > 0) {
                 _speedCurrent = 0f;
-                onMovement?.Invoke(Vector2.zero);
+                onMovement?.Invoke(Vector2.zero, 0f);
             }
             Logger.Log(LogType.Player, $"Movement Blockers {(canMove ? "Decrease" : "Increase")} to: {_movementBlock.Count}");
         }
