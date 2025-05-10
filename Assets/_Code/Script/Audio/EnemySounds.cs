@@ -17,7 +17,6 @@ namespace Ivayami.Audio
         [SerializeField] private bool _autoActivateOnEnable;
         [SerializeField] private SphereCollider _activationArea;
 
-        //private bool _hasDoneSetup;
         private bool _isActive;
         private const float _updateTick = .2f;
         private List<SoundEventData> _currentSoundData = new List<SoundEventData>();
@@ -93,12 +92,10 @@ namespace Ivayami.Audio
         public void PlaySound(SoundTypes soundType, Action OnAudioEnd = null)
         {
             if (!_isActive) return;
-            //Setup();
             PLAYBACK_STATE state = PLAYBACK_STATE.STOPPED;
-            //GetValidSoundEventInList(_currentSoundData, soundType, out SoundEventData currentSound);
             GetValidSoundEventInArray(_audiosData, soundType, out SoundEventData newSound);
             if (newSound == null) return;
-            if (/*currentSound == null && */newSound.CanBeStoped && !newSound.CanPlayMultipleTimes)/*(data == null || (data != null && data.SoundType != soundType)*/
+            if (newSound.CanBeStoped && !newSound.CanPlayMultipleTimes)
             {
                 for (int i = 0; i < _currentSoundData.Count; i++)
                 {
@@ -111,49 +108,25 @@ namespace Ivayami.Audio
                 }
             }
 
-            //bool willPlaySound = false;
             SoundEventData currentSound = null;
-            //for (int i = 0; i < _audiosData.Length; i++)
-            //{
-            //if (soundType == _audiosData[i].SoundType)
-            //{
             GetValidSoundEventInList(_currentSoundData, soundType, out currentSound);
-            //if (currentSound != null)
-            //{
-            //    currentSound.AudioInstance.getPlaybackState(out state);
-            //    //UnityEngine.Debug.Log($"the sound {currentSound.SoundType} is {state}");
-            //}
-            //currentSound == null && newSound.CanPlayMultipleTimes pra quem repete no final
-            if (currentSound == null && (newSound.CanPlayMultipleTimes || !IsCurrentlyPlaying(_currentSoundData, soundType)) /*|| (currentSound != null && state == PLAYBACK_STATE.PLAYING && currentSound.CanPlayMultipleTimes)*/)
+            if (currentSound == null && (newSound.CanPlayMultipleTimes || !IsCurrentlyPlaying(_currentSoundData, soundType)))
             {
                 TimelineInfo info = new TimelineInfo();
                 AudioCallbackData callback = new AudioCallbackData(GCHandle.Alloc(info), info, new EVENT_CALLBACK(HandleOnAudioEnd), OnAudioEnd);
                 currentSound = new SoundEventData(newSound, callback);
-                //if (currentSound.CanPlayMultipleTimes)
-                //{
                 currentSound.AudioInstance = InstantiateEvent(currentSound.AudioReference);
                 if (_debugLog)
-                    UnityEngine.Debug.Log($"New Enemy Sound EventInstance added for sound type {soundType}");
-                //}
+                    UnityEngine.Debug.Log($"New Enemy Sound EventInstance added for sound type {soundType}");               
                 currentSound.AudioInstance.setUserData(GCHandle.ToIntPtr(currentSound.CallbackData.TimelineHandle));
                 _currentSoundData.Add(currentSound);
-                //willPlaySound = true;
             }
-            if (currentSound != null && !currentSound.WaitingForReplay/*willPlaySound*/)
+            if (currentSound != null && !currentSound.WaitingForReplay)
             {
                 currentSound.WaitingForReplay = currentSound.ReplayAudioOnEnd;
                 PlayOneShot(currentSound.AudioInstance, false, currentSound.AttenuationRange, currentSound.CallbackData.FMODCallback);
                 if (_debugLog) UnityEngine.Debug.Log($"PlayEnemySound {soundType}");
-            }
-            //else print($"Reusing instance of {currentSound.SoundType}");
-            //else if (currentSound != null && currentSound.ReplayAudioOnEnd /*&& !currentSound.WaitingForReplay && (state == PLAYBACK_STATE.STOPPED || state == PLAYBACK_STATE.STOPPING)*/)
-            //{
-            //willPlaySound = true;
-            //currentSound.WaitingForReplay = true;
-            //}
-            //break;
-            //}
-            //}            
+            }          
         }
 
         public void Activate()
@@ -224,34 +197,9 @@ namespace Ivayami.Audio
             }
         }
 
-        //private void Setup()
-        //{
-        //    if (!_hasDoneSetup)
-        //    {
-        //        for (int i = 0; i < _audiosData.Length; i++)
-        //        {
-        //            if (!_audiosData[i].AudioReference.IsNull)
-        //            {
-        //                _audiosData[i].AudioInstance = InstantiateEvent(_audiosData[i].AudioReference);
-        //            }
-        //        }
-        //        _hasDoneSetup = true;
-        //    }
-        //}
-
         private void ReleaseAllEvents()
         {
             PLAYBACK_STATE state;
-            //if (_audiosData != null)
-            //{
-            //    for (int i = 0; i < _audiosData.Length; i++)
-            //    {
-            //        if (!_audiosData[i].AudioInstance.isValid()) return;
-            //        _audiosData[i].AudioInstance.getPlaybackState(out state);
-            //        if (state == PLAYBACK_STATE.PLAYING || state == PLAYBACK_STATE.STARTING) _audiosData[i].AudioInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
-            //        _audiosData[i].AudioInstance.release();
-            //    }
-            //}
             if (_currentSoundData != null)
             {
                 for (int i = 0; i < _currentSoundData.Count; i++)
@@ -262,7 +210,6 @@ namespace Ivayami.Audio
                     _currentSoundData[i].AudioInstance.release();
                 }
             }
-            //_hasDoneSetup = false;
         }
 
         private IEnumerator UpdateCoroutine()
