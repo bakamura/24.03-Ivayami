@@ -128,7 +128,8 @@ namespace Ivayami.Player {
             else SaveSystem.Instance.LoadProgress(SaveSystem.Instance.Progress.id, () => {
                 SaveObject.UpdateSaveLock(false);
                 SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
-                SceneController.Instance.UnloadAllScenes(ReloadAndReset);
+                SceneController.Instance.OnAllSceneRequestEnd += ReloadAndReset;
+                //SceneController.Instance.UnloadAllScenes(ReloadAndReset);
                 SceneLoadersManager.Instance.gameObject.SetActive(false);
             });
             SceneTransition.Instance.OnOpenEnd.RemoveListener(RespawnFailFade);

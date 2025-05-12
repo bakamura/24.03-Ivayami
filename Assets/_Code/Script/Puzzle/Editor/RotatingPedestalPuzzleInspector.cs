@@ -9,7 +9,8 @@ namespace Ivayami.Puzzle
     {
         SerializedProperty rotatingObjects, rotationAmount, rotationDuration, itemUsed, solutions,
             cancelInteractionInput, navigateUIInput, confirmInput,
-            onInteract, onCancelInteraction, playNoSolutionEventOnceBySolution, onNoSolutionMeet;
+            onInteract, onCancelInteraction, playNoSolutionEventOnceBySolution, onNoSolutionMeet,
+            itemUIIcon, itemAmountText;
         private int _solutionsArraySize;
         private static bool _solutionsFoldout;
         private static bool[] _possibleSolutionFoldout = new bool[1];
@@ -32,6 +33,11 @@ namespace Ivayami.Puzzle
             EditorGUILayout.PropertyField(navigateUIInput, new GUIContent("Navigate UI Input"));
             EditorGUILayout.PropertyField(confirmInput, new GUIContent("Confirm Input"));
             EditorGUILayout.Space(10);
+
+            GUILayout.Label("UI", EditorStyles.boldLabel);
+            EditorGUILayout.Space(5);
+            EditorGUILayout.PropertyField(itemUIIcon, new GUIContent("Item UI Image"));
+            EditorGUILayout.PropertyField(itemAmountText, new GUIContent("Item Amount Text"));
 
             GUILayout.Label("CALLBACKS", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
@@ -94,6 +100,8 @@ namespace Ivayami.Puzzle
             playNoSolutionEventOnceBySolution = serializedObject.FindProperty("_playNoSolutionEventOnceBySolution");
             onNoSolutionMeet = serializedObject.FindProperty("_onNoSolutionMeet");
             solutions = serializedObject.FindProperty("_solutions");
+            itemUIIcon = serializedObject.FindProperty("_itemUIIcon");
+            itemAmountText = serializedObject.FindProperty("_itemAmountText");
             _solutionsArraySize = solutions.arraySize;
             Array.Resize(ref _possibleSolutionFoldout, _solutionsArraySize);
             Array.Resize(ref _puzzleLayerFoldout, _solutionsArraySize * rotatingObjects.arraySize);
