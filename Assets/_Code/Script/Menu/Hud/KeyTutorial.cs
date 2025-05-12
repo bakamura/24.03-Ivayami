@@ -62,10 +62,12 @@ namespace Ivayami.UI {
 
         private void IconEnable() {
             _icon.enabled = true;
+            _icon.transform.GetChild(0).gameObject.SetActive(true);
         }
 
         private void IconDisable() {
             _icon.enabled = false;
+            _icon.transform.GetChild(0).gameObject.SetActive(false);
         }
 
     }
