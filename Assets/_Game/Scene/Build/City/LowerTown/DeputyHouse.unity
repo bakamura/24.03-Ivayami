@@ -40924,7 +40924,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1442232541}
-  - component: {fileID: 1442232544}
   - component: {fileID: 1442232543}
   - component: {fileID: 1442232542}
   m_Layer: 10
@@ -40990,6 +40989,18 @@ MonoBehaviour:
   _onExecute:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1697254904}
+        m_TargetAssemblyTypeName: Ivayami.Misc.TemporarilyActive, Assembly-CSharp
+        m_MethodName: StartTimer
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 1456684212}
         m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
         m_MethodName: Play
@@ -41038,29 +41049,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
---- !u!114 &1442232544
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1442232540}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _dialogue: {fileID: 11400000, guid: 89da5b06b21b68a44a2c20f15fd7113f, type: 2}
-  _onDialogueStart:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDialogueEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  _dialogueName: NeighbourHouseBurstPowerBox
-  _activateOnce: 1
-  _deactivateObjectOnFirstActivate: 1
-  _lockPlayerInput: 1
+      - m_Target: {fileID: 1442232540}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &1442580821
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -48487,6 +48487,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1697254902}
   - component: {fileID: 1697254903}
+  - component: {fileID: 1697254904}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -48503,7 +48504,7 @@ Transform:
   m_GameObject: {fileID: 1697254901}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 81, y: 352.33096, z: 116.468}
+  m_LocalPosition: {x: 81, y: 352.52, z: 116.468}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -48526,7 +48527,7 @@ MonoBehaviour:
   _followPlayer: 0
   _lookAtTarget: {fileID: 1351095501}
   _followTarget: {fileID: 0}
-  Duration: 0
+  Duration: 0.5
   _hidePlayerModel: 0
   PositionCurve:
     serializedVersion: 2
@@ -48534,20 +48535,20 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 3.226415
+      outSlope: 3.226415
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.083333336
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 2
-      outSlope: 2
+      inSlope: -0
+      outSlope: -0
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.8625
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -48558,24 +48559,68 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 0
-      outSlope: 0
+      inSlope: 3.0188677
+      outSlope: 3.0188677
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.0375
     - serializedVersion: 3
       time: 1
       value: 1
-      inSlope: 2
-      outSlope: 2
+      inSlope: 0.005896241
+      outSlope: 0.005896241
       tangentMode: 0
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.39999998
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1697254904
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697254901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ca817dacff8dc44690cda64e1a9207f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _duration: 1.5
+  _activateOnEndTimerEventOnInteruption: 0
+  _onStartTimer:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1697254903}
+        m_TargetAssemblyTypeName: Ivayami.Dialogue.CameraAnimationInfo, Assembly-CSharp
+        m_MethodName: StartMovement
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onEndTimer:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1697254903}
+        m_TargetAssemblyTypeName: Ivayami.Dialogue.CameraAnimationInfo, Assembly-CSharp
+        m_MethodName: ExitDialogueCamera
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &1702289101
 PrefabInstance:
   m_ObjectHideFlags: 0
