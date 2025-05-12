@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using Ivayami.Player;
+using UnityEngine.Localization.Components;
+using TMPro;
 
 namespace Ivayami.UI {
     [RequireComponent(typeof(Fade))]
@@ -10,12 +12,20 @@ namespace Ivayami.UI {
         [SerializeField] private InputActionReference _actionIndicator;
         [SerializeField] private InputIcons _indicators;
 
-        private Image _icon;
+        [Space(24)]
+
+        [SerializeField] private Image _icon;
+        [SerializeField] private LocalizeStringEvent _text;
+        private TextMeshProUGUI _textBox;
+        [SerializeField] private RectTransform _container;
+        
         private Fade _fadeUI;
+        private float _containerBaseWidth;
 
         private void Awake() {
-            _icon = GetComponentInChildren<Image>();
             _fadeUI = GetComponentInChildren<Fade>();
+            _textBox = _text.GetComponent<TextMeshProUGUI>();
+            _containerBaseWidth = _container.sizeDelta.x;
         }
 
         private void OnDestroy() {
@@ -33,6 +43,8 @@ namespace Ivayami.UI {
             _actionIndicator.action.performed += KeyPressed;
             Pause.Instance.onPause.AddListener(IconDisable);
             Pause.Instance.onUnpause.AddListener(IconEnable);
+            _text.SetEntry(_indicators.InputName);
+            _container.sizeDelta = new Vector2(_containerBaseWidth + _textBox.preferredWidth, _container.sizeDelta.y);
             InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateVisuals);
         }
 
