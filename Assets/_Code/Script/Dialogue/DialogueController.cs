@@ -210,8 +210,8 @@ namespace Ivayami.Dialogue
                     }
                 }
             }
-
-            if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0)
+            bool hasFixedDuration = _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0;
+            if (hasFixedDuration)
             {
                 while (_currentFixedDurationInSpeech < _currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech)
                 {
@@ -220,9 +220,9 @@ namespace Ivayami.Dialogue
                 }
             }
             //yield return new WaitForSeconds(_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech);
-            if (LockInput) _continueDialogueIcon.SetActive(true);
+            if (LockInput && !hasFixedDuration) _continueDialogueIcon.SetActive(true);
             _writtingCoroutine = null;
-            if (_currentDialogue.dialogue[_currentSpeechIndex].FixedDurationInSpeech > 0)
+            if (hasFixedDuration)
             {
                 if (CutsceneController.IsPlaying) _canvasGroup.alpha = 0;
                 else UpdateDialogue();
