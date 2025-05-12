@@ -53,7 +53,7 @@ namespace Ivayami.Player.Ability {
             _lightHits = new Collider[_lightMaxHitNumber];
             _behaviourCheckWait = new WaitForSeconds(_behaviourCheckInterval);
             _lightsOriginCurrent = _wideOrigin.transform;
-            PlayerMovement.Instance.AddAdditionalVisuals(GetComponentsInChildren<MeshRenderer>());
+            PlayerMovement.Instance.AddAdditionalVisuals(HandleUpdateVisuals);
             _visuals.gameObject.SetActive(false);
             _durationMax = _durationMaxBase * (_durationIncreaseFromItem * PlayerInventory.Instance.CheckInventoryFor("ID").Amount); // Change the ID for the proper ID
 
@@ -221,6 +221,11 @@ namespace Ivayami.Player.Ability {
         private void CanActivate(bool canActivate)
         {
             _canActivate = canActivate;
+        }
+
+        private void HandleUpdateVisuals(bool isVisible)
+        {
+            gameObject.SetActive(isVisible);
         }
 
 #if UNITY_EDITOR

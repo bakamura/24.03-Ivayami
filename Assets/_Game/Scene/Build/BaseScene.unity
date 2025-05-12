@@ -156,7 +156,19 @@ MonoBehaviour:
   _teleportTarget: {fileID: 0}
   _onTeleportEnd:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 819391155}
+        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
+        m_MethodName: LoadScene
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
   _gizmoSize: 0.2
 --- !u!4 &15424898
@@ -1445,7 +1457,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9156050421594293925, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
       propertyPath: _afterFade.m_PersistentCalls.m_Calls.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9156050421594293925, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
       propertyPath: _afterFade.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
@@ -1459,6 +1471,10 @@ PrefabInstance:
       propertyPath: _afterFade.m_PersistentCalls.m_Calls.Array.data[1].m_Target
       value: 
       objectReference: {fileID: 819391155}
+    - target: {fileID: 9156050421594293925, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
+      propertyPath: _afterFade.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 9156050421594293925, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
       propertyPath: _afterFade.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
       value: 2

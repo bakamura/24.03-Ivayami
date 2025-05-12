@@ -121,6 +121,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "FlyUp",
+                    "type": "Button",
+                    "id": "87260b6f-094b-4955-a40b-d6524d67184b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "FlyDown",
+                    "type": "Button",
+                    "id": "5ffc40b7-7a6d-40bc-b8c5-246b0d74ffc3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -358,7 +376,7 @@
                 {
                     "name": "",
                     "id": "530faaa0-7e23-4afa-abd0-f7583e9a394c",
-                    "path": "<Gamepad>/leftStickPress",
+                    "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
@@ -530,6 +548,28 @@
                     "action": "LanternFocus",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c4402398-b649-48bf-b862-61ceaa10f6bb",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "FlyUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d7439867-ee29-423c-9d1e-fb6bf0400637",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "FlyDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -671,15 +711,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "ResetPuzzle",
+                    "type": "Button",
+                    "id": "224b03ef-9cc6-4d56-8fe7-55fe7c55dbd1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
                 {
                     "name": "Gamepad",
                     "id": "4d8827fb-2368-46d8-a8a5-9414a148b2ce",
-                    "path": "2DVector",
+                    "path": "2DVector(mode=2)",
                     "interactions": "",
-                    "processors": "StickDeadzone(min=0.125,max=0.925)",
+                    "processors": "StickDeadzone(min=0.125,max=0.925),NormalizeVector2",
                     "groups": "",
                     "action": "Navigate",
                     "isComposite": true,
@@ -1130,7 +1179,7 @@
                     "id": "4405bf6d-eb0c-41f2-b23d-2d5ec000c982",
                     "path": "2DVector",
                     "interactions": "",
-                    "processors": "StickDeadzone(min=0.125,max=0.925)",
+                    "processors": "",
                     "groups": "",
                     "action": "MapZoom",
                     "isComposite": true,
@@ -1142,7 +1191,7 @@
                     "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "MapZoom",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -1153,7 +1202,7 @@
                     "path": "<Gamepad>/leftTrigger",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "MapZoom",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -1164,7 +1213,7 @@
                     "path": "",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "MapZoom",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -1175,7 +1224,7 @@
                     "path": "",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
+                    "groups": "Gamepad",
                     "action": "MapZoom",
                     "isComposite": false,
                     "isPartOfComposite": true
@@ -1210,6 +1259,28 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "QuickTimeButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8251ee27-85db-4808-8fb4-1488ad99ebb1",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "ResetPuzzle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ebdd9cdc-45a6-4088-91fe-5bdd543350e5",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard + Mouse",
+                    "action": "ResetPuzzle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
