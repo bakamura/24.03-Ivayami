@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Localization;
+using Ivayami.Save;
 
 namespace Ivayami.UI
 {
@@ -17,8 +18,9 @@ namespace Ivayami.UI
         public UnityEvent OnNotEnoughStressToHeal;
 
         [Header("General Callbacks")]
-        [SerializeField] private UnityEvent _onShowUI;
-        [SerializeField] private UnityEvent _onChangeOption;
+        public UnityEvent OnShowUI;
+        public UnityEvent OnChangeOption;
+        public UnityEvent OnHideUI;
 
         [Header("Components")]
         [SerializeField] private InputActionReference _navigateUIInput;
@@ -31,8 +33,9 @@ namespace Ivayami.UI
         private Coroutine _currentItemActionCoroutine;
         private int _currentSelectedIndex;
         private bool _isActive;
+        private bool _canOpen = true;
 
-        public bool IsActive => _isActive;
+        public bool IsActive => _isActive;        
 
         protected override void Awake()
         {
@@ -45,14 +48,18 @@ namespace Ivayami.UI
         {
             PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
             PlayerStress.Instance.onFail.AddListener(() => { if (IsActive) UpdateUI(false); });
+            SavePoint.onSaveGameWithAnimation.AddListener(HandleOnSaveGameWithAnimation);
+            SavePoint.onSaveSequenceEnd.AddListener(HandleOnSaveSequenceEnd);
         }
         /// <summary>
         /// Open And Closes the UI
         /// </summary>
         public void UpdateUI(bool isActive)
         {
+            if (!_canOpen) return;
             _isActive = isActive;
-            if (_isActive) _onShowUI?.Invoke();
+            if (_isActive) OnShowUI?.Invoke();
+            else OnHideUI?.Invoke();
             UpdateInputs();
             UpdateVisuals();
         }
@@ -129,7 +136,7 @@ namespace Ivayami.UI
                 _currentSelectedIndex += input.y > 0 ? 1 : -1;
                 LoopValueByArraySize(ref _currentSelectedIndex, _possibleOptions.Length);
                 UpdateItemIcon();
-                _onChangeOption?.Invoke();
+                OnChangeOption?.Invoke();
             }
         }
 
@@ -147,7 +154,23 @@ namespace Ivayami.UI
 
         private void HandleInputMapChange(string mapId)
         {
-            if (mapId != "Player" && IsActive) UpdateUI(false);
+            CanOpenUI(string.Equals(mapId, "Player"));
+        }
+
+        private void HandleOnSaveSequenceEnd()
+        {
+            CanOpenUI(true);
+        }
+
+        private void HandleOnSaveGameWithAnimation()
+        {
+            CanOpenUI(false);
+        }
+
+        private void CanOpenUI(bool canOpen)
+        {
+            _canOpen = canOpen;
+            if (!_canOpen && IsActive) UpdateUI(false);
         }
     }
 }

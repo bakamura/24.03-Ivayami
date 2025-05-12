@@ -22,6 +22,7 @@ namespace Ivayami.Dialogue
             EditorGUILayout.PropertyField(events, new GUIContent("Events"));
             
             serializedObject.ApplyModifiedProperties();
+            if (_eventsDic.Count == 0) InitializeEventsDictionary();
             HandleEventsValuesUpdate();
             _previousSize = events.arraySize;
         }
@@ -31,15 +32,7 @@ namespace Ivayami.Dialogue
             //debugLogs = serializedObject.FindProperty("_debugLogs");
             events = serializedObject.FindProperty("_events");
             DialogueEvents instance = (DialogueEvents)target;
-            if (instance.Events != null)
-            {
-                for (int i = 0; i < instance.Events.Length; i++)
-                {
-                    _currentEventIndex++;
-                    instance.Events[i].InternalId = _currentEventIndex;
-                    _eventsDic.Add(_currentEventIndex, instance.Events[i].id);
-                }
-            }
+            InitializeEventsDictionary();
             _previousSize = instance.Events.Length;
         }
 
@@ -48,6 +41,20 @@ namespace Ivayami.Dialogue
             if (target == null)
             {
                 HandleComponentDestroy();
+            }
+        }
+
+        private void InitializeEventsDictionary()
+        {            
+            DialogueEvents instance = (DialogueEvents)target;
+            if (instance.Events != null)
+            {
+                for (int i = 0; i < instance.Events.Length; i++)
+                {
+                    _currentEventIndex++;
+                    instance.Events[i].InternalId = _currentEventIndex;
+                    _eventsDic.Add(_currentEventIndex, instance.Events[i].id);
+                }
             }
         }
 

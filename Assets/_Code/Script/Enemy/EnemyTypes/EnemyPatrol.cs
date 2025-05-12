@@ -10,28 +10,31 @@ namespace Ivayami.Enemy
     public class EnemyPatrol : StressEntity, IIluminatedEnemy
     {
         //[Header("Enemy Parameters")]
-        [SerializeField, Min(0f)] private float _minDetectionRange;
+        [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
+        [SerializeField] private bool _startActive;
+
+        [SerializeField, Min(0f)] private float _chaseSpeed;
         [SerializeField, Min(0f)] private float _detectionRange;
-        [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
+        [SerializeField, Min(0f)] private float _minDetectionRange;
+        [SerializeField, Min(0f)] private float _minDetectionRangeInChase;
         [SerializeField, Range(0f, 180f)] private float _visionAngle = 60f;
         [SerializeField] private Vector3 _visionOffset;
-        [SerializeField, Min(0f)] private float _delayBetweenPatrolPoints;
+        [SerializeField] private LayerMask _targetLayer;
+        [SerializeField] private LayerMask _blockVisionLayer;
+
+        [SerializeField] private bool _goToLastTargetPosition;
+        [SerializeField] private bool _loseTargetWhenHidden = true;
+        [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
         [SerializeField, Min(0f)] private float _delayToStopSearchTarget;
         [SerializeField, Min(0f)] private float _delayToFinishTargetSearch;
-        [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
+        [SerializeField, Min(0f)] private float _delayBetweenPatrolPoints;
+        [SerializeField] private Vector3[] _patrolPoints;
+
         [SerializeField, Min(0f)] private float _stressIncreaseOnTargetDetected;
         [SerializeField, Min(0f)] private float _stressIncreaseWhileChasing;
         [SerializeField, Min(0f)] private float _stressMaxWhileChasing;
-        [SerializeField, Min(0f)] private float _chaseSpeed;
-        [SerializeField, Min(0f)] private float _minDetectionRangeInChase;
-        [SerializeField] private bool _startActive;
-        [SerializeField] private bool _goToLastTargetPosition;
-        [SerializeField] private bool _loseTargetWhenHidden = true;
         [SerializeField] private bool _attackTarget;
         [SerializeField] private HitboxInfo[] _attackAreaInfos;
-        [SerializeField] private LayerMask _targetLayer;
-        [SerializeField] private LayerMask _blockVisionLayer;
-        [SerializeField] private Vector3[] _patrolPoints;
 
         //[Header("Enemy Debug")]
         [SerializeField] private bool _debugLogsEnemyPatrol;
@@ -60,9 +63,17 @@ namespace Ivayami.Enemy
             }
         }
         private NavMeshAgent m_navMeshAgent;
-        private EnemyAnimator _enemyAnimator;
+        private EnemyAnimator _enemyAnimator
+        {
+            get
+            {
+                if (!m_enemyAnimator) m_enemyAnimator = GetComponentInChildren<EnemyAnimator>();
+                return m_enemyAnimator;
+            }
+        }
+        private EnemyAnimator m_enemyAnimator;
         private EnemySounds _enemySounds;
-        private HitboxAttack _hitboxAttack;
+        //private HitboxAttack _hitboxAttack;
         private CapsuleCollider _collision;
         private Collider[] _hitsCache = new Collider[1];
         private WaitForSeconds _behaviourTickDelay;
@@ -97,21 +108,22 @@ namespace Ivayami.Enemy
             _behaviourTickDelay = new WaitForSeconds(_behaviourTickFrequency);
             _betweenPatrolPointsDelay = new WaitForSeconds(_delayBetweenPatrolPoints - _behaviourTickFrequency);
             _endGoToLastTargetDelay = new WaitForSeconds(_delayToFinishTargetSearch - _behaviourTickFrequency);
-            _enemyAnimator = GetComponentInChildren<EnemyAnimator>();
             _enemySounds = GetComponent<EnemySounds>();
-            if (_attackTarget) _hitboxAttack = GetComponentInChildren<HitboxAttack>();
+            //if (_attackTarget) _hitboxAttack = GetComponentInChildren<HitboxAttack>();
 
             _initialPosition = transform.position;
             _initialRotation = transform.rotation;
             _baseSpeed = _navMeshAgent.speed;
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
-            else _baseStoppingDistance = _navMeshAgent.stoppingDistance;
+            _baseStoppingDistance = _navMeshAgent.stoppingDistance;
         }
 
         private void OnEnable()
         {
-            if (!_navMeshAgent.enabled && _initializeCoroutine == null) _initializeCoroutine = StartCoroutine(InitializeAgent());
-            if (_startActive && _initializeCoroutine == null) StartBehaviour();
+            if (!_navMeshAgent.enabled && _initializeCoroutine == null) 
+                _initializeCoroutine = StartCoroutine(InitializeAgent());
+            if (_startActive && _initializeCoroutine == null) 
+                StartBehaviour();
         }
 
         private void OnDisable()
@@ -121,7 +133,7 @@ namespace Ivayami.Enemy
 
         private IEnumerator InitializeAgent()
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
             _navMeshAgent.enabled = true;
             if (_startActive) StartBehaviour();
             _initializeCoroutine = null;
@@ -130,7 +142,12 @@ namespace Ivayami.Enemy
         [ContextMenu("Start")]
         public void StartBehaviour()
         {
-            if (!IsActive)
+            if (!_navMeshAgent.isOnNavMesh)
+            {
+                //Debug.LogWarning($"Enemy {name} of type {typeof(EnemyPatrol)} is not in a navmesh");
+                return;
+            }
+            if (!IsActive && _navMeshAgent.isOnNavMesh)
             {
                 if (!_navMeshAgent.enabled && _initializeCoroutine == null)
                 {
@@ -151,7 +168,7 @@ namespace Ivayami.Enemy
                 _behaviourCoroutine = null;
                 IsActive = false;
                 _isChasing = false;
-                StopMovement(false);
+                UpdateMovement(false);
                 isStressAreaActive = false;
             }
         }
@@ -173,26 +190,21 @@ namespace Ivayami.Enemy
                         if (!_isChasing)
                         {
                             if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
-                            //StopMovement(true);
                             _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
                             //_enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, () =>
                             //{
                             //    _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
                             //});
-                            PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected);
+                            PlayerStress.Instance.AddStress(_stressIncreaseOnTargetDetected, damageType : PlayerAnimation.DamageAnimation.Mental);
                             _isChasing = true;
                             if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());
                             _navMeshAgent.speed = _chaseSpeed;
-                            //_enemyAnimator.TargetDetected(HandleTargetDetectedAnimationEnd);
                         }
-                        _navMeshAgent.SetDestination(_hitsCache[0].transform.position);                        
+                        _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                         _lastTargetPosition = _hitsCache[0].transform.position;
                         if (_debugLogsEnemyPatrol) Debug.Log("Chase Target");
                         if (_attackTarget && !_isAttacking && _chaseTargetPatience == _delayToLoseTarget && Vector3.Distance(transform.position, _navMeshAgent.destination) <= _navMeshAgent.stoppingDistance + _currentTargetColliderSizeFactor)
                         {
-                            //StopMovement(true);
-                            //PlayerStress.Instance.AddStress(_stressIncreaseOnAttackTarget);
-                            //_isChasing = false;
                             _isAttacking = true;
                             _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange/*, _currentAttackAnimIndex*/);
                             //_currentAttackAnimIndex = _currentAttackAnimIndex == 0 ? 1 : 0;
@@ -215,27 +227,13 @@ namespace Ivayami.Enemy
                                 }
                                 if (_goToLastTargetPointPatience >= _delayToStopSearchTarget)
                                 {
-                                    StopMovement(true);
+                                    UpdateMovement(true);
                                     _isChasing = false;
                                     _goToLastTargetPointPatience = 0;
                                     _navMeshAgent.speed = _baseSpeed;
                                     yield return _endGoToLastTargetDelay;
-                                    _navMeshAgent.isStopped = false;
+                                    UpdateMovement(false);
                                 }
-                                //old version without _endGoToLastTargetDelay
-                                /*_navMeshAgent.SetDestination(_lastTargetPosition);
-                                if (_debugLogsEnemyPatrol) Debug.Log($"Moving to last target position {_lastTargetPosition}");
-                                if (Vector3.Distance(transform.position, _lastTargetPosition) <= _navMeshAgent.stoppingDistance)
-                                {
-                                    _goToLastTargetPointPatience += _behaviourTickFrequency;
-                                    StopMovement(false);
-                                    if (_debugLogsEnemyPatrol) Debug.Log("Last target point reached");
-                                    if (_goToLastTargetPointPatience >= _delayBetweenPatrolPoints)
-                                    {
-                                        _isChasing = false;
-                                        _goToLastTargetPointPatience = 0;
-                                    }
-                                }*/
                             }
                             else _isChasing = false;
                         }
@@ -243,6 +241,7 @@ namespace Ivayami.Enemy
                         {
                             if (_canWalkPath)
                             {
+                                _navMeshAgent.speed = _baseSpeed;
                                 _enemySounds.PlaySound(EnemySounds.SoundTypes.IdleScreams);
                                 _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
                                 if (_debugLogsEnemyPatrol) Debug.Log("Patroling");
@@ -250,7 +249,7 @@ namespace Ivayami.Enemy
                                 {
                                     if (_patrolPoints.Length > 1)
                                     {
-                                        StopMovement(false);
+                                        _enemyAnimator.Walking(0);
                                         yield return _betweenPatrolPointsDelay;
                                         currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
                                         if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
@@ -266,8 +265,8 @@ namespace Ivayami.Enemy
                         }
                     }
                     _enemyAnimator.Chasing(_isChasing);
-                    _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude / _navMeshAgent.speed);
-                }
+                    _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude/* / _navMeshAgent.speed*/);
+                }                
                 yield return _behaviourTickDelay;
             }
             _behaviourCoroutine = null;
@@ -298,11 +297,12 @@ namespace Ivayami.Enemy
             _chaseStressCoroutine = null;
         }
 
-        private void StopMovement(bool stopNavMeshAgent)
+        private void UpdateMovement(bool isStoped)
         {
-            if (stopNavMeshAgent) _navMeshAgent.isStopped = true;
-            _navMeshAgent.velocity = Vector3.zero;
-            _enemyAnimator.Walking(0);
+            if (!_navMeshAgent.enabled) return;
+            if (_navMeshAgent.isOnNavMesh) _navMeshAgent.isStopped = isStoped;
+            if (isStoped) _navMeshAgent.velocity = Vector3.zero;
+            _enemyAnimator.Walking(isStoped ? 0 : _navMeshAgent.velocity.magnitude / _navMeshAgent.speed);
         }
 
         private bool CheckForTarget(float halfVisionAngle)
@@ -337,29 +337,26 @@ namespace Ivayami.Enemy
         private void HandleAttackAnimationEnd()
         {
             //_navMeshAgent.isStopped = false;
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+            for(int i = 0; i < _attackAreaInfos.Length; i++)
+            {
+                _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
+            }
             _isAttacking = false;
         }
 
-        //private void HandleTargetDetectedAnimationEnd()
-        //{
-        //    _isChasing = true;
-        //    _navMeshAgent.speed = _chaseSpeed;
-        //    _lastTargetPosition = _hitsCache[0].transform.position;
-        //    //_navMeshAgent.isStopped = false;
-        //}
-
         private void OnAnimationStepChange(float normalizedTime)
         {
+            int currentAnimIndex = _enemyAnimator.GetCurrentAttackAnimIndex();
             for (int i = 0; i < _attackAreaInfos.Length; i++)
             {
-                if (normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
+                if (_attackAreaInfos[i].AnimationIndex == currentAnimIndex && normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
                 {
-                    _hitboxAttack.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
-                    return;
+                    _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay, _attackAreaInfos[i].DamageType);
+                    //return;
                 }
+                else _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
             }
-            _hitboxAttack.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+            //_attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
         }
 
         public void ChangeSpeed(float speed)
@@ -367,10 +364,11 @@ namespace Ivayami.Enemy
             _navMeshAgent.speed = speed;
         }
 
-        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget)
+        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped, bool forceTargetDetect)
         {
             _canChaseTarget = canChaseTarget;
             _canWalkPath = canWalkPath;
+            UpdateMovement(isStopped);
         }
 
         public void ChangeTargetPoint(Vector3 targetPoint)
