@@ -7,7 +7,6 @@ namespace Ivayami.Audio {
     public class MusicStarter : MonoBehaviour {
 
         [SerializeField] private EventReference _music;
-        [SerializeField] private bool _shouldStopPeriodicaly;
 
         private void Awake() {
             StartCoroutine(WaitForSaveLoad());
@@ -16,12 +15,13 @@ namespace Ivayami.Audio {
         private IEnumerator WaitForSaveLoad() {
             while(SaveSystem.Instance.Options == null) yield return null;
 
-            Music.Instance.SetMusic(_music, _shouldStopPeriodicaly);
+            Music.Range instant = new Music.Range(0, 0.01f);
+            Music.Instance.SetMusic(_music, false, false, false, false, instant, instant, instant);
         }
 
 
         public void Stop() {
-            Music.Instance.Stop();
+            Music.Instance.Stop(_music.Guid);
         }
 
     }
