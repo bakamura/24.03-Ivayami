@@ -15,6 +15,7 @@ namespace Ivayami.Audio {
         private IEnumerator WaitForSaveLoad() {
             while(SaveSystem.Instance.Options == null) yield return null;
 
+            Music.Instance.ForceStop();
             Music.Range instant = new Music.Range(0, 0.01f);
             Music.Instance.SetMusic(_music, false, false, false, false, instant, instant, instant);
         }
