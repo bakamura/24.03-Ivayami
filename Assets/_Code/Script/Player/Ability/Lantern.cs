@@ -67,7 +67,7 @@ namespace Ivayami.Player.Ability {
             SavePoint.onSaveSequenceEnd.AddListener(HandleOnSaveSequenceEnd);
             PlayerUseItemUI.Instance.OnShowUI.AddListener(HandleOnShowUseItemUI);
             PlayerUseItemUI.Instance.OnHideUI.AddListener(HandleOnHideUseItemUI);
-            PlayerUseItemUI.Instance.OnHealActivation.AddListener(HandleOnHideUseItemUI);
+            PlayerUseItemUI.Instance.OnItemActivation.AddListener(HandleOnHideUseItemUI);
         }
 
         private void Update() {
@@ -85,7 +85,7 @@ namespace Ivayami.Player.Ability {
             SavePoint.onSaveSequenceEnd.RemoveListener(HandleOnSaveSequenceEnd);
             PlayerUseItemUI.Instance.OnShowUI.RemoveListener(HandleOnShowUseItemUI);
             PlayerUseItemUI.Instance.OnHideUI.RemoveListener(HandleOnHideUseItemUI);
-            PlayerUseItemUI.Instance.OnHealActivation.RemoveListener(HandleOnHideUseItemUI);
+            PlayerUseItemUI.Instance.OnItemActivation.RemoveListener(HandleOnHideUseItemUI);
             Destroy(_focusedOrigin);
         }
 

@@ -1,21 +1,22 @@
 using Ivayami.Player;
+using Ivayami.Save;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Localization;
-using Ivayami.Save;
 
 namespace Ivayami.UI
 {
-    [RequireComponent(typeof(Fade))]
     public class PlayerUseItemUI : MonoSingleton<PlayerUseItemUI>
     {
-        [Header("Heal Callbacks")]
-        public UnityEvent OnHealActivation;
-        public UnityEvent OnHealEnd;
-        public UnityEvent OnNotRequiredItem;
-        public UnityEvent OnAlreadyHealing;
-        public UnityEvent OnNotEnoughStressToHeal;
+        [Header("Item Callbacks")]
+        public UnityEvent OnItemActivation;
+        public UnityEvent OnItemEffectEnd;
+        public UnityEvent OnNotRequiredConsumableItem;
+        public UnityEvent OnItemAlreadyInEffect;
+        public UnityEvent OnItemActivationFail;
+        //public UnityEvent OnNotEnoughStressToHeal;
 
         [Header("General Callbacks")]
         public UnityEvent OnShowUI;
@@ -25,23 +26,36 @@ namespace Ivayami.UI
         [Header("Components")]
         [SerializeField] private InputActionReference _navigateUIInput;
         [SerializeField] private InputActionReference _confirmOptionInput;
-        [SerializeField] private InventoryItem[] _possibleOptions;
         [SerializeField] private LocalizedString _itemUsedText;
+        [SerializeField] private TMP_Text _itemSelectedDisplayName;
+        [SerializeField] private ItemOption[] _possibleOptions;
+        [SerializeField] private InventoryItem _itemConsumedOnUse;
+        [SerializeField] private UseItemUIIcon _itemSelectedDisplay;
+        [SerializeField] private UseItemUIIcon _nextItemDisplay;
+        [SerializeField] private UseItemUIIcon _consumableItemDisplay;
+        [SerializeField] private Fade _itemOptionsUI;
+        [SerializeField] private Fade _itemInEffectUI;
 
-        private UseItemUIIcon _itemInDisplay;
-        private Fade _fade;
         private Coroutine _currentItemActionCoroutine;
         private int _currentSelectedIndex;
         private bool _isActive;
         private bool _canOpen = true;
 
-        public bool IsActive => _isActive;        
+        [System.Serializable]
+        private struct ItemOption
+        {
+            public InventoryItem Item;
+            public UnityEvent OnActivation;
+            public UnityEvent OnActivationFail;
+        }
+
+        public bool IsActive => _isActive;
 
         protected override void Awake()
         {
             base.Awake();
-            _itemInDisplay = GetComponentInChildren<UseItemUIIcon>();
-            _fade = GetComponent<Fade>();
+            _itemSelectedDisplay = GetComponentInChildren<UseItemUIIcon>();
+            OnItemEffectEnd.AddListener(_itemInEffectUI.Close);
         }
 
         private void Start()
@@ -83,49 +97,59 @@ namespace Ivayami.UI
         private void UpdateVisuals()
         {
             PlayerAnimation.Instance.UseMP3(_isActive);
-            if (_isActive) _fade.Open();
-            else _fade.Close();
-            UpdateItemIcon();
+            if (_isActive)
+            {
+                UpdateItemIcons();
+                _itemOptionsUI.Open();
+                _itemInEffectUI.Close();
+            }
+            else
+            {
+                _itemOptionsUI.Close();
+                if (_currentItemActionCoroutine != null) _itemInEffectUI.Open();
+            }
         }
 
-        private void UpdateItemIcon()
+        private void UpdateItemIcons()
         {
-            PlayerInventory.InventoryItemStack stack = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[_currentSelectedIndex].name);
-            if (stack.Item) _itemInDisplay.SetItemDisplay(stack);            
-            else _itemInDisplay.SetItemDisplay(_possibleOptions[_currentSelectedIndex]);
+            PlayerInventory.InventoryItemStack consumableStack = PlayerInventory.Instance.CheckInventoryFor(_itemConsumedOnUse.name);
+            if (consumableStack.Item) _consumableItemDisplay.SetItemDisplay(consumableStack);
+            else _consumableItemDisplay.SetItemDisplay(_itemConsumedOnUse);
+
+            _itemSelectedDisplay.SetItemDisplay(_possibleOptions[_currentSelectedIndex].Item);
+            _itemSelectedDisplayName.text = _possibleOptions[_currentSelectedIndex].Item.GetDisplayName();
+
+            int nextIndex = _currentSelectedIndex + 1;
+            LoopValueByArraySize(ref nextIndex, _possibleOptions.Length);
+            _nextItemDisplay.SetItemDisplay(_possibleOptions[nextIndex].Item);
         }
 
         private void HandleConfirmOption(InputAction.CallbackContext context)
         {
-            PlayerInventory.InventoryItemStack stack = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[_currentSelectedIndex].name);
+            PlayerInventory.InventoryItemStack stack = PlayerInventory.Instance.CheckInventoryFor(_itemConsumedOnUse.name);
             if (!stack.Item)
             {
-                OnNotRequiredItem?.Invoke();
+                OnNotRequiredConsumableItem?.Invoke();
                 UpdateUI(false);
                 return;
             }
             else if (_currentItemActionCoroutine != null)
             {
-                OnAlreadyHealing?.Invoke();
+                OnItemAlreadyInEffect?.Invoke();
                 UpdateUI(false);
                 return;
             }
-            else if (PlayerStress.Instance.StressCurrent == 0)
-            {
-                OnNotEnoughStressToHeal?.Invoke();
-                UpdateUI(false);
-                return;
-            }
+            //else if (PlayerStress.Instance.StressCurrent == 0)
+            //{
+            //    OnNotEnoughStressToHeal?.Invoke();
+            //    UpdateUI(false);
+            //    return;
+            //}
 
-            _currentItemActionCoroutine = StartCoroutine(_possibleOptions[_currentSelectedIndex].UsageAction.ExecuteAtion(HandleItemActionEnd));
-            PlayerInventory.Instance.RemoveFromInventory(_possibleOptions[_currentSelectedIndex]);
-            InfoUpdateIndicator.Instance.DisplayUpdate(_possibleOptions[_currentSelectedIndex].Sprite, $"1 " +
-                $"{stack.Item.GetDisplayName()} " +
-                $"{_itemUsedText.GetLocalizedString()}");
+            _currentItemActionCoroutine = StartCoroutine(_possibleOptions[_currentSelectedIndex].Item.UsageAction.ExecuteAtion(HanldeItemActionSuccess, HandleItemActionFail, HandleItemActionEnd));            
             _isActive = false;
             UpdateInputs();
             UpdateVisuals();
-            OnHealActivation?.Invoke();
         }
 
         private void HandleNavigateUI(InputAction.CallbackContext context)
@@ -135,7 +159,7 @@ namespace Ivayami.UI
             {
                 _currentSelectedIndex += input.y > 0 ? 1 : -1;
                 LoopValueByArraySize(ref _currentSelectedIndex, _possibleOptions.Length);
-                UpdateItemIcon();
+                UpdateItemIcons();
                 OnChangeOption?.Invoke();
             }
         }
@@ -146,10 +170,26 @@ namespace Ivayami.UI
             else if (valueToConstrain >= arraySize) valueToConstrain = 0;
         }
 
+        private void HanldeItemActionSuccess()
+        {
+            PlayerInventory.Instance.RemoveFromInventory(_itemConsumedOnUse);
+            InfoUpdateIndicator.Instance.DisplayUpdate(_itemConsumedOnUse.Sprite, $"1 " +
+                $"{_itemConsumedOnUse.GetDisplayName()} " +
+                $"{_itemUsedText.GetLocalizedString()}");
+            _possibleOptions[_currentSelectedIndex].OnActivation?.Invoke();
+            OnItemActivation?.Invoke();
+        }
+
+        private void HandleItemActionFail()
+        {
+            _possibleOptions[_currentSelectedIndex].OnActivationFail?.Invoke();
+            OnItemActivationFail?.Invoke();
+        }
+
         private void HandleItemActionEnd()
         {
             _currentItemActionCoroutine = null;
-            OnHealEnd?.Invoke();
+            OnItemEffectEnd?.Invoke();
         }
 
         private void HandleInputMapChange(string mapId)
