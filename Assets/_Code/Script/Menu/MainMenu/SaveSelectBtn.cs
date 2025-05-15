@@ -3,6 +3,7 @@ using UnityEngine.Localization.Components;
 using TMPro;
 using Ivayami.Save;
 using Ivayami.Player;
+using Ivayami.Player.Ability;
 
 namespace Ivayami.UI {
     public class SaveSelectBtn : MonoBehaviour {
@@ -34,6 +35,8 @@ namespace Ivayami.UI {
         private void EnterSaveWaitFadeIn() {
             SaveSystem.Instance.LoadProgress(_id, () => {
                 PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
+                AbilityGiverRef giverRef = gameObject.AddComponent<AbilityGiverRef>();
+                if (SaveSystem.Instance?.Progress?.abilities?.Length > 0) foreach (string ability in SaveSystem.Instance.Progress.abilities) giverRef.GiveAbility(ability);
                 SaveSelector.Instance.MainMenuUnloader.UnloadScene();
                 
                 if (_isFirstTime) {

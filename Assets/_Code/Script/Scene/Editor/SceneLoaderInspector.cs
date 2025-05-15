@@ -5,10 +5,11 @@ using Ivayami.Scene;
 [CustomEditor(typeof(SceneLoader))]
 internal sealed class SceneLoaderInspector : Editor
 {
-    SerializedProperty sceneId, changeSkybox, backgroundType, backgroundColor, onSceneLoad, onSceneUnload, onAllScenesRequestEnd, drawGizmos, gizmoColor;
+    SerializedProperty sceneId, setAsActiveScene, changeSkybox, backgroundType, backgroundColor, onSceneLoad, onSceneUnload, onAllScenesRequestEnd, drawGizmos, gizmoColor;
     public override void OnInspectorGUI()
     {
         EditorGUILayout.PropertyField(sceneId, new GUIContent("Scene ID"));
+        EditorGUILayout.PropertyField(setAsActiveScene, new GUIContent("Set As Active Scene"));
         EditorGUILayout.PropertyField(changeSkybox, new GUIContent("Change Skybox"));
         if (changeSkybox.boolValue)
         {
@@ -27,6 +28,7 @@ internal sealed class SceneLoaderInspector : Editor
     private void OnEnable()
     {
         sceneId = serializedObject.FindProperty("_sceneId");
+        setAsActiveScene = serializedObject.FindProperty("_setAsActiveScene");
         changeSkybox = serializedObject.FindProperty("_changeSkybox");
         backgroundType = serializedObject.FindProperty("_backgroundType");
         backgroundColor = serializedObject.FindProperty("_backgroundColor");

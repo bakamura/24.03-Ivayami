@@ -22,6 +22,8 @@ namespace Ivayami.Save {
         public static Dictionary<int, SavePoint> Points { get; private set; } = new Dictionary<int, SavePoint>();
         public static UnityEvent onSaveGame = new UnityEvent();
         public static UnityEvent onCantSaveGame = new UnityEvent();
+        public static UnityEvent onSaveGameWithAnimation = new UnityEvent();
+        public static UnityEvent onSaveSequenceEnd = new UnityEvent();
         private bool _canSave = true;
 
         [SerializeField] private InputActionReference _movementInput;
@@ -34,7 +36,7 @@ namespace Ivayami.Save {
         [SerializeField, Min(0)] private float _delayUnlockMovement;
         private WaitForSeconds _delayUnlockMovementWait;
 
-        private const string BLOCK_KEY = "SavePointBlocker";
+        public const string BLOCKER_KEY = "SavePointBlocker";
 
         private void Awake() {
             InteratctableFeedbacks = GetComponent<InteractableFeedbacks>();
@@ -56,9 +58,9 @@ namespace Ivayami.Save {
         private void Save() {
             SaveSystem.Instance.Progress.pointId = _pointId;
             onSaveGame?.Invoke();
-
-            PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
-            Pause.Instance.ToggleCanPause(BLOCK_KEY, false);
+            
+            PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, false);
+            Pause.Instance.ToggleCanPause(BLOCKER_KEY, false);
             _interactableIcon.SetActive(false);
             SceneTransition.Instance.OnOpenEnd.AddListener(OnSaveFadeOutEnd);
             SceneTransition.Instance.Open();
@@ -74,6 +76,7 @@ namespace Ivayami.Save {
                 Logger.Log(LogType.Save, "SavePoint Cannot Save");
                 return PlayerActions.InteractAnimation.Default;
             }
+            onSaveGameWithAnimation?.Invoke();
             Save();
             return PlayerActions.InteractAnimation.Default;
         }
@@ -116,7 +119,7 @@ namespace Ivayami.Save {
             _movementInput.action.performed -= OnSaveFadeInEnd;
 
             PlayerAnimation.Instance.GetUpSit();
-            Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
+            Pause.Instance.ToggleCanPause(BLOCKER_KEY, true);
             StartCoroutine(OnSaveFadeInEndRoutine());
         }
         
@@ -124,7 +127,8 @@ namespace Ivayami.Save {
             yield return _delayUnlockMovementWait;
 
             _interactableIcon.SetActive(true);
-            PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true);
+            PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, true);
+            onSaveSequenceEnd?.Invoke();
         }
 
 #if UNITY_EDITOR
