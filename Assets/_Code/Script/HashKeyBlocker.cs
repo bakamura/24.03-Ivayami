@@ -11,7 +11,7 @@ namespace Default {
         public UnityEvent OnAllow = new UnityEvent();
         public UnityEvent OnBlock = new UnityEvent();
 
-        public bool IsAllowed => _blockers.Count > 0;
+        public bool IsAllowed => _blockers.Count < 1;
 
         public HashKeyBlocker() {
             OnToggleChange.AddListener(shouldAllow => (shouldAllow ? OnAllow : OnBlock).Invoke());
@@ -19,7 +19,7 @@ namespace Default {
 
         public void Toggle(string key, bool shouldAllow) {
             bool hadChange = shouldAllow ? _blockers.Remove(key) : _blockers.Add(key);
-            if (hadChange) OnToggleChange.Invoke(_blockers.Count > 0);
+            if (hadChange) OnToggleChange.Invoke(_blockers.Count < 1);
             else Debug.LogWarning($"'{key}' tried to {(shouldAllow ? "un" : "")}block but was already {(shouldAllow ? "not" : "")} blocking");
         }
 
