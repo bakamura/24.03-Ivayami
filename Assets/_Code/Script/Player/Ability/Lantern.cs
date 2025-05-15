@@ -5,6 +5,7 @@ using Cinemachine;
 using Ivayami.Enemy;
 using Ivayami.Save;
 using Ivayami.UI;
+using Default;
 
 namespace Ivayami.Player.Ability {
     public class Lantern : PlayerAbility {
@@ -44,7 +45,7 @@ namespace Ivayami.Player.Ability {
         private Transform _lightsOriginCurrent;
         private float _coneAngleHalf;
         private float _lightDistance;
-        private bool _canActivate = true;
+        public HashKeyBlocker ActivateBlocker { get; private set; } = new HashKeyBlocker();
 
 
         public const string ILLUMINATION_KEY = "Lantern";
@@ -61,16 +62,16 @@ namespace Ivayami.Player.Ability {
         }
 
         private void Start() {
-            PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
-            SavePoint.onSaveGameWithAnimation.AddListener(PreventActivate);
-            SavePoint.onSaveSequenceEnd.AddListener(AllowActivate);
-            PlayerUseItemUI.Instance.OnShowUI.AddListener(PreventActivateRemember);
-            PlayerUseItemUI.Instance.OnHideUI.AddListener(AllowActivate);
-            PlayerUseItemUI.Instance.OnHealActivation.AddListener(AllowActivate);
+            //PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
+            SavePoint.onSaveGameWithAnimation.AddListener(HandleSaveBlock);
+            SavePoint.onSaveSequenceEnd.AddListener(HandleSaveAllow);
+            PlayerUseItemUI.Instance.OnShowUI.AddListener(HandleUseItemUIBlock);
+            PlayerUseItemUI.Instance.OnHideUI.AddListener(HandleUseItemUIAllow);
+            PlayerUseItemUI.Instance.OnHealActivation.AddListener(HandleUseItemUIAllow);
         }
 
         private void Update() {
-            if (!_enabled || !_canActivate) return;
+            if (!_enabled || !ActivateBlocker.IsAllowed) return;
             if (_focused) {
                 _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
                 _durationCurrent -= Time.deltaTime;
@@ -79,12 +80,12 @@ namespace Ivayami.Player.Ability {
         }
 
         private void OnDestroy() {
-            PlayerActions.Instance.onActionMapChange.RemoveListener(HandleInputMapChange);
-            SavePoint.onSaveGameWithAnimation.RemoveListener(PreventActivate);
-            SavePoint.onSaveSequenceEnd.RemoveListener(AllowActivate);
-            PlayerUseItemUI.Instance.OnShowUI.RemoveListener(PreventActivateRemember);
-            PlayerUseItemUI.Instance.OnHideUI.RemoveListener(AllowActivate);
-            PlayerUseItemUI.Instance.OnHealActivation.RemoveListener(AllowActivate);
+            //PlayerActions.Instance.onActionMapChange.RemoveListener(HandleInputMapChange);
+            SavePoint.onSaveGameWithAnimation.RemoveListener(HandleSaveBlock);
+            SavePoint.onSaveSequenceEnd.RemoveListener(HandleSaveAllow);
+            PlayerUseItemUI.Instance.OnShowUI.RemoveListener(HandleUseItemUIBlock);
+            PlayerUseItemUI.Instance.OnHideUI.RemoveListener(HandleUseItemUIAllow);
+            PlayerUseItemUI.Instance.OnHealActivation.RemoveListener(HandleUseItemUIAllow);
             Destroy(_focusedOrigin);
         }
 
@@ -98,6 +99,9 @@ namespace Ivayami.Player.Ability {
         }
 
         private void Setup() {
+            ActivateBlocker.OnAllow.AddListener(AllowActivate);
+            ActivateBlocker.OnBlock.AddListener(PreventActivateRemember);
+
             PlayerActions.Instance.onLanternFocus.AddListener(Focus);
             PlayerStress.Instance.onFail.AddListener(() => { if (_enabled) AbilityStart(); });
             _focusedOrigin.transform.parent = PlayerCamera.Instance.MainCamera.transform;
@@ -107,9 +111,16 @@ namespace Ivayami.Player.Ability {
         }
 
         public override void AbilityStart() {
-            if (_focusedOrigin.transform.localPosition.z == 0) Setup(); // temp
-            if (!_canActivate) return;
+            if (!ActivateBlocker.IsAllowed) return;
             _enabled = !_enabled;
+            Toggle(_enabled);
+        }
+
+        public override void AbilityEnd() { }
+
+        private void Toggle(bool enabled) {
+            if (_focusedOrigin.transform.localPosition.z == 0) Setup(); //
+
             _visuals.gameObject.SetActive(_enabled);
             PlayerAnimation.Instance.Hold(_enabled);
             if (_enabled) StartCoroutine(CheckInterval());
@@ -122,7 +133,26 @@ namespace Ivayami.Player.Ability {
             }
         }
 
-        public override void AbilityEnd() { }
+        private void Focus(bool isFocusing) {
+            if (isFocusing && (!_enabled || !ActivateBlocker.IsAllowed)) return;
+            _focused = isFocusing;
+            _wideOrigin.enabled = !_focused;
+            _focusedOrigin.enabled = _focused;
+            Light light = (_focused ? _focusedOrigin : _wideOrigin);
+            _coneAngleHalf = light.spotAngle / 2f;
+            _lightDistance = light.range;
+            _lightsOriginCurrent = light.transform;
+            PlayerCamera.Instance.SetOrbits(_focused ? _focusedCamOrbits : null);
+            CameraAimReposition.Instance.SetMaxDistance(_focused ? _focusedCamArmDistance : 0f);
+            PlayerMovement.Instance.AllowRun(!isFocusing);
+            PlayerMovement.Instance.useCameraRotaion = _focused;
+            if (!_focused) _visuals.localRotation = Quaternion.identity;
+        }
+
+        public void Fill(float fillAmount) {
+            _durationCurrent += fillAmount;
+            if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
+        }
 
         private void Illuminate() {
             if (Physics.Raycast(_lightsOriginCurrent.position, _lightsOriginCurrent.forward, out RaycastHit hitLine, _lightDistance, _lightableLayer))
@@ -152,63 +182,43 @@ namespace Ivayami.Player.Ability {
             }
         }
 
-        private void GravityRotate() {
-            transform.rotation = Quaternion.AngleAxis(transform.parent.eulerAngles.y, Vector3.up);
-        }
-
-        private void Focus(bool isFocusing) {
-            if (isFocusing && !_enabled) return;
-            _focused = isFocusing;
-            _wideOrigin.enabled = !_focused;
-            _focusedOrigin.enabled = _focused;
-            Light light = (_focused ? _focusedOrigin : _wideOrigin);
-            _coneAngleHalf = light.spotAngle / 2f;
-            _lightDistance = light.range;
-            _lightsOriginCurrent = light.transform;
-            PlayerCamera.Instance.SetOrbits(_focused ? _focusedCamOrbits : null);
-            CameraAimReposition.Instance.SetMaxDistance(_focused ? _focusedCamArmDistance : 0f);
-            PlayerMovement.Instance.AllowRun(!isFocusing);
-            PlayerMovement.Instance.useCameraRotaion = _focused;
-            if (!_focused) _visuals.localRotation = Quaternion.identity;
-        }
-
-        public void Fill(float fillAmount) {
-            _durationCurrent += fillAmount;
-            if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
-        }
-
         public void ForceTurnOff() {
             if (_enabled) AbilityStart();
         }
 
-        private void HandleInputMapChange(string mapId) {
-            _canActivate = string.Equals(mapId, "Player");
+        private void AllowActivate() {
+            if (_enabled) Toggle(true);
         }
 
-        public void AllowActivate() {
-            _canActivate = true;
-            if (_enabled) {
-                _enabled = false;
-                AbilityStart();
-            }
+        private void PreventActivateRemember() {
+            if (_enabled) Toggle(false);
         }
-
-        public void PreventActivate() {
-            _canActivate = false;
-            ForceTurnOff();
-        }
-
-        public void PreventActivateRemember() {
-            if (_enabled) {
-                ForceTurnOff();
-                _enabled = true;
-            }
-            _canActivate = false;
+        
+        private void GravityRotate() {
+            transform.rotation = Quaternion.AngleAxis(transform.parent.eulerAngles.y, Vector3.up);
         }
 
         private void HandleUpdateVisuals(bool isVisible) {
             gameObject.SetActive(isVisible);
         }
+
+        #region Event Handlers
+        private void HandleUseItemUIAllow() {
+            ActivateBlocker.Toggle(PlayerUseItemUI.BLOCKER_KEY, true);
+        }
+
+        private void HandleUseItemUIBlock() {
+            ActivateBlocker.Toggle(PlayerUseItemUI.BLOCKER_KEY, false);
+        }
+
+        private void HandleSaveAllow() {
+            ActivateBlocker.Toggle(SavePoint.BLOCKER_KEY, true);
+        }
+
+        private void HandleSaveBlock() {
+            ActivateBlocker.Toggle(PlayerUseItemUI.BLOCKER_KEY, false);
+        }
+        #endregion
 
 #if UNITY_EDITOR
         [Header("Debug")]

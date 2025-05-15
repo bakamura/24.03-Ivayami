@@ -35,7 +35,9 @@ namespace Ivayami.UI
         private bool _isActive;
         private bool _canOpen = true;
 
-        public bool IsActive => _isActive;        
+        public bool IsActive => _isActive;
+
+        public const string BLOCKER_KEY = "PlayerUseItemUI";
 
         protected override void Awake()
         {
