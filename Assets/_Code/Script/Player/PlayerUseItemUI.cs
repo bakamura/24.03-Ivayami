@@ -5,6 +5,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 using UnityEngine.Localization;
+using Ivayami.Save;
+using Default;
+using Ivayami.Puzzle;
 
 namespace Ivayami.UI
 {
@@ -39,7 +42,7 @@ namespace Ivayami.UI
         private Coroutine _currentItemActionCoroutine;
         private int _currentSelectedIndex;
         private bool _isActive;
-        private bool _canOpen = true;
+        public HashKeyBlocker ActivateBlocker { get; private set; } = new HashKeyBlocker();
 
         [System.Serializable]
         private struct ItemOption
@@ -48,8 +51,9 @@ namespace Ivayami.UI
             public UnityEvent OnActivation;
             public UnityEvent OnActivationFail;
         }
-
         public bool IsActive => _isActive;
+
+        public const string BLOCKER_KEY = "PlayerUseItemUI";
 
         protected override void Awake()
         {
@@ -64,13 +68,15 @@ namespace Ivayami.UI
             PlayerStress.Instance.onFail.AddListener(() => { if (IsActive) UpdateUI(false); });
             SavePoint.onSaveGameWithAnimation.AddListener(HandleOnSaveGameWithAnimation);
             SavePoint.onSaveSequenceEnd.AddListener(HandleOnSaveSequenceEnd);
+            HeavyObjectPlacement.onCollect.AddListener((isCollecting) => ActivateBlocker.Toggle("Heavy", !isCollecting));
+            ActivateBlocker.OnToggleChange.AddListener(CanOpenUI);
         }
         /// <summary>
         /// Open And Closes the UI
         /// </summary>
         public void UpdateUI(bool isActive)
         {
-            if (!_canOpen) return;
+            if (!ActivateBlocker.IsAllowed) return;
             _isActive = isActive;
             if (_isActive) OnShowUI?.Invoke();
             else OnHideUI?.Invoke();
@@ -194,23 +200,22 @@ namespace Ivayami.UI
 
         private void HandleInputMapChange(string mapId)
         {
-            CanOpenUI(string.Equals(mapId, "Player"));
+            ActivateBlocker.Toggle("InputMap", string.Equals(mapId, "Player"));
         }
 
         private void HandleOnSaveSequenceEnd()
         {
-            CanOpenUI(true);
+            ActivateBlocker.Toggle("Save", true);
         }
 
         private void HandleOnSaveGameWithAnimation()
         {
-            CanOpenUI(false);
+            ActivateBlocker.Toggle("Save", false);
         }
 
         private void CanOpenUI(bool canOpen)
         {
-            _canOpen = canOpen;
-            if (!_canOpen && IsActive) UpdateUI(false);
+            if (!canOpen && IsActive) UpdateUI(false);
         }
     }
 }
