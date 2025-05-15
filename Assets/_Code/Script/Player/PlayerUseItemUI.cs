@@ -99,7 +99,6 @@ namespace Ivayami.UI
             PlayerAnimation.Instance.UseMP3(_isActive);
             if (_isActive)
             {
-                UpdateItemIcons();
                 _itemOptionsUI.Open();
                 _itemInEffectUI.Close();
             }
@@ -108,6 +107,7 @@ namespace Ivayami.UI
                 _itemOptionsUI.Close();
                 if (_currentItemActionCoroutine != null) _itemInEffectUI.Open();
             }
+            UpdateItemIcons();
         }
 
         private void UpdateItemIcons()
@@ -146,7 +146,7 @@ namespace Ivayami.UI
             //    return;
             //}
 
-            _currentItemActionCoroutine = StartCoroutine(_possibleOptions[_currentSelectedIndex].Item.UsageAction.ExecuteAtion(HanldeItemActionSuccess, HandleItemActionFail, HandleItemActionEnd));            
+            _currentItemActionCoroutine = StartCoroutine(_possibleOptions[_currentSelectedIndex].Item.UsageAction.ExecuteAtion(HanldeItemActionSuccess, HandleItemActionFail, HandleItemActionEnd));
             _isActive = false;
             UpdateInputs();
             UpdateVisuals();
