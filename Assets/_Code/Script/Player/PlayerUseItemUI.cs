@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Localization;
 using Ivayami.Save;
 using Default;
+using Ivayami.Puzzle;
 
 namespace Ivayami.UI
 {
@@ -53,6 +54,7 @@ namespace Ivayami.UI
             PlayerStress.Instance.onFail.AddListener(() => { if (IsActive) UpdateUI(false); });
             SavePoint.onSaveGameWithAnimation.AddListener(HandleOnSaveGameWithAnimation);
             SavePoint.onSaveSequenceEnd.AddListener(HandleOnSaveSequenceEnd);
+            HeavyObjectPlacement.onCollect.AddListener((isCollecting) => ActivateBlocker.Toggle("Heavy", !isCollecting));
             ActivateBlocker.OnToggleChange.AddListener(CanOpenUI);
         }
         /// <summary>
