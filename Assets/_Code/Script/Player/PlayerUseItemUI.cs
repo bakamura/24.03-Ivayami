@@ -15,6 +15,7 @@ namespace Ivayami.UI
         public UnityEvent OnItemActivation;
         public UnityEvent OnItemEffectEnd;
         public UnityEvent OnNotRequiredConsumableItem;
+        //public UnityEvent OnNotEnoughConsumables;
         public UnityEvent OnItemAlreadyInEffect;
         public UnityEvent OnItemActivationFail;
         //public UnityEvent OnNotEnoughStressToHeal;
@@ -41,11 +42,13 @@ namespace Ivayami.UI
         private int _currentSelectedIndex;
         private bool _isActive;
         public HashKeyBlocker ActivateBlocker { get; private set; } = new HashKeyBlocker();
+        public const string BLOCKER_KEY = "PlayerUseItemUI";
 
         [System.Serializable]
         private struct ItemOption
         {
             public InventoryItem Item;
+            //public byte Cost;
             public UnityEvent OnActivation;
             public UnityEvent OnActivationFail;
         }
@@ -141,6 +144,12 @@ namespace Ivayami.UI
                 UpdateUI(false);
                 return;
             }
+            //else if (stack.Amount < _possibleOptions[_currentSelectedIndex].Cost)
+            //{
+            //    OnNotEnoughConsumables?.Invoke();
+            //    UpdateUI(false);
+            //    return;
+            //}
             //else if (PlayerStress.Instance.StressCurrent == 0)
             //{
             //    OnNotEnoughStressToHeal?.Invoke();
