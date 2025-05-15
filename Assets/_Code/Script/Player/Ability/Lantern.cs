@@ -72,11 +72,9 @@ namespace Ivayami.Player.Ability {
 
         private void Update() {
             if (!_enabled || !ActivateBlocker.IsAllowed) return;
-            if (_focused) {
-                _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
-                _durationCurrent -= Time.deltaTime;
-            }
-            _durationCurrent -= _focusedDurationComsumptionMultiplier * Time.deltaTime;
+            if (_focused) _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
+            _durationCurrent -= (_focused ? _focusedDurationComsumptionMultiplier : 1f) * Time.deltaTime;
+            GravityRotate();
         }
 
         private void OnDestroy() {
@@ -92,7 +90,6 @@ namespace Ivayami.Player.Ability {
         private IEnumerator CheckInterval() {
             while (true) {
                 Illuminate();
-                GravityRotate();
 
                 yield return _behaviourCheckWait;
             }
@@ -103,7 +100,7 @@ namespace Ivayami.Player.Ability {
             ActivateBlocker.OnBlock.AddListener(PreventActivateRemember);
 
             PlayerActions.Instance.onLanternFocus.AddListener(Focus);
-            PlayerStress.Instance.onFail.AddListener(() => { if (_enabled) AbilityStart(); });
+            PlayerStress.Instance.onFail.AddListener(ForceTurnOff);
             _focusedOrigin.transform.parent = PlayerCamera.Instance.MainCamera.transform;
             _focusedOrigin.transform.localPosition = _focusedSourceDistance * Vector3.forward;
             _focusedOrigin.transform.localRotation = Quaternion.identity;
@@ -121,9 +118,9 @@ namespace Ivayami.Player.Ability {
         private void Toggle(bool enabled) {
             if (_focusedOrigin.transform.localPosition.z == 0) Setup(); //
 
-            _visuals.gameObject.SetActive(_enabled);
-            PlayerAnimation.Instance.Hold(_enabled);
-            if (_enabled) StartCoroutine(CheckInterval());
+            _visuals.gameObject.SetActive(enabled);
+            PlayerAnimation.Instance.Hold(enabled);
+            if (enabled) StartCoroutine(CheckInterval());
             else {
                 Focus(false);
                 StopAllCoroutines();
@@ -147,11 +144,6 @@ namespace Ivayami.Player.Ability {
             PlayerMovement.Instance.AllowRun(!isFocusing);
             PlayerMovement.Instance.useCameraRotaion = _focused;
             if (!_focused) _visuals.localRotation = Quaternion.identity;
-        }
-
-        public void Fill(float fillAmount) {
-            _durationCurrent += fillAmount;
-            if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
         }
 
         private void Illuminate() {
@@ -182,6 +174,11 @@ namespace Ivayami.Player.Ability {
             }
         }
 
+        public void Fill(float fillAmount) {
+            _durationCurrent += fillAmount;
+            if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
+        }
+
         public void ForceTurnOff() {
             if (_enabled) AbilityStart();
         }
@@ -191,9 +188,9 @@ namespace Ivayami.Player.Ability {
         }
 
         private void PreventActivateRemember() {
-            if (_enabled) Toggle(false);
+            Toggle(false);
         }
-        
+
         private void GravityRotate() {
             transform.rotation = Quaternion.AngleAxis(transform.parent.eulerAngles.y, Vector3.up);
         }
