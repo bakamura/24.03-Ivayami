@@ -60,14 +60,13 @@ namespace Ivayami.Player.Ability {
             Focus(false);
         }
 
-        private void Start()
-        {
+        private void Start() {
             PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
-            SavePoint.onSaveGameWithAnimation.AddListener(HandleOnSaveGameWithAnimation);
-            SavePoint.onSaveSequenceEnd.AddListener(HandleOnSaveSequenceEnd);
-            PlayerUseItemUI.Instance.OnShowUI.AddListener(HandleOnShowUseItemUI);
-            PlayerUseItemUI.Instance.OnHideUI.AddListener(HandleOnHideUseItemUI);
-            PlayerUseItemUI.Instance.OnHealActivation.AddListener(HandleOnHideUseItemUI);
+            SavePoint.onSaveGameWithAnimation.AddListener(PreventActivate);
+            SavePoint.onSaveSequenceEnd.AddListener(AllowActivate);
+            PlayerUseItemUI.Instance.OnShowUI.AddListener(PreventActivateRemember);
+            PlayerUseItemUI.Instance.OnHideUI.AddListener(AllowActivate);
+            PlayerUseItemUI.Instance.OnHealActivation.AddListener(AllowActivate);
         }
 
         private void Update() {
@@ -81,11 +80,11 @@ namespace Ivayami.Player.Ability {
 
         private void OnDestroy() {
             PlayerActions.Instance.onActionMapChange.RemoveListener(HandleInputMapChange);
-            SavePoint.onSaveGameWithAnimation.RemoveListener(HandleOnSaveGameWithAnimation);
-            SavePoint.onSaveSequenceEnd.RemoveListener(HandleOnSaveSequenceEnd);
-            PlayerUseItemUI.Instance.OnShowUI.RemoveListener(HandleOnShowUseItemUI);
-            PlayerUseItemUI.Instance.OnHideUI.RemoveListener(HandleOnHideUseItemUI);
-            PlayerUseItemUI.Instance.OnHealActivation.RemoveListener(HandleOnHideUseItemUI);
+            SavePoint.onSaveGameWithAnimation.RemoveListener(PreventActivate);
+            SavePoint.onSaveSequenceEnd.RemoveListener(AllowActivate);
+            PlayerUseItemUI.Instance.OnShowUI.RemoveListener(PreventActivateRemember);
+            PlayerUseItemUI.Instance.OnHideUI.RemoveListener(AllowActivate);
+            PlayerUseItemUI.Instance.OnHealActivation.RemoveListener(AllowActivate);
             Destroy(_focusedOrigin);
         }
 
@@ -109,8 +108,8 @@ namespace Ivayami.Player.Ability {
 
         public override void AbilityStart() {
             if (_focusedOrigin.transform.localPosition.z == 0) Setup(); // temp
-            _enabled = !_enabled;
             if (!_canActivate) return;
+            _enabled = !_enabled;
             _visuals.gameObject.SetActive(_enabled);
             PlayerAnimation.Instance.Hold(_enabled);
             if (_enabled) StartCoroutine(CheckInterval());
@@ -180,51 +179,34 @@ namespace Ivayami.Player.Ability {
 
         public void ForceTurnOff() {
             if (_enabled) AbilityStart();
-        }        
-
-        private void HandleInputMapChange(string mapId)
-        {
-            CanActivate(string.Equals(mapId, "Player"));
         }
 
-        private void HandleOnSaveSequenceEnd()
-        {
-            CanActivate(true);
+        private void HandleInputMapChange(string mapId) {
+            _canActivate = string.Equals(mapId, "Player");
         }
 
-        private void HandleOnSaveGameWithAnimation()
-        {
-            ForceTurnOff();
-            CanActivate(false);
-        }
-
-        private void HandleOnShowUseItemUI()
-        {
-            if (_enabled)
-            {
-                ForceTurnOff();
-                _enabled = true;
-            }
-            CanActivate(false);
-        }
-
-        private void HandleOnHideUseItemUI()
-        {
-            CanActivate(true);
-            if (_enabled)
-            {
+        public void AllowActivate() {
+            _canActivate = true;
+            if (_enabled) {
                 _enabled = false;
                 AbilityStart();
             }
         }
 
-        private void CanActivate(bool canActivate)
-        {
-            _canActivate = canActivate;
+        public void PreventActivate() {
+            _canActivate = false;
+            ForceTurnOff();
         }
 
-        private void HandleUpdateVisuals(bool isVisible)
-        {
+        public void PreventActivateRemember() {
+            if (_enabled) {
+                ForceTurnOff();
+                _enabled = true;
+            }
+            _canActivate = false;
+        }
+
+        private void HandleUpdateVisuals(bool isVisible) {
             gameObject.SetActive(isVisible);
         }
 
