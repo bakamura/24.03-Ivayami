@@ -1,13 +1,13 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Ivayami.Player
 {
+    [CreateAssetMenu(menuName = "Ivayami/Gameplay/ItemAction/RunSpeedChange")]
     public class RunSpeedChange : ItemUsageAction
     {
-        [field: SerializeField] public float SpeedChange { get; private set; }
+        [field: SerializeField, Tooltip("Multiplicative")] public float SpeedChange { get; private set; }
         [field: SerializeField, Min(0f)] public float Duration { get; private set; }
         public override IEnumerator ExecuteAtion(Action OnActionSuccess = null, Action OnActionFail = null, Action OnActionEnd = null)
         {

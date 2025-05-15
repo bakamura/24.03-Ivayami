@@ -15,7 +15,7 @@ namespace Ivayami.UI
         public UnityEvent OnItemActivation;
         public UnityEvent OnItemEffectEnd;
         public UnityEvent OnNotRequiredConsumableItem;
-        //public UnityEvent OnNotEnoughConsumables;
+        //public UnityEvent OnNotEnoughConsumables;        
         public UnityEvent OnItemAlreadyInEffect;
         public UnityEvent OnItemActivationFail;
         //public UnityEvent OnNotEnoughStressToHeal;
@@ -41,6 +41,8 @@ namespace Ivayami.UI
         private Coroutine _currentItemActionCoroutine;
         private int _currentSelectedIndex;
         private bool _isActive;
+        private PlayerInventory.InventoryItemStack _currentOption;
+        private PlayerInventory.InventoryItemStack _nextOption;
         public HashKeyBlocker ActivateBlocker { get; private set; } = new HashKeyBlocker();
         public const string BLOCKER_KEY = "PlayerUseItemUI";
 
@@ -105,34 +107,46 @@ namespace Ivayami.UI
             if (_isActive)
             {
                 _itemOptionsUI.Open();
-                _itemInEffectUI.Close();
+                if (_currentItemActionCoroutine != null) _itemInEffectUI.Close();
             }
             else
             {
                 _itemOptionsUI.Close();
                 if (_currentItemActionCoroutine != null) _itemInEffectUI.Open();
             }
-            UpdateItemIcons();
+            UpdateItemUI();
         }
 
-        private void UpdateItemIcons()
+        private void UpdateItemUI()
         {
             PlayerInventory.InventoryItemStack consumableStack = PlayerInventory.Instance.CheckInventoryFor(_itemConsumedOnUse.name);
             if (consumableStack.Item) _consumableItemDisplay.SetItemDisplay(consumableStack);
             else _consumableItemDisplay.SetItemDisplay(_itemConsumedOnUse);
 
-            _itemSelectedDisplay.SetItemDisplay(_possibleOptions[_currentSelectedIndex].Item);
-            _itemSelectedDisplayName.text = _possibleOptions[_currentSelectedIndex].Item.GetDisplayName();
+            UpdateOptionsDisplay();
+        }
+
+        private void UpdateOptionsDisplay()
+        {
+            _itemSelectedDisplay.SetItemDisplay(_currentOption.Item);
+            _itemSelectedDisplayName.text = _currentOption.Item ? _possibleOptions[_currentSelectedIndex].Item.GetDisplayName() : null;
 
             int nextIndex = _currentSelectedIndex + 1;
             LoopValueByArraySize(ref nextIndex, _possibleOptions.Length);
-            _nextItemDisplay.SetItemDisplay(_possibleOptions[nextIndex].Item);
+            _nextItemDisplay.SetItemDisplay(_nextOption);
         }
 
         private void HandleConfirmOption(InputAction.CallbackContext context)
         {
-            PlayerInventory.InventoryItemStack stack = PlayerInventory.Instance.CheckInventoryFor(_itemConsumedOnUse.name);
-            if (!stack.Item)
+            PlayerInventory.InventoryItemStack consumable = PlayerInventory.Instance.CheckInventoryFor(_itemConsumedOnUse.name);
+            PlayerInventory.InventoryItemStack item = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[_currentSelectedIndex].Item.name);
+            if (!item.Item)
+            {
+                OnItemActivationFail?.Invoke();
+                UpdateUI(false);
+                return;
+            }
+            else if (!consumable.Item)
             {
                 OnNotRequiredConsumableItem?.Invoke();
                 UpdateUI(false);
@@ -169,10 +183,38 @@ namespace Ivayami.UI
             if (input.y != 0)
             {
                 _currentSelectedIndex += input.y > 0 ? 1 : -1;
-                LoopValueByArraySize(ref _currentSelectedIndex, _possibleOptions.Length);
-                UpdateItemIcons();
+                FindValidOptionsInList((sbyte)(input.y > 0 ? 1 : -1));
+                UpdateItemUI();
                 OnChangeOption?.Invoke();
             }
+        }
+
+        private void FindValidOptionsInList(sbyte direction)
+        {
+            bool endSearch = false;
+            int index = _currentSelectedIndex;
+            int startIndex = index;
+            int endIndex = direction > 0 ? _currentSelectedIndex - 1 : _currentSelectedIndex + 1;
+            LoopValueByArraySize(ref endIndex, _possibleOptions.Length);
+            if(direction > 0)
+            {
+                for(int i = _currentSelectedIndex; i != endIndex; i++)
+                {
+
+                }
+            }
+            //while (!endSearch)
+            //{
+            //    index += direction;
+            //    LoopValueByArraySize(ref index, _possibleOptions.Length);
+            //    _currentOption = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[index].Item.name);
+            //    if(startIndex == index)
+            //    {
+                    
+            //        break;
+            //    }
+            //    _currentOption
+            //}
         }
 
         private void LoopValueByArraySize(ref int valueToConstrain, int arraySize)
