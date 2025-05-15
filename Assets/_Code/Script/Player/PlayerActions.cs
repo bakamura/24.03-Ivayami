@@ -86,6 +86,7 @@ namespace Ivayami.Player {
         private InteractAnimation _interactAnimationCache;
 
         private const string INTERACT_LONG_BLOCK_KEY = "InteractLong";
+        private const string HEAVY_HOLD_KEY = "HeavyHold";
 
         protected override void Awake() {
             base.Awake();
@@ -176,6 +177,7 @@ namespace Ivayami.Player {
                 else Debug.LogWarning($"Tried to hold null object");
             }
             else Debug.LogWarning($"Tried to hold '{objToHold?.name}' but is alraedy holding '{_heavyObjectCurrent.name}'");
+            (_abilities.FirstOrDefault(ability => ability is Lantern) as Lantern)?.ActivateBlocker.Toggle(HEAVY_HOLD_KEY, false);
         }
 
         public GameObject HeavyObjectRelease() {
@@ -184,6 +186,7 @@ namespace Ivayami.Player {
                 GameObject releasedObject = _heavyObjectCurrent;
                 _heavyObjectCurrent = null;
                 _interactableDetector.onlyHeavyObjects = false;
+                (_abilities.FirstOrDefault(ability => ability is Lantern) as Lantern)?.ActivateBlocker.Toggle(HEAVY_HOLD_KEY, true);
                 return releasedObject;
             }
             Debug.LogWarning($"Tried to release null object");
