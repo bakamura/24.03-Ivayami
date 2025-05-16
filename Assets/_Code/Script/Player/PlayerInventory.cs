@@ -22,7 +22,7 @@ namespace Ivayami.Player {
         {
             public InventoryItem Item;
             public int Amount;
-
+            public static InventoryItemStack Empty = new InventoryItemStack();
             public InventoryItemStack(InventoryItem item, int amount)
             {
                 Item = item;

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414738, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -27837,12 +27837,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77d6f1143b37cb0419467b76e3a36802, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _onHealActivationEventSubscribeOnStart: 0
-  _onHealActivation:
+  _onItemActivationEventSubscribeOnStart: 0
+  _onItemActivation:
     m_PersistentCalls:
       m_Calls: []
-  _onHealEndEventSubscribeOnStart: 0
-  _onHealEnd:
+  _onItemEffectEndEventSubscribeOnStart: 0
+  _onItemEffectEnd:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 702625944}
@@ -27897,12 +27897,8 @@ MonoBehaviour:
   _onNotRequiredItem:
     m_PersistentCalls:
       m_Calls: []
-  _onAlreadyHealingEventSubscribeOnStart: 0
-  _onAlreadyHealing:
-    m_PersistentCalls:
-      m_Calls: []
-  _onNotEnoughStressToHealEventSubscribeOnStart: 0
-  _onNotEnoughStressToHeal:
+  _onItemAlreadyInEffectEventSubscribeOnStart: 0
+  _onItemAlreadyInEffect:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &2124438149
@@ -27951,7 +27947,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 2124438148}
         m_TargetAssemblyTypeName: Ivayami.UI.PlayerUseItemUIRef, Assembly-CSharp
-        m_MethodName: SubscribeOnHealEnd
+        m_MethodName: SubscribeOnItemEffectEnd
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
