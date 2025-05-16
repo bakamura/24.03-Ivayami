@@ -343,7 +343,7 @@ MonoBehaviour:
   _onDialogueEnd:
     m_PersistentCalls:
       m_Calls: []
-  _dialogueName: AlreadyHealingForUseUI
+  _dialogueName: ItemAlreadyInEffectForUseUI
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 0
@@ -990,7 +990,7 @@ MonoBehaviour:
   _onDialogueEnd:
     m_PersistentCalls:
       m_Calls: []
-  _dialogueName: AlreadyHealingForUseUI
+  _dialogueName: ItemAlreadyInEffectForUseUI
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 0
@@ -2131,7 +2131,43 @@ MonoBehaviour:
       m_Calls: []
   OnItemEffectEnd:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 8092952149816121978}
+        m_TargetAssemblyTypeName: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3342648572057698755}
+        m_TargetAssemblyTypeName: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1834802871601605861}
+        m_TargetAssemblyTypeName: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnNotRequiredConsumableItem:
     m_PersistentCalls:
       m_Calls:
@@ -2162,7 +2198,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnItemActivationFail:
+  OnNotRequiredItem:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1052051980028308122}
@@ -2177,6 +2213,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  OnItemActivationFail:
+    m_PersistentCalls:
+      m_Calls: []
   OnShowUI:
     m_PersistentCalls:
       m_Calls:
@@ -2437,14 +2476,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dialogue: {fileID: 11400000, guid: c4ec0ed613a17cd4f87f646c428625ed, type: 2}
+  _dialogue: {fileID: 11400000, guid: 47161d4830f3d22468f0373aa567f3b4, type: 2}
   _onDialogueStart:
     m_PersistentCalls:
       m_Calls: []
   _onDialogueEnd:
     m_PersistentCalls:
       m_Calls: []
-  _dialogueName: AlreadyHealingForUseUI
+  _dialogueName: NotEnoughStressForUseUI
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 0
@@ -2503,7 +2542,7 @@ MonoBehaviour:
   _onDialogueEnd:
     m_PersistentCalls:
       m_Calls: []
-  _dialogueName: AlreadyHealingForUseUI
+  _dialogueName: ItemAlreadyInEffectForUseUI
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 0
@@ -3207,14 +3246,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dialogue: {fileID: 11400000, guid: 2b4efb408777af84dbb991b7f4159a98, type: 2}
+  _dialogue: {fileID: 11400000, guid: 99b8122b88c0f284697ce19b99568ec4, type: 2}
   _onDialogueStart:
     m_PersistentCalls:
       m_Calls: []
   _onDialogueEnd:
     m_PersistentCalls:
       m_Calls: []
-  _dialogueName: DontHaveRequiredItemForUseUI
+  _dialogueName: DontHaveTapeForUseItemUI
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 0
@@ -3551,7 +3590,7 @@ MonoBehaviour:
   _onDialogueEnd:
     m_PersistentCalls:
       m_Calls: []
-  _dialogueName: DontHaveRequiredItemForUseUI
+  _dialogueName: DontHaveBatteryRequiredItemForUseUI
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 0

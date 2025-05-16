@@ -17,6 +17,7 @@ namespace Ivayami.UI
         public UnityEvent OnNotRequiredConsumableItem;
         //public UnityEvent OnNotEnoughConsumables;        
         public UnityEvent OnItemAlreadyInEffect;
+        public UnityEvent OnNotRequiredItem;
         public UnityEvent OnItemActivationFail;
         //public UnityEvent OnNotEnoughStressToHeal;
 
@@ -114,6 +115,7 @@ namespace Ivayami.UI
                 _itemOptionsUI.Close();
                 if (_currentItemActionCoroutine != null) _itemInEffectUI.Open();
             }
+            if (!_currentOption.Item) FindValidOptionsInList(1);
             UpdateItemUI();
         }
 
@@ -123,26 +125,17 @@ namespace Ivayami.UI
             if (consumableStack.Item) _consumableItemDisplay.SetItemDisplay(consumableStack);
             else _consumableItemDisplay.SetItemDisplay(_itemConsumedOnUse);
 
-            UpdateOptionsDisplay();
-        }
-
-        private void UpdateOptionsDisplay()
-        {
-            _itemSelectedDisplay.SetItemDisplay(_currentOption.Item);
+            _itemSelectedDisplay.SetItemDisplay(_currentOption);
             _itemSelectedDisplayName.text = _currentOption.Item ? _possibleOptions[_currentSelectedIndex].Item.GetDisplayName() : null;
-
-            int nextIndex = _currentSelectedIndex + 1;
-            LoopValueByArraySize(ref nextIndex, _possibleOptions.Length);
             _nextItemDisplay.SetItemDisplay(_nextOption);
         }
 
         private void HandleConfirmOption(InputAction.CallbackContext context)
         {
             PlayerInventory.InventoryItemStack consumable = PlayerInventory.Instance.CheckInventoryFor(_itemConsumedOnUse.name);
-            PlayerInventory.InventoryItemStack item = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[_currentSelectedIndex].Item.name);
-            if (!item.Item)
+            if (!_currentOption.Item)
             {
-                OnItemActivationFail?.Invoke();
+                OnNotRequiredItem?.Invoke();
                 UpdateUI(false);
                 return;
             }
@@ -171,7 +164,7 @@ namespace Ivayami.UI
             //    return;
             //}
 
-            _currentItemActionCoroutine = StartCoroutine(_possibleOptions[_currentSelectedIndex].Item.UsageAction.ExecuteAtion(HanldeItemActionSuccess, HandleItemActionFail, HandleItemActionEnd));
+            _currentItemActionCoroutine = StartCoroutine(_possibleOptions[_currentSelectedIndex].Item.UsageAction.ExecuteAtion(HandleItemActionSuccess, HandleItemActionFail, HandleItemActionEnd));
             _isActive = false;
             UpdateInputs();
             UpdateVisuals();
@@ -183,6 +176,7 @@ namespace Ivayami.UI
             if (input.y != 0)
             {
                 _currentSelectedIndex += input.y > 0 ? 1 : -1;
+                LoopValueByArraySize(ref _currentSelectedIndex, _possibleOptions.Length);
                 FindValidOptionsInList((sbyte)(input.y > 0 ? 1 : -1));
                 UpdateItemUI();
                 OnChangeOption?.Invoke();
@@ -191,30 +185,51 @@ namespace Ivayami.UI
 
         private void FindValidOptionsInList(sbyte direction)
         {
-            bool endSearch = false;
-            int index = _currentSelectedIndex;
-            int startIndex = index;
+            int startIndex = _currentSelectedIndex;
             int endIndex = direction > 0 ? _currentSelectedIndex - 1 : _currentSelectedIndex + 1;
             LoopValueByArraySize(ref endIndex, _possibleOptions.Length);
-            if(direction > 0)
+            PlayerInventory.InventoryItemStack itemFound;
+            _currentOption = PlayerInventory.InventoryItemStack.Empty;
+            // 1 0 soma
+            
+            while(startIndex != endIndex)
             {
-                for(int i = _currentSelectedIndex; i != endIndex; i++)
+                itemFound = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[startIndex].Item.name);
+                if (itemFound.Item)
                 {
-
+                    _currentSelectedIndex = startIndex;
+                    _currentOption = itemFound;
+                    break;
+                }
+                else
+                {
+                    startIndex = direction > 0 ? startIndex + 1 : startIndex - 1;
+                    LoopValueByArraySize(ref startIndex, _possibleOptions.Length);
                 }
             }
-            //while (!endSearch)
-            //{
-            //    index += direction;
-            //    LoopValueByArraySize(ref index, _possibleOptions.Length);
-            //    _currentOption = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[index].Item.name);
-            //    if(startIndex == index)
-            //    {
-                    
-            //        break;
-            //    }
-            //    _currentOption
-            //}
+            if (!_currentOption.Item)
+            {
+                _currentSelectedIndex = 0;
+                return;
+            }
+            startIndex = _currentSelectedIndex + 1;
+            LoopValueByArraySize(ref startIndex, _possibleOptions.Length);
+            endIndex = _currentSelectedIndex;
+            _nextOption = _currentOption;
+            while (startIndex != endIndex)
+            {
+                itemFound = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[startIndex].Item.name);
+                if (itemFound.Item)
+                {
+                    _nextOption = itemFound;
+                    break;
+                }
+                else
+                {
+                    startIndex = direction > 0 ? startIndex + 1 : startIndex - 1;
+                    LoopValueByArraySize(ref startIndex, _possibleOptions.Length);
+                }
+            }
         }
 
         private void LoopValueByArraySize(ref int valueToConstrain, int arraySize)
@@ -223,7 +238,7 @@ namespace Ivayami.UI
             else if (valueToConstrain >= arraySize) valueToConstrain = 0;
         }
 
-        private void HanldeItemActionSuccess()
+        private void HandleItemActionSuccess()
         {
             PlayerInventory.Instance.RemoveFromInventory(_itemConsumedOnUse);
             InfoUpdateIndicator.Instance.DisplayUpdate(_itemConsumedOnUse.Sprite, $"1 " +
