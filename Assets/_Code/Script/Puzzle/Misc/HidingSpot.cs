@@ -18,10 +18,13 @@ namespace Ivayami.Puzzle {
         private InteractableFeedbacks m_interactableFeedbacks;
         [Header("Inputs")]
         [SerializeField] private InputActionReference _exitInput;
+        [SerializeField] private InputActionReference _lookSideways;
 
         [Header("View")]
         [SerializeField] private CameraAnimationInfo _hidingCam;
-        [SerializeField] private CameraAnimationInfo _hiddenCam;
+        [SerializeField] private CameraAnimationInfo _hiddenCamLeft;
+        [SerializeField] private CameraAnimationInfo _hiddenCamMiddle;
+        [SerializeField] private CameraAnimationInfo _hiddenCamRight;
 
         [Header("Type")]
 
@@ -31,12 +34,14 @@ namespace Ivayami.Puzzle {
 
         [Header("Callbacks")]
         [SerializeField] private UnityEvent _onInteract;
+        [SerializeField] private UnityEvent _onExit;
 
         [Header("Cache")]
 
         private WaitForSeconds _delayChangeCamera;
         private Animator _objectAnimator;
         private Coroutine _hideCoroutine;
+        private CameraAnimationInfo _currentCamera;
         private const string BLOCK_KEY = "hidingSpot";
         private static int SPEED = Animator.StringToHash("Speed");
         private bool _inputActive;
@@ -68,6 +73,7 @@ namespace Ivayami.Puzzle {
             Pause.Instance.ToggleCanPause(BLOCK_KEY, false);
             PlayerAnimation.Instance.InteractLong(true);
             _hidingCam.StartMovement();
+            _currentCamera = _hidingCam;
             PlayerMovement.Instance.SetPosition(_animationPoint.position);
             PlayerMovement.Instance.SetTargetAngle(_animationPoint.eulerAngles.y);
             InteratctableFeedbacks.UpdateFeedbacks(false, true);
@@ -76,11 +82,13 @@ namespace Ivayami.Puzzle {
             yield return _delayChangeCamera;
 
             _hidingCam.ExitDialogueCamera();
-            _hiddenCam.StartMovement();
+            _hiddenCamMiddle.StartMovement();
+            _currentCamera = _hiddenCamMiddle;
             _inputActive = true;
             PlayerMovement.Instance.hidingState = _hiddenType;
             ReturnAction.Instance.Set(Exit);
             _exitInput.action.started += HandleExit;
+            _lookSideways.action.performed += HandleLookSideways;
             _exitInput.action.Enable();
             PlayerMovement.Instance.ToggleMovement(nameof(HidingSpot), false);
             _hideCoroutine = null;
@@ -106,9 +114,30 @@ namespace Ivayami.Puzzle {
             PlayerAnimation.Instance.GoToIdle();
         }
 
+        private void HandleLookSideways(InputAction.CallbackContext obj)
+        {
+            float input = obj.ReadValue<float>();
+            if (input > 0 && _currentCamera != _hiddenCamRight)
+            {
+                _hiddenCamRight.StartMovement();
+                _currentCamera = _hiddenCamRight;
+            }
+            else if (input < 0 && _currentCamera != _hiddenCamLeft)
+            {
+                _hiddenCamLeft.StartMovement();
+                _currentCamera = _hiddenCamLeft;
+            }
+            else if (input == 0 && _currentCamera != _hiddenCamMiddle)
+            {
+                _hiddenCamMiddle.StartMovement();
+                _currentCamera = _hiddenCamMiddle;
+            }
+        }
+
         private IEnumerator RemovePlayer() {
             if (_inputActive) {
                 _exitInput.action.started -= HandleExit;
+                _lookSideways.action.performed -= HandleLookSideways;
                 PlayerMovement.Instance.ToggleMovement(nameof(HidingSpot), true);
             }
             _inputActive = false;
@@ -117,11 +146,12 @@ namespace Ivayami.Puzzle {
             PlayerAnimation.Instance.InteractLong(false);
             Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
             ReturnAction.Instance.Set(null);
-            _hiddenCam.ExitDialogueCamera();
+            _currentCamera.ExitDialogueCamera();
 
             yield return null;
 
             PlayerMovement.Instance.hidingState = PlayerMovement.HidingState.None;
+            _onExit?.Invoke();
         }
 
     }

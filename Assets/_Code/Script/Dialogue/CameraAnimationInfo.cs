@@ -7,6 +7,7 @@ namespace Ivayami.Dialogue
 {
     public class CameraAnimationInfo : MonoBehaviour
     {
+        [SerializeField] private bool _snapCameraPositionOnInterrupt = true;
         [SerializeField] private bool _changeCameraFocus;
         [SerializeField] private bool _lookAtPlayer;
         [SerializeField] private bool _followPlayer;
@@ -24,28 +25,19 @@ namespace Ivayami.Dialogue
         public Transform FollowTarget { get; private set; }
         public bool ChangeCameraFocus => _changeCameraFocus;
         public bool FollowPlayer => _followPlayer;
+        public bool SnapCameraPositionOnInterrupt => _snapCameraPositionOnInterrupt;
 
         public void StartMovement()
         {
             if (_hidePlayerModel) PlayerMovement.Instance.UpdateVisualsVisibility(false);
-            /**if (_changeCameraFocus)
-            {
-                if (_lookAtPlayer) PlayerCamera.Instance.FreeLookCam.LookAt = PlayerCamera.Instance.CameraAimPoint;
-                else PlayerCamera.Instance.FreeLookCam.LookAt = _lookAtTarget;
-                if (_followPlayer) PlayerCamera.Instance.FreeLookCam.Follow = PlayerCamera.Instance.CameraAimPoint;
-                else PlayerCamera.Instance.FreeLookCam.Follow = _followTarget;
-                StartDurationFocusDelay();
-            }
-            else DialogueCamera.Instance.MoveRotate(this);*/
             LookAtTarget = transform;
             FollowTarget = transform;
             if (_changeCameraFocus)
             {
                 if (_lookAtPlayer) LookAtTarget = PlayerCamera.Instance.CameraAimPoint;
                 else LookAtTarget = _lookAtTarget ? _lookAtTarget : transform;
-                if (_followPlayer) FollowTarget = PlayerCamera.Instance.CameraAimRotator;//PlayerCamera.Instance.CameraAimPoint;
+                if (_followPlayer) FollowTarget = PlayerCamera.Instance.CameraAimRotator;
                 else FollowTarget = _followTarget ? _followTarget : transform;
-                //StartDurationFocusDelay();
             }
             DialogueCamera.Instance.MoveRotate(this);
         }
@@ -55,26 +47,5 @@ namespace Ivayami.Dialogue
             if (_hidePlayerModel) PlayerMovement.Instance.UpdateVisualsVisibility(true);
             DialogueCamera.Instance.ExitDialogeCamera();
         }
-
-        //private void StartDurationFocusDelay()
-        //{
-        //    PlayerCamera.Instance.UpdateCameraControls(false);
-        //    if (_durationinFocusCoroutine != null)
-        //    {
-        //        StopCoroutine(_durationinFocusCoroutine);
-        //        _durationinFocusCoroutine = null;
-        //    }
-        //    _durationinFocusCoroutine = StartCoroutine(DurationInFocusCoroutine());
-        //}
-
-        //private IEnumerator DurationInFocusCoroutine()
-        //{
-        //    yield return new WaitForSeconds(Duration);
-        //    ExitDialogueCamera();
-        //    PlayerCamera.Instance.FreeLookCam.LookAt = PlayerCamera.Instance.CameraAimPoint;
-        //    PlayerCamera.Instance.FreeLookCam.Follow = PlayerCamera.Instance.CameraAimPoint;
-        //    PlayerCamera.Instance.UpdateCameraControls(true);
-        //    _durationinFocusCoroutine = null;
-        //}
     }
 }
