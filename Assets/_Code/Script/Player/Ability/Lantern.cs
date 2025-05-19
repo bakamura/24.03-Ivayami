@@ -35,6 +35,9 @@ namespace Ivayami.Player.Ability
 
         [SerializeField, Min(0f)] private float _durationMaxBase;
         [SerializeField, Min(0f)] private float _durationIncreaseFromItem;
+        [SerializeField, Range(0f,1f), Tooltip("If the value is smaller than this percentage it will start flickering")] private float _flickeringStartTreshold;
+        [SerializeField, Range(0f, 1f)] private float _flickeringChance;
+        [SerializeField, Min(0f)] private float[] _randomFlickeringIntensities;
         private float _durationMax;
         private float _durationCurrent;
 
@@ -47,6 +50,8 @@ namespace Ivayami.Player.Ability
         private Transform _lightsOriginCurrent;
         private float _coneAngleHalf;
         private float _lightDistance;
+        private float _wideBaseIntensity;
+        private float _focusedBaseIntensity;
         public HashKeyBlocker ActivateBlocker { get; private set; } = new HashKeyBlocker();
 
 
@@ -60,6 +65,8 @@ namespace Ivayami.Player.Ability
             PlayerMovement.Instance.AddAdditionalVisuals(HandleUpdateVisuals);
             _visuals.gameObject.SetActive(false);
             _durationMax = _durationMaxBase * (_durationIncreaseFromItem * PlayerInventory.Instance.CheckInventoryFor("ID").Amount); // Change the ID for the proper ID
+            _wideBaseIntensity = _wideOrigin.intensity;
+            _focusedBaseIntensity = _focusedOrigin.intensity;
 
             Focus(false);
         }
@@ -79,9 +86,11 @@ namespace Ivayami.Player.Ability
             if (_focused)
             {
                 _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
-                _durationCurrent -= Time.deltaTime;
+                _durationCurrent -= _focusedDurationComsumptionMultiplier * Time.deltaTime;
             }
-            _durationCurrent -= _focusedDurationComsumptionMultiplier * Time.deltaTime;
+            else _durationCurrent -= Time.deltaTime;
+            if (_durationCurrent < 0) _durationCurrent = 0;
+            UpdateLights();
         }
 
         private void OnDestroy()
@@ -98,7 +107,7 @@ namespace Ivayami.Player.Ability
         {
             while (true)
             {
-                Illuminate();
+                if(_durationCurrent > 0) Illuminate();
                 GravityRotate();
 
                 yield return _behaviourCheckWait;
@@ -136,11 +145,8 @@ namespace Ivayami.Player.Ability
             if (_enabled) StartCoroutine(CheckInterval());
             else
             {
-                Focus(false);
+                ClearAllLightData();
                 StopAllCoroutines();
-                foreach (Lightable lightable in _illuminatedObjects) lightable.Illuminate(ILLUMINATION_KEY, false);
-                _illuminatedObjects.Clear();
-                LightFocuses.Instance.LightPointFocusRemove(ILLUMINATION_KEY);
             }
         }
 
@@ -165,6 +171,41 @@ namespace Ivayami.Player.Ability
         {
             _durationCurrent += fillAmount;
             if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
+        }
+
+        private void UpdateLights()
+        {
+            if(_durationCurrent <= _flickeringStartTreshold * _durationMax)
+            {
+                if(Random.Range(0f, 1f) <= _flickeringChance)
+                {
+                    float intensity = _randomFlickeringIntensities[Random.Range(0, _randomFlickeringIntensities.Length)];
+                    _wideOrigin.intensity = intensity;
+                    _focusedOrigin.intensity = intensity;
+                }
+            }
+
+            if(_durationCurrent <= 0)
+            {
+                _wideOrigin.enabled = false;
+                _focusedOrigin.enabled = false;
+                _wideOrigin.intensity = _wideBaseIntensity;
+                _focusedOrigin.intensity = _focusedBaseIntensity;
+                ClearAllLightData();
+            }
+            else
+            {
+                _wideOrigin.enabled = true;
+                _focusedOrigin.enabled = true;
+            }
+        }
+
+        private void ClearAllLightData()
+        {
+            Focus(false);
+            foreach (Lightable lightable in _illuminatedObjects) lightable.Illuminate(ILLUMINATION_KEY, false);
+            _illuminatedObjects.Clear();
+            LightFocuses.Instance.LightPointFocusRemove(ILLUMINATION_KEY);
         }
 
         private void Illuminate()
