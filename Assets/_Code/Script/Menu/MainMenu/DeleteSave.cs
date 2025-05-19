@@ -29,6 +29,7 @@ namespace Ivayami.UI
         {
             SaveSelector.Instance.UpdateSaveBtnInfo(_currentSaveId);
             SaveSystem.Instance.DeleteProgress(_currentSaveId);
+            UpdateButtons();
         }
 
         private void UpdateButtons()
