@@ -244,6 +244,7 @@ namespace Ivayami.UI
             InfoUpdateIndicator.Instance.DisplayUpdate(_itemConsumedOnUse.Sprite, $"1 " +
                 $"{_itemConsumedOnUse.GetDisplayName()} " +
                 $"{_itemUsedText.GetLocalizedString()}");
+            ActivateBlocker.Toggle(nameof(PlayerUseItemUI), false);
             _possibleOptions[_currentSelectedIndex].OnActivation?.Invoke();
             OnItemActivation?.Invoke();
         }
@@ -257,6 +258,7 @@ namespace Ivayami.UI
         private void HandleItemActionEnd()
         {
             _currentItemActionCoroutine = null;
+            ActivateBlocker.Toggle(nameof(PlayerUseItemUI), true);
             OnItemEffectEnd?.Invoke();
         }
 
