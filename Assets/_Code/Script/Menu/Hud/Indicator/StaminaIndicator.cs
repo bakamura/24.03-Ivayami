@@ -42,7 +42,7 @@ namespace Ivayami.UI {
         }
 
         private void StaminaColorize(float value) {
-            Color newColor = Color.Lerp(_staminaOutColor, Color.white, value / PlayerMovement.Instance.MaxStamina);
+            Color newColor = Color.Lerp(_staminaOutColor, Color.white, value);
             foreach (Image coloredImage in _staminaColoredImages) coloredImage.color = newColor;
         }
 
