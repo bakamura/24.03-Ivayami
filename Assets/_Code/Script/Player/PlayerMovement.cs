@@ -136,8 +136,8 @@ namespace Ivayami.Player {
         public Vector3 VisualForward { get { return _visualTransform.forward; } }
         public Vector3 MovementDirection { get { return _movementCache; } }
         public CharacterController CharacterController { get { return _characterController; } }
-#if UNITY_EDITOR
         public float MaxStamina => _maxStamina;
+#if UNITY_EDITOR
         public bool StaminaRunBlock => _staminaRunBlock;
 #endif
 
