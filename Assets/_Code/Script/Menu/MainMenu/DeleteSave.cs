@@ -8,6 +8,7 @@ namespace Ivayami.UI
     public class DeleteSave : MonoBehaviour
     {
         [SerializeField] private MenuGroup _menuGroup;
+        [SerializeField] private Selectable _cancelBtn;
         [SerializeField] private Selectable[] _deleteSaveBtns;
 
         private Fade _fade;
@@ -38,6 +39,7 @@ namespace Ivayami.UI
                 _deleteSaveBtns[i].interactable = SaveSelector.Instance.CheckForSaveInSlot(i);
                 if (_deleteSaveBtns[i].interactable && !selected) selected = _deleteSaveBtns[i].gameObject;
             }
+            if (!selected) selected = _cancelBtn.gameObject;
             _menuGroup.SetSelected(selected);
         }
     }

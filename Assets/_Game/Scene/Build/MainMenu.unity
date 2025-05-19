@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028484, g: 0.2257159, b: 0.30692372, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028463, g: 0.22571552, b: 0.3069231, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1465,7 +1465,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 240651974}
+      - m_Target: {fileID: 1967854006}
         m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
         m_MethodName: CloseCurrentThenOpen
         m_Mode: 2
@@ -1639,13 +1639,25 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1312846347}
+      - m_Target: {fileID: 1967854006}
         m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
-        m_MethodName: CloseCurrentThenOpen
+        m_MethodName: CloseCurrent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 240651974}
+        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: SetSelected
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 843943610}
-          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+          m_ObjectArgument: {fileID: 1373886481}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -4353,6 +4365,7 @@ Transform:
   m_Children:
   - {fileID: 1312846348}
   - {fileID: 240651975}
+  - {fileID: 1967854007}
   - {fileID: 1328924564}
   - {fileID: 515700694}
   - {fileID: 843943615}
@@ -5465,7 +5478,6 @@ GameObject:
   - component: {fileID: 524789901}
   - component: {fileID: 524789905}
   - component: {fileID: 524789904}
-  - component: {fileID: 524789903}
   - component: {fileID: 524789902}
   m_Layer: 5
   m_Name: Text
@@ -5507,46 +5519,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _normalFontAsset: {fileID: 11400000, guid: 731456dfa0e264945b7265f926db1faf, type: 2}
   _highlightFontAsset: {fileID: 11400000, guid: 3a1b91aaf04789c4da206fd3e2716984, type: 2}
---- !u!114 &524789903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 524789900}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_StringReference:
-    m_TableReference:
-      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
-    m_TableEntryReference:
-      m_KeyId: 370328743817274
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  m_FormatArguments: []
-  m_UpdateString:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 524789904}
-        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  references:
-    version: 2
-    RefIds: []
 --- !u!114 &524789904
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7109,7 +7081,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4223591283112892311, guid: 17881a0cced77c04cba492b412af5a76, type: 3}
   m_PrefabInstance: {fileID: 7832651066038391189}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7832651066038391190}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
@@ -7120,7 +7092,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8313392711704131251, guid: 17881a0cced77c04cba492b412af5a76, type: 3}
   m_PrefabInstance: {fileID: 7832651066038391189}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7832651066038391190}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 81e0b2bbd1a03a948b0043ba1ee14f1e, type: 3}
@@ -7559,7 +7531,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1267269958}
-  - {fileID: 738444133}
   m_Father: {fileID: 845912418}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
@@ -7744,81 +7715,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e27ea062a49a0d049b51024839ccf86a, type: 3}
   m_PrefabInstance: {fileID: 1365651625}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &738444132
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 738444133}
-  - component: {fileID: 738444135}
-  - component: {fileID: 738444134}
-  m_Layer: 5
-  m_Name: PreviewImage
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &738444133
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 738444132}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 720028396}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0.5}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -45, y: 0}
-  m_SizeDelta: {x: 800, y: 450}
-  m_Pivot: {x: 1, y: 0.5}
---- !u!114 &738444134
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 738444132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &738444135
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 738444132}
-  m_CullTransparentMesh: 1
 --- !u!1 &741950582
 GameObject:
   m_ObjectHideFlags: 0
@@ -9184,6 +9080,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _menuGroup: {fileID: 240651974}
+  _cancelBtn: {fileID: 1373886484}
   _deleteSaveBtns:
   - {fileID: 8440024917679809110}
   - {fileID: 146607583}
@@ -9210,7 +9107,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 845912410}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -12174,6 +12071,66 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: Ivayami.Audio.UiSound, Assembly-CSharp
         m_MethodName: GoForth
         m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1042219642}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1516260704}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1775564268}
+        m_TargetAssemblyTypeName: UnityEngine.CanvasGroup, UnityEngine
+        m_MethodName: set_interactable
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1775564268}
+        m_TargetAssemblyTypeName: UnityEngine.CanvasGroup, UnityEngine
+        m_MethodName: set_blocksRaycasts
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 696776428}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -15364,7 +15321,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 240651974}
+      - m_Target: {fileID: 1967854006}
         m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
         m_MethodName: CloseCurrentThenOpen
         m_Mode: 2
@@ -17419,7 +17376,6 @@ GameObject:
   - component: {fileID: 1370844623}
   - component: {fileID: 1370844627}
   - component: {fileID: 1370844626}
-  - component: {fileID: 1370844625}
   - component: {fileID: 1370844624}
   m_Layer: 5
   m_Name: Text
@@ -17461,46 +17417,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _normalFontAsset: {fileID: 11400000, guid: 731456dfa0e264945b7265f926db1faf, type: 2}
   _highlightFontAsset: {fileID: 11400000, guid: 3a1b91aaf04789c4da206fd3e2716984, type: 2}
---- !u!114 &1370844625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1370844622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_StringReference:
-    m_TableReference:
-      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
-    m_TableEntryReference:
-      m_KeyId: 370328743817274
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  m_FormatArguments: []
-  m_UpdateString:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1370844626}
-        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  references:
-    version: 2
-    RefIds: []
 --- !u!114 &1370844626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17708,7 +17624,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 4
+    m_Mode: 2
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 1222611380}
     m_SelectOnDown: {fileID: 0}
@@ -17763,12 +17679,72 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1516260704}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1042219642}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1775564268}
+        m_TargetAssemblyTypeName: UnityEngine.CanvasGroup, UnityEngine
+        m_MethodName: set_blocksRaycasts
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1775564268}
+        m_TargetAssemblyTypeName: UnityEngine.CanvasGroup, UnityEngine
+        m_MethodName: set_interactable
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 696776428}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
       - m_Target: {fileID: 1312846347}
         m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
         m_MethodName: SetSelected
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 7832651066038391190}
+          m_ObjectArgument: {fileID: 1019795128}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -18492,7 +18468,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 240651974}
+      - m_Target: {fileID: 1967854006}
         m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
         m_MethodName: CloseCurrentThenOpen
         m_Mode: 2
@@ -20962,7 +20938,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 240651974}
+      - m_Target: {fileID: 1967854006}
         m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
         m_MethodName: CloseCurrentThenOpen
         m_Mode: 2
@@ -21313,6 +21289,7 @@ GameObject:
   - component: {fileID: 1775564265}
   - component: {fileID: 1775564267}
   - component: {fileID: 1775564266}
+  - component: {fileID: 1775564268}
   m_Layer: 5
   m_Name: MiddleSection
   m_TagString: Untagged
@@ -21379,6 +21356,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1775564264}
   m_CullTransparentMesh: 1
+--- !u!225 &1775564268
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775564264}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &1791599731
 GameObject:
   m_ObjectHideFlags: 0
@@ -22833,7 +22822,6 @@ GameObject:
   - component: {fileID: 1950665928}
   - component: {fileID: 1950665932}
   - component: {fileID: 1950665931}
-  - component: {fileID: 1950665930}
   - component: {fileID: 1950665929}
   m_Layer: 5
   m_Name: Text
@@ -22875,46 +22863,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _normalFontAsset: {fileID: 11400000, guid: 731456dfa0e264945b7265f926db1faf, type: 2}
   _highlightFontAsset: {fileID: 11400000, guid: 3a1b91aaf04789c4da206fd3e2716984, type: 2}
---- !u!114 &1950665930
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1950665927}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_StringReference:
-    m_TableReference:
-      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
-    m_TableEntryReference:
-      m_KeyId: 370328743817274
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  m_FormatArguments: []
-  m_UpdateString:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1950665931}
-        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  references:
-    version: 2
-    RefIds: []
 --- !u!114 &1950665931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23192,6 +23140,53 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Padding: {x: 0, y: 0, z: 0, w: 0}
   m_Softness: {x: 0, y: 75}
+--- !u!1 &1967854005
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1967854007}
+  - component: {fileID: 1967854006}
+  m_Layer: 0
+  m_Name: MenuGroupSaveDeleteConfirm
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1967854006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967854005}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6e871dd239ff0846b96b9e497f3a39e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _currentMenu: {fileID: 0}
+  _delayToOpen: -1
+  _setMenuBtnSelectedOnStart: 0
+--- !u!4 &1967854007
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967854005}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 421752468}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1971020609
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24143,7 +24138,6 @@ GameObject:
   - component: {fileID: 2017459471}
   - component: {fileID: 2017459470}
   - component: {fileID: 2017459469}
-  - component: {fileID: 2017459468}
   - component: {fileID: 2017459467}
   m_Layer: 5
   m_Name: Text
@@ -24166,46 +24160,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _normalFontAsset: {fileID: 11400000, guid: 731456dfa0e264945b7265f926db1faf, type: 2}
   _highlightFontAsset: {fileID: 11400000, guid: 3a1b91aaf04789c4da206fd3e2716984, type: 2}
---- !u!114 &2017459468
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2017459466}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_StringReference:
-    m_TableReference:
-      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
-    m_TableEntryReference:
-      m_KeyId: 370328743817274
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  m_FormatArguments: []
-  m_UpdateString:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2017459469}
-        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  references:
-    version: 2
-    RefIds: []
 --- !u!114 &2017459469
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25068,13 +25022,25 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1312846347}
+      - m_Target: {fileID: 1967854006}
         m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
-        m_MethodName: CloseCurrentThenOpen
+        m_MethodName: CloseCurrent
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 240651974}
+        m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
+        m_MethodName: SetSelected
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 843943610}
-          m_ObjectArgumentAssemblyTypeName: Ivayami.UI.Menu, Assembly-CSharp
+          m_ObjectArgument: {fileID: 1373886481}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.GameObject, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -26472,7 +26438,6 @@ GameObject:
   - component: {fileID: 8444105172340617074}
   - component: {fileID: 3857055091789112285}
   - component: {fileID: 3653956348886746999}
-  - component: {fileID: 7048301946990271832}
   - component: {fileID: 5615536832071749403}
   m_Layer: 5
   m_Name: Text
@@ -26676,46 +26641,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _normalFontAsset: {fileID: 11400000, guid: 731456dfa0e264945b7265f926db1faf, type: 2}
   _highlightFontAsset: {fileID: 11400000, guid: 3a1b91aaf04789c4da206fd3e2716984, type: 2}
---- !u!114 &7048301946990271832
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3389956164592752549}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_StringReference:
-    m_TableReference:
-      m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
-    m_TableEntryReference:
-      m_KeyId: 370328743817274
-      m_Key: 
-    m_FallbackState: 0
-    m_WaitForCompletion: 0
-    m_LocalVariables: []
-  m_FormatArguments: []
-  m_UpdateString:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 3653956348886746999}
-        m_TargetAssemblyTypeName: TMPro.TMP_Text, Unity.TextMeshPro
-        m_MethodName: set_text
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  references:
-    version: 2
-    RefIds: []
 --- !u!1001 &7832651066038391189
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -26897,11 +26822,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 17881a0cced77c04cba492b412af5a76, type: 3}
---- !u!1 &7832651066038391190 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8498683284500544037, guid: 17881a0cced77c04cba492b412af5a76, type: 3}
-  m_PrefabInstance: {fileID: 7832651066038391189}
-  m_PrefabAsset: {fileID: 0}
 --- !u!224 &7897726541337169229
 RectTransform:
   m_ObjectHideFlags: 0
@@ -26990,7 +26910,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 240651974}
+      - m_Target: {fileID: 1967854006}
         m_TargetAssemblyTypeName: Ivayami.UI.MenuGroup, Assembly-CSharp
         m_MethodName: CloseCurrentThenOpen
         m_Mode: 2
