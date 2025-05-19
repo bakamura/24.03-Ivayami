@@ -23,9 +23,10 @@ namespace Ivayami.UI
 
         public void SetItemDisplay(InventoryItem item)
         {
-            _icon.sprite = item.Sprite;
-            _icon.color = new Color(1, 1, 1, _iconTransparency);
-            _textAmount.text = "0";
+            bool isValid = item;
+            _icon.sprite = isValid ? item.Sprite : null;
+            _icon.color = isValid ? Color.white : new Color(1, 1, 1, _iconTransparency);
+            _textAmount.text = isValid ? "0" : null;
         }
     }
 }

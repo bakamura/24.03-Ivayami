@@ -18,14 +18,12 @@ namespace Ivayami.Player
         private static int IDLE = Animator.StringToHash("Idle");
         private static int FAIL = Animator.StringToHash("Fail");
         private static int MOVE_SPEED = Animator.StringToHash("MoveSpeed");
-        private static int MOVE_X = Animator.StringToHash("MoveX");
-        private static int MOVE_Y = Animator.StringToHash("MoveY");
+        private static int MOVE_SPEED_MULTIPLIER = Animator.StringToHash("MoveSpeedMultiplier");
+        //private static int MOVE_X = Animator.StringToHash("MoveX");
+        //private static int MOVE_Y = Animator.StringToHash("MoveY");
+        private static int RUN = Animator.StringToHash("Run");
         private static int CROUCH = Animator.StringToHash("Crouch");
         private static int INTERACT = Animator.StringToHash("Interact");
-        //private static Dictionary<PlayerActions.InteractAnimation, int> INTERACT_DICTIONARY = new Dictionary<PlayerActions.InteractAnimation, int> {
-        //    { PlayerActions.InteractAnimation.Default, Animator.StringToHash("Interact") },
-        //    { PlayerActions.InteractAnimation.EnterLocker, Animator.StringToHash("EnterLocker") },
-        //};
         private static int STRESS_CURRENT = Animator.StringToHash("StressCurrent");
         private static int INTERACT_LONG = Animator.StringToHash("InteractLong");
         private static int HOLDING = Animator.StringToHash("Holding");
@@ -36,7 +34,7 @@ namespace Ivayami.Player
         private static int USEMP3 = Animator.StringToHash("UseMP3");
         private static int INTERACT_INDEX = Animator.StringToHash("InteractIndex");
         private static int INTERACT_SPEED = Animator.StringToHash("InteractSpeed");
-        private static int TAKE_DAMAGE = Animator.StringToHash("Damage");
+        //private static int TAKE_DAMAGE = Animator.StringToHash("Damage");
         private static int DAMAGE_TYPE = Animator.StringToHash("DamageType");
 
         private Animator _animator;
@@ -76,6 +74,7 @@ namespace Ivayami.Player
         private void Start()
         {
             PlayerMovement.Instance.onMovement.AddListener(MoveAnimation);
+            PlayerMovement.Instance.onRunToggle.AddListener(Run);
             PlayerMovement.Instance.onCrouch.AddListener(Crouch);
             PlayerMovement.Instance.onStaminaUpdate.AddListener(Stamina);
             PlayerStress.Instance.onStressChange.AddListener(StressCurrent);
@@ -105,11 +104,17 @@ namespace Ivayami.Player
             return 1;
         }
 
-        private void MoveAnimation(Vector2 direction)
+        private void MoveAnimation(Vector2 direction, float speed)
         {
-            _animator.SetFloat(MOVE_SPEED, direction.magnitude);
-            _animator.SetFloat(MOVE_X, direction.x);
-            _animator.SetFloat(MOVE_Y, direction.y);
+            _animator.SetFloat(MOVE_SPEED, direction.sqrMagnitude);
+            _animator.SetFloat(MOVE_SPEED_MULTIPLIER, speed);
+            //_animator.SetFloat(MOVE_X, direction.x);
+            //_animator.SetFloat(MOVE_Y, direction.y);
+        }
+
+        private void Run(bool isRunning)
+        {
+            _animator.SetBool(RUN, isRunning);
         }
 
         private void Crouch(bool isCrouching)
@@ -142,10 +147,10 @@ namespace Ivayami.Player
             _animator.SetBool(HEAVY_HOLDING, isHolding);
         }
 
-        private void Trigger(string abilityName)
-        {
-            _animator.SetTrigger(abilityName);
-        }
+        //private void Trigger(string abilityName)
+        //{
+        //    _animator.SetTrigger(abilityName);
+        //}
 
         public void GoToIdle()
         {
