@@ -18,7 +18,6 @@ namespace Ivayami.Dialogue
         private Transform _currentFollow;
         private bool _currentChangeTargetFocus;
         private bool _currentFollowPlayer;
-        private bool _currentSnapCameraPositionOnInterrupt;
         private bool _dialogueSetupEventTriggered;
         private float _currentDuration;
 
@@ -43,7 +42,6 @@ namespace Ivayami.Dialogue
 
             _currentChangeTargetFocus = cameraTransitionInfo.ChangeCameraFocus;
             _currentFollowPlayer = cameraTransitionInfo.FollowPlayer;
-            _currentSnapCameraPositionOnInterrupt = cameraTransitionInfo.SnapCameraPositionOnInterrupt;
             _currentPositionCurve = cameraTransitionInfo.PositionCurve;
             _currentRotationCurve = cameraTransitionInfo.RotationCurve;
             _currentFollow = cameraTransitionInfo.FollowTarget;
@@ -57,7 +55,6 @@ namespace Ivayami.Dialogue
 
         private void TeleportCameraToPositionAndRotation()
         {
-            if (!_currentSnapCameraPositionOnInterrupt) return;
             Vector3 offset = _currentChangeTargetFocus && _currentFollowPlayer ?
                 Vector3.Distance(_dialogueCamera.transform.position, _currentFollow.position) * (_currentFollow.position - _currentLookAt.position).normalized
                 + PlayerCamera.Instance.CameraAimPoint.localPosition.x * _dialogueCamera.transform.right : Vector3.zero;
@@ -91,7 +88,7 @@ namespace Ivayami.Dialogue
                     yield return null;
                 }
                 TeleportCameraToPositionAndRotation();
-            }
+            }            
             RecalculateCameraOrientation();
             _animationCoroutine = null;
         }
