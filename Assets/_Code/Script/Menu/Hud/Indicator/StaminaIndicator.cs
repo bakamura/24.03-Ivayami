@@ -25,14 +25,17 @@ namespace Ivayami.UI {
 
         [SerializeField] private float[] _stepStressMins;
 
+        private float _stressCapped;
+
         private void Start() {
+            _stressCapped = PlayerStress.Instance.MaxStress - _stepStressMins[0];
             PlayerStress.Instance.onStressChange.AddListener(StressUpdate);
             PlayerMovement.Instance.onStaminaUpdate.AddListener(StaminaSaturate);
         }
 
         private void Update() {
             _beatImage.rectTransform.Translate(_beatSpeed * Time.deltaTime * Vector3.left);
-            if (_beatImage.rectTransform.anchoredPosition.x < -_beatPartitionPixels * (_beatCurrent + 1)) _beatImage.rectTransform.Translate(_beatPartitionPixels * Vector3.right);
+            if (_beatImage.rectTransform.anchoredPosition.x < -(_beatPartitionPixels * _beatCurrent) - _beatPixels[_beatCurrent]) _beatImage.rectTransform.Translate(_beatPixels[_beatCurrent] * Vector3.right);
         }
 
         private void StressUpdate(float value) {
@@ -49,7 +52,7 @@ namespace Ivayami.UI {
         } 
 
         private void StressColorize(float value) {
-            Color newColor = Color.Lerp(_stressLowColor, _stressMaxColor, value);
+            Color newColor = Color.Lerp(_stressLowColor, _stressMaxColor, (value - _stepStressMins[0]) / _stressCapped);
             foreach (Image coloredImage in _indicatorFills) coloredImage.color = newColor;
         }
 
