@@ -8,11 +8,12 @@ using Ivayami.Player;
 namespace Ivayami.UI {
     public class StaminaIndicator : MonoBehaviour {
 
-        [Header("Stamina Color")]
 
-        [SerializeField] private Color _staminaMaxColor;
-        [SerializeField] private Color _staminaOutColor;
-        [SerializeField] private Image[] _staminaColoredImages;
+        [Header("Stress Color")]
+
+        [SerializeField] private Image[] _indicatorFills;
+        [SerializeField] private Color _stressMaxColor;
+        [SerializeField] private Color _stressLowColor;
 
         [Header("HeartBeat")]
 
@@ -25,13 +26,18 @@ namespace Ivayami.UI {
         [SerializeField] private float[] _stepStressMins;
 
         private void Start() {
-            PlayerMovement.Instance.onStaminaUpdate.AddListener(StaminaColorize);
-            PlayerStress.Instance.onStressChange.AddListener(HeartBeatUpdate);
+            PlayerStress.Instance.onStressChange.AddListener(StressUpdate);
+            PlayerMovement.Instance.onStaminaUpdate.AddListener(StaminaSaturate);
         }
 
         private void Update() {
             _beatImage.rectTransform.Translate(_beatSpeed * Time.deltaTime * Vector3.left);
             if (_beatImage.rectTransform.anchoredPosition.x < -_beatPartitionPixels * (_beatCurrent + 1)) _beatImage.rectTransform.Translate(_beatPartitionPixels * Vector3.right);
+        }
+
+        private void StressUpdate(float value) {
+            HeartBeatUpdate(value);
+            StressColorize(value);
         }
 
         private void HeartBeatUpdate(float value) {
@@ -40,11 +46,15 @@ namespace Ivayami.UI {
                     _beatCurrent = i;
                     break;
                 }
+        } 
+
+        private void StressColorize(float value) {
+            Color newColor = Color.Lerp(_stressLowColor, _stressMaxColor, value);
+            foreach (Image coloredImage in _indicatorFills) coloredImage.color = newColor;
         }
 
-        private void StaminaColorize(float value) {
-            Color newColor = Color.Lerp(_staminaOutColor, _staminaMaxColor, value);
-            foreach (Image coloredImage in _staminaColoredImages) coloredImage.color = newColor;
+        private void StaminaSaturate(float value) {
+            foreach (Image filledImage in _indicatorFills) filledImage.fillAmount = value;
         }
 
 #if UNITY_EDITOR
