@@ -6,10 +6,11 @@ using UnityEngine.UI;
 using Ivayami.Player;
 
 namespace Ivayami.UI {
-    public class StaminaIndicator : Indicator {
+    public class StaminaIndicator : MonoBehaviour {
 
         [Header("Stamina Color")]
 
+        [SerializeField] private Color _staminaMaxColor;
         [SerializeField] private Color _staminaOutColor;
         [SerializeField] private Image[] _staminaColoredImages;
 
@@ -25,7 +26,7 @@ namespace Ivayami.UI {
 
         private void Start() {
             PlayerMovement.Instance.onStaminaUpdate.AddListener(StaminaColorize);
-            PlayerStress.Instance.onStressChange.AddListener(FillUpdate);
+            PlayerStress.Instance.onStressChange.AddListener(HeartBeatUpdate);
         }
 
         private void Update() {
@@ -33,7 +34,7 @@ namespace Ivayami.UI {
             if (_beatImage.rectTransform.anchoredPosition.x < -_beatPartitionPixels * (_beatCurrent + 1)) _beatImage.rectTransform.Translate(_beatPartitionPixels * Vector3.right);
         }
 
-        public override void FillUpdate(float value) {
+        private void HeartBeatUpdate(float value) {
             for (int i = _stepStressMins.Length - 1; i >= 0; i--)
                 if (value > _stepStressMins[i]) {
                     _beatCurrent = i;
@@ -42,7 +43,7 @@ namespace Ivayami.UI {
         }
 
         private void StaminaColorize(float value) {
-            Color newColor = Color.Lerp(_staminaOutColor, Color.white, value);
+            Color newColor = Color.Lerp(_staminaOutColor, _staminaMaxColor, value);
             foreach (Image coloredImage in _staminaColoredImages) coloredImage.color = newColor;
         }
 
