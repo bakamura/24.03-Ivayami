@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using Ivayami.Scene;
 using Ivayami.Save;
 using System.Collections;
+using Ivayami.Player;
 
 namespace Ivayami.UI
 {
@@ -27,7 +28,8 @@ namespace Ivayami.UI
         [SerializeField] private InputActionReference _moveMapInput;
         [SerializeField, Min(1f)] private float _controlDragSensitivity = 5;
         [SerializeField] private InputActionReference _zoomMapInput;
-        [SerializeField, Min(0f)] private float _zoomMapSensitivity;
+        [SerializeField, Min(0f)] private float _controlerZoomMapSensitivity;
+        [SerializeField] private float _scrollZoomMapSensitivity;
         [SerializeField, Min(1f)] private float _maxMapZoom;
 
         [Header("Cache")]
@@ -35,12 +37,18 @@ namespace Ivayami.UI
         private Vector2 _currentZoomMapInput;
         private Vector2 _initialMapSize;
         private RectTransform _mapParentTransform;
+        private float _currentZoomMapSensitivity = 1f;
 
         private void Awake()
         {
             _openMapInput.action.performed += OpenMap;
             _mapParentTransform = _mapRectTranform.parent.GetComponent<RectTransform>();
             _initialMapSize = _mapParentTransform.rect.size;
+        }
+
+        private void Start()
+        {
+            InputCallbacks.Instance.SubscribeToOnChangeControls(HandleControlChange);
         }
 
         public void PointersUpdate()
@@ -63,7 +71,7 @@ namespace Ivayami.UI
             if (isActive)
             {
                 _moveMapInput.action.performed += MovementMap;
-                _zoomMapInput.action.performed += ZoomMap;                
+                _zoomMapInput.action.performed += ZoomMap;
                 StartCoroutine(MoveMapCoroutine());
                 StartCoroutine(ZoomMapCoroutine());
             }
@@ -101,19 +109,18 @@ namespace Ivayami.UI
         private IEnumerator ZoomMapCoroutine()
         {
             float currentStep = 0;
-            float currentScale;
-            WaitForFixedUpdate delay = new WaitForFixedUpdate();
+            float currentScale;            
             while (true)
             {
                 if (_currentZoomMapInput != Vector2.zero)
                 {
-                    currentStep = Mathf.Clamp(currentStep + Time.fixedDeltaTime * _currentZoomMapInput.y * _zoomMapSensitivity, 0f, 1f);
+                    currentStep = Mathf.Clamp(currentStep + Time.deltaTime * _currentZoomMapInput.y * _currentZoomMapSensitivity, 0f, 1f);
                     currentScale = Mathf.Lerp(1, _maxMapZoom, currentStep);
                     _mapParentTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Lerp(_mapParentTransform.rect.width, _currentZoomMapInput.y > 0 ? _initialMapSize.x / _maxMapZoom : _initialMapSize.x, currentStep));
                     _mapParentTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Lerp(_mapParentTransform.rect.height, _currentZoomMapInput.y > 0 ? _initialMapSize.y / _maxMapZoom : _initialMapSize.y, currentStep));
                     _mapParentTransform.localScale = new Vector3(currentScale, currentScale, 1);
                 }
-                yield return delay;
+                yield return null;
             }
         }
 
@@ -140,6 +147,11 @@ namespace Ivayami.UI
             _currentMovemapInput = Vector2.zero;            
             _mapScrollRect.StopMovement();
             _mapRectTranform.anchoredPosition = Vector2.zero;
+        }
+
+        private void HandleControlChange(InputCallbacks.ControlType controlType)
+        {
+            _currentZoomMapSensitivity = controlType == InputCallbacks.ControlType.Keyboard ? _scrollZoomMapSensitivity : _controlerZoomMapSensitivity;
         }
 
     }
