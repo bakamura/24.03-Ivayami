@@ -12,7 +12,6 @@ namespace Ivayami.Puzzle
         {
             if (PlayerActions.Instance.CheckAbility(typeof(Lantern), out PlayerAbility ability))
             {
-                Debug.Log("FOUND");
                 Lantern lantern = (Lantern)ability;
                 lantern.Fill(_fillAmount);
             }
