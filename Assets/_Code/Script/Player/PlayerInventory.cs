@@ -22,7 +22,7 @@ namespace Ivayami.Player {
         {
             public InventoryItem Item;
             public int Amount;
-
+            public static InventoryItemStack Empty = new InventoryItemStack();
             public InventoryItemStack(InventoryItem item, int amount)
             {
                 Item = item;
@@ -45,15 +45,18 @@ namespace Ivayami.Player {
             return _checkInventoryIndexCache == -1 ? new InventoryItemStack() : _itemList[_checkInventoryIndexCache];
         }
 
-        public void AddToInventory(InventoryItem item, bool shouldEmphasize = false) {
+        public void AddToInventory(InventoryItem item, bool shouldEmphasize = false, bool shouldPlayFeedbacks = true) {
             _checkInventoryIndexCache = _itemList.FindIndex((inventoryItem) => inventoryItem.Item.name == item.name);
             if (_checkInventoryIndexCache == -1) _itemList.Add(new InventoryItemStack(item, 1));
             else _itemList[_checkInventoryIndexCache] = new InventoryItemStack(_itemList[_checkInventoryIndexCache].Item, _itemList[_checkInventoryIndexCache].Amount + 1);
             onInventoryUpdate.Invoke(CheckInventory());
-            if (shouldEmphasize) ItemEmphasisDisplay.Instance.DisplayItem(item.Sprite,
-                item.GetDisplayName(),
-                item.GetDisplayDescription());
-            else InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite, item.GetDisplayName());
+            if (shouldPlayFeedbacks)
+            {
+                if (shouldEmphasize) ItemEmphasisDisplay.Instance.DisplayItem(item.Sprite,
+                    item.GetDisplayName(),
+                    item.GetDisplayDescription());
+                else InfoUpdateIndicator.Instance.DisplayUpdate(item.Sprite, item.GetDisplayName());
+            }
 
             Logger.Log(LogType.Player, $"Inventory Add: {item.GetDisplayName()} ({item.name}) / {item.Type}. Current owned {_itemList[_checkInventoryIndexCache == -1 ? 0 : _checkInventoryIndexCache].Amount}");
         }

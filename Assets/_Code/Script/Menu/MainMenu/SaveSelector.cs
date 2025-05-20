@@ -17,7 +17,7 @@ namespace Ivayami.UI {
 
         //Game Entering
 
-        [field: SerializeField] public SceneLoader BaseTerrainLoader { get; private set; }
+        //[field: SerializeField] public SceneLoader BaseTerrainLoader { get; private set; }
         [field: SerializeField] public SceneLoader CutsceneLoader { get; private set; }
         [field: SerializeField] public SceneLoader MainMenuUnloader { get; private set; }
 
@@ -67,6 +67,16 @@ namespace Ivayami.UI {
         public void RemovePlayerBlocker() {
             PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, true);
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, true);
+        }
+
+        public void UpdateSaveBtnInfo(byte saveId)
+        {
+            _saveSelectBtns[saveId].Setup(null, saveId);
+        }
+
+        public bool CheckForSaveInSlot(byte saveId)
+        {
+           return _saveSelectBtns[saveId].HasSaveInSlot;
         }
 
 #if UNITY_EDITOR

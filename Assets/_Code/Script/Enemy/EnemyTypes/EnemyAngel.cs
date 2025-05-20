@@ -4,11 +4,13 @@ using UnityEngine.AI;
 using Ivayami.Player;
 using Ivayami.Audio;
 using System;
+using UnityEngine.Events;
+using System.Collections.Generic;
 
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
-    public class EnemyAngel : StressEntity, IIluminatedEnemy
+    public class EnemyAngel : StressEntity, IIluminatedEnemy, IEnemyWalkArea
     {
         [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
         [SerializeField] private bool _startActive;
@@ -24,10 +26,12 @@ namespace Ivayami.Enemy
 
         [SerializeField] private bool _goToLastTargetPosition;
         [SerializeField] private bool _loseTargetWhenHidden = true;
+        [SerializeField] private PatrolTypes _patrolType;
         [SerializeField, Min(0.01f)] private float _delayToLoseTarget;
         [SerializeField, Min(0f)] private float _delayToStopSearchTarget;
         [SerializeField, Min(0f)] private float _delayToFinishTargetSearch;
         [SerializeField, Min(0f)] private float _delayBetweenPatrolPoints;
+        [SerializeField] private EnemyWalkArea _fixedWalkArea;
         [SerializeField] private Vector3[] _patrolPoints;
 
         //[SerializeField, Min(0f)] private float _stressIncreaseOnTargetDetected;
@@ -41,6 +45,7 @@ namespace Ivayami.Enemy
         [SerializeField, Min(1f)] private float _leapAttackJumpHeight;
         [SerializeField] private AnimationCurve _leapAttackHeightCurve;
         [SerializeField, Min(0f)] private float _leapAttackPredictDistance;
+        [SerializeField] private UnityEvent _onLeapAttackLand;
         [SerializeField, Min(0f)] private float _fallDuration;
         [SerializeField] private HitboxInfo[] _attackAreaInfos;
 
@@ -70,6 +75,11 @@ namespace Ivayami.Enemy
         //private RaycastHit _blockHit;
 #endif
 
+        private enum PatrolTypes
+        {
+            BasicPatrol,
+            EnemyWalkArea
+        }
         private NavMeshAgent _navMeshAgent
         {
             get
@@ -108,6 +118,8 @@ namespace Ivayami.Enemy
         private Coroutine _behaviourCoroutine;
         private Coroutine _leapCoroutine;
         private Coroutine _fallCoroutine;
+        private List<EnemyWalkArea> _currentWalkAreas = new List<EnemyWalkArea>();
+        private EnemyMovementData _currentMovementData;
         private Quaternion _initialRotation;
         private Vector3 _lastTargetPosition;
         private Vector3 _initialPosition;
@@ -129,6 +141,8 @@ namespace Ivayami.Enemy
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
 
+        public int ID => gameObject.GetInstanceID();
+
         protected override void Awake()
         {
             base.Awake();
@@ -143,6 +157,8 @@ namespace Ivayami.Enemy
 
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
             _baseStoppingDistance = _navMeshAgent.stoppingDistance;
+
+            if (_fixedWalkArea) _fixedWalkArea.AddEnemyToArea(this, gameObject.name);
         }
 
         private void OnEnable()
@@ -155,10 +171,10 @@ namespace Ivayami.Enemy
         {
             StopBehaviour();
         }
-
+        #region BaseBehaviour
         private IEnumerator InitializeAgent()
         {
-            yield return new WaitForEndOfFrame();
+            yield return null;
             _navMeshAgent.enabled = true;
             if (_startActive) StartBehaviour();
             _initializeCoroutine = null;
@@ -167,7 +183,12 @@ namespace Ivayami.Enemy
         [ContextMenu("Start")]
         public void StartBehaviour()
         {
-            if (!IsActive)
+            if (!_navMeshAgent.isOnNavMesh)
+            {
+                //Debug.LogWarning($"Enemy {name} of type {typeof(EnemyAngel)} is not in a navmesh");
+                return;
+            }
+            if (!IsActive && _navMeshAgent.isOnNavMesh)
             {
                 if (!_navMeshAgent.enabled && _initializeCoroutine == null)
                 {
@@ -218,15 +239,15 @@ namespace Ivayami.Enemy
                     _chaseTargetPatience = Mathf.Clamp(_chaseTargetPatience - _behaviourTickFrequency, 0, _delayToLoseTarget);
                     if (CheckForTarget(halfVisionAngle)) _chaseTargetPatience = _delayToLoseTarget;
                     isStressAreaActive = _chaseTargetPatience <= 0;
-                    if (_canChaseTarget && _chaseTargetPatience > 0)
+                    if (_canChaseTarget && _chaseTargetPatience > 0 && _hitsCache[0])
                     {
                         if (!_isChasing)
                         {
                             if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
-                            _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
+                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, () => _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing));
                             _isChasing = true;
                             if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());
-                            _navMeshAgent.speed = _chaseSpeed;
+                            SetToChaseSpeed();
                         }
                         _navMeshAgent.SetDestination(_hitsCache[0].transform.position);
                         _lastTargetPosition = _hitsCache[0].transform.position;
@@ -255,7 +276,7 @@ namespace Ivayami.Enemy
                                     UpdateMovement(true);
                                     _isChasing = false;
                                     _goToLastTargetPointPatience = 0;
-                                    _navMeshAgent.speed = _baseSpeed;
+                                    SetToWalkSpeed();
                                     yield return _endGoToLastTargetDelay;
                                     UpdateMovement(false);
                                 }
@@ -266,25 +287,51 @@ namespace Ivayami.Enemy
                         {
                             if (_canWalkPath)
                             {
-                                _navMeshAgent.speed = _baseSpeed;
+                                SetToWalkSpeed();
                                 _enemySounds.PlaySound(EnemySounds.SoundTypes.IdleScreams);
-                                _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
                                 if (_debugLogsEnemyPatrol) Debug.Log("Patroling");
-                                if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
+                                switch (_patrolType)
                                 {
-                                    if (_patrolPoints.Length > 1)
-                                    {
-                                        _enemyAnimator.Walking(0);
-                                        yield return _betweenPatrolPointsDelay;
-                                        currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
-                                        if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
-                                        else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
-                                        if (_debugLogsEnemyPatrol) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
-                                    }
-                                    else
-                                    {
-                                        if (transform.rotation != _initialRotation && _rotateCoroutine == null) _rotateCoroutine = StartCoroutine(RotateCoroutine(_initialRotation));
-                                    }
+                                    case PatrolTypes.BasicPatrol:
+                                        _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
+                                        if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
+                                        {
+                                            if (_patrolPoints.Length > 1)
+                                            {
+                                                _enemyAnimator.Walking(0);
+                                                yield return _betweenPatrolPointsDelay;
+                                                currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
+                                                if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
+                                                else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
+                                                if (_debugLogsEnemyPatrol) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
+                                            }
+                                            else
+                                            {
+                                                if (transform.rotation != _initialRotation && _rotateCoroutine == null) _rotateCoroutine = StartCoroutine(RotateCoroutine(_initialRotation));
+                                            }
+                                        }
+                                        break;
+                                    case PatrolTypes.EnemyWalkArea:
+                                        if (_currentWalkAreas.Count > 0 && _currentWalkAreas[^1].GetCurrentPoint(ID, out EnemyWalkArea.EnemyData point))
+                                        {
+                                            if (Vector3.Distance(transform.position, point.Point.Position) <= _navMeshAgent.stoppingDistance)
+                                            {
+                                                _navMeshAgent.velocity = Vector3.zero;
+                                                _enemyAnimator.Walking(0);
+                                                yield return new WaitForSeconds(point.Point.DelayToNextPoint);
+                                                _navMeshAgent.SetDestination(_currentWalkAreas[^1].GoToNextPoint(ID).Point.Position);
+                                                if (_debugLogsEnemyPatrol)
+                                                {
+                                                    _currentWalkAreas[^1].GetCurrentPoint(ID, out point);
+                                                    Debug.Log($"Change Patrol Point to {point.CurrentPointIndex}");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                _navMeshAgent.SetDestination(point.Point.Position);
+                                            }
+                                        }
+                                        break;
                                 }
                             }
                         }
@@ -315,7 +362,7 @@ namespace Ivayami.Enemy
                 if (_directContactWithTarget && _hitsCache[0].CompareTag("Player"))
                 {
                     if (_debugLogsEnemyPatrol) Debug.Log($"Chasing Stress added {_stressIncreaseWhileChasing * _behaviourTickFrequency}");
-                    PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * _behaviourTickFrequency, _stressMaxWhileChasing);
+                    PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * _behaviourTickFrequency, _stressMaxWhileChasing, PlayerAnimation.DamageAnimation.Mental);
                 }
                 yield return _behaviourTickDelay;
             }
@@ -345,7 +392,11 @@ namespace Ivayami.Enemy
             }
             else isInMinRange = Physics.OverlapSphereNonAlloc(rayOrigin, currentMinRange, _hitsCache, _targetLayer, QueryTriggerInteraction.Ignore) > 0;
 
-            if (!_hitsCache[0]) return false;
+            if (!_hitsCache[0])
+            {
+                _directContactWithTarget = false;
+                return false;
+            }
 
             bool isHidden = (_loseTargetWhenHidden && PlayerMovement.Instance.hidingState != PlayerMovement.HidingState.None) || !_loseTargetWhenHidden;
             bool blockingVision = Physics.Raycast(rayOrigin, (targetCenter - rayOrigin).normalized, /*out _blockHit,*/ Vector3.Distance(rayOrigin, targetCenter), _blockVisionLayer, QueryTriggerInteraction.Ignore);
@@ -358,6 +409,7 @@ namespace Ivayami.Enemy
             _navMeshAgent.stoppingDistance = _directContactWithTarget ? _collision.radius + _currentTargetColliderSizeFactor + .1f : _baseStoppingDistance;
             return _directContactWithTarget;
         }
+        #endregion
 
         #region LeapAttack
         /// <summary>
@@ -392,7 +444,7 @@ namespace Ivayami.Enemy
         {
             for (int i = 0; i < _attackAreaInfos.Length; i++)
             {
-                _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+                _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
             }
             _isInLeapAnimation = false;
             //Debug.Log("EndAttack");
@@ -418,16 +470,22 @@ namespace Ivayami.Enemy
             {
                 if (!_attackAreaInfos[i].WillInterpolateAnySize() && _attackAreaInfos[i].AnimationIndex == currentAnimIndex && normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
                 {
-                    _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
+                    _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay, _attackAreaInfos[i].DamageType);
                 }
                 else
                 {
                     //deactivates all hitboxes that dont lerp size
-                    if (!_attackAreaInfos[i].WillInterpolateAnySize()) _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+                    if (!_attackAreaInfos[i].WillInterpolateAnySize()) _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
                 }
             }
             if (currentAnimIndex == 1 && normalizedTime >= _startLeapMovementInterval && !_isInLeapAnimation)
             {
+                if (!CheckForTarget(_visionAngle / 2f))
+                {
+                    _enemyAnimator.ForcePlayState("idle");
+                    HandleAttackAnimationEnd();
+                    return;
+                }
                 _isInLeapAnimation = true;
                 _navMeshAgent.enabled = false;
                 _initialLeapPosition = transform.position;
@@ -444,7 +502,7 @@ namespace Ivayami.Enemy
             Vector3 dir = (_initialLeapPosition - _hitsCache[0].transform.position).normalized;
             Vector3 finalPos = GetFinalPos();
             Vector3 colliderSize;
-            transform.rotation = Quaternion.LookRotation(-dir);            
+            transform.rotation = Quaternion.LookRotation(-dir);
 
             while (count < 1)
             {
@@ -456,16 +514,17 @@ namespace Ivayami.Enemy
                         _currentLeapAnimationTime >= _attackAreaInfos[i].MinInterval && _currentLeapAnimationTime <= _attackAreaInfos[i].MaxInterval)
                     {
                         colliderSize = new Vector3(_attackAreaInfos[i].Size.x, _attackAreaInfos[i].Size.y, Vector3.Distance(transform.position, _initialLeapPosition));
-                        _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, colliderSize, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
+                        _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, colliderSize, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay, _attackAreaInfos[i].DamageType);
                     }
                     else
                     {
                         //deactivate all hitboxes that lerp size
-                        if (_attackAreaInfos[i].WillInterpolateAnySize()) _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+                        if (_attackAreaInfos[i].WillInterpolateAnySize()) _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
                     }
                 }
                 yield return delay;
             }
+            _onLeapAttackLand?.Invoke();
             _leapCoroutine = null;
 
             Vector3 GetFinalPos()
@@ -482,7 +541,7 @@ namespace Ivayami.Enemy
                     if (Physics.Raycast(new Ray(_hitsCache[0].transform.position + new Vector3(0, halfHeight, 0), currentPlayerMovement.normalized), _predictDistance, _blockVisionLayer))
                     {
                         finalPos = _hitsCache[0].transform.position + dir * (_navMeshAgent.radius + _currentTargetColliderSizeFactor);
-                        if(_debugLogsEnemyPatrol) Debug.Log("Position Blocked, Leap attack close to player");
+                        if (_debugLogsEnemyPatrol) Debug.Log("Position Blocked, Leap attack close to player");
                     }
                     else
                     {
@@ -513,9 +572,55 @@ namespace Ivayami.Enemy
                 transform.position = Vector3.Lerp(transform.position, finalPos, count);
                 yield return delay;
             }
+            _onLeapAttackLand?.Invoke();
             _navMeshAgent.enabled = true;
             _navMeshAgent.isStopped = false;
             _fallCoroutine = null;
+        }
+
+        private void SetToChaseSpeed()
+        {
+            _navMeshAgent.speed = _currentMovementData ? _currentMovementData.ChaseSpeed : _chaseSpeed;
+        }
+
+        private void SetToWalkSpeed()
+        {
+            _navMeshAgent.speed = _currentMovementData ? _currentMovementData.WalkSpeed : _baseSpeed;
+        }
+
+        public bool SetWalkArea(EnemyWalkArea area)
+        {
+            if (_fixedWalkArea == area && !_currentWalkAreas.Contains(area))
+            {
+                _currentWalkAreas.Add(area);
+                return true;
+            }
+            if (!_fixedWalkArea)
+            {
+                if (!_currentWalkAreas.Contains(area))
+                {
+                    _currentWalkAreas.Add(area);
+                    return true;
+                }
+                if (_currentWalkAreas.Contains(area))
+                {
+                    if (_currentWalkAreas.Count - 1 <= 0) return false;
+                    else
+                    {
+                        _currentWalkAreas.Remove(area);
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public void SetMovementData(EnemyMovementData data)
+        {
+            _currentMovementData = data;
+            _navMeshAgent.speed = _isChasing ? data.ChaseSpeed : data.WalkSpeed;
+            _navMeshAgent.acceleration = data.Acceleration;
+            _navMeshAgent.angularSpeed = data.RotationSpeed;
         }
         #endregion
 
@@ -525,11 +630,20 @@ namespace Ivayami.Enemy
             _navMeshAgent.speed = speed;
         }
 
-        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped)
+        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped, bool forceTargetDetect)
         {
             _canChaseTarget = canChaseTarget;
             _canWalkPath = canWalkPath;
-            if(!canWalkPath && !canChaseTarget) _chaseTargetPatience = _delayToLoseTarget;
+            if (!canWalkPath && !canChaseTarget)
+            {
+                if (forceTargetDetect)
+                {
+                    _chaseTargetPatience = _delayToLoseTarget;
+                    _hitsCache[0] = PlayerMovement.Instance.CharacterController;
+                    _lastTargetPosition = _hitsCache[0].transform.position;
+                }
+                HandleAttackAnimationEnd();
+            }
             UpdateMovement(isStopped);
         }
 
@@ -562,7 +676,7 @@ namespace Ivayami.Enemy
                 Gizmos.color = _minDistanceInChaseAreaColor;
                 Gizmos.DrawSphere(transform.position, _minDetectionRangeInChase);
             }
-            if (_drawPatrolPoints)
+            if (_drawPatrolPoints && _patrolType == PatrolTypes.BasicPatrol)
             {
                 Vector3 pos = _initialPosition != Vector3.zero ? _initialPosition : transform.position;
                 Gizmos.color = _patrolPointsColor;
@@ -592,7 +706,7 @@ namespace Ivayami.Enemy
                 Gizmos.color = _leapAttackColor;
                 Gizmos.DrawSphere(transform.position, _distanceToLeapAttack);
             }
-            if (_drawPredictPosition && Application.isPlaying)
+            if (_drawPredictPosition && Application.isPlaying && _hitsCache[0])
             {
                 Vector3 currentPlayerMovement = new Vector3(PlayerMovement.Instance.MovementDirection.x, 0, PlayerMovement.Instance.MovementDirection.z);
                 bool blocked = Physics.Raycast(new Ray(_hitsCache[0].transform.position + new Vector3(0, _navMeshAgent.height * .5f, 0), currentPlayerMovement.normalized), _predictDistance, _blockVisionLayer);
@@ -620,7 +734,7 @@ namespace Ivayami.Enemy
                 if (_attackAreaInfos[i].MinInterval > _attackAreaInfos[i].MaxInterval) _attackAreaInfos[i].MinInterval = _attackAreaInfos[i].MaxInterval;
             }
             if (_distanceToFogAttack < _collision.radius + .2f) _distanceToFogAttack = _collision.radius + .2f;
-            _navMeshAgent.stoppingDistance = _distanceToFogAttack;
+            //_navMeshAgent.stoppingDistance = _distanceToFogAttack;
         }
 #endif
         #endregion

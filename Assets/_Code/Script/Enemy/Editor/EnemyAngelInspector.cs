@@ -11,8 +11,8 @@ public class EnemyAngelInspector : Editor
     SerializedProperty stressIncreaseTickFrequency, stressAreas, debugLogsStressEntity, drawGizmos;
     //Enemy Patrol variables
     SerializedProperty minDetectionRange, minDetectionRangeInChase, detectionRange, delayToLoseTarget, visionAngle, visionOffset, delayBetweenPatrolPoints, delayToStopSearchTarget, delayToFinishTargetSearch, behaviourTickFrequency, /*stressIncreaseOnTargetDetected,*/
-        stressIncreaseWhileChasing, stressMaxWhileChasing, chaseSpeed, startActive, goToLastTargetPosition, attackAreaInfos, loseTargetWhenHidden, targetLayer, blockVisionLayer, patrolPoints,
-        distanceToLeapAttack, distanceToFogAttack, leapAttackRange, leapAttackDuration, startLeapMovementInterval, leapAttackJumpHeight, leapAttackPredictDistance, leapAttackHeightCurve, fallDuration,
+        stressIncreaseWhileChasing, stressMaxWhileChasing, chaseSpeed, startActive, goToLastTargetPosition, attackAreaInfos, loseTargetWhenHidden, patrolType, fixedWalkArea, targetLayer, blockVisionLayer, patrolPoints,
+        distanceToLeapAttack, distanceToFogAttack, leapAttackRange, leapAttackDuration, startLeapMovementInterval, leapAttackJumpHeight, leapAttackPredictDistance, leapAttackHeightCurve, fallDuration, onLeapAttackLand,
         debugLogsEnemyPatrol, drawMinDistance, minDistanceAreaColor, drawMinDistanceInChase, minDistanceInChaseAreaColor, drawDetectionRange, detectionRangeAreaColor, drawPatrolPoints, patrolPointsColor, drawStoppingDistance, stoppingDistanceColor, patrolPointRadius,
         drawFogAttackDistance, fogAttackColor, drawLeapAttackDistance, leapAttackColor, drawPredictPosition, predictPositionColor, drawLeapAttackRange, leapAttackRangeColor;
     private NavMeshAgent _navMeshAgent;
@@ -33,7 +33,7 @@ public class EnemyAngelInspector : Editor
         EditorGUILayout.PropertyField(startActive, new GUIContent("Start Active"));
 
         RenderHeader("Enemy Patrol Detection Paramaters", true);
-        EditorGUILayout.PropertyField(chaseSpeed, new GUIContent("Chase Speed"));
+        if (patrolType.enumValueIndex == 0) EditorGUILayout.PropertyField(chaseSpeed, new GUIContent("Chase Speed"));
         EditorGUILayout.PropertyField(detectionRange, new GUIContent("Cone Detection Range"));
         EditorGUILayout.PropertyField(minDetectionRange, new GUIContent("Min Detection Range"));
         EditorGUILayout.PropertyField(minDetectionRangeInChase, new GUIContent("Min Detection Range In Chase"));
@@ -51,8 +51,16 @@ public class EnemyAngelInspector : Editor
             EditorGUILayout.PropertyField(delayToStopSearchTarget, new GUIContent("Delay To Stop Searching For Target", "after this amount of time the enemy will stop going to the last point of the target"));
             EditorGUILayout.PropertyField(delayToFinishTargetSearch, new GUIContent("Delay To Finish Target Search", "time to exit from the GoToLastTarget state"));
         }
-        if (patrolPoints.arraySize > 1) EditorGUILayout.PropertyField(delayBetweenPatrolPoints, new GUIContent("Delay Between Patrol Points"));
-        EditorGUILayout.PropertyField(patrolPoints, new GUIContent("Patrol Points"));
+        EditorGUILayout.PropertyField(patrolType, new GUIContent("Patrol Type"));
+        if (patrolType.enumValueIndex == 0)
+        {
+            if (patrolPoints.arraySize > 1) EditorGUILayout.PropertyField(delayBetweenPatrolPoints, new GUIContent("Delay Between Patrol Points"));
+            EditorGUILayout.PropertyField(patrolPoints, new GUIContent("Patrol Points"));
+        }
+        else
+        {
+            EditorGUILayout.PropertyField(fixedWalkArea, new GUIContent("Fixed Walk Area", "if has a value the enemy will never change its walk area, if empty the enemy will automaticaly change area"));
+        }
 
         RenderHeader("Enemy Patrol Attack Paramaters", true);
         //EditorGUILayout.PropertyField(stressIncreaseOnTargetDetected, new GUIContent("Stress Increase On Target Detected"));
@@ -67,6 +75,7 @@ public class EnemyAngelInspector : Editor
         EditorGUILayout.PropertyField(leapAttackPredictDistance, new GUIContent("Leap Attack Predict Buffer", "Extra distance from the predicted position"));
         EditorGUILayout.PropertyField(leapAttackHeightCurve, new GUIContent("Leap Attack Height Curve"));
         EditorGUILayout.PropertyField(fallDuration, new GUIContent("Fall Duration", "The time it takes to the enemy fall if is paralised while in the air"));
+        EditorGUILayout.PropertyField(onLeapAttackLand, new GUIContent("On Leap Attack Land"));
         EditorGUILayout.PropertyField(attackAreaInfos, new GUIContent("Attacks Hitbox Info"));
 
         RenderHeader("Enemy Patrol Debug", true);
@@ -100,19 +109,19 @@ public class EnemyAngelInspector : Editor
             EditorGUILayout.PropertyField(drawStoppingDistance, new GUIContent("Draw Stop Distance"));
             if (drawStoppingDistance.boolValue) EditorGUILayout.PropertyField(stoppingDistanceColor, new GUIContent("Stop Distance Gizmo Color"));
         }
-        if(distanceToFogAttack.floatValue > 0)
+        if (distanceToFogAttack.floatValue > 0)
         {
             EditorGUILayout.PropertyField(drawFogAttackDistance, new GUIContent("Draw Fog Attack Distance"));
             if (drawFogAttackDistance.boolValue) EditorGUILayout.PropertyField(fogAttackColor, new GUIContent("Fog Attack Gizmo Color"));
         }
-        if(distanceToLeapAttack.floatValue > 0)
+        if (distanceToLeapAttack.floatValue > 0)
         {
             EditorGUILayout.PropertyField(drawLeapAttackDistance, new GUIContent("Draw Leap Attack Distance"));
             if (drawLeapAttackDistance.boolValue) EditorGUILayout.PropertyField(leapAttackColor, new GUIContent("Leap Attack Gizmo Color"));
         }
         EditorGUILayout.PropertyField(drawPredictPosition, new GUIContent("Draw Predict Position", "Only shows during play mode"));
         if (drawPredictPosition.boolValue) EditorGUILayout.PropertyField(predictPositionColor, new GUIContent("Predict Position Color"));
-        if(leapAttackRange.floatValue > 0)
+        if (leapAttackRange.floatValue > 0)
         {
             EditorGUILayout.PropertyField(drawLeapAttackRange, new GUIContent("Draw Leap Attack Range"));
             if (drawLeapAttackRange.boolValue) EditorGUILayout.PropertyField(leapAttackRangeColor, new GUIContent("Leap Attack Range Color"));
@@ -120,6 +129,7 @@ public class EnemyAngelInspector : Editor
         EditorGUI.indentLevel--;
 
         serializedObject.ApplyModifiedProperties();
+        UpdateComponents();
     }
 
     private void RenderHeader(string title, bool changeIndentLevel)
@@ -129,6 +139,19 @@ public class EnemyAngelInspector : Editor
         EditorGUILayout.LabelField(title, EditorStyles.boldLabel/*, style, GUILayout.ExpandWidth(true)*/);
         EditorGUILayout.Space(_space);
         if (changeIndentLevel) EditorGUI.indentLevel++;
+    }
+
+    private void UpdateComponents()
+    {
+        EnemyAngel instance = (EnemyAngel)target;
+        Rigidbody rb = instance.GetComponent<Rigidbody>();
+        if (patrolType.enumValueIndex == 0 && rb) DestroyImmediate(rb);
+        else if (patrolType.enumValueIndex == 1 && !fixedWalkArea.objectReferenceValue && !rb)
+        {
+            rb = instance.gameObject.AddComponent<Rigidbody>();
+            rb.useGravity = false;
+            rb.isKinematic = true;
+        }
     }
 
     private void OnEnable()
@@ -155,6 +178,8 @@ public class EnemyAngelInspector : Editor
         chaseSpeed = serializedObject.FindProperty("_chaseSpeed");
         startActive = serializedObject.FindProperty("_startActive");
         goToLastTargetPosition = serializedObject.FindProperty("_goToLastTargetPosition");
+        fixedWalkArea = serializedObject.FindProperty("_fixedWalkArea");
+        patrolType = serializedObject.FindProperty("_patrolType");
         attackAreaInfos = serializedObject.FindProperty("_attackAreaInfos");
         loseTargetWhenHidden = serializedObject.FindProperty("_loseTargetWhenHidden");
         targetLayer = serializedObject.FindProperty("_targetLayer");
@@ -170,6 +195,7 @@ public class EnemyAngelInspector : Editor
         leapAttackPredictDistance = serializedObject.FindProperty("_leapAttackPredictDistance");
         leapAttackHeightCurve = serializedObject.FindProperty("_leapAttackHeightCurve");
         fallDuration = serializedObject.FindProperty("_fallDuration");
+        onLeapAttackLand = serializedObject.FindProperty("_onLeapAttackLand");
 
         debugLogsEnemyPatrol = serializedObject.FindProperty("_debugLogsEnemyPatrol");
         drawMinDistance = serializedObject.FindProperty("_drawMinDistance");

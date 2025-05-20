@@ -18,6 +18,18 @@ namespace Ivayami.Save {
         private static string _progressPath;
         private static string _optionsPath;
         public const byte MaxSaveSlots = 5;
+        public bool CanSaveProgress
+        {
+            get
+            {
+                return _canSaveProgress;
+            }
+            set
+            {
+                _canSaveProgress = value;
+            }
+        }
+        private bool _canSaveProgress = true;
         private HashSet<SaveObject> _saveObjects = new HashSet<SaveObject>();
 
         protected override void Awake() {
@@ -62,7 +74,11 @@ namespace Ivayami.Save {
                 Logger.Log(LogType.Save, $"Loaded Save of type '{type.Name}' in {savePath}");
             }
             else {
-                if (type == typeof(SaveProgress)) Progress = new SaveProgress((byte)int.Parse(savePath.Split('_')[1].Split('.')[0]));
+                if (type == typeof(SaveProgress))
+                {
+                    Progress = new SaveProgress((byte)int.Parse(savePath.Split('_')[1].Split('.')[0]));
+                    Progress.ClearDictionaries();
+                }
                 else Options = new SaveOptions();
                 loadSaveCallback?.Invoke();
 
@@ -81,7 +97,6 @@ namespace Ivayami.Save {
                 if (File.Exists($"{_progressPath}/{ProgressFolderName}_{saveId}.sav")) {
                     Task<string> readTask = File.ReadAllTextAsync($"{_progressPath}/{ProgressFolderName}_{saveId}.sav");                    
                     yield return readTask;
-                    Debug.Log($"save file found in {_progressPath}/{ProgressFolderName}_{saveId}");
                     progressSaves.Add(JsonUtility.FromJson<SaveProgress>(Encryption.Decrypt(readTask.Result)));
                 }
                 saveId++;
@@ -91,6 +106,11 @@ namespace Ivayami.Save {
         }
 
         private void SaveProgress() {
+            if (!CanSaveProgress)
+            {
+                Debug.Log("Save Progress is Disable");
+                return;
+            }
             Progress.lastPlayedDate = DateTime.Now.ToString("dd/MM/yy [HH:mm]");
             StartCoroutine(WriteSaveRoutine($"{_progressPath}/{ProgressFolderName}_{Progress.id}.sav", typeof(SaveProgress)));
 
@@ -119,8 +139,8 @@ namespace Ivayami.Save {
         }
 
         public void DeleteProgress(byte saveId) {
-            string path = $"{_progressPath}/{ProgressFolderName}_{saveId}";
-            if (File.Exists(path)) File.Delete(path);
+            string path = $"{_progressPath}/{ProgressFolderName}_{saveId}.sav";
+            if (File.Exists(path)) File.Delete(path);            
         }
 
         public void RegisterSaveObject(SaveObject saveObject) {
@@ -132,6 +152,5 @@ namespace Ivayami.Save {
             if (_saveObjects.Contains(saveObject)) _saveObjects.Remove(saveObject);
             else Debug.LogWarning($"The object {saveObject.name} is already unregistered");
         }
-
     }
 }

@@ -2,8 +2,8 @@ using UnityEngine;
 using UnityEngine.Localization.Components;
 using TMPro;
 using Ivayami.Save;
-using Ivayami.Scene;
 using Ivayami.Player;
+using Ivayami.Player.Ability;
 
 namespace Ivayami.UI {
     public class SaveSelectBtn : MonoBehaviour {
@@ -16,10 +16,12 @@ namespace Ivayami.UI {
         private bool _isFirstTime;
         public Sprite PlaceImage { get; private set; }
         public string PlaceEntryName { get; private set; }
+        public bool HasSaveInSlot { get; private set; }
 
         public void Setup(SaveProgress progress, byte id) {
             _id = id;
             _isFirstTime = progress == null;
+            HasSaveInSlot = !_isFirstTime;
             _dateText.text = _isFirstTime ? "" : progress.lastPlayedDate;
             // Playtime (?)
             _statusTextEvent.SetEntry($"SaveSelectBtn/{(_isFirstTime ? "NewGame" : "Continue")}");
@@ -35,15 +37,17 @@ namespace Ivayami.UI {
         private void EnterSaveWaitFadeIn() {
             SaveSystem.Instance.LoadProgress(_id, () => {
                 PlayerInventory.Instance.LoadInventory(SaveSystem.Instance.Progress.GetItemsData());
-
+                AbilityGiverRef giverRef = gameObject.AddComponent<AbilityGiverRef>();
+                if (SaveSystem.Instance?.Progress?.abilities?.Length > 0) foreach (string ability in SaveSystem.Instance.Progress.abilities) giverRef.GiveAbility(ability);
                 SaveSelector.Instance.MainMenuUnloader.UnloadScene();
+                
                 if (_isFirstTime) {
-                    SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayerNextLoad;
                     SaveSelector.Instance.CutsceneLoader.LoadScene();
                 }
                 else {
-                    SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
-                    SaveSelector.Instance.BaseTerrainLoader.LoadScene();
+                    TeleportPlayer();
+                    //SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
+                    //SaveSelector.Instance.BaseTerrainLoader.LoadScene();
                 }
             });
         }
@@ -51,13 +55,13 @@ namespace Ivayami.UI {
         private void TeleportPlayer() {
             SavePoint.Points[SaveSystem.Instance.Progress.pointId].SpawnPoint.Teleport();
             PlayerActions.Instance.ChangeInputMap("Player");
-            SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayer;
+            //SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayer;
         }
 
-        private void TeleportPlayerNextLoad() {
-            SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
-            SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayerNextLoad;
-        }
+        //private void TeleportPlayerNextLoad() {
+        //    SceneController.Instance.OnAllSceneRequestEnd += TeleportPlayer;
+        //    SceneController.Instance.OnAllSceneRequestEnd -= TeleportPlayerNextLoad;
+        //}
 
     }
 }
