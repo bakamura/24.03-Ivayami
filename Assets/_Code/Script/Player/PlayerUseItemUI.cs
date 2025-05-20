@@ -190,9 +190,10 @@ namespace Ivayami.UI
             LoopValueByArraySize(ref endIndex, _possibleOptions.Length);
             PlayerInventory.InventoryItemStack itemFound;
             _currentOption = PlayerInventory.InventoryItemStack.Empty;
-            // 1 0 soma
-            
-            while(startIndex != endIndex)
+            int initialIndex = startIndex;
+            bool searchCompleted = false;
+
+            while(!searchCompleted)
             {
                 itemFound = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[startIndex].Item.name);
                 if (itemFound.Item)
@@ -205,6 +206,7 @@ namespace Ivayami.UI
                 {
                     startIndex = direction > 0 ? startIndex + 1 : startIndex - 1;
                     LoopValueByArraySize(ref startIndex, _possibleOptions.Length);
+                    if (startIndex == initialIndex) searchCompleted = true;
                 }
             }
             if (!_currentOption.Item)
@@ -215,8 +217,10 @@ namespace Ivayami.UI
             startIndex = _currentSelectedIndex + 1;
             LoopValueByArraySize(ref startIndex, _possibleOptions.Length);
             endIndex = _currentSelectedIndex;
+            searchCompleted = false;
+            initialIndex = startIndex;
             _nextOption = _currentOption;
-            while (startIndex != endIndex)
+            while (!searchCompleted)
             {
                 itemFound = PlayerInventory.Instance.CheckInventoryFor(_possibleOptions[startIndex].Item.name);
                 if (itemFound.Item)
@@ -228,6 +232,7 @@ namespace Ivayami.UI
                 {
                     startIndex = direction > 0 ? startIndex + 1 : startIndex - 1;
                     LoopValueByArraySize(ref startIndex, _possibleOptions.Length);
+                    if (startIndex == initialIndex) searchCompleted = true;
                 }
             }
         }
