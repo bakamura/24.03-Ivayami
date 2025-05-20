@@ -35,9 +35,12 @@ namespace Ivayami.Player.Ability
 
         [SerializeField, Min(0f)] private float _durationMaxBase;
         [SerializeField, Min(0f)] private float _durationIncreaseFromItem;
-        [SerializeField, Range(0f,1f), Tooltip("If the value is smaller than this percentage it will start flickering")] private float _flickeringStartTreshold;
+        [SerializeField, Range(0f, 1f), Tooltip("If the value is smaller than this percentage it will start flickering")] private float _flickeringStartTreshold;
         [SerializeField, Range(0f, 1f)] private float _flickeringChance;
         [SerializeField, Min(0f)] private float[] _randomFlickeringIntensities;
+        [SerializeField, Range(0f, 1f)] private float _reduceIntensityStartTreshold;
+        [SerializeField, Min(0f)] private float _wideLightFinalIntensity;
+        [SerializeField, Min(0f)] private float _focusedLighFinalIntensity;
         private float _durationMax;
         private float _durationCurrent;
 
@@ -52,6 +55,7 @@ namespace Ivayami.Player.Ability
         private float _lightDistance;
         private float _wideBaseIntensity;
         private float _focusedBaseIntensity;
+        private bool _noFuel;
         public HashKeyBlocker ActivateBlocker { get; private set; } = new HashKeyBlocker();
 
 
@@ -107,7 +111,7 @@ namespace Ivayami.Player.Ability
         {
             while (true)
             {
-                if(_durationCurrent > 0) Illuminate();
+                if (!_noFuel) Illuminate();
                 GravityRotate();
 
                 yield return _behaviourCheckWait;
@@ -152,6 +156,7 @@ namespace Ivayami.Player.Ability
 
         private void Focus(bool isFocusing)
         {
+            if (_noFuel) return;
             if (isFocusing && (!_enabled || !ActivateBlocker.IsAllowed)) return;
             _focused = isFocusing;
             _wideOrigin.enabled = !_focused;
@@ -169,34 +174,49 @@ namespace Ivayami.Player.Ability
 
         public void Fill(float fillAmount)
         {
+            Debug.Log($"Fill By {fillAmount}");
+
             _durationCurrent += fillAmount;
+            if (_noFuel)
+            {
+                _noFuel = false;
+                _wideOrigin.enabled = !_focused;
+                _focusedOrigin.enabled = _focused;
+            }
             if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
         }
 
         private void UpdateLights()
         {
-            if(_durationCurrent <= _flickeringStartTreshold * _durationMax)
+            if(_durationCurrent > 0)
             {
-                if(Random.Range(0f, 1f) <= _flickeringChance)
+                if (_durationCurrent <= _reduceIntensityStartTreshold * _durationMax)
                 {
-                    float intensity = _randomFlickeringIntensities[Random.Range(0, _randomFlickeringIntensities.Length)];
-                    _wideOrigin.intensity = intensity;
-                    _focusedOrigin.intensity = intensity;
+                    _wideOrigin.intensity = Mathf.Lerp(_wideOrigin.intensity, _wideLightFinalIntensity, 0);
+                    _focusedOrigin.intensity = Mathf.Lerp(_focusedOrigin.intensity, _focusedLighFinalIntensity, 0);
+                }
+
+                if (_durationCurrent <= _flickeringStartTreshold * _durationMax && !_noFuel)
+                {
+                    Debug.Log("StartFlickering");
+                    if (Random.Range(0f, 1f) <= _flickeringChance)
+                    {
+                        float intensity = _randomFlickeringIntensities[Random.Range(0, _randomFlickeringIntensities.Length)];
+                        _wideOrigin.intensity = intensity;
+                        _focusedOrigin.intensity = intensity;
+                        Debug.Log($"FlickerToVal {intensity}");
+                    }
                 }
             }
-
-            if(_durationCurrent <= 0)
+            else if (!_noFuel)
             {
+                ClearAllLightData();
+                _noFuel = true;
                 _wideOrigin.enabled = false;
                 _focusedOrigin.enabled = false;
                 _wideOrigin.intensity = _wideBaseIntensity;
                 _focusedOrigin.intensity = _focusedBaseIntensity;
-                ClearAllLightData();
-            }
-            else
-            {
-                _wideOrigin.enabled = true;
-                _focusedOrigin.enabled = true;
+                Debug.Log("DisableLight");
             }
         }
 

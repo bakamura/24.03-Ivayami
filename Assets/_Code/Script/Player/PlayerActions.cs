@@ -262,9 +262,9 @@ namespace Ivayami.Player
             return false;
         }
 
-        public bool CheckAbility(string abilityChecking, out PlayerAbility result)
+        public bool CheckAbility(Type abilityChecking, out PlayerAbility result)
         {
-            foreach (PlayerAbility ability in _abilities) if (ability.GetType().ToString().ToUpper() == abilityChecking.ToUpper())
+            foreach (PlayerAbility ability in _abilities) if (ability.GetType() == abilityChecking)
                 {
                     result = ability;
                     return true;
