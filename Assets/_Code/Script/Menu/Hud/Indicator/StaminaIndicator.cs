@@ -17,7 +17,8 @@ namespace Ivayami.UI {
 
         [Header("HeartBeat")]
 
-        [SerializeField] private Image _beatImage;
+        [SerializeField] private Image[] _beatImages;
+        [SerializeField]private Sprite[] _beatSprites;
         [SerializeField, Min(0f)] private float _beatSpeed;
         [SerializeField, Min(0f)] private float[] _beatPixels;
         private int _beatCurrent;
@@ -34,8 +35,12 @@ namespace Ivayami.UI {
         }
 
         private void Update() {
-            _beatImage.rectTransform.Translate(_beatSpeed * Time.deltaTime * Vector3.left);
-            if (_beatImage.rectTransform.anchoredPosition.x < -(_beatPartitionPixels * _beatCurrent) - _beatPixels[_beatCurrent]) _beatImage.rectTransform.Translate(_beatPixels[_beatCurrent] * Vector3.right);
+            _beatImages[0].rectTransform.Translate(_beatSpeed * Time.deltaTime * Vector3.left);
+            if (_beatImages[0].rectTransform.anchoredPosition.x < -_beatImages[0].rectTransform.rect.width) {
+                _beatImages[0].rectTransform.Translate(_beatImages[0].rectTransform.rect.width * Vector3.right);
+                _beatImages[0].sprite = _beatImages[1].sprite;
+                _beatImages[1].sprite = _beatSprites[_beatCurrent];
+            }
         }
 
         private void StressUpdate(float value) {
@@ -49,7 +54,7 @@ namespace Ivayami.UI {
                     _beatCurrent = i;
                     break;
                 }
-        } 
+        }
 
         private void StressColorize(float value) {
             Color newColor = Color.Lerp(_stressLowColor, _stressMaxColor, (value - _stepStressMins[0]) / _stressCapped);
