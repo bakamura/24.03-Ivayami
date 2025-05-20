@@ -16,10 +16,12 @@ namespace Ivayami.UI {
         private bool _isFirstTime;
         public Sprite PlaceImage { get; private set; }
         public string PlaceEntryName { get; private set; }
+        public bool HasSaveInSlot { get; private set; }
 
         public void Setup(SaveProgress progress, byte id) {
             _id = id;
             _isFirstTime = progress == null;
+            HasSaveInSlot = !_isFirstTime;
             _dateText.text = _isFirstTime ? "" : progress.lastPlayedDate;
             // Playtime (?)
             _statusTextEvent.SetEntry($"SaveSelectBtn/{(_isFirstTime ? "NewGame" : "Continue")}");
