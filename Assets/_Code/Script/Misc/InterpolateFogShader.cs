@@ -32,20 +32,16 @@ namespace Ivayami.Misc
         {
             GetMaterialInstance();
             _initialSphericalFogValue = _fogMaterial.GetVector(FOG_SPHERE_DISTANCE);
-            _initialPsxFogValue = PsxManager.Instance.PSXFog.fogDistance.value;
-            if (_changeColor)
-            {
-                _initialPsxFogColor = PsxManager.Instance.PSXFog.fogColor.value;
-                _initialSphericalFogColor = _fogMaterial.GetColor(FOG_SPHERE_COLOR);
-            }
+            _initialSphericalFogColor = _fogMaterial.GetColor(FOG_SPHERE_COLOR);
+            PostProcessManager.Instance.GetPSXFogValues(out _initialPsxFogValue, out _initialPsxFogColor);
             if (!gameObject.activeInHierarchy)
             {
                 _fogMaterial.SetVector(FOG_SPHERE_DISTANCE, new Vector4(_initialSphericalFogValue.x, _sphericalFogFinalValue, _initialSphericalFogValue.z, _initialSphericalFogValue.w));
-                PsxManager.Instance.PSXFog.fogDistance.value = _psxFogFinalValue;
+                PostProcessManager.Instance.ChangePSXFog(_psxFogFinalValue);
                 if (_changeColor)
                 {
                     _fogMaterial.SetColor(FOG_SPHERE_COLOR, _sphericalFogFinalColor);
-                    PsxManager.Instance.PSXFog.fogColor.value = _psxFogFinalColor;
+                    PostProcessManager.Instance.ChangePSXFog(_psxFogFinalColor);
                 }
                 return;
             }
@@ -73,7 +69,7 @@ namespace Ivayami.Misc
         {
             float count = 0;
             float evaluate;
-            Fog psxFog = PsxManager.Instance.PSXFog;
+            Fog psxFog = PostProcessManager.Instance.GetPSXFog();
             if(_duration > 0)
             {
                 while (count < _duration)

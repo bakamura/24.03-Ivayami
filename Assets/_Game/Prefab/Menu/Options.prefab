@@ -2556,7 +2556,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &5743438114083856625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2683,6 +2683,7 @@ MonoBehaviour:
   _sfxSlider: {fileID: 2955271158084060249}
   _rightStickDeadzoneSlider: {fileID: 6892644241108268142}
   _leftStickDeadzoneSlider: {fileID: 5416706735669678506}
+  _brightnessSlider: {fileID: 1880485354132138425}
   _cameraSensitivitySliderX: {fileID: 7302022964413471664}
   _mouseCameraSensitivityMultiplierX: 1
   _gamepadCameraSensitivityMultiplierX: 15
@@ -2748,7 +2749,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 320, y: -570}
+  m_AnchoredPosition: {x: 320, y: -650}
   m_SizeDelta: {x: 630, y: 60}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &9090174056593398626
@@ -3729,7 +3730,7 @@ MonoBehaviour:
     m_TableReference:
       m_TableCollectionName: GUID:32601750a428a2a4785f031d784d435c
     m_TableEntryReference:
-      m_KeyId: 370328743817254
+      m_KeyId: 58801590815379456
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
@@ -6625,7 +6626,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 320, y: -410}
+  m_AnchoredPosition: {x: 320, y: -490}
   m_SizeDelta: {x: 630, y: 60}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &6892644241108268142
@@ -6815,7 +6816,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 320, y: -250}
+  m_AnchoredPosition: {x: 320, y: -330}
   m_SizeDelta: {x: 630, y: 60}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1880485354132138425
@@ -6862,16 +6863,16 @@ MonoBehaviour:
   m_FillRect: {fileID: 6241425804632065837}
   m_HandleRect: {fileID: 964649581789436253}
   m_Direction: 0
-  m_MinValue: 0.0001
-  m_MaxValue: 1
+  m_MinValue: 0
+  m_MaxValue: 2
   m_WholeNumbers: 0
-  m_Value: 0.5
+  m_Value: 0
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6982395933729663443}
         m_TargetAssemblyTypeName: Ivayami.UI.Options, Assembly-CSharp
-        m_MethodName: ChangeSensitivityY
+        m_MethodName: ChangeBrightness
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6930,7 +6931,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: OptionsDescription/CameraSensitivityY
+          m_StringArgument: OptionsDescription/Brightness
           m_BoolArgument: 0
         m_CallState: 2
   _onPointerEnter:
@@ -7007,7 +7008,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 320, y: -650}
+  m_AnchoredPosition: {x: 320, y: -730}
   m_SizeDelta: {x: 630, y: 60}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &5616699384684019777
@@ -7609,7 +7610,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 320, y: -330}
+  m_AnchoredPosition: {x: 320, y: -410}
   m_SizeDelta: {x: 630, y: 60}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &5416706735669678506
@@ -8262,7 +8263,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.49995
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -8467,7 +8468,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 320, y: -490}
+  m_AnchoredPosition: {x: 320, y: -570}
   m_SizeDelta: {x: 630, y: 60}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &3661778848477799452
