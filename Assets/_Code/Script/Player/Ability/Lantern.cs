@@ -7,8 +7,10 @@ using Ivayami.Save;
 using Ivayami.UI;
 using Default;
 
-namespace Ivayami.Player.Ability {
-    public class Lantern : PlayerAbility {
+namespace Ivayami.Player.Ability
+{
+    public class Lantern : PlayerAbility
+    {
 
         [SerializeField] private Light _wideOrigin;
         [SerializeField] private Light _focusedOrigin;
@@ -50,7 +52,8 @@ namespace Ivayami.Player.Ability {
 
         public const string ILLUMINATION_KEY = "Lantern";
 
-        private void Awake() {
+        private void Awake()
+        {
             _lightHits = new Collider[_lightMaxHitNumber];
             _behaviourCheckWait = new WaitForSeconds(_behaviourCheckInterval);
             _lightsOriginCurrent = _wideOrigin.transform;
@@ -61,53 +64,62 @@ namespace Ivayami.Player.Ability {
             Focus(false);
         }
 
-        private void Start() {
-            //PlayerActions.Instance.onActionMapChange.AddListener(HandleInputMapChange);
+        private void Start()
+        {
             SavePoint.onSaveGameWithAnimation.AddListener(HandleSaveBlock);
             SavePoint.onSaveSequenceEnd.AddListener(HandleSaveAllow);
             PlayerUseItemUI.Instance.OnShowUI.AddListener(HandleUseItemUIBlock);
             PlayerUseItemUI.Instance.OnHideUI.AddListener(HandleUseItemUIAllow);
-            PlayerUseItemUI.Instance.OnHealActivation.AddListener(HandleUseItemUIAllow);
+            PlayerUseItemUI.Instance.OnItemActivation.AddListener(HandleUseItemUIAllow);
         }
 
-        private void Update() {
+        private void Update()
+        {
             if (!_enabled || !ActivateBlocker.IsAllowed) return;
-            if (_focused) _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
-            _durationCurrent -= (_focused ? _focusedDurationComsumptionMultiplier : 1f) * Time.deltaTime;
-            GravityRotate();
+            if (_focused)
+            {
+                _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
+                _durationCurrent -= Time.deltaTime;
+            }
+            _durationCurrent -= _focusedDurationComsumptionMultiplier * Time.deltaTime;
         }
 
-        private void OnDestroy() {
-            //PlayerActions.Instance.onActionMapChange.RemoveListener(HandleInputMapChange);
+        private void OnDestroy()
+        {
             SavePoint.onSaveGameWithAnimation.RemoveListener(HandleSaveBlock);
             SavePoint.onSaveSequenceEnd.RemoveListener(HandleSaveAllow);
             PlayerUseItemUI.Instance.OnShowUI.RemoveListener(HandleUseItemUIBlock);
             PlayerUseItemUI.Instance.OnHideUI.RemoveListener(HandleUseItemUIAllow);
-            PlayerUseItemUI.Instance.OnHealActivation.RemoveListener(HandleUseItemUIAllow);
+            PlayerUseItemUI.Instance.OnItemActivation.RemoveListener(HandleUseItemUIAllow);
             Destroy(_focusedOrigin);
         }
 
-        private IEnumerator CheckInterval() {
-            while (true) {
+        private IEnumerator CheckInterval()
+        {
+            while (true)
+            {
                 Illuminate();
+                GravityRotate();
 
                 yield return _behaviourCheckWait;
             }
         }
 
-        private void Setup() {
+        private void Setup()
+        {
             ActivateBlocker.OnAllow.AddListener(AllowActivate);
             ActivateBlocker.OnBlock.AddListener(PreventActivateRemember);
 
             PlayerActions.Instance.onLanternFocus.AddListener(Focus);
-            PlayerStress.Instance.onFail.AddListener(ForceTurnOff);
+            PlayerStress.Instance.onFail.AddListener(() => { if (_enabled) AbilityStart(); });
             _focusedOrigin.transform.parent = PlayerCamera.Instance.MainCamera.transform;
             _focusedOrigin.transform.localPosition = _focusedSourceDistance * Vector3.forward;
             _focusedOrigin.transform.localRotation = Quaternion.identity;
             _focusedOrigin.enabled = false;
         }
 
-        public override void AbilityStart() {
+        public override void AbilityStart()
+        {
             if (!ActivateBlocker.IsAllowed) return;
             _enabled = !_enabled;
             Toggle(_enabled);
@@ -115,13 +127,15 @@ namespace Ivayami.Player.Ability {
 
         public override void AbilityEnd() { }
 
-        private void Toggle(bool enabled) {
+        private void Toggle(bool enabled)
+        {
             if (_focusedOrigin.transform.localPosition.z == 0) Setup(); //
 
-            _visuals.gameObject.SetActive(enabled);
-            PlayerAnimation.Instance.Hold(enabled);
-            if (enabled) StartCoroutine(CheckInterval());
-            else {
+            _visuals.gameObject.SetActive(_enabled);
+            PlayerAnimation.Instance.Hold(_enabled);
+            if (_enabled) StartCoroutine(CheckInterval());
+            else
+            {
                 Focus(false);
                 StopAllCoroutines();
                 foreach (Lightable lightable in _illuminatedObjects) lightable.Illuminate(ILLUMINATION_KEY, false);
@@ -130,7 +144,8 @@ namespace Ivayami.Player.Ability {
             }
         }
 
-        private void Focus(bool isFocusing) {
+        private void Focus(bool isFocusing)
+        {
             if (isFocusing && (!_enabled || !ActivateBlocker.IsAllowed)) return;
             _focused = isFocusing;
             _wideOrigin.enabled = !_focused;
@@ -146,7 +161,14 @@ namespace Ivayami.Player.Ability {
             if (!_focused) _visuals.localRotation = Quaternion.identity;
         }
 
-        private void Illuminate() {
+        public void Fill(float fillAmount)
+        {
+            _durationCurrent += fillAmount;
+            if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
+        }
+
+        private void Illuminate()
+        {
             if (Physics.Raycast(_lightsOriginCurrent.position, _lightsOriginCurrent.forward, out RaycastHit hitLine, _lightDistance, _lightableLayer))
                 LightFocuses.Instance.LightPointFocusUpdate(ILLUMINATION_KEY, new LightFocuses.LightData(hitLine.point));
             else
@@ -156,11 +178,15 @@ namespace Ivayami.Player.Ability {
             _stopIlluminating.UnionWith(_illuminatedObjects);
 
             Lightable lightable;
-            for (int i = 0; i < Physics.OverlapSphereNonAlloc(_lightsOriginCurrent.position, _lightDistance, _lightHits, _lightableLayer); i++) {
-                if (_lightHits[i] != null && _lightHits[i].TryGetComponent(out lightable)) {
+            for (int i = 0; i < Physics.OverlapSphereNonAlloc(_lightsOriginCurrent.position, _lightDistance, _lightHits, _lightableLayer); i++)
+            {
+                if (_lightHits[i] != null && _lightHits[i].TryGetComponent(out lightable))
+                {
                     Vector3 toTarget = _lightHits[i].transform.position - _lightsOriginCurrent.position;
-                    if (Vector3.Angle(_lightsOriginCurrent.forward, toTarget.normalized) <= _coneAngleHalf) {
-                        if (!Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer)) {
+                    if (Vector3.Angle(_lightsOriginCurrent.forward, toTarget.normalized) <= _coneAngleHalf)
+                    {
+                        if (!Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer))
+                        {
                             if (_illuminatedObjects.Add(lightable)) lightable.Illuminate(ILLUMINATION_KEY, true);
                             _stopIlluminating.Remove(lightable);
                         }
@@ -168,51 +194,56 @@ namespace Ivayami.Player.Ability {
                 }
             }
 
-            foreach (Lightable lightableToStop in _stopIlluminating) {
+            foreach (Lightable lightableToStop in _stopIlluminating)
+            {
                 lightableToStop.Illuminate(ILLUMINATION_KEY, false);
                 _illuminatedObjects.Remove(lightableToStop);
             }
         }
 
-        public void Fill(float fillAmount) {
-            _durationCurrent += fillAmount;
-            if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
-        }
-
-        public void ForceTurnOff() {
+        public void ForceTurnOff()
+        {
             if (_enabled) AbilityStart();
         }
 
-        private void AllowActivate() {
+        private void AllowActivate()
+        {
             if (_enabled) Toggle(true);
         }
 
-        private void PreventActivateRemember() {
-            Toggle(false);
+        private void PreventActivateRemember()
+        {
+            if (_enabled) Toggle(false);
         }
 
-        private void GravityRotate() {
+        private void GravityRotate()
+        {
             transform.rotation = Quaternion.AngleAxis(transform.parent.eulerAngles.y, Vector3.up);
         }
 
-        private void HandleUpdateVisuals(bool isVisible) {
+        private void HandleUpdateVisuals(bool isVisible)
+        {
             gameObject.SetActive(isVisible);
         }
 
         #region Event Handlers
-        private void HandleUseItemUIAllow() {
+        private void HandleUseItemUIAllow()
+        {
             ActivateBlocker.Toggle(PlayerUseItemUI.BLOCKER_KEY, true);
         }
 
-        private void HandleUseItemUIBlock() {
+        private void HandleUseItemUIBlock()
+        {
             ActivateBlocker.Toggle(PlayerUseItemUI.BLOCKER_KEY, false);
         }
 
-        private void HandleSaveAllow() {
+        private void HandleSaveAllow()
+        {
             ActivateBlocker.Toggle(SavePoint.BLOCKER_KEY, true);
         }
 
-        private void HandleSaveBlock() {
+        private void HandleSaveBlock()
+        {
             ActivateBlocker.Toggle(PlayerUseItemUI.BLOCKER_KEY, false);
         }
         #endregion
@@ -223,18 +254,23 @@ namespace Ivayami.Player.Ability {
         [SerializeField] private Color _coneColor;
         private Mesh _coneMesh;
 
-        private void OnDrawGizmos() {
-            if (Application.isPlaying) {
+        private void OnDrawGizmos()
+        {
+            if (Application.isPlaying)
+            {
                 //if(_coneMesh == default) _coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance); // Doesnt work for rotation for some reason so eeeh
                 _coneMesh = DebugUtilities.CreateConeMesh(transform, _coneAngleHalf * 2f, _lightDistance);
                 Gizmos.color = _coneColor;
                 Gizmos.DrawMesh(_coneMesh, _lightsOriginCurrent.transform.position, _focused ? Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0, 0) : Quaternion.identity);
 
                 Lightable lightable;
-                for (int i = 0; i < Physics.OverlapSphereNonAlloc(_lightsOriginCurrent.position, _lightDistance, _lightHits, _lightableLayer); i++) {
-                    if (_lightHits[i] != null && _lightHits[i].TryGetComponent(out lightable)) {
+                for (int i = 0; i < Physics.OverlapSphereNonAlloc(_lightsOriginCurrent.position, _lightDistance, _lightHits, _lightableLayer); i++)
+                {
+                    if (_lightHits[i] != null && _lightHits[i].TryGetComponent(out lightable))
+                    {
                         Vector3 toTarget = _lightHits[i].transform.position - _lightsOriginCurrent.position;
-                        if (Vector3.Angle(_lightsOriginCurrent.forward, toTarget.normalized) <= _coneAngleHalf) {
+                        if (Vector3.Angle(_lightsOriginCurrent.forward, toTarget.normalized) <= _coneAngleHalf)
+                        {
                             Gizmos.color = Physics.Raycast(_lightsOriginCurrent.position, toTarget.normalized, toTarget.magnitude, _occlusionLayer) ? Color.red : Color.green;
                             Gizmos.DrawLine(_lightsOriginCurrent.position, lightable.transform.position);
                         }
