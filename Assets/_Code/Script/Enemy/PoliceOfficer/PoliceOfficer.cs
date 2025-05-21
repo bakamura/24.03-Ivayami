@@ -71,6 +71,8 @@ namespace Ivayami.Enemy
 
         public int ID => gameObject.GetInstanceID();
 
+        public Vector3 CurrentPosition => transform.position;
+
         #region MainBehaviour
         protected override void Awake()
         {
