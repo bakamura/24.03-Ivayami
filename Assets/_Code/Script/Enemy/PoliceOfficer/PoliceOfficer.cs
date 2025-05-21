@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
-    public class PoliceOfficer : StressEntity, IEnemyWalkArea, IChangeTargetPoint
+    public class PoliceOfficer : StressEntity, IEnemyWalkArea/*, ISoundDetection*/
     {
         [Header("Officer Parameters")]
         [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
@@ -71,7 +71,7 @@ namespace Ivayami.Enemy
 
         public int ID => gameObject.GetInstanceID();
 
-        public Vector3 CurrentPosition => transform.position;
+        //public Vector3 CurrentPosition => transform.position;
 
         #region MainBehaviour
         protected override void Awake()
@@ -424,16 +424,16 @@ namespace Ivayami.Enemy
             }
         }
 
-        public void GoToPoint(Transform target, float speedIncrease, float durationInPlace)
-        {
-            if (!_isChasing)
-            {
-                StopBehaviour(true);
-                _navMeshAgent.isStopped = false;
-                _navMeshAgent.speed = speedIncrease;
-                HandlePointReachedCoroutine(/*false,*/ true, durationInPlace, target);
-            }
-        }
+        //public void GoToPoint(Transform target, float speedIncrease, float durationInPlace)
+        //{
+        //    if (!_isChasing)
+        //    {
+        //        StopBehaviour(true);
+        //        _navMeshAgent.isStopped = false;
+        //        _navMeshAgent.speed = speedIncrease;
+        //        HandlePointReachedCoroutine(/*false,*/ true, durationInPlace, target);
+        //    }
+        //}
 
         private void StopTargetPointReachedCoroutine()
         {
