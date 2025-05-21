@@ -15,7 +15,9 @@ namespace Ivayami.Enemy
         [SerializeField] private EnemyAnimator _enemyAnimator;
         [SerializeField, Min(0)] private int _paraliseAnimationRandomAmount;
         [SerializeField, Min(0f)] private float _detectLightRange;
+#if UNITY_EDITOR
         [SerializeField] private Color _gizmoColor;
+#endif
         [SerializeField] private AnimationCurve _interpolateCurve;
 
         private enum LightBehaviours
@@ -44,7 +46,7 @@ namespace Ivayami.Enemy
             _target = GetComponentInParent<IIluminatedEnemy>();
             if (_target == null)
             {
-                Debug.LogWarning("No Illuminated enemy found in hierarchy");
+                Debug.LogError("No Illuminated enemy found in hierarchy");
                 return;
             }
             _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
@@ -173,13 +175,12 @@ namespace Ivayami.Enemy
 
         private void HandleChangePointLight()
         {
-            LightFocuses.LightData data = LightFocuses.Instance.GetClosestPointToAllLights(transform.position);
+            LightFocuses.LightData data = LightFocuses.Instance.GetClosestPointToAllLights(transform.position, _detectLightRange);
 #if UNITY_EDITOR
             _currentLightData = data;
 #endif
             if (data.IsValid() &&
-                !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers)
-                && Vector3.Distance(transform.position, data.Position) <= _detectLightRange)
+                !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
             {
                 _target.UpdateBehaviour(false, true, false, false);
                 _target.ChangeTargetPoint(data.Position);
@@ -201,13 +202,12 @@ namespace Ivayami.Enemy
             }
             else
             {
-                LightFocuses.LightData data = LightFocuses.Instance.GetClosestPointToAreaLight(transform.position);
+                LightFocuses.LightData data = LightFocuses.Instance.GetClosestPointToAreaLight(transform.position, _detectLightRange);
 #if UNITY_EDITOR
                 _currentLightData = data;
 #endif
                 if (data.IsValid() &&
-                    !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers)
-                    && Vector3.Distance(transform.position, data.Position) <= _detectLightRange + data.Radius)
+                    !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
                 {
                     isIuminated = true;
                 }
