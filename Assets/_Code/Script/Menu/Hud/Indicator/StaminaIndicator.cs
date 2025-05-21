@@ -32,6 +32,9 @@ namespace Ivayami.UI {
             _stressCapped = PlayerStress.Instance.MaxStress - _stepStressMins[0];
             PlayerStress.Instance.onStressChange.AddListener(StressUpdate);
             PlayerMovement.Instance.onStaminaUpdate.AddListener(StaminaSaturate);
+
+            StressUpdate(0);
+            StaminaSaturate(1);
         }
 
         private void Update() {
@@ -52,8 +55,9 @@ namespace Ivayami.UI {
             for (int i = _stepStressMins.Length - 1; i >= 0; i--)
                 if (value > _stepStressMins[i]) {
                     _beatCurrent = i;
-                    break;
+                    return;
                 }
+            _beatCurrent = 0;
         }
 
         private void StressColorize(float value) {
