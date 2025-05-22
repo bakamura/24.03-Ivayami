@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Ivayami.Player;
+using System.IO;
 
 namespace Ivayami.UI {
     public class StaminaIndicator : MonoBehaviour {
@@ -17,7 +18,7 @@ namespace Ivayami.UI {
         [Header("HeartBeat")]
 
         [SerializeField] private Image[] _beatImages;
-        [SerializeField]private Sprite[] _beatSprites;
+        [SerializeField] private Sprite[] _beatSprites;
         [SerializeField, Min(0f)] private float _beatSpeed;
         [SerializeField, Min(0f)] private float[] _beatPixels;
         private int _beatCurrent;
@@ -25,10 +26,7 @@ namespace Ivayami.UI {
 
         [SerializeField] private float[] _stepStressMins;
 
-        private float _stressCapped;
-
         private void Start() {
-            _stressCapped = PlayerStress.Instance.MaxStress - _stepStressMins[0];
             PlayerStress.Instance.onStressChange.AddListener(StressUpdate);
             PlayerMovement.Instance.onStaminaUpdate.AddListener(StaminaSaturate);
 
@@ -51,7 +49,7 @@ namespace Ivayami.UI {
         }
 
         private void HeartBeatUpdate(float value) {
-            for (int i = _stepStressMins.Length - 1; i >= 0; i--)
+            for (int i = _stepStressMins.Length - 1; i >= 1; i--)
                 if (value > _stepStressMins[i]) {
                     _beatCurrent = i;
                     return;
@@ -60,8 +58,17 @@ namespace Ivayami.UI {
         }
 
         private void StressColorize(float value) {
-            Color newColor = Color.Lerp(_stressColors[_beatCurrent == 0 ? _beatCurrent : (_beatCurrent - 1)], _stressColors[_beatCurrent], (value - _stepStressMins[0]) / _stressCapped);
-            foreach (Image coloredImage in _indicatorFills) coloredImage.color = newColor;
+            Color? newColor = value <= _stepStressMins[0] ? _stressColors[0] :
+                             value >= _stepStressMins[_stepStressMins.Length - 1] ? _stressColors[_stressColors.Length - 1] :
+                             null;
+            if (!newColor.HasValue)
+                for (int i = 0; i < _stepStressMins.Length; i++) {
+                    if (value < _stepStressMins[i + 1]) {
+                        newColor = Color.Lerp(_stressColors[i], _stressColors[i + 1], (value - _stepStressMins[i]) / (_stepStressMins[i + 1] - _stepStressMins[i]));
+                        break;
+                    }
+                }
+            foreach (Image coloredImage in _indicatorFills) coloredImage.color = newColor.Value;
         }
 
         private void StaminaSaturate(float value) {
