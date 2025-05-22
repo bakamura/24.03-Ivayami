@@ -17,5 +17,9 @@ namespace Ivayami.UI {
             _canvasGroup.alpha = EvaluateCurve(value);
         }
 
+        public void ForceDisplay(bool shouldForce) {
+            _canvasGroup.enabled = !shouldForce;
+        }
+
     }
 }
