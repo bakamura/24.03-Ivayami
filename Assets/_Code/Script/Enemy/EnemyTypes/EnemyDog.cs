@@ -31,8 +31,6 @@ namespace Ivayami.Enemy
 #if UNITY_EDITOR
         [SerializeField] private bool _drawMinDistance;
         [SerializeField] private Color _minDistanceAreaColor = Color.yellow;
-        [SerializeField] private bool _drawDetectionRange;
-        [SerializeField] private Color _detectionRangeAreaColor = Color.red;
         [SerializeField] private bool _drawPatrolPoints;
         [SerializeField] private Color _patrolPointsColor = Color.black;
         [SerializeField, Min(0)] private float _patrolPointRadius = .2f;
