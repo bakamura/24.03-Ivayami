@@ -280,7 +280,13 @@ namespace Ivayami.Enemy
             _enemyAnimator.Walking(0);
             _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
             PlayerStress.Instance.AddStress(100, 79, PlayerAnimation.DamageAnimation.Mental);
-            _enemyAnimator.TargetDetected(StartBehaviour);
+            _enemyAnimator.TargetDetected(true, HandleTargetDetectEnd);
+        }
+
+        private void HandleTargetDetectEnd()
+        {
+            _enemyAnimator.TargetDetected(false);
+            StartBehaviour();
         }
 
         private void GoToLastTargetPoint()
