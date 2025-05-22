@@ -133,5 +133,12 @@ namespace Ivayami.Save {
             }
             return items;
         }
+
+        public void ClearDictionaries()
+        {
+            gameProgress.Clear();
+            entryProgress.Clear();
+            saveObjects.Clear();
+        }
     }
 }

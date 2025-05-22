@@ -1,7 +1,6 @@
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
-using FMOD;
 
 namespace Ivayami.Audio
 {
@@ -47,6 +46,7 @@ namespace Ivayami.Audio
 
         protected EventInstance InstantiateEvent(EventReference sound)
         {
+            //print($"instance of sound {sound.Path}");
             EventInstance eventInstance = RuntimeManager.CreateInstance(sound);
             RuntimeManager.GetEventDescription(sound).is3D(out bool is3d);
             if (is3d) eventInstance.set3DAttributes(transform.position.To3DAttributes());
