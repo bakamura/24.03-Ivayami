@@ -12,8 +12,7 @@ namespace Ivayami.UI {
         [Header("Stress Color")]
 
         [SerializeField] private Image[] _indicatorFills;
-        [SerializeField] private Color _stressMaxColor;
-        [SerializeField] private Color _stressLowColor;
+        [SerializeField] private Color[] _stressColors;
 
         [Header("HeartBeat")]
 
@@ -61,7 +60,7 @@ namespace Ivayami.UI {
         }
 
         private void StressColorize(float value) {
-            Color newColor = Color.Lerp(_stressLowColor, _stressMaxColor, (value - _stepStressMins[0]) / _stressCapped);
+            Color newColor = Color.Lerp(_stressColors[_beatCurrent == 0 ? _beatCurrent : (_beatCurrent - 1)], _stressColors[_beatCurrent], (value - _stepStressMins[0]) / _stressCapped);
             foreach (Image coloredImage in _indicatorFills) coloredImage.color = newColor;
         }
 
@@ -72,6 +71,7 @@ namespace Ivayami.UI {
 #if UNITY_EDITOR
         private void OnValidate() {
             if (_beatPixels?.Length != _stepStressMins?.Length) Array.Resize(ref _stepStressMins, _beatPixels.Length);
+            if (_beatPixels?.Length != _stressColors?.Length) Array.Resize(ref _stressColors, _beatPixels.Length);
         }
 #endif
 
