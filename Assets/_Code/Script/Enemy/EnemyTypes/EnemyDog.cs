@@ -69,7 +69,7 @@ namespace Ivayami.Enemy
         private Coroutine _attackCooldownCoroutine;
         private Quaternion _initialRotation;
         private Vector3 _initialPosition;
-        private Vector3 _currentAttackPoint;
+        private SoundPoints.SoundPointData _currentAttackPoint;
         private bool _isChasing;
         private bool _directContactWithTarget;
         private bool _isAttacking;
@@ -77,6 +77,7 @@ namespace Ivayami.Enemy
         private float _currentTargetColliderSizeFactor;
         private float _baseSpeed;
         private float _baseStoppingDistance;
+        private float _currentAlertStatePatience;
 
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
@@ -146,8 +147,11 @@ namespace Ivayami.Enemy
             {
                 StopCoroutine(_behaviourCoroutine);
                 _behaviourCoroutine = null;
-                StopCoroutine(_attackCooldownCoroutine);
-                _attackCooldownCoroutine = null;
+                if (_attackCooldownCoroutine != null)
+                {
+                    StopCoroutine(_attackCooldownCoroutine);
+                    _attackCooldownCoroutine = null;
+                }
                 IsActive = false;
                 _isChasing = false;
                 UpdateMovement(false);
@@ -161,7 +165,7 @@ namespace Ivayami.Enemy
             sbyte indexFactor = 1;
             while (IsActive)
             {
-                if (!_isInAlertState && _attackCooldownCoroutine == null)
+                if (_attackCooldownCoroutine == null)
                 {
                     if (CheckForTarget() && !_isAttacking)
                     {
@@ -179,10 +183,21 @@ namespace Ivayami.Enemy
                         if (_debugLogsEnemyPatrol) Debug.Log("Chasing");
                         if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());
                         _navMeshAgent.speed = _chaseSpeed;
-                        _navMeshAgent.SetDestination(_currentAttackPoint);
+                        _navMeshAgent.SetDestination(_currentAttackPoint.Position);
+                    }
+                    else if (_isInAlertState)
+                    {
+                        _currentAlertStatePatience -= _behaviourTickFrequency;
+                        if (_currentAlertStatePatience <= 0)
+                        {
+                            UpdateMovement(false);
+                            _enemyAnimator.TargetDetected(false);
+                            _isInAlertState = false;
+                        }
                     }
                     else
                     {
+                        isStressAreaActive = true;
                         _navMeshAgent.speed = _baseSpeed;
                         _enemySounds.PlaySound(EnemySounds.SoundTypes.IdleScreams);
                         _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
@@ -206,8 +221,8 @@ namespace Ivayami.Enemy
                     }
                     _enemyAnimator.Chasing(_isChasing);
                     _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude/* / _navMeshAgent.speed*/);
-                    yield return _behaviourTickDelay;
                 }
+                yield return _behaviourTickDelay;
             }
             _behaviourCoroutine = null;
         }
@@ -277,6 +292,7 @@ namespace Ivayami.Enemy
             {
                 _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
             }
+            Debug.Log("ATTACK END");
             StopBehaviour();
             _isAttacking = false;
             _attackCooldownCoroutine = StartCoroutine(AttackCooldownCoroutine());
@@ -297,23 +313,27 @@ namespace Ivayami.Enemy
             //_attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
         }
 
-        public void GoToSoundPosition(Vector3 target)
+        public void GoToSoundPosition(SoundPoints.SoundPointData target)
         {
-            if (_attackCooldownCoroutine != null) return;
+            if (_attackCooldownCoroutine != null || !IsActive || _isChasing || _isAttacking || _currentAttackPoint.Equals(target)) return;
             if (!_isInAlertState)
             {
+                _currentAlertStatePatience = _alertStateDuration;
                 _isInAlertState = true;
                 isStressAreaActive = false;
                 UpdateMovement(true);
-                _enemyAnimator.TargetDetected();
+                _enemyAnimator.TargetDetected(true);
                 _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
                 if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
             }
             else
             {
                 UpdateMovement(false);
+                _enemyAnimator.TargetDetected(false);
+                _isInAlertState = false;
                 _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
                 _isChasing = true;
+                if (_debugLogsEnemyPatrol) Debug.Log("Start Attack");
             }
             _currentAttackPoint = target;
         }

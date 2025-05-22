@@ -15,6 +15,7 @@ namespace Ivayami.Enemy
         {
             public Vector3 Position;
             [Min(0f)] public float Radius;
+            public byte PlayCount;
             public static SoundPointData Empty = new SoundPointData();
 
             public bool IsValid()
@@ -22,10 +23,23 @@ namespace Ivayami.Enemy
                 return Position != Vector3.zero;
             }
 
+            public bool Equals(SoundPointData data)
+            {
+                return Position != data.Position || (Position == data.Position && PlayCount != data.PlayCount);
+            }
+
+            public SoundPointData(Vector3 pos, float radius, byte playCount)
+            {
+                Position = pos;
+                Radius = radius;
+                PlayCount = playCount;
+            }
+
             public SoundPointData(Vector3 pos, float radius)
             {
                 Position = pos;
                 Radius = radius;
+                PlayCount = 1;
             }
         }
 
@@ -34,7 +48,10 @@ namespace Ivayami.Enemy
         public void UpdateSoundPoint(string key, SoundPointData data)
         {
             if (!_soundPointsData.ContainsKey(key)) _soundPointsData.Add(key, data);
-            else _soundPointsData[key] = data;
+            else
+            {
+                _soundPointsData[key] = new SoundPointData(data.Position, data.Radius, (byte)(_soundPointsData[key].PlayCount + 1));
+            }
             OnChange?.Invoke();
         }
 

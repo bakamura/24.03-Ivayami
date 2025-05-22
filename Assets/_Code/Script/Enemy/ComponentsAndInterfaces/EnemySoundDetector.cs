@@ -46,7 +46,7 @@ namespace Ivayami.Enemy
             while (true)
             {
                 data = SoundPoints.Instance.GetClosestPointToSoundPoint(transform.position, _detectionRange);
-                _target.GoToSoundPosition(data.Position);
+                if(data.IsValid()) _target.GoToSoundPosition(data.Position);
 #if UNITY_EDITOR
                 _currentData = data;
 #endif
