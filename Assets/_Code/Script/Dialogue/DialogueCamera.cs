@@ -83,17 +83,27 @@ namespace Ivayami.Dialogue
                     if (_currentChangeTargetFocus && _currentFollowPlayer)
                         offset = distance * (_currentFollow.position - _currentLookAt.position).normalized + xDistance * _dialogueCamera.transform.right;
 
-                    _dialogueCamera.transform.SetPositionAndRotation(
-                        Vector3.Lerp(initialPosition, _currentFollow.position + offset, _currentPositionCurve.Evaluate(count)),
-                        Quaternion.Lerp(initialRotation, _currentChangeTargetFocus ?
-                        Quaternion.LookRotation((_currentLookAt.transform.position - _dialogueCamera.transform.position).normalized) : _currentLookAt.rotation, _currentRotationCurve.Evaluate(count)));
+                    UpdateCameraPosAndRot();
                     count += Time.deltaTime / _currentDuration;
+                    if (count >= 1)
+                    {
+                        count = 1;
+                        UpdateCameraPosAndRot();
+                    }
                     yield return null;
+                    void UpdateCameraPosAndRot()
+                    {
+                        _dialogueCamera.transform.SetPositionAndRotation(
+                                Vector3.Lerp(initialPosition, _currentFollow.position + offset, _currentPositionCurve.Evaluate(count)),
+                                Quaternion.Lerp(initialRotation, _currentChangeTargetFocus ?
+                                Quaternion.LookRotation((_currentLookAt.transform.position - _dialogueCamera.transform.position).normalized) : _currentLookAt.rotation, _currentRotationCurve.Evaluate(count)));
+                    }
                 }
                 TeleportCameraToPositionAndRotation();
             }
             RecalculateCameraOrientation();
             _animationCoroutine = null;
+
         }
 
         private void CameraPriotitySetup()
