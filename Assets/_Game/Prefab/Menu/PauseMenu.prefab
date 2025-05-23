@@ -202,6 +202,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sceneId: MainMenu
+  _setAsActiveScene: 0
   _changeSkybox: 1
   _backgroundType: 1
   _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
@@ -237,19 +238,7 @@ MonoBehaviour:
       m_Calls: []
   _onAllScenesRequestEnd:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7701454260802632360}
-        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
-        m_MethodName: LoadScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   _drawGizmos: 0
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &9156050421594293925
@@ -270,19 +259,7 @@ MonoBehaviour:
       m_Calls: []
   _afterFade:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 7701454260802632360}
-        m_TargetAssemblyTypeName: Ivayami.Scene.SceneLoader, Assembly-CSharp
-        m_MethodName: UnloadAllScenes
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   _duration: 1
 --- !u!114 &2183341077878176319
 MonoBehaviour:
@@ -910,11 +887,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnLeft: {fileID: 1873457294948619629}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 0
   m_Colors:
@@ -1478,7 +1455,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 0
   m_Viewport: {fileID: 0}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 0}
@@ -1632,7 +1609,8 @@ MonoBehaviour:
   _moveMapInput: {fileID: -4465436221348716163, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
   _controlDragSensitivity: 400
   _zoomMapInput: {fileID: -6932665608502153910, guid: 23a6d09ad1ce89c4a9aa4c1646f1987d, type: 3}
-  _zoomMapSensitivity: 1
+  _controlerZoomMapSensitivity: 1
+  _scrollZoomMapSensitivity: 25
   _maxMapZoom: 3
 --- !u!1 &1152499477609420710
 GameObject:
@@ -8535,7 +8513,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 68.95
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -9515,12 +9493,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnRight: {fileID: 8462197244823085092}
   m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
