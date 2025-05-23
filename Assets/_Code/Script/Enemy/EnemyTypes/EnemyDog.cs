@@ -256,11 +256,11 @@ namespace Ivayami.Enemy
         {
             while (_isChasing)
             {
-                if (_directContactWithTarget && _hitsCache[0].CompareTag("Player"))
-                {
+                //if (_directContactWithTarget && _hitsCache[0].CompareTag("Player"))
+                //{
                     if (_debugLogsEnemyPatrol) Debug.Log($"Chasing Stress added {_stressIncreaseWhileChasing * _behaviourTickFrequency}");
                     PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * _behaviourTickFrequency, _stressMaxWhileChasing);
-                }
+                //}
                 yield return _behaviourTickDelay;
             }
             _chaseStressCoroutine = null;
