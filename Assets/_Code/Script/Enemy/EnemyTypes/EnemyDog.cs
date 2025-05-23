@@ -16,6 +16,7 @@ namespace Ivayami.Enemy
         [SerializeField, Min(0f)] private float _minDetectionRange;
         [SerializeField, Min(0f)] private float _alertStateDuration;
         [SerializeField, Min(0f)] private float _afterAttackCooldownDuration;
+        [SerializeField, Min(.1f), Tooltip("The time the enemy will stay in the current target point until it returns to patrol")] private float _durationInCurrentSoundTarget;
         [SerializeField] private LayerMask _targetLayer;
         [SerializeField] private LayerMask _blockVisionLayer;
 
@@ -69,7 +70,7 @@ namespace Ivayami.Enemy
         private Coroutine _attackCooldownCoroutine;
         private Quaternion _initialRotation;
         private Vector3 _initialPosition;
-        private SoundPoints.SoundPointData _currentAttackPoint;
+        private EnemySoundPoints.SoundPointData _currentAttackPoint;
         private bool _isChasing;
         private bool _directContactWithTarget;
         private bool _isAttacking;
@@ -78,6 +79,7 @@ namespace Ivayami.Enemy
         private float _baseSpeed;
         private float _baseStoppingDistance;
         private float _currentAlertStatePatience;
+        private float _currentChasePatience;
 
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
@@ -172,10 +174,12 @@ namespace Ivayami.Enemy
                         isStressAreaActive = false;
                         _isAttacking = true;
                         _isChasing = false;
+                        _isInAlertState = false;
                         //_currentAttackAnimIndex = _currentAttackAnimIndex == 0 ? 1 : 0;
                         _enemySounds.PlaySound(EnemySounds.SoundTypes.Attack);
                         _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange/*, _currentAttackAnimIndex*/);
                         if (_debugLogsEnemyPatrol) Debug.Log("Attack Target");
+                        StopBehaviour();
                     }
                     else if (_isChasing)
                     {
@@ -184,6 +188,12 @@ namespace Ivayami.Enemy
                         if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());
                         _navMeshAgent.speed = _chaseSpeed;
                         _navMeshAgent.SetDestination(_currentAttackPoint.Position);
+                        if (Vector3.Distance(_currentAttackPoint.Position, transform.position) <= _navMeshAgent.stoppingDistance)
+                        {
+                            _currentChasePatience -= _behaviourTickFrequency;
+                            if (_currentChasePatience <= 0) _isChasing = false;
+                        }
+                        else _currentChasePatience = _durationInCurrentSoundTarget;
                     }
                     else if (_isInAlertState)
                     {
@@ -197,25 +207,28 @@ namespace Ivayami.Enemy
                     }
                     else
                     {
-                        isStressAreaActive = true;
-                        _navMeshAgent.speed = _baseSpeed;
-                        _enemySounds.PlaySound(EnemySounds.SoundTypes.IdleScreams);
-                        _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
-                        if (_debugLogsEnemyPatrol) Debug.Log("Patroling");
-                        if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
+                        if (!_isAttacking)
                         {
-                            if (_patrolPoints.Length > 1)
+                            isStressAreaActive = true;
+                            _navMeshAgent.speed = _baseSpeed;
+                            _enemySounds.PlaySound(EnemySounds.SoundTypes.IdleScreams);
+                            _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
+                            if (_debugLogsEnemyPatrol) Debug.Log("Patroling");
+                            if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
                             {
-                                _enemyAnimator.Walking(0);
-                                yield return _betweenPatrolPointsDelay;
-                                currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
-                                if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
-                                else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
-                                if (_debugLogsEnemyPatrol) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
-                            }
-                            else
-                            {
-                                if (transform.rotation != _initialRotation && _rotateCoroutine == null) _rotateCoroutine = StartCoroutine(RotateCoroutine());
+                                if (_patrolPoints.Length > 1)
+                                {
+                                    _enemyAnimator.Walking(0);
+                                    yield return _betweenPatrolPointsDelay;
+                                    currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
+                                    if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
+                                    else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
+                                    if (_debugLogsEnemyPatrol) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
+                                }
+                                else
+                                {
+                                    if (transform.rotation != _initialRotation && _rotateCoroutine == null) _rotateCoroutine = StartCoroutine(RotateCoroutine());
+                                }
                             }
                         }
                     }
@@ -293,7 +306,6 @@ namespace Ivayami.Enemy
                 _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
             }
             Debug.Log("ATTACK END");
-            StopBehaviour();
             _isAttacking = false;
             _attackCooldownCoroutine = StartCoroutine(AttackCooldownCoroutine());
         }
@@ -313,27 +325,32 @@ namespace Ivayami.Enemy
             //_attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
         }
 
-        public void GoToSoundPosition(SoundPoints.SoundPointData target)
+        public void GoToSoundPosition(EnemySoundPoints.SoundPointData target)
         {
-            if (_attackCooldownCoroutine != null || !IsActive || _isChasing || _isAttacking || _currentAttackPoint.Equals(target)) return;
-            if (!_isInAlertState)
+            Debug.Log(target.Position);
+            if (_attackCooldownCoroutine != null || !IsActive || _isAttacking || _currentAttackPoint.Equals(target)) return;
+            if (!_isChasing)
             {
-                _currentAlertStatePatience = _alertStateDuration;
-                _isInAlertState = true;
-                isStressAreaActive = false;
-                UpdateMovement(true);
-                _enemyAnimator.TargetDetected(true);
-                _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
-                if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
-            }
-            else
-            {
-                UpdateMovement(false);
-                _enemyAnimator.TargetDetected(false);
-                _isInAlertState = false;
-                _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
-                _isChasing = true;
-                if (_debugLogsEnemyPatrol) Debug.Log("Start Attack");
+                if (!_isInAlertState)
+                {
+                    _currentAlertStatePatience = _alertStateDuration;
+                    _isInAlertState = true;
+                    isStressAreaActive = false;
+                    UpdateMovement(true);
+                    _enemyAnimator.TargetDetected(true);
+                    _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
+                    if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
+                }
+                else
+                {
+                    UpdateMovement(false);
+                    _enemyAnimator.TargetDetected(false);
+                    _isInAlertState = false;
+                    _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
+                    _currentChasePatience = _durationInCurrentSoundTarget;
+                    _isChasing = true;
+                    if (_debugLogsEnemyPatrol) Debug.Log("Start Attack");
+                }
             }
             _currentAttackPoint = target;
         }

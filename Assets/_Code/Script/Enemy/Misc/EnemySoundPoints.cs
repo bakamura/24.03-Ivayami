@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Ivayami.Enemy
 {
-    public class SoundPoints : MonoSingleton<SoundPoints>
+    public class EnemySoundPoints : MonoSingleton<EnemySoundPoints>
     {
         private Dictionary<string, SoundPointData> _soundPointsData = new Dictionary<string, SoundPointData>();
         public SoundPointData[] SoundPointsData => _soundPointsData.Values.ToArray();
@@ -25,7 +25,7 @@ namespace Ivayami.Enemy
 
             public bool Equals(SoundPointData data)
             {
-                return Position != data.Position || (Position == data.Position && PlayCount != data.PlayCount);
+                return Position == data.Position && PlayCount == data.PlayCount;
             }
 
             public SoundPointData(Vector3 pos, float radius, byte playCount)
@@ -50,7 +50,7 @@ namespace Ivayami.Enemy
             if (!_soundPointsData.ContainsKey(key)) _soundPointsData.Add(key, data);
             else
             {
-                _soundPointsData[key] = new SoundPointData(data.Position, data.Radius, (byte)(_soundPointsData[key].PlayCount + 1));
+                _soundPointsData[key] = new SoundPointData(data.Position, data.Radius, (byte)(_soundPointsData[key].PlayCount + 1 > byte.MaxValue ? 1 : (byte)(_soundPointsData[key].PlayCount + 1)));
             }
             OnChange?.Invoke();
         }
@@ -68,20 +68,24 @@ namespace Ivayami.Enemy
         {
             SoundPointData[] sounds = SoundPointsData;
             if (sounds.Length <= 0) return SoundPointData.Empty;
-            if (sounds.Length == 1) return sounds[0];
-            int closest = 0;
-            float closestDistance = 0;
-            float distanceCache;
-            for (int i = 1; i < sounds.Length; i++)
+            if (sounds.Length == 1 && Vector3.Distance(position, sounds[0].Position) <= sounds[0].Radius + radius) return sounds[0];
+            else if (sounds.Length > 1)
             {
-                distanceCache = Vector3.Distance(position, sounds[i].Position);
-                if (distanceCache <= sounds[i].Radius + radius && closestDistance > distanceCache)
+                int closest = 0;
+                float closestDistance = 0;
+                float distanceCache;
+                for (int i = 1; i < sounds.Length; i++)
                 {
-                    closest = i;
-                    closestDistance = distanceCache;
+                    distanceCache = Vector3.Distance(position, sounds[i].Position);
+                    if (distanceCache <= sounds[i].Radius + radius && closestDistance > distanceCache)
+                    {
+                        closest = i;
+                        closestDistance = distanceCache;
+                    }
                 }
+                return sounds[closest];
             }
-            return sounds[closest];
+            else return SoundPointData.Empty;
         }
     }
 }

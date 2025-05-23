@@ -11,27 +11,27 @@ namespace Ivayami.Enemy
 #if UNITY_EDITOR
         [SerializeField] private bool _drawGizmos;
         [SerializeField] private Color _gizmoColor = Color.black;
-        private SoundPoints.SoundPointData _currentData;
+        private EnemySoundPoints.SoundPointData _currentData;
 #endif
         private Coroutine _checkSoundCoroutine;
         private ISoundDetection _target;
 
         private void Awake()
         {
-            if (!SoundPoints.Instance) return;
+            if (!EnemySoundPoints.Instance) return;
             _target = GetComponentInParent<ISoundDetection>();
             if (_target == null) Debug.LogError("No Sound Point User found in hierarchy");
         }
 
         private void OnEnable()
         {
-            if (!SoundPoints.Instance) return;
+            if (!EnemySoundPoints.Instance) return;
             if (_checkSoundCoroutine == null) _checkSoundCoroutine = StartCoroutine(CheckForSoundsCoroutine());
         }
 
         private void OnDisable()
         {
-            if (!SoundPoints.Instance) return;
+            if (!EnemySoundPoints.Instance) return;
             if(_checkSoundCoroutine != null)
             {
                 StopCoroutine(_checkSoundCoroutine);
@@ -42,11 +42,11 @@ namespace Ivayami.Enemy
         private IEnumerator CheckForSoundsCoroutine()
         {
             WaitForSeconds delay = new WaitForSeconds(_checkSoundTickFrequency);
-            SoundPoints.SoundPointData data;
+            EnemySoundPoints.SoundPointData data;
             while (true)
             {
-                data = SoundPoints.Instance.GetClosestPointToSoundPoint(transform.position, _detectionRange);
-                if(data.IsValid()) _target.GoToSoundPosition(data.Position);
+                data = EnemySoundPoints.Instance.GetClosestPointToSoundPoint(transform.position, _detectionRange);
+                if(data.IsValid()) _target.GoToSoundPosition(data);
 #if UNITY_EDITOR
                 _currentData = data;
 #endif

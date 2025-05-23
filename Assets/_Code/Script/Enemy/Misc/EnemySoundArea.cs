@@ -19,14 +19,14 @@ namespace Ivayami.Enemy
         private float _currentSoundDuration;
         private void OnEnable()
         {
-            if (!SoundPoints.Instance) return;
+            if (!EnemySoundPoints.Instance) return;
             if (!_generateSoundOnEnable) return;
             UpdateSoundPoint();
         }
 
         private void OnDisable()
         {
-            if (!SoundPoints.Instance) return;
+            if (!EnemySoundPoints.Instance) return;
             StopGenerateSoundRepeatedly();
             if (_soundDurationCoroutine != null)
             {
@@ -37,15 +37,15 @@ namespace Ivayami.Enemy
         }
 
         private void UpdateSoundPoint()
-        {
-            SoundPoints.Instance.UpdateSoundPoint(nameof(EnemySoundArea) + gameObject.name + GetInstanceID(), new SoundPoints.SoundPointData(transform.position, _radius));
+        {            
+            EnemySoundPoints.Instance.UpdateSoundPoint(nameof(EnemySoundArea) + gameObject.name + GetInstanceID(), new EnemySoundPoints.SoundPointData(transform.position, _radius));
         }
 
         public void GenerateSound()
         {
             UpdateSoundPoint();
             _currentSoundDuration = _soundDuration;
-            if (_soundDurationCoroutine != null)
+            if (_soundDurationCoroutine == null)
             {
                 _soundDurationCoroutine = StartCoroutine(SoundDurationCoroutine());
             }
@@ -53,7 +53,7 @@ namespace Ivayami.Enemy
 
         public void GenerateSoundRepeatedly()
         {
-            if (_repeatSoundCoroutine != null)
+            if (_repeatSoundCoroutine == null)
             {
                 _repeatSoundCoroutine = StartCoroutine(RepeatSoundCoroutine());
             }
@@ -71,7 +71,7 @@ namespace Ivayami.Enemy
 
         private void RemoveSound()
         {
-            SoundPoints.Instance.RemoveSoundPoint(nameof(EnemySoundArea) + gameObject.name + GetInstanceID());
+            EnemySoundPoints.Instance.RemoveSoundPoint(nameof(EnemySoundArea) + gameObject.name + GetInstanceID());
         }
 
         private IEnumerator RepeatSoundCoroutine()
