@@ -60,7 +60,7 @@ namespace Ivayami.UI {
         }
 
         public void SetSelected(GameObject selectedObject) { // Move Elsewhere?
-            if (!selectedObject.GetComponent<Selectable>().interactable) return;
+            if (selectedObject == null || !selectedObject.GetComponent<Selectable>().interactable) return;
             PreventSelectPointer.Instance.ExecuteIfNotClick(() => EventSystem.current.SetSelectedGameObject(selectedObject));
         }
 
