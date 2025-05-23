@@ -46,7 +46,8 @@ namespace Ivayami.Enemy
             while (true)
             {
                 data = EnemySoundPoints.Instance.GetClosestPointToSoundPoint(transform.position, _detectionRange);
-                if(data.IsValid()) _target.GoToSoundPosition(data);
+                bool isBlocked = _blockLayers.value == 0 ? false : Physics.Raycast(transform.position, (data.Position - transform.position).normalized, Vector3.Distance(transform.position, data.Position), _blockLayers, QueryTriggerInteraction.Ignore) ;
+                if (data.IsValid() && !isBlocked) _target.GoToSoundPosition(data);
 #if UNITY_EDITOR
                 _currentData = data;
 #endif

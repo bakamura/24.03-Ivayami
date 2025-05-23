@@ -175,6 +175,7 @@ namespace Ivayami.Enemy
                         _isAttacking = true;
                         _isChasing = false;
                         _isInAlertState = false;
+                        PlayerMovement.Instance.ToggleMovement(nameof(EnemyDog) + gameObject.name, false);
                         //_currentAttackAnimIndex = _currentAttackAnimIndex == 0 ? 1 : 0;
                         _enemySounds.PlaySound(EnemySounds.SoundTypes.Attack);
                         _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange/*, _currentAttackAnimIndex*/);
@@ -288,7 +289,7 @@ namespace Ivayami.Enemy
             if (!_hitsCache[0]) return false;
             Vector3 targetCenter = _hitsCache[0].transform.position + new Vector3(0, _hitsCache[0].bounds.size.y, 0);
 
-            bool blockingVision = Physics.Raycast(rayOrigin, (targetCenter - rayOrigin).normalized, /*out _blockHit,*/ Vector3.Distance(rayOrigin, targetCenter), _blockVisionLayer, QueryTriggerInteraction.Ignore);
+            bool blockingVision = _blockVisionLayer.value == 0 ? false : Physics.Raycast(rayOrigin, (targetCenter - rayOrigin).normalized, /*out _blockHit,*/ Vector3.Distance(rayOrigin, targetCenter), _blockVisionLayer, QueryTriggerInteraction.Ignore);
             _currentTargetColliderSizeFactor = _hitsCache[0].bounds.extents.z;
 
             if (_debugLogsEnemyPatrol)
@@ -305,8 +306,8 @@ namespace Ivayami.Enemy
             {
                 _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
             }
-            Debug.Log("ATTACK END");
             _isAttacking = false;
+            PlayerMovement.Instance.ToggleMovement(nameof(EnemyDog) + gameObject.name, true);
             _attackCooldownCoroutine = StartCoroutine(AttackCooldownCoroutine());
         }
 
@@ -327,7 +328,6 @@ namespace Ivayami.Enemy
 
         public void GoToSoundPosition(EnemySoundPoints.SoundPointData target)
         {
-            Debug.Log(target.Position);
             if (_attackCooldownCoroutine != null || !IsActive || _isAttacking || _currentAttackPoint.Equals(target)) return;
             if (!_isChasing)
             {
