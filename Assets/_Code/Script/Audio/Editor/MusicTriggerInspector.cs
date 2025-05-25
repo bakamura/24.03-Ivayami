@@ -5,11 +5,12 @@ using Ivayami.Audio;
 [CustomEditor(typeof(MusicTrigger))]
 internal sealed class MusicTriggerInspector : Editor
 {
-    SerializedProperty music, forceStopCurrentMusicOnEnter, useDefaultFade, fadeDuration, useDefaultStartDelay, startDelay, shouldStopPeriodicaly, useDefaultReplay, replay;
+    SerializedProperty music, forceStopCurrentMusicOnEnter, removeFromPlaylistOnNewTransition, useDefaultFade, fadeDuration, useDefaultStartDelay, startDelay, shouldStopPeriodicaly, useDefaultReplay, replay;
     public override void OnInspectorGUI()
     {
         EditorGUILayout.PropertyField(music, new GUIContent("Music"));
         EditorGUILayout.PropertyField(forceStopCurrentMusicOnEnter, new GUIContent("Force Stop Current Music On Enter"));
+        EditorGUILayout.PropertyField(removeFromPlaylistOnNewTransition, new GUIContent("Remove From Playlist On New Transition"));
 
         EditorGUILayout.PropertyField(useDefaultFade, new GUIContent("Use Default Fade", "The value is defined in the Music Prefab"));
         if (!useDefaultFade.boolValue) EditorGUILayout.PropertyField(fadeDuration, new GUIContent("Fade Duration", "Min is Fade In, Max is Fade Out"));
@@ -31,6 +32,7 @@ internal sealed class MusicTriggerInspector : Editor
     {
         music = serializedObject.FindProperty("_music");
         forceStopCurrentMusicOnEnter = serializedObject.FindProperty("_forceStopCurrentMusicOnEnter");
+        removeFromPlaylistOnNewTransition = serializedObject.FindProperty("_removeFromPlaylistOnNewTransition");
         useDefaultFade = serializedObject.FindProperty("_useDefaultFade");
         fadeDuration = serializedObject.FindProperty("_fadeDuration");
         useDefaultStartDelay = serializedObject.FindProperty("_useDefaultStartDelay");
