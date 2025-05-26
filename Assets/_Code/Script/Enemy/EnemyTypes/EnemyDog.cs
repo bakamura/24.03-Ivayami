@@ -14,9 +14,10 @@ namespace Ivayami.Enemy
 
         [SerializeField, Min(0f)] private float _chaseSpeed;
         [SerializeField, Min(0f)] private float _minDetectionRange;
+        [SerializeField] private byte _soundDetectedToStartChase;
         [SerializeField, Min(0f)] private float _alertStateDuration;
         [SerializeField, Min(0f)] private float _afterAttackCooldownDuration;
-        [SerializeField, Min(.1f), Tooltip("The time the enemy will stay in the current target point until it returns to patrol")] private float _durationInCurrentSoundTarget;
+        [SerializeField, Min(.1f)] private float _durationInCurrentSoundTarget;
         [SerializeField] private LayerMask _targetLayer;
         [SerializeField] private LayerMask _blockVisionLayer;
 
@@ -74,12 +75,13 @@ namespace Ivayami.Enemy
         private bool _isChasing;
         private bool _directContactWithTarget;
         private bool _isAttacking;
-        private bool _isInAlertState;
+        //private bool _isInAlertState;
         private float _currentTargetColliderSizeFactor;
         private float _baseSpeed;
         private float _baseStoppingDistance;
         private float _currentAlertStatePatience;
         private float _currentChasePatience;
+        private byte _currentAlertCount;
 
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
@@ -147,8 +149,11 @@ namespace Ivayami.Enemy
         {
             if (IsActive)
             {
-                StopCoroutine(_behaviourCoroutine);
-                _behaviourCoroutine = null;
+                if (_behaviourCoroutine != null)
+                {
+                    StopCoroutine(_behaviourCoroutine);
+                    _behaviourCoroutine = null;
+                }
                 if (_attackCooldownCoroutine != null)
                 {
                     StopCoroutine(_attackCooldownCoroutine);
@@ -171,14 +176,18 @@ namespace Ivayami.Enemy
                 {
                     if (CheckForTarget() && !_isAttacking)
                     {
+                        _navMeshAgent.SetDestination(transform.position);
+                        UpdateMovement(true);
                         isStressAreaActive = false;
                         _isAttacking = true;
                         _isChasing = false;
-                        _isInAlertState = false;
+                        _currentAlertCount = 0;
                         PlayerMovement.Instance.ToggleMovement(nameof(EnemyDog) + gameObject.name, false);
                         //_currentAttackAnimIndex = _currentAttackAnimIndex == 0 ? 1 : 0;
                         _enemySounds.PlaySound(EnemySounds.SoundTypes.Attack);
                         _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange/*, _currentAttackAnimIndex*/);
+                        PlayerMovement.Instance.SetTargetAngle(Quaternion.LookRotation(transform.position - _hitsCache[0].transform.position).eulerAngles.y);
+                        transform.SetPositionAndRotation(transform.position, Quaternion.LookRotation(_hitsCache[0].transform.position - transform.position));
                         if (_debugLogsEnemyPatrol) Debug.Log("Attack Target");
                         StopBehaviour();
                     }
@@ -196,14 +205,14 @@ namespace Ivayami.Enemy
                         }
                         else _currentChasePatience = _durationInCurrentSoundTarget;
                     }
-                    else if (_isInAlertState)
+                    else if (_currentAlertCount >= _soundDetectedToStartChase)
                     {
                         _currentAlertStatePatience -= _behaviourTickFrequency;
                         if (_currentAlertStatePatience <= 0)
                         {
                             UpdateMovement(false);
                             _enemyAnimator.TargetDetected(false);
-                            _isInAlertState = false;
+                            _currentAlertCount = 0;
                         }
                     }
                     else
@@ -258,8 +267,8 @@ namespace Ivayami.Enemy
             {
                 //if (_directContactWithTarget && _hitsCache[0].CompareTag("Player"))
                 //{
-                    if (_debugLogsEnemyPatrol) Debug.Log($"Chasing Stress added {_stressIncreaseWhileChasing * _behaviourTickFrequency}");
-                    PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * _behaviourTickFrequency, _stressMaxWhileChasing);
+                if (_debugLogsEnemyPatrol) Debug.Log($"Chasing Stress added {_stressIncreaseWhileChasing * _behaviourTickFrequency}");
+                PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * _behaviourTickFrequency, _stressMaxWhileChasing);
                 //}
                 yield return _behaviourTickDelay;
             }
@@ -329,30 +338,29 @@ namespace Ivayami.Enemy
         public void GoToSoundPosition(EnemySoundPoints.SoundPointData target)
         {
             if (_attackCooldownCoroutine != null || !IsActive || _isAttacking || _currentAttackPoint.Equals(target)) return;
+            _currentAlertCount++;
+            _currentAttackPoint = target;
             if (!_isChasing)
             {
-                if (!_isInAlertState)
+                if (_currentAlertCount == 1)
                 {
                     _currentAlertStatePatience = _alertStateDuration;
-                    _isInAlertState = true;
                     isStressAreaActive = false;
                     UpdateMovement(true);
                     _enemyAnimator.TargetDetected(true);
                     _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
                     if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
                 }
-                else
+                else if (_currentAlertCount >= _soundDetectedToStartChase)
                 {
                     UpdateMovement(false);
                     _enemyAnimator.TargetDetected(false);
-                    _isInAlertState = false;
                     _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
                     _currentChasePatience = _durationInCurrentSoundTarget;
                     _isChasing = true;
                     if (_debugLogsEnemyPatrol) Debug.Log("Start Attack");
                 }
             }
-            _currentAttackPoint = target;
         }
 
         #region Debug

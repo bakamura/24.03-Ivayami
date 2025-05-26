@@ -9,7 +9,7 @@ public class EnemyDogInspector : Editor
     //Stress Entity variables
     SerializedProperty stressIncreaseTickFrequency, stressAreas, debugLogsStressEntity, drawGizmos;
     //Enemy Dog variables
-    SerializedProperty behaviourTickFrequency, startActive, chaseSpeed, minDetectionRange, alertStateDuration, afterAttackCooldownDuration, durationInCurrentSoundTarget, targetLayer, blockVisionLayer,
+    SerializedProperty behaviourTickFrequency, startActive, chaseSpeed, minDetectionRange, soundDetectedToStartChase, alertStateDuration, afterAttackCooldownDuration, durationInCurrentSoundTarget, targetLayer, blockVisionLayer,
         delayBetweenPatrolPoints, patrolPoints,
         stressIncreaseWhileChasing, stressMaxWhileChasing, attackAreaInfos,
         debugLogsEnemyPatrol, drawMinDistance, minDistanceAreaColor, drawPatrolPoints, patrolPointsColor, patrolPointRadius, drawStoppingDistance, stoppingDistanceColor;
@@ -36,9 +36,10 @@ public class EnemyDogInspector : Editor
         EditorGUILayout.PropertyField(minDetectionRange, new GUIContent("Min Detection Range"));
         EditorGUILayout.PropertyField(targetLayer, new GUIContent("Target Detection Layer"));
         EditorGUILayout.PropertyField(blockVisionLayer, new GUIContent("Block Vision Layer"));
+        EditorGUILayout.PropertyField(soundDetectedToStartChase, new GUIContent("Min Sound Detected To Start Chase", "The amount of sounds it needs to hear to start chasing"));
         EditorGUILayout.PropertyField(alertStateDuration, new GUIContent("Alert State Duration"));
         EditorGUILayout.PropertyField(afterAttackCooldownDuration, new GUIContent("After Attack Cooldown Duration"));
-        EditorGUILayout.PropertyField(durationInCurrentSoundTarget, new GUIContent("Duration In Current Sound Target"));
+        EditorGUILayout.PropertyField(durationInCurrentSoundTarget, new GUIContent("Duration In Current Sound Target", "The time the enemy will stay in the current target point until it returns to patrol"));
 
         RenderHeader("Enemy Dog Behaviour Paramaters", true);
         if (patrolPoints.arraySize > 1) EditorGUILayout.PropertyField(delayBetweenPatrolPoints, new GUIContent("Delay Between Patrol Points"));
@@ -93,6 +94,7 @@ public class EnemyDogInspector : Editor
         drawGizmos = serializedObject.FindProperty("_drawGizmos");
         //Enemy Dog
         minDetectionRange = serializedObject.FindProperty("_minDetectionRange");
+        soundDetectedToStartChase = serializedObject.FindProperty("_soundDetectedToStartChase");
         alertStateDuration = serializedObject.FindProperty("_alertStateDuration");
         afterAttackCooldownDuration = serializedObject.FindProperty("_afterAttackCooldownDuration");
         durationInCurrentSoundTarget = serializedObject.FindProperty("_durationInCurrentSoundTarget");
