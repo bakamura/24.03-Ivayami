@@ -34,14 +34,16 @@ namespace Ivayami.Player.Ability
         [Header("Header")]
 
         [SerializeField, Min(0f)] private float _durationMaxBase;
+        [SerializeField, Min(0f)] private float _durationMaxCap;
         [SerializeField, Min(0f)] private float _durationIncreaseFromItem;
         [SerializeField, Range(0f, 1f), Tooltip("If the value is smaller than this percentage it will start flickering")] private float _flickeringStartTreshold;
         [SerializeField, Range(0f, 1f)] private float _flickeringChance;
+        [SerializeField, Min(.02f)] private float _flickeringInterpolationDuration;
         [SerializeField, Min(0f)] private float[] _randomFlickeringIntensities;
         [SerializeField, Range(0f, 1f)] private float _reduceIntensityStartTreshold;
         [SerializeField, Min(0f)] private float _wideLightFinalIntensity;
         [SerializeField, Min(0f)] private float _focusedLightFinalIntensity;
-        private float _durationMax;
+        //private float _durationMax;
         private float _durationCurrent;
 
         [Header("Cache")]
@@ -51,6 +53,7 @@ namespace Ivayami.Player.Ability
         private Collider[] _lightHits;
 
         private Transform _lightsOriginCurrent;
+        private Coroutine _flickeringCoroutine;
         private float _coneAngleHalf;
         private float _lightDistance;
         private float _wideBaseIntensity;
@@ -68,7 +71,7 @@ namespace Ivayami.Player.Ability
             _lightsOriginCurrent = _wideOrigin.transform;
             PlayerMovement.Instance.AddAdditionalVisuals(HandleUpdateVisuals);
             _visuals.gameObject.SetActive(false);
-            _durationMax = _durationMaxBase * (_durationIncreaseFromItem * PlayerInventory.Instance.CheckInventoryFor("ID").Amount); // Change the ID for the proper ID
+            //_durationMax = Mathf.Clamp(_durationMaxBase * (_durationIncreaseFromItem * PlayerInventory.Instance.CheckInventoryFor("ID").Amount), 0f, _durationMaxCap); // Change the ID for the proper ID
             _wideBaseIntensity = _wideOrigin.intensity;
             _focusedBaseIntensity = _focusedOrigin.intensity;
 
@@ -92,12 +95,7 @@ namespace Ivayami.Player.Ability
                 _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
                 _durationCurrent -= _focusedDurationComsumptionMultiplier * Time.deltaTime;
             }
-            else _durationCurrent -= Time.deltaTime;
-            if (_durationCurrent < 0)
-            {
-                _durationCurrent = 0;
-                //_durationMax = 0;
-            }
+            else _durationCurrent = Mathf.Clamp(_durationCurrent - Time.deltaTime, 0f, _durationMaxCap);
             UpdateLights();
         }
 
@@ -137,7 +135,7 @@ namespace Ivayami.Player.Ability
 
         public override void AbilityStart()
         {
-            if (!ActivateBlocker.IsAllowed) return;
+            if (!ActivateBlocker.IsAllowed || _durationCurrent <= 0) return;
             _enabled = !_enabled;
             Toggle(_enabled);
         }
@@ -148,6 +146,7 @@ namespace Ivayami.Player.Ability
         {
             if (_focusedOrigin.transform.localPosition.z == 0) Setup(); //
 
+            _enabled = enabled;
             _visuals.gameObject.SetActive(_enabled);
             PlayerAnimation.Instance.Hold(_enabled);
             if (_enabled) StartCoroutine(CheckInterval());
@@ -178,36 +177,40 @@ namespace Ivayami.Player.Ability
 
         public void Fill(float fillAmount)
         {
-            _durationCurrent += fillAmount;
+            _durationCurrent = Mathf.Clamp(_durationCurrent + fillAmount, 0f, _durationMaxCap);
             if (_noFuel)
             {
                 _noFuel = false;
                 _wideOrigin.enabled = !_focused;
                 _focusedOrigin.enabled = _focused;
+                ActivateBlocker.Toggle(nameof(Lantern), true);
             }
             _wideOrigin.intensity = _wideBaseIntensity;
             _focusedOrigin.intensity = _focusedBaseIntensity;
-            if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
+            if (_flickeringCoroutine != null)
+            {
+                StopCoroutine(_flickeringCoroutine);
+                _flickeringCoroutine = null;
+            }
+            //if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
         }
 
         private void UpdateLights()
         {
-            if(_durationCurrent > 0 && !_noFuel)
+            if (_durationCurrent > 0 && !_noFuel)
             {
-                if (_durationCurrent <= _reduceIntensityStartTreshold * _durationMax && _durationCurrent > _flickeringStartTreshold * _durationMax)
+                if (_durationCurrent <= _reduceIntensityStartTreshold * _durationMaxCap && _durationCurrent > _flickeringStartTreshold * _durationMaxCap)
                 {
-                    float count = 1f - (_durationCurrent / _durationMax * _reduceIntensityStartTreshold);
+                    float count = 1f - (_durationCurrent / (_durationMaxCap * _reduceIntensityStartTreshold));
                     _wideOrigin.intensity = Mathf.Lerp(_wideBaseIntensity, _wideLightFinalIntensity, count);
                     _focusedOrigin.intensity = Mathf.Lerp(_focusedBaseIntensity, _focusedLightFinalIntensity, count);
                 }
 
-                if (_durationCurrent <= _flickeringStartTreshold * _durationMax)
+                if (_durationCurrent <= _flickeringStartTreshold * _durationMaxCap)
                 {
-                    if (Random.Range(0f, 1f) * Time.deltaTime <= _flickeringChance)
+                    if (Random.Range(0f, 1f) <= _flickeringChance && _flickeringCoroutine == null)
                     {
-                        float intensity = _randomFlickeringIntensities[Random.Range(0, _randomFlickeringIntensities.Length)];
-                        _wideOrigin.intensity = intensity;
-                        _focusedOrigin.intensity = intensity;
+                        _flickeringCoroutine = StartCoroutine(FlickeringInterpolationCoroutine());
                     }
                 }
             }
@@ -216,8 +219,30 @@ namespace Ivayami.Player.Ability
                 ClearAllLightData();
                 _noFuel = true;
                 _wideOrigin.enabled = false;
-                _focusedOrigin.enabled = false;;
+                _focusedOrigin.enabled = false;
+                ActivateBlocker.Toggle(nameof(Lantern), false);
             }
+        }
+
+        private IEnumerator FlickeringInterpolationCoroutine()
+        {
+            float count = 0;
+            float intensity = _randomFlickeringIntensities[Random.Range(0, _randomFlickeringIntensities.Length)];
+            float wideBaseIntensity = _wideOrigin.intensity;
+            float focusedBaseIntensity = _focusedOrigin.intensity;
+            while (count < 1)
+            {
+                count += Time.deltaTime / _flickeringInterpolationDuration;
+                _wideOrigin.intensity = Mathf.Lerp(wideBaseIntensity, intensity, count);
+                _focusedOrigin.intensity = Mathf.Lerp(focusedBaseIntensity, intensity, count);
+                if (count >= 1)
+                {
+                    _wideOrigin.intensity = intensity;
+                    _focusedOrigin.intensity = intensity;
+                }
+                yield return null;
+            }
+            _flickeringCoroutine = null;
         }
 
         private void ClearAllLightData()
@@ -226,6 +251,11 @@ namespace Ivayami.Player.Ability
             foreach (Lightable lightable in _illuminatedObjects) lightable.Illuminate(ILLUMINATION_KEY, false);
             _illuminatedObjects.Clear();
             LightFocuses.Instance.LightPointFocusRemove(ILLUMINATION_KEY);
+            if (_flickeringCoroutine != null)
+            {
+                StopCoroutine(_flickeringCoroutine);
+                _flickeringCoroutine = null;
+            }
         }
 
         private void Illuminate()
