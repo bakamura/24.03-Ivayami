@@ -3,8 +3,12 @@ using System.Linq;
 using UnityEngine.Rendering;
 //using System.Collections;
 using PSX;
+using UnityEngine.Rendering.Universal;
+using UnityEngine;
+using System;
 
-public class PsxManager : MonoSingleton<PsxManager> {
+public class PostProcessManager : MonoSingleton<PostProcessManager>
+{
 
     //[SerializeField] private float _heightPixelation;
     //[SerializeField, Min(0f)] private float _windowResizeCheckInterval;
@@ -15,15 +19,23 @@ public class PsxManager : MonoSingleton<PsxManager> {
     //private float _ditheringScaleBase;
     //private Pixelation _pixelation;
     private Dithering _dithering;
-    public Fog PSXFog { get; private set; }
+    private LiftGammaGain[] _gamma = new LiftGammaGain[0];
+    private Fog _psxFog;
     //private const float _baseResolutionFactor = 1920f / 1080f;
 
-    protected override void Awake() {
+    protected override void Awake()
+    {
         //_pixelation = GetComponent<Volume>().profile.components.FirstOrDefault(component => component.GetType() == typeof(Pixelation)) as Pixelation;
         base.Awake();
         Volume volume = GetComponent<Volume>();
         _dithering = volume.profile.components.FirstOrDefault(component => component.GetType() == typeof(Dithering)) as Dithering;
-        PSXFog = volume.profile.components.FirstOrDefault(component => component.GetType() == typeof(Fog)) as Fog;
+        _psxFog = volume.profile.components.FirstOrDefault(component => component.GetType() == typeof(Fog)) as Fog;
+        Volume[] gamaVolumes = GetComponentsInChildren<Volume>();
+        for (int i = 0; i < gamaVolumes.Length; i++)
+        {
+            Array.Resize(ref _gamma, _gamma.Length + 1);
+            _gamma[i] = gamaVolumes[i].profile.components.FirstOrDefault(component => component.GetType() == typeof(LiftGammaGain)) as LiftGammaGain;
+        }
         //_ditheringScaleBase = _dithering.ditherScale.value;
 
         //_pixelation.widthPixelation.Override(_heightPixelation);
@@ -44,6 +56,38 @@ public class PsxManager : MonoSingleton<PsxManager> {
     {
         _dithering.ditherScale.Override(value);
     }
+
+    public void ChangeBrightness(float value)
+    {
+        for (int i = 0; i < _gamma.Length; i++)
+        {
+            _gamma[i].gamma.Override(new Vector4(value, value, value, value));
+        }
+    }
+
+    public void ChangePSXFog(float distance, Color fogColor)
+    {
+        _psxFog.fogDistance.value = distance;
+        _psxFog.fogColor.value = fogColor;
+    }
+
+    public void ChangePSXFog(float distance)
+    {
+        _psxFog.fogDistance.value = distance;
+    }
+
+    public void ChangePSXFog(Color fogColor)
+    {
+        _psxFog.fogColor.value = fogColor;
+    }
+
+    public void GetPSXFogValues(out float distance, out Color fogColor)
+    {
+        distance = _psxFog.fogDistance.value;
+        fogColor = _psxFog.fogColor.value;
+    }
+
+    public Fog GetPSXFog() => _psxFog;
 
     //private IEnumerator CheckForWindowReSized() {
     //    while (true) {

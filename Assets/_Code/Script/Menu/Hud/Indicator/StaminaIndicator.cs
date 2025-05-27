@@ -4,7 +4,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using Ivayami.Player;
-using System.IO;
 
 namespace Ivayami.UI {
     public class StaminaIndicator : MonoBehaviour {
@@ -25,19 +24,20 @@ namespace Ivayami.UI {
         [SerializeField, Min(0f)] private float _beatPartitionPixels;
 
         [SerializeField] private float[] _stepStressMins;
+        private Vector2 _initialPos;
 
         private void Start() {
             PlayerStress.Instance.onStressChange.AddListener(StressUpdate);
             PlayerMovement.Instance.onStaminaUpdate.AddListener(StaminaSaturate);
-
+            _initialPos = _beatImages[0].rectTransform.localPosition;
             StressUpdate(0);
             StaminaSaturate(1);
         }
 
         private void Update() {
-            _beatImages[0].rectTransform.Translate(_beatSpeed * Time.deltaTime * Vector3.left);
+            _beatImages[0].rectTransform.Translate(_beatSpeed * Time.deltaTime * Vector3.left, Space.Self);
             if (_beatImages[0].rectTransform.anchoredPosition.x < -_beatImages[0].rectTransform.rect.width) {
-                _beatImages[0].rectTransform.Translate(_beatImages[0].rectTransform.rect.width * Vector3.right);
+                _beatImages[0].rectTransform.SetLocalPositionAndRotation(_initialPos, Quaternion.identity);
                 _beatImages[0].sprite = _beatImages[1].sprite;
                 _beatImages[1].sprite = _beatSprites[_beatCurrent];
             }

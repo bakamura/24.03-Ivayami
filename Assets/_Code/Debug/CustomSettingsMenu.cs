@@ -17,9 +17,10 @@ namespace Ivayami.debug
         private const string _startOnCurrentScene = "startOnCurrentScene";
         public static string CurrentSceneName { get; private set; }
         public static Vector3 CameraPosition { get; private set; }
+        public static bool CurrentSceneIsInBuildSettings { get; private set; }
 
         static CustomSettingsHandler()
-        {            
+        {
             EditorApplication.playModeStateChanged += HandlePlayModeCallback;
             SceneView.duringSceneGui += HandleSceneViewGUIUpdate;
         }
@@ -29,6 +30,7 @@ namespace Ivayami.debug
             if (playMode == PlayModeStateChange.EnteredPlayMode && EditorSceneManager.GetActiveScene().buildIndex != 0 && CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene)
             {
                 CurrentSceneName = EditorSceneManager.GetActiveScene().name;
+                CurrentSceneIsInBuildSettings = SceneUtility.GetBuildIndexByScenePath(EditorSceneManager.GetActiveScene().path) != EditorBuildSettings.scenes.Length;
                 CameraPosition = new Vector3(PlayerPrefs.GetFloat("camX"), PlayerPrefs.GetFloat("camY"), PlayerPrefs.GetFloat("camZ"));
                 AsyncOperation operation = SceneManager.LoadSceneAsync(0, LoadSceneMode.Single);
                 if (operation != null) operation.completed += OnLoadBaseScene;
@@ -36,26 +38,39 @@ namespace Ivayami.debug
             }
         }
 
-        public static void OnLoadBaseScene(AsyncOperation operation)
+        public static void OnLoadBaseScene(AsyncOperation _)
         {
-            SceneController.Instance.OnAllSceneRequestEndDebug += OnGameplayScenesLoad;
-            CharacterController controller = PlayerMovement.Instance.GetComponent<CharacterController>();
-            controller.enabled = false;
-            PlayerMovement.Instance.SetPosition(Ivayami.debug.CustomSettingsHandler.CameraPosition);
-            controller.enabled = true;
+            if (CurrentSceneIsInBuildSettings) SceneController.Instance.OnAllSceneRequestEndDebug += OnGameplayScenesLoad;
             SaveSystem.Instance.DeleteProgress(0);
             SaveSystem.Instance.LoadProgress(0, OnSaveLoad);
         }
 
         private static void OnSaveLoad()
         {
-            SceneLoadersManager.Instance.gameObject.SetActive(true);
+            if (CurrentSceneIsInBuildSettings) SceneLoadersManager.Instance.gameObject.SetActive(true);
+            else
+            {
+                AsyncOperation operation = SceneManager.LoadSceneAsync(CurrentSceneName, LoadSceneMode.Additive);
+                if (operation != null) operation.completed += OnGameplayScenesLoad;
+                else OnGameplayScenesLoad(null);
+            }
+            CharacterController controller = PlayerMovement.Instance.GetComponent<CharacterController>();
+            controller.enabled = false;
+            PlayerMovement.Instance.SetPosition(Ivayami.debug.CustomSettingsHandler.CameraPosition);
+            controller.enabled = true;
         }
 
         public static void OnGameplayScenesLoad()
         {
             PlayerActions.Instance.ChangeInputMap("Player");
-            PlayerMovement.Instance.RemoveAllBlockers();            
+            PlayerMovement.Instance.RemoveAllBlockers();
+            SceneController.Instance.OnAllSceneRequestEndDebug -= OnGameplayScenesLoad;
+        }
+
+        public static void OnGameplayScenesLoad(AsyncOperation _)
+        {
+            PlayerActions.Instance.ChangeInputMap("Player");
+            PlayerMovement.Instance.RemoveAllBlockers();
         }
 
         private static void HandleSceneViewGUIUpdate(SceneView sceneView)
