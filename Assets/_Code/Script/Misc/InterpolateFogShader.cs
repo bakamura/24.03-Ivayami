@@ -10,7 +10,7 @@ namespace Ivayami.Misc
     {
         [SerializeField] private AnimationCurve _interpolationCurve;
         [SerializeField, Min(0f)] private float _duration;
-        [SerializeField, FormerlySerializedAs("_finalValue"), Range(1e-5f, .2f), Tooltip("Big values means more fog, small values means less fog")] private float _sphericalFogFinalValue = 0.03333f;
+        [SerializeField, FormerlySerializedAs("_finalValue"), Range(1e-5f, .2f), Tooltip("Big values means more fog, small values means less fog")] private float _sphericalFogFinalValue = 0.04f;
         [SerializeField, Min(0f), Tooltip("Big values means more fog, small values means less fog")] private float _psxFogFinalValue = 15f;
         [SerializeField] private bool _changeColor;
         [SerializeField] private Color _sphericalFogFinalColor =  new Color(0.4622641f, 0.4622641f, 0.4622641f,1f);
