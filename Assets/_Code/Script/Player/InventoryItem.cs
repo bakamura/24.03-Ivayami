@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using Ivayami.Localization;
-using Ivayami.UI;
 
 namespace Ivayami.Player {
     [CreateAssetMenu(menuName = "Ivayami/Gameplay/InventoryItem")]
