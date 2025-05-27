@@ -6217,6 +6217,7 @@ GameObject:
   - component: {fileID: 7586750127775121}
   - component: {fileID: 6834328820109517557}
   - component: {fileID: 2309103510032901628}
+  - component: {fileID: 3000337562974584314}
   m_Layer: 5
   m_Name: PauseMenu
   m_TagString: Untagged
@@ -6527,6 +6528,18 @@ MonoBehaviour:
   _currentMenu: {fileID: 3382621261388525809}
   _delayToOpen: -1
   _setMenuBtnSelectedOnStart: 0
+--- !u!114 &3000337562974584314
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4534754915513794605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db356691405f217468beac212b2f3d96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4588019707658362186
 GameObject:
   m_ObjectHideFlags: 0
@@ -7692,7 +7705,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 320, y: -730}
+  m_AnchoredPosition: {x: 320, y: -810}
   m_SizeDelta: {x: 240, y: 80}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &9078982319246247889
@@ -14160,6 +14173,34 @@ PrefabInstance:
       propertyPath: m_Navigation.m_SelectOnDown
       value: 
       objectReference: {fileID: 8397892385732081716}
+    - target: {fileID: 371258623443599807, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onSelect.m_PersistentCalls.m_Calls.Array.data[2].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 371258623443599807, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 371258623443599807, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2309103510032901628}
+    - target: {fileID: 371258623443599807, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetSelected
+      objectReference: {fileID: 0}
+    - target: {fileID: 371258623443599807, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Ivayami.UI.MenuGroup, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 371258623443599807, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 5807202950817357336}
+    - target: {fileID: 371258623443599807, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 735897696905467800, guid: 187e861f151bd864996c2305e988bacb, type: 3}
       propertyPath: m_text
       value: Right Stick Deadzone
@@ -14804,6 +14845,30 @@ PrefabInstance:
       propertyPath: _onSelect.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 8161989700822022703, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161989700822022703, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2309103510032901628}
+    - target: {fileID: 8161989700822022703, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetSelected
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161989700822022703, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: Ivayami.UI.MenuGroup, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 8161989700822022703, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 5249882259353600637}
+    - target: {fileID: 8161989700822022703, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+      propertyPath: _onPointerEnter.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 8212724620621416186, guid: 187e861f151bd864996c2305e988bacb, type: 3}
       propertyPath: _uiText
       value: 
@@ -15072,6 +15137,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 9070090149237271242, guid: 187e861f151bd864996c2305e988bacb, type: 3}
   m_PrefabInstance: {fileID: 4154347305410484482}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5249882259353600637 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8177517420910631807, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+  m_PrefabInstance: {fileID: 4154347305410484482}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5409124034535669764 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8265835378512042246, guid: 187e861f151bd864996c2305e988bacb, type: 3}
@@ -15091,6 +15161,11 @@ RectTransform:
 --- !u!1 &5770345534003578052 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7616526424674688454, guid: 187e861f151bd864996c2305e988bacb, type: 3}
+  m_PrefabInstance: {fileID: 4154347305410484482}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5807202950817357336 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7579664334968997658, guid: 187e861f151bd864996c2305e988bacb, type: 3}
   m_PrefabInstance: {fileID: 4154347305410484482}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &5845604063438087591 stripped
