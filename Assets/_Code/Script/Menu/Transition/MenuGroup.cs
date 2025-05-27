@@ -41,7 +41,7 @@ namespace Ivayami.UI {
             _currentMenu = menuToOpen;
 
             if (!isInstant || previousWasNull) {
-                if(!isInstant) yield return new WaitForSeconds(_delayToOpen);
+                if (!isInstant) yield return new WaitForSeconds(_delayToOpen);
 
                 Open();
             }
@@ -60,7 +60,7 @@ namespace Ivayami.UI {
         }
 
         public void SetSelected(GameObject selectedObject) { // Move Elsewhere?
-            if (!selectedObject.GetComponent<Selectable>().interactable) return;
+            if (selectedObject == null || !selectedObject.GetComponent<Selectable>().interactable) return;
             PreventSelectPointer.Instance.ExecuteIfNotClick(() => EventSystem.current.SetSelectedGameObject(selectedObject));
         }
 
