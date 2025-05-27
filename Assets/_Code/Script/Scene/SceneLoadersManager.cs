@@ -7,9 +7,10 @@ namespace Ivayami.Scene
             SceneController.Instance.OnLoadScene += HandleOnLoadScene;
             SceneController.Instance.OnStartUnloadScene += HandleOnStartUnloadScene;
 #if UNITY_EDITOR
-            if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))
+            if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))            
                 return;            
 #endif
+
             gameObject.SetActive(false);
         }
 
