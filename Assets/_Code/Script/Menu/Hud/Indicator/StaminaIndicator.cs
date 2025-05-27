@@ -27,7 +27,7 @@ namespace Ivayami.UI {
         private Vector2 _initialPos;
 
         private void Start() {
-            PlayerStress.Instance.onStressChange.AddListener(StressUpdate);
+            StressIndicatorSmoother.Instance.OnStressSmoothed.AddListener(StressUpdate);
             PlayerMovement.Instance.onStaminaUpdate.AddListener(StaminaSaturate);
             _initialPos = _beatImages[0].rectTransform.localPosition;
             StressUpdate(0);
