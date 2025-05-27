@@ -8,6 +8,7 @@ namespace Ivayami.UI
     {
         private void Start()
         {
+            if (!PlayerCamera.Instance) return;
             Canvas canvas = GetComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
             canvas.worldCamera = PlayerCamera.Instance.UICamera;
