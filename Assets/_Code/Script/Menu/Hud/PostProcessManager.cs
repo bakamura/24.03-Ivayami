@@ -5,8 +5,10 @@ using UnityEngine.Rendering;
 using PSX;
 using UnityEngine.Rendering.Universal;
 using UnityEngine;
+using System;
 
-public class PostProcessManager : MonoSingleton<PostProcessManager> {
+public class PostProcessManager : MonoSingleton<PostProcessManager>
+{
 
     //[SerializeField] private float _heightPixelation;
     //[SerializeField, Min(0f)] private float _windowResizeCheckInterval;
@@ -17,17 +19,23 @@ public class PostProcessManager : MonoSingleton<PostProcessManager> {
     //private float _ditheringScaleBase;
     //private Pixelation _pixelation;
     private Dithering _dithering;
-    private LiftGammaGain _gamma;
-    private Fog _psxFog;  
+    private LiftGammaGain[] _gamma = new LiftGammaGain[0];
+    private Fog _psxFog;
     //private const float _baseResolutionFactor = 1920f / 1080f;
 
-    protected override void Awake() {
+    protected override void Awake()
+    {
         //_pixelation = GetComponent<Volume>().profile.components.FirstOrDefault(component => component.GetType() == typeof(Pixelation)) as Pixelation;
         base.Awake();
         Volume volume = GetComponent<Volume>();
         _dithering = volume.profile.components.FirstOrDefault(component => component.GetType() == typeof(Dithering)) as Dithering;
         _psxFog = volume.profile.components.FirstOrDefault(component => component.GetType() == typeof(Fog)) as Fog;
-        _gamma = volume.profile.components.FirstOrDefault(component => component.GetType() == typeof(LiftGammaGain)) as LiftGammaGain;
+        Volume[] gamaVolumes = GetComponentsInChildren<Volume>();
+        for (int i = 0; i < gamaVolumes.Length; i++)
+        {
+            Array.Resize(ref _gamma, _gamma.Length + 1);
+            _gamma[i] = gamaVolumes[i].profile.components.FirstOrDefault(component => component.GetType() == typeof(LiftGammaGain)) as LiftGammaGain;
+        }
         //_ditheringScaleBase = _dithering.ditherScale.value;
 
         //_pixelation.widthPixelation.Override(_heightPixelation);
@@ -51,7 +59,10 @@ public class PostProcessManager : MonoSingleton<PostProcessManager> {
 
     public void ChangeBrightness(float value)
     {
-        _gamma.gamma.Override(new Vector4(value, value, value, value));
+        for (int i = 0; i < _gamma.Length; i++)
+        {
+            _gamma[i].gamma.Override(new Vector4(value, value, value, value));
+        }
     }
 
     public void ChangePSXFog(float distance, Color fogColor)
