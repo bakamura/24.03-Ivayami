@@ -11,7 +11,7 @@ namespace Ivayami.Player.Ability
 {
     public class Lantern : PlayerAbility
     {
-
+        [SerializeField] private InventoryItem _item;
         [SerializeField] private Light _wideOrigin;
         [SerializeField] private Light _focusedOrigin;
         [SerializeField] private Transform _visuals;
@@ -33,7 +33,7 @@ namespace Ivayami.Player.Ability
 
         [Header("Header")]
 
-        [SerializeField, Min(0f)] private float _durationMaxBase;
+        //[SerializeField, Min(0f)] private float _durationMaxBase;
         [SerializeField, Min(0f)] private float _durationMaxCap;
         [SerializeField, Min(0f)] private float _durationIncreaseFromItem;
         [SerializeField, Range(0f, 1f), Tooltip("If the value is smaller than this percentage it will start flickering")] private float _flickeringStartTreshold;
@@ -93,7 +93,7 @@ namespace Ivayami.Player.Ability
             if (_focused)
             {
                 _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
-                _durationCurrent -= _focusedDurationComsumptionMultiplier * Time.deltaTime;
+                _durationCurrent = Mathf.Clamp(_durationCurrent - _focusedDurationComsumptionMultiplier * Time.deltaTime, 0f, _durationMaxCap);
             }
             else _durationCurrent = Mathf.Clamp(_durationCurrent - Time.deltaTime, 0f, _durationMaxCap);
             UpdateLights();
@@ -222,6 +222,7 @@ namespace Ivayami.Player.Ability
                 _focusedOrigin.enabled = false;
                 ActivateBlocker.Toggle(nameof(Lantern), false);
             }
+            Bag.Instance.UpdateItemDisplayText(_item, $"{_durationCurrent}/{_durationMaxCap}");
         }
 
         private IEnumerator FlickeringInterpolationCoroutine()
