@@ -30,21 +30,32 @@ namespace Ivayami.debug
             {
                 CurrentSceneName = EditorSceneManager.GetActiveScene().name;
                 CameraPosition = new Vector3(PlayerPrefs.GetFloat("camX"), PlayerPrefs.GetFloat("camY"), PlayerPrefs.GetFloat("camZ"));
-                SceneManager.LoadScene(0);
+                AsyncOperation operation = SceneManager.LoadSceneAsync(0, LoadSceneMode.Single);
+                if (operation != null) operation.completed += OnLoadBaseScene;
+                else OnLoadBaseScene(null);
             }
         }
 
-        public static void OnSceneLoad()
+        public static void OnLoadBaseScene(AsyncOperation operation)
         {
+            SceneController.Instance.OnAllSceneRequestEndDebug += OnGameplayScenesLoad;
             CharacterController controller = PlayerMovement.Instance.GetComponent<CharacterController>();
             controller.enabled = false;
             PlayerMovement.Instance.SetPosition(Ivayami.debug.CustomSettingsHandler.CameraPosition);
             controller.enabled = true;
-            PlayerActions.Instance.ChangeInputMap("Player");
-            PlayerMovement.Instance.RemoveAllBlockers();
             SaveSystem.Instance.DeleteProgress(0);
-            SaveSystem.Instance.LoadProgress(0, null);
-            SceneController.Instance.OnAllSceneRequestEndDebug -= OnSceneLoad;
+            SaveSystem.Instance.LoadProgress(0, OnSaveLoad);
+        }
+
+        private static void OnSaveLoad()
+        {
+            SceneLoadersManager.Instance.gameObject.SetActive(true);
+        }
+
+        public static void OnGameplayScenesLoad()
+        {
+            PlayerActions.Instance.ChangeInputMap("Player");
+            PlayerMovement.Instance.RemoveAllBlockers();            
         }
 
         private static void HandleSceneViewGUIUpdate(SceneView sceneView)
