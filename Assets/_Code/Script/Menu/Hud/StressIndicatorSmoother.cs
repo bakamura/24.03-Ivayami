@@ -19,7 +19,7 @@ namespace Ivayami.UI {
 
         private void SetTarget(float newTarget) {
             _target = newTarget;
-            if (_coroutine == null ) _coroutine = StartCoroutine(SmoothToTarget());
+            if (_coroutine == null) _coroutine = StartCoroutine(SmoothToTarget());
         }
 
         private IEnumerator SmoothToTarget() {
@@ -30,6 +30,7 @@ namespace Ivayami.UI {
                 yield return null;
             }
             OnStressSmoothed.Invoke(_target);
+            _coroutine = null;
         }
 
     }
