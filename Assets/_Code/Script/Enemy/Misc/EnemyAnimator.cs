@@ -19,7 +19,7 @@ namespace Ivayami.Enemy
         //private static readonly int WALKING_BOOL = Animator.StringToHash("walking");
         private static readonly int SPAWNING_TRIGGER = Animator.StringToHash("spawning");
         private static readonly int ATTACK_TRIGGER = Animator.StringToHash("attacking");
-        private static readonly int TARGET_DETECTED_TRIGGER = Animator.StringToHash("targetDetected");
+        private static readonly int TARGET_DETECTED_BOOL = Animator.StringToHash("targetDetected");
         private static readonly int INTERACT_TRIGGER = Animator.StringToHash("interacting");
         private static readonly int PARALISE_BOOL = Animator.StringToHash("paralised");
         private static readonly int CHASING_BOOL = Animator.StringToHash("chasing");
@@ -108,10 +108,10 @@ namespace Ivayami.Enemy
         /// <param name="onAnimationEnd">
         /// will only activate once
         /// </param>
-        public void TargetDetected(Action onAnimationEnd = null)
+        public void TargetDetected(bool targetDetected, Action onAnimationEnd = null)
         {
-            _animator.SetTrigger(TARGET_DETECTED_TRIGGER);
-            _animator.SetBool(CHASING_BOOL, true);
+            _animator.SetBool(TARGET_DETECTED_BOOL, targetDetected);
+            //_animator.SetBool(CHASING_BOOL, true);
             StartAnimationEvent(TARGET_DETECTED_STATE, 0, onAnimationEnd, false);
         }
         /// <param name="onAnimationEnd">

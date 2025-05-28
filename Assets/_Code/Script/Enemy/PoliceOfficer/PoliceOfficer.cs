@@ -9,7 +9,7 @@ using System.Collections.Generic;
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
-    public class PoliceOfficer : StressEntity, IEnemyWalkArea, IChangeTargetPoint
+    public class PoliceOfficer : StressEntity, IEnemyWalkArea/*, ISoundDetection*/
     {
         [Header("Officer Parameters")]
         [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
@@ -70,6 +70,8 @@ namespace Ivayami.Enemy
         //public LayerMask TargetLayer => _targetLayer;
 
         public int ID => gameObject.GetInstanceID();
+
+        //public Vector3 CurrentPosition => transform.position;
 
         #region MainBehaviour
         protected override void Awake()
@@ -278,7 +280,13 @@ namespace Ivayami.Enemy
             _enemyAnimator.Walking(0);
             _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
             PlayerStress.Instance.AddStress(100, 79, PlayerAnimation.DamageAnimation.Mental);
-            _enemyAnimator.TargetDetected(StartBehaviour);
+            _enemyAnimator.TargetDetected(true, HandleTargetDetectEnd);
+        }
+
+        private void HandleTargetDetectEnd()
+        {
+            _enemyAnimator.TargetDetected(false);
+            StartBehaviour();
         }
 
         private void GoToLastTargetPoint()
@@ -422,16 +430,16 @@ namespace Ivayami.Enemy
             }
         }
 
-        public void GoToPoint(Transform target, float speedIncrease, float durationInPlace)
-        {
-            if (!_isChasing)
-            {
-                StopBehaviour(true);
-                _navMeshAgent.isStopped = false;
-                _navMeshAgent.speed = speedIncrease;
-                HandlePointReachedCoroutine(/*false,*/ true, durationInPlace, target);
-            }
-        }
+        //public void GoToPoint(Transform target, float speedIncrease, float durationInPlace)
+        //{
+        //    if (!_isChasing)
+        //    {
+        //        StopBehaviour(true);
+        //        _navMeshAgent.isStopped = false;
+        //        _navMeshAgent.speed = speedIncrease;
+        //        HandlePointReachedCoroutine(/*false,*/ true, durationInPlace, target);
+        //    }
+        //}
 
         private void StopTargetPointReachedCoroutine()
         {
