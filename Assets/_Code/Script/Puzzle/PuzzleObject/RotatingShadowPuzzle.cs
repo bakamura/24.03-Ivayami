@@ -42,6 +42,7 @@ namespace Ivayami.Puzzle
             return PlayerActions.InteractAnimation.Default;
         }
 
+        public void ForceInteract() => Interact();
         private void Setup()
         {
             if (!_hasDoneSetup)
