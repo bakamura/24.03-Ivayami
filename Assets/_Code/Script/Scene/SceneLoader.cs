@@ -7,6 +7,7 @@ namespace Ivayami.Scene
     public class SceneLoader : MonoBehaviour
     {
         [SceneDropdown, SerializeField] private string _sceneId;
+        [SerializeField] private bool _setAsActiveScene;
         [SerializeField] private bool _changeSkybox;
         [SerializeField] private PlayerCamera.CameraBackgroundTypes _backgroundType;
         [SerializeField] private Color _backgroundColor;
@@ -44,7 +45,7 @@ namespace Ivayami.Scene
         public void LoadScene()
         {
             if (_changeSkybox) PlayerCamera.Instance.SetSkybox(_backgroundType, _backgroundColor);
-            SceneController.Instance.LoadScene(_sceneId, _onSceneLoad);
+            SceneController.Instance.LoadScene(_sceneId, _setAsActiveScene, _onSceneLoad);
         }
 
         public void UnloadScene()
