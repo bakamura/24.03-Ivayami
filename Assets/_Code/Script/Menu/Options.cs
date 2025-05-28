@@ -22,6 +22,7 @@ namespace Ivayami.UI {
         [SerializeField] private Slider _sfxSlider;        
         [SerializeField] private Slider _rightStickDeadzoneSlider;
         [SerializeField] private Slider _leftStickDeadzoneSlider;
+        [SerializeField] private Slider _brightnessSlider;
 
         [Space(16)]
 
@@ -98,7 +99,7 @@ namespace Ivayami.UI {
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[SaveSystem.Instance.Options.language];
             _languageNameText.text = LocalizationSettings.AvailableLocales.Locales[SaveSystem.Instance.Options.language].LocaleName;
             OnChangeLanguage.Invoke();
-        }
+        }        
 
         //public void ChangeLanguage(Int32 language) {
         //    SaveSystem.Instance.Options.language = language;
@@ -112,6 +113,7 @@ namespace Ivayami.UI {
             _cameraSensitivitySliderY.SetValueWithoutNotify(SaveSystem.Instance.Options.cameraSensitivityY);
             _rightStickDeadzoneSlider.SetValueWithoutNotify(SaveSystem.Instance.Options.cameraDeadzone);
             _leftStickDeadzoneSlider.SetValueWithoutNotify(SaveSystem.Instance.Options.movementDeadzone);
+            _brightnessSlider.SetValueWithoutNotify(SaveSystem.Instance.Options.brightness);
             _languageNameText.text = LocalizationSettings.AvailableLocales.Locales[SaveSystem.Instance.Options.language].LocaleName;
             //_languageDropdown.SetValueWithoutNotify(SaveSystem.Instance.Options.language);
             _invertCameraToggle.SetIsOnWithoutNotify(SaveSystem.Instance.Options.invertCamera);
@@ -124,6 +126,7 @@ namespace Ivayami.UI {
             Sfx.setVolume(_sfxSlider.value);
             PlayerCamera.Instance.SetSensitivityX(SaveSystem.Instance.Options.cameraSensitivityX * (InputCallbacks.Instance.IsGamepad ? _gamepadCameraSensitivityMultiplierX : _mouseCameraSensitivityMultiplierX));
             PlayerCamera.Instance.SetSensitivityY(SaveSystem.Instance.Options.cameraSensitivityY * (InputCallbacks.Instance.IsGamepad ? _gamepadCameraSensitivityMultiplierY : _mouseCameraSensitivityMultiplierY));
+            PostProcessManager.Instance.ChangeBrightness(SaveSystem.Instance.Options.brightness);
             //PlayerMovement.Instance.ChangeStickDeadzone(SaveSystem.Instance.Options.cameraDeadzone);
             UpdateRightStickDeadzones(SaveSystem.Instance.Options.cameraDeadzone);
             UpdateLeftStickDeadzones(SaveSystem.Instance.Options.movementDeadzone);
@@ -181,6 +184,12 @@ namespace Ivayami.UI {
 
         public void SaveOptions() {
             SaveSystem.Instance.SaveOptions();
+        }
+
+        public void ChangeBrightness(float value)
+        {
+            SaveSystem.Instance.Options.brightness = value;
+            PostProcessManager.Instance.ChangeBrightness(value);
         }
 
     }
