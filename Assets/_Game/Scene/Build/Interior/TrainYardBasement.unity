@@ -233,7 +233,7 @@ Transform:
   m_Children:
   - {fileID: 1413846747}
   - {fileID: 534493011}
-  - {fileID: 1978605371}
+  - {fileID: 596534834}
   m_Father: {fileID: 1850324839}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!850595691 &84518888
@@ -2495,6 +2495,84 @@ MonoBehaviour:
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 0
+--- !u!1 &596534833
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 596534834}
+  - component: {fileID: 596534835}
+  m_Layer: 0
+  m_Name: BlockFlashlightEvent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &596534834
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 596534833}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1978605371}
+  - {fileID: 1151668916}
+  m_Father: {fileID: 83425239}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &596534835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 596534833}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d74e5c4dd631c2d4f9b5d9951c476bf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerOnStart: 1
+  _progressConditions:
+  - AreaProgress: {fileID: 11400000, guid: ba408379013cfd4488c6b25cf8dcbc60, type: 2}
+    ProgressStepMin: 2
+    ProgressStepMax: 3
+  _onTrigger:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1978605370}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1151668915}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!43 &662775872
 Mesh:
   m_ObjectHideFlags: 0
@@ -4944,6 +5022,83 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1071797781}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1151668915
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1151668916}
+  - component: {fileID: 1151668918}
+  - component: {fileID: 1151668917}
+  m_Layer: 10
+  m_Name: Dialogue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1151668916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1151668915}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 9.390625, y: 3.2740402, z: -32.820312}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 596534834}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1151668917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1151668915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dialogue: {fileID: 0}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  _dialogueName: 
+  _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
+  _lockPlayerInput: 1
+--- !u!65 &1151668918
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1151668915}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.8598175, y: 7, z: 7}
+  m_Center: {x: 0.95399475, y: -2, z: -3}
 --- !u!1 &1152332954
 GameObject:
   m_ObjectHideFlags: 0
@@ -54489,7 +54644,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1978605371}
   - component: {fileID: 1978605372}
-  - component: {fileID: 1978605373}
   m_Layer: 0
   m_Name: BlockFlashlight
   m_TagString: Untagged
@@ -54505,12 +54659,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1978605370}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 9.390625, y: 3.2740402, z: -32.820312}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 83425239}
+  m_Father: {fileID: 596534834}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1978605372
 BoxCollider:
@@ -54533,38 +54687,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4.67894, y: 7, z: 7}
   m_Center: {x: 2.16053, y: -2, z: -3}
---- !u!114 &1978605373
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1978605370}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d74e5c4dd631c2d4f9b5d9951c476bf0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _triggerOnStart: 0
-  _progressConditions:
-  - AreaProgress: {fileID: 11400000, guid: ba408379013cfd4488c6b25cf8dcbc60, type: 2}
-    ProgressStepMin: 2
-    ProgressStepMax: 3
-  _onTrigger:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1978605372}
-        m_TargetAssemblyTypeName: UnityEngine.Collider, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &2034318147
 GameObject:
   m_ObjectHideFlags: 0
