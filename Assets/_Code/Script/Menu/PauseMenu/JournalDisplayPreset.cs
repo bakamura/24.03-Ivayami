@@ -44,7 +44,7 @@ namespace Ivayami.UI {
             foreach (TextMeshProUGUI entryNote in _entryNotes) entryNote.text = string.Empty;
             _menuGroup.CloseCurrent();
 
-            StartCoroutine(FitEntryText(entry.GetDisplayDescription()));
+            StartCoroutine(FitEntryText(entry.DisplayContent));
         }
 
         private IEnumerator FitEntryText(string text) {

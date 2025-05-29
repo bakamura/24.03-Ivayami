@@ -42,7 +42,7 @@ namespace Ivayami.Puzzle {
             InteratctableFeedbacks.UpdateFeedbacks(false, true);
             _focusCamera.StartMovement();
 
-            ReadableUI.Instance.ShowReadable(_readable.GetDisplayName(), _readable.GetDisplayDescription());
+            ReadableUI.Instance.ShowReadable(_readable.DisplayName, _readable.DisplayContent);
 
             ReturnAction.Instance.Set(StopReading);
 

@@ -111,7 +111,7 @@ namespace Ivayami.UI {
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() => DisplayEntry(entry));
             btn.onClick.AddListener(_btnSound.GoForth);
-            btn.GetComponent<TextMeshProUGUI>().text = entry.GetDisplayName();
+            btn.GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
             if (shouldSelect) btn.onClick.Invoke();
         }
 

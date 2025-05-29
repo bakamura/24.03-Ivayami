@@ -6,20 +6,14 @@ namespace Ivayami.Puzzle {
     [CreateAssetMenu(menuName = "Ivayami/UI/Readable")]
     public class Readable : ScriptableObject {
 
+        [field: SerializeField] public Sprite[] DisplayImages;
+
+        public string DisplayName => $"{name}/Name";
+        public string DisplayContent => LocalizationSettings.StringDatabase.GetLocalizedString("Items", $"{name}/Description");
+
 #if UNITY_EDITOR
         public TextContent[] DisplayTexts;
-#endif
-        public string GetDisplayName()
-        {
-            return $"{name}/Name";
-        }
 
-        public string GetDisplayDescription()
-        {
-            return LocalizationSettings.StringDatabase.GetLocalizedString("Items", $"{name}/Description");
-        }
-
-#if UNITY_EDITOR
         private void OnValidate()
         {
             if (DisplayTexts == null || DisplayTexts.Length == 0) return;
