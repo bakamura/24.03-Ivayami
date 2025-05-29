@@ -1,7 +1,8 @@
 using UnityEngine;
-using FMODUnity;
 using FMOD.Studio;
+using FMODUnity;
 using Ivayami.Player;
+using Ivayami.UI;
 
 namespace Ivayami.Audio
 {
@@ -13,7 +14,7 @@ namespace Ivayami.Audio
         {
             RuntimeManager.StudioSystem.getParameterDescriptionByName("globalStress", out PARAMETER_DESCRIPTION description);
             _variableId = description.id;
-            PlayerStress.Instance.onStressChange.AddListener(HandleStressUpdate);
+            StressIndicatorSmoother.Instance.OnStressSmoothed.AddListener(HandleStressUpdate);
         }
 
         private void HandleStressUpdate(float value)
