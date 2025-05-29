@@ -1,5 +1,5 @@
 using UnityEngine;
-using Ivayami.Puzzle;
+using Ivayami.UI;
 
 namespace Ivayami.Player {
     public class ReadableItem : InventoryItem {

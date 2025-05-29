@@ -12,7 +12,7 @@ using UnityEngine.Localization.Components;
 namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
 
-        [SerializeField] private JournalDisplayPreset[] _presets;
+        [SerializeField] private PagePreset[] _presets;
         [SerializeField] private Button _selectionBtnPrefab;
         [SerializeField] private Animator _containerAnimator;
 
@@ -103,7 +103,7 @@ namespace Ivayami.UI {
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() => DisplayEntry(entry));
             btn.onClick.AddListener(_btnSound.GoForth);
-            btn.GetComponent<LocalizeStringEvent>().SetEntry(entry.GetDisplayName());
+            btn.GetComponent<LocalizeStringEvent>().SetEntry(entry.DisplayName());
             if (shouldSelect) btn.onClick.Invoke();
         }
 
