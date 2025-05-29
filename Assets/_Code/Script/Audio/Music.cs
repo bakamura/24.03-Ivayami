@@ -1,9 +1,10 @@
-using System.Collections;
-using UnityEngine;
-using FMODUnity;
 using FMOD.Studio;
+using FMODUnity;
 using Ivayami.Player;
 using Ivayami.Save;
+using Ivayami.UI;
+using System.Collections;
+using UnityEngine;
 
 namespace Ivayami.Audio
 {
@@ -65,7 +66,7 @@ namespace Ivayami.Audio
 
         private void Start()
         {
-            PlayerStress.Instance.onStressChange.AddListener(UpdateMusicToStress);
+            StressIndicatorSmoother.Instance.OnStressSmoothed.AddListener(UpdateMusicToStress);
         }
 
         public void SetMusic(EventReference musicEventRef, bool shouldStopPeriodically, bool useDefaultFade, bool useDefaultReplay, bool useDefaultStartDelay, Range fade = new(), Range replay = new(), Range startDelay = new())
