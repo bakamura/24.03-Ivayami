@@ -17,7 +17,7 @@ namespace Ivayami.Audio {
 
             Music.Instance.ForceStop();
             Music.Range instant = new Music.Range(0, 0.01f);
-            Music.Instance.SetMusic(_music, false, false, false, false, instant, instant, instant);
+            Music.Instance.SetMusic(_music, false, true, false, false, false, instant, instant, instant);
         }
 
 
