@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,8 @@ using Ivayami.Player.Ability;
 using Ivayami.Puzzle;
 using Ivayami.UI;
 using Ivayami.Dialogue;
-using System;
 using Ivayami.Save;
+using UnityEngine.EventSystems;
 
 namespace Ivayami.Player {
     public class PlayerActions : MonoSingleton<PlayerActions> {
@@ -85,6 +86,7 @@ namespace Ivayami.Player {
         private InteractAnimation _interactAnimationCache;
 
         private const string INTERACT_LONG_BLOCK_KEY = "InteractLong";
+        private const string HEAVY_HOLD_KEY = "HeavyHold";
 
         protected override void Awake() {
             base.Awake();
@@ -175,6 +177,7 @@ namespace Ivayami.Player {
                 else Debug.LogWarning($"Tried to hold null object");
             }
             else Debug.LogWarning($"Tried to hold '{objToHold?.name}' but is alraedy holding '{_heavyObjectCurrent.name}'");
+            (_abilities.FirstOrDefault(ability => ability is Lantern) as Lantern)?.ActivateBlocker.Toggle(HEAVY_HOLD_KEY, false);
         }
 
         public GameObject HeavyObjectRelease() {
@@ -183,6 +186,7 @@ namespace Ivayami.Player {
                 GameObject releasedObject = _heavyObjectCurrent;
                 _heavyObjectCurrent = null;
                 _interactableDetector.onlyHeavyObjects = false;
+                (_abilities.FirstOrDefault(ability => ability is Lantern) as Lantern)?.ActivateBlocker.Toggle(HEAVY_HOLD_KEY, true);
                 return releasedObject;
             }
             Debug.LogWarning($"Tried to release null object");
@@ -249,7 +253,9 @@ namespace Ivayami.Player {
             _actionMapCurrent?.Disable();
             _actionMapCurrent = mapId != null ? _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId) : null;
             _actionMapCurrent?.Enable();
+            if(mapId != "Menu") EventSystem.current.SetSelectedGameObject(null);
             Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId == "Player" ? CursorLockMode.Locked : CursorLockMode.None;
+            if (string.Equals(mapId, "Player")) EventSystem.current.SetSelectedGameObject(null);
             if (_actionMapCurrent != null) onActionMapChange?.Invoke(_actionMapCurrent.name);
         }
 

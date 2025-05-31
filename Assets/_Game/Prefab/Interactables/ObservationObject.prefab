@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 124
   m_IsActive: 1
 --- !u!4 &642980101061984520
 Transform:
@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fddd3369896713646ad1e21d820b85bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _snapCameraPositionOnInterrupt: 1
   _changeCameraFocus: 0
   _lookAtPlayer: 0
   _followPlayer: 0
@@ -210,7 +211,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 124
   m_IsActive: 1
 --- !u!224 &4146881281324633971
 RectTransform:
@@ -276,7 +277,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 124
   m_IsActive: 1
 --- !u!224 &371415794196575591
 RectTransform:
@@ -526,7 +527,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 124
   m_IsActive: 1
 --- !u!224 &3249136053097503701
 RectTransform:
@@ -700,7 +701,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 124
   m_IsActive: 1
 --- !u!4 &9092313059277572573
 Transform:
@@ -783,7 +784,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 124
   m_IsActive: 1
 --- !u!224 &179627383685521445
 RectTransform:
@@ -858,7 +859,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 124
   m_IsActive: 1
 --- !u!224 &6426129469431404808
 RectTransform:
@@ -930,6 +931,7 @@ GameObject:
   - component: {fileID: 7085683108627630917}
   - component: {fileID: 1220179353384739070}
   - component: {fileID: 8171390441246820165}
+  - component: {fileID: 1966666763126375814}
   m_Layer: 6
   m_Name: ContentUIDisplay
   m_TagString: Untagged
@@ -1072,6 +1074,18 @@ MonoBehaviour:
     m_RotationOrder: 4
   _transitionDuration: 0.2
   <InitialSelected>k__BackingField: {fileID: 0}
+--- !u!114 &1966666763126375814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4430556946451274184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db356691405f217468beac212b2f3d96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4883874371687237293
 GameObject:
   m_ObjectHideFlags: 0
@@ -1090,7 +1104,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 124
   m_IsActive: 1
 --- !u!4 &2719349934787183755
 Transform:
@@ -1351,7 +1365,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 124
   m_IsActive: 1
 --- !u!224 &5119632387156180910
 RectTransform:
@@ -1413,12 +1427,13 @@ GameObject:
   - component: {fileID: 4267749336537892198}
   - component: {fileID: 5215635487310849036}
   - component: {fileID: 944604779721732540}
+  - component: {fileID: 3867077039050096215}
   m_Layer: 5
   m_Name: InputDisplayUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 124
   m_IsActive: 1
 --- !u!224 &1815925867412002375
 RectTransform:
@@ -1515,6 +1530,18 @@ CanvasGroup:
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
+--- !u!114 &3867077039050096215
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9183229675723265499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db356691405f217468beac212b2f3d96, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2201283477273609196
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1557,7 +1584,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5765627851176342930, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 2147483647
+      value: 124
       objectReference: {fileID: 0}
     - target: {fileID: 6279569169204341742, guid: 38daa5cda70894e4a800559608d0d61e, type: 3}
       propertyPath: m_LocalPosition.y

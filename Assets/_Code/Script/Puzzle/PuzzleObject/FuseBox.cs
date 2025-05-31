@@ -20,6 +20,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private GameObject _ledPrefab;
         [SerializeField] private GameObject _fusePrefab;
         [SerializeField] private InputActionReference _cancelInteractionInput;
+        [SerializeField] private InputActionReference _resetInput;
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private UnityEvent _onInteractionCancelled;
         [SerializeField] private Color _selectedColor = Color.yellow;
@@ -96,13 +97,15 @@ namespace Ivayami.Puzzle
         {
             if (isActive)
             {
-                _cancelInteractionInput.action.performed += HandleCancelInteraction;
+                _cancelInteractionInput.action.started += HandleCancelInteraction;
+                _resetInput.action.started += HandleResetPuzzle;
                 PlayerActions.Instance.ChangeInputMap("Menu");
                 PlayerActions.Instance.ToggleInteract(nameof(FuseBox), false);
             }
             else
             {
-                _cancelInteractionInput.action.performed -= HandleCancelInteraction;
+                _cancelInteractionInput.action.started -= HandleCancelInteraction;
+                _resetInput.action.started -= HandleResetPuzzle;
                 PlayerActions.Instance.ChangeInputMap("Player");
                 PlayerActions.Instance.ToggleInteract(nameof(FuseBox), true);
             }
@@ -129,13 +132,22 @@ namespace Ivayami.Puzzle
 
         private void HandleCancelInteraction(InputAction.CallbackContext context)
         {
-            if (context.ReadValue<float>() == 1)
-            {
+            //if (context.ReadValue<float>() == 1)
+            //{
                 _isActive = false;
                 _meshRendererFuses[_currentButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _baseFuseColor);
                 _interatctableHighlight.UpdateFeedbacks(true, true);
                 UpdateInputsAndUI(_isActive);
                 _onInteractionCancelled?.Invoke();
+            //}
+        }
+
+        private void HandleResetPuzzle(InputAction.CallbackContext context)
+        {
+            //if(context.ReadValue<float>() == 1)
+            for (int i = 0; i < _meshRenderersLeds.Length; i++)
+            {
+                _meshRenderersLeds[i].material.SetColor(_colorEmissionVarID, _deactivatedColor);
             }
         }
 
@@ -203,7 +215,7 @@ namespace Ivayami.Puzzle
             if (_previousButtonSelected) _meshRendererFuses[_previousButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _baseFuseColor);
             _meshRendererFuses[_currentButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _selectedColor);
             _previousButtonSelected = _currentButtonSelected;
-        }
+        }        
 #if UNITY_EDITOR
         #region Utilities
         //public void RenameObjects()

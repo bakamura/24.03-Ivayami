@@ -74,7 +74,11 @@ namespace Ivayami.Save {
                 Logger.Log(LogType.Save, $"Loaded Save of type '{type.Name}' in {savePath}");
             }
             else {
-                if (type == typeof(SaveProgress)) Progress = new SaveProgress((byte)int.Parse(savePath.Split('_')[1].Split('.')[0]));
+                if (type == typeof(SaveProgress))
+                {
+                    Progress = new SaveProgress((byte)int.Parse(savePath.Split('_')[1].Split('.')[0]));
+                    Progress.ClearDictionaries();
+                }
                 else Options = new SaveOptions();
                 loadSaveCallback?.Invoke();
 

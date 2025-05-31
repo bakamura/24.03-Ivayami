@@ -32,12 +32,14 @@ namespace Ivayami.Scene
             public string SceneName;
             public bool IsLoaded;
             public bool IsBeingLoaded;
+            public bool SetActiveScene;
 
-            public SceneData(string sceneName)
+            public SceneData(string sceneName, bool setActiveScene)
             {
                 SceneName = sceneName;
                 IsBeingLoaded = false;
                 IsLoaded = false;
+                SetActiveScene = setActiveScene;
             }
         }
 
@@ -78,17 +80,16 @@ namespace Ivayami.Scene
 #if UNITY_EDITOR
                 if (Ivayami.debug.CustomSettingsHandler.GetEditorSettings().StartOnCurrentScene && !string.IsNullOrEmpty(Ivayami.debug.CustomSettingsHandler.CurrentSceneName))
                 {
-                    OnAllSceneRequestEndDebug += Ivayami.debug.CustomSettingsHandler.OnSceneLoad;
-                    _mainMenuSceneName = Ivayami.debug.CustomSettingsHandler.CurrentSceneName;
+                    return;
                 }
 #endif
-                LoadScene(_mainMenuSceneName);
+                LoadScene(_mainMenuSceneName, false);
             }
         }
 
-        public void LoadScene(string sceneId, UnityEvent onSceneLoad = null)
+        public void LoadScene(string sceneId, bool setActiveScene, UnityEvent onSceneLoad = null)
         {
-            SceneData data = UpdateSceneList(sceneId);
+            SceneData data = UpdateSceneList(sceneId, setActiveScene);
             if (data.IsBeingLoaded || data.IsLoaded)
             {
                 Debug.LogWarning($"Tried to Load scene {sceneId} but it is already loaded");
@@ -100,7 +101,7 @@ namespace Ivayami.Scene
 
         public void UnloadScene(string sceneId, UnityEvent onSceneUnload = null)
         {
-            SceneData data = UpdateSceneList(sceneId);
+            SceneData data = UpdateSceneList(sceneId, false);
             if (data.IsBeingLoaded || !data.IsLoaded)
             {
                 Debug.LogWarning($"Tried to Unload scene {sceneId} but it is already Unloaded");
@@ -120,6 +121,7 @@ namespace Ivayami.Scene
         public void UnloadAllScenes(Action onAllScenesUnload)
         {
             OnAllSceneRequestEnd += onAllScenesUnload;
+            //SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(0));
             for (int i = 0; i < _sceneList.Count; i++)
             {
                 if (_sceneList[i].IsLoaded) UnloadScene(_sceneList[i].SceneName);
@@ -142,7 +144,7 @@ namespace Ivayami.Scene
             }
         }
 
-        private SceneData UpdateSceneList(string sceneName)
+        private SceneData UpdateSceneList(string sceneName, bool setActiveScene)
         {
             for (int i = 0; i < _sceneList.Count; i++)
             {
@@ -151,7 +153,7 @@ namespace Ivayami.Scene
                     return _sceneList[i];
                 }
             }
-            SceneData temp = new SceneData(sceneName);
+            SceneData temp = new SceneData(sceneName, setActiveScene);
             _sceneList.Add(temp);
             return temp;
         }
@@ -173,6 +175,7 @@ namespace Ivayami.Scene
             if (requestData.SceneData.IsLoaded)
             {
                 OnLoadScene?.Invoke(requestData.SceneData.SceneName);
+                if (requestData.SceneData.SetActiveScene) SceneManager.SetActiveScene(SceneManager.GetSceneByName(requestData.SceneData.SceneName));
                 if (_debugLogs) Debug.Log($"Scene Loaded {requestData.SceneData.SceneName}");
             }
             else
