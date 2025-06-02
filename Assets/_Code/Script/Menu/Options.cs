@@ -2,14 +2,14 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
-using Ivayami.Save;
-using TMPro;
-using Ivayami.Player;
-using FMOD.Studio;
-using FMODUnity;
-using UnityEngine.Localization.Settings;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Processors;
+using UnityEngine.Localization.Settings;
+using TMPro;
+using FMOD.Studio;
+using FMODUnity;
+using Ivayami.Player;
+using Ivayami.Save;
 
 namespace Ivayami.UI {
     public class Options : MonoBehaviour {
@@ -190,6 +190,10 @@ namespace Ivayami.UI {
         {
             SaveSystem.Instance.Options.brightness = value;
             PostProcessManager.Instance.ChangeBrightness(value);
+        }
+
+        public void ToggleCanPause(bool canPause) {
+            Pause.Instance.ToggleCanPause(nameof(Options), canPause);
         }
 
     }
