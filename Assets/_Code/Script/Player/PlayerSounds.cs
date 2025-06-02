@@ -9,6 +9,7 @@ public class PlayerSounds : EntitySound
     [Header("Parameters")]
 
     [SerializeField] private EventReference _defaultStepSound;
+    [SerializeField] private LayerMask _groundLayers;
     [SerializeField] private StepSoundData[] _stepSoundsData;
 
     [Space(16)]
@@ -21,6 +22,9 @@ public class PlayerSounds : EntitySound
     private EventInstance _stepSound;
     private EventInstance _heavyBreathSound;
     private StepSoundData _currentStepSound;
+    private RaycastHit[] _hits = new RaycastHit[1];
+    private const float _raycastDistance = 3;
+    private const string _textureName = "_MainTex";
 
     [System.Serializable]
     private struct StepSoundData
@@ -29,6 +33,7 @@ public class PlayerSounds : EntitySound
         public Range SoundRage;
         public Texture[] Textures;
         [HideInInspector] public EventInstance SoundInstance;
+        public static StepSoundData Empty = new StepSoundData();
 
         public bool IsValid()
         {
@@ -86,7 +91,28 @@ public class PlayerSounds : EntitySound
 
     private StepSoundData GetCurrentStepSound()
     {
-        return new StepSoundData();
+        Physics.RaycastNonAlloc(transform.position, Vector3.down, _hits, _raycastDistance, _groundLayers);
+        if (_hits[0].collider.TryGetComponent<Terrain>(out Terrain terrain))
+        {
+            return StepSoundData.Empty;
+        }
+        else if(_hits[0].collider.TryGetComponent<MeshRenderer>(out MeshRenderer renderer))
+        {
+            return FindSoundData(renderer.sharedMaterial.GetTexture(_textureName));
+        }
+        else return StepSoundData.Empty;
+
+        StepSoundData FindSoundData(Texture texture)
+        {
+            for (int i = 0; i < _stepSoundsData.Length; i++)
+            {
+                for(int a = 0; a < _stepSoundsData[i].Textures.Length; a++)
+                {
+                    if (texture == _stepSoundsData[i].Textures[a]) return _stepSoundsData[i];
+                }
+            }
+            return StepSoundData.Empty;
+        }        
     }
     #endregion
 }
