@@ -392,6 +392,9 @@ MonoBehaviour:
   onStaminaUpdate:
     m_PersistentCalls:
       m_Calls: []
+  onRunToggle:
+    m_PersistentCalls:
+      m_Calls: []
   _movementSpeedRun: 4.5
   _movementSpeedWalk: 2
   _accelerationDuration: 0.125
@@ -2394,8 +2397,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _startTiredAnimThreshold: 0.1
   _staminaAnimationLayer: 1
-  _damageMentalLayer: 2
-  _damagePhysicalLayer: 3
   _interactAnimations:
   - InteractType: 0
     Animation: {fileID: 1701519168366769839, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
@@ -2427,16 +2428,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfa28f4a4a906694fa772d2ad602b8c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stepSoundRef:
+  _defaultStepSound:
     Guid:
       Data1: 1398361362
       Data2: 1155552564
       Data3: -971913837
       Data4: 1145049184
     Path: event:/Player_SFX/Passos_Geral
-  _stepSoundRange:
-    Min: 0
-    Max: 0
+  _stepSoundsData: []
   _heavyBreathStressMin: 81
   _heavyBreathSoundRef:
     Guid:
