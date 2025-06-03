@@ -1,6 +1,7 @@
 using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
+using Ivayami.Save;
 
 namespace Ivayami.Audio
 {
@@ -22,7 +23,7 @@ namespace Ivayami.Audio
             }
         }
 
-        protected void PlayOneShot(EventInstance sound, bool fadeOut, Range attenuation, EVENT_CALLBACK onAudioEnd = null)
+        protected void PlayOneShot(EventInstance sound, bool fadeOut, Range attenuation, EVENT_CALLBACK onAudioEnd = null, float volume = 0)
         {
             sound.getPlaybackState(out PLAYBACK_STATE state);
             if (state == PLAYBACK_STATE.PLAYING) sound.stop(fadeOut ? FMOD.Studio.STOP_MODE.ALLOWFADEOUT : FMOD.Studio.STOP_MODE.IMMEDIATE);
@@ -40,6 +41,7 @@ namespace Ivayami.Audio
             }
 
             if (onAudioEnd != null) sound.setCallback(onAudioEnd, EVENT_CALLBACK_TYPE.SOUND_STOPPED);
+            if (volume > 0) sound.setVolume(volume * SaveSystem.Instance.Options.sfxVol);
             sound.start();
         }
 
