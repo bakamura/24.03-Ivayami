@@ -10,7 +10,7 @@ public class PlayerSounds : EntitySound
 {
     [Header("Parameters")]
 
-    [SerializeField] private EventReference _defaultStepSound;
+    [SerializeField] private EventReference _stepSound;
     [SerializeField] private LayerMask _groundLayers;
     [SerializeField] private StepSoundData[] _stepSoundsData;
 
@@ -21,32 +21,42 @@ public class PlayerSounds : EntitySound
 
     [Header("Cache")]
 
-    private EventInstance _defaultStep;
+    private EventInstance _stepSoundInstance;
     private EventInstance _heavyBreathSound;
     private List<StepSoundData> _currentStepSounds = new List<StepSoundData>();
     private RaycastHit[] _hits = new RaycastHit[1];
-    private const float _raycastDistance = 3;
-    private const string _textureName = "_MainTex";
+    private PARAMETER_ID _stepSoundTypeVariableID;
+    private const float _raycastDistance = 1;
+    private const string _albedoTextureName = "_MainTex";
 
     [Serializable]
     private struct StepSoundData
     {
-        public EventReference SoundReference;
-        //public Range SoundRage;
+        public GroundTypes GroundType;
         public Texture[] Textures;
-        [NonSerialized] public EventInstance SoundInstance;
         [NonSerialized] public float Volume;
+        [NonSerialized] public bool AutoRemoveFromList;
         public static StepSoundData Empty = new StepSoundData();
+    }
 
-        public bool IsValid()
-        {
-            return !SoundReference.IsNull;
-        }
+    public enum GroundTypes
+    {
+        Concrete,
+        Grass,
+        Glass,
+        Rock,
+        Wood,
+        Gravel,
+        Tile
     }
 
     private void Awake()
     {
-        _defaultStep = InstantiateEvent(_defaultStepSound);
+        _stepSoundInstance = InstantiateEvent(_stepSound);
+        _stepSoundInstance.getDescription(out EventDescription instanceDesc);
+        instanceDesc.getParameterDescriptionByName("groundType", out PARAMETER_DESCRIPTION parameterDesc);
+        _stepSoundTypeVariableID = parameterDesc.id;
+
         _heavyBreathSound = InstantiateEvent(_heavyBreathSoundRef);
     }
 
@@ -76,25 +86,62 @@ public class PlayerSounds : EntitySound
     #region StepSound
     public void StepSound()
     {
-        //PlayOneShot(_defaultStep, true, Range.Empty);
-        GetCurrentStepSound();
-        if (_currentStepSounds.Count == 0)
-        {
-            PlayOneShot(_defaultStep, true, Range.Empty);
-        }
-        else
+        UpdateCurrentStepSurface();
+        if (_currentStepSounds.Count > 0)
         {
             for (int i = 0; i < _currentStepSounds.Count; i++)
             {
-                PlayOneShot(_currentStepSounds[i].SoundInstance, true, Range.Empty/*_currentStepSounds[i].SoundRage*/, volume: _currentStepSounds[i].Volume);
+                _stepSoundInstance.setParameterByIDWithLabel(_stepSoundTypeVariableID, _currentStepSounds[i].GroundType.ToString());
+                if (_currentStepSounds[i].Volume > 0) _stepSoundInstance.setVolume(_currentStepSounds[i].Volume);
             }
+        }
+        else _stepSoundInstance.setParameterByIDWithLabel(_stepSoundTypeVariableID, GroundTypes.Concrete.ToString());
+        PlayOneShot(_stepSoundInstance, true, Range.Empty);
+    }
+
+    public void AddStepToPlaylist(GroundTypes groundType)
+    {
+        if (!IsCurrentlyInPlaylist(groundType, out _))
+        {
+            _currentStepSounds.Add(FindSoundDataByGroundType(groundType));
         }
     }
 
-    private void GetCurrentStepSound()
-    {        
+    public void RemoveStepFromPlaylist(GroundTypes groundType)
+    {
+        if (IsCurrentlyInPlaylist(groundType, out StepSoundData data))
+        {
+            _currentStepSounds.Remove(data);
+        }
+    }
+
+    private StepSoundData FindSoundDataByGroundType(GroundTypes groundType)
+    {
+        for (int i = 0; i < _stepSoundsData.Length; i++)
+        {
+            if (_stepSoundsData[i].GroundType == groundType) return _stepSoundsData[i];
+        }
+        return StepSoundData.Empty;
+    }
+
+    private bool IsCurrentlyInPlaylist(GroundTypes groundType, out StepSoundData data)
+    {
+        for (int i = 0; i < _currentStepSounds.Count; i++)
+        {
+            if (_currentStepSounds[i].GroundType == groundType)
+            {
+                data = _currentStepSounds[i];
+                return true;
+            }
+        }
+        data = StepSoundData.Empty;
+        return false;
+    }
+
+    private void UpdateCurrentStepSurface()
+    {
         StepSoundData data;
-        StopAllStepSounds();
+        ClearUnusedStepSounds();
         Physics.RaycastNonAlloc(transform.position, Vector3.down, _hits, _raycastDistance, _groundLayers);
         if (_hits[0].collider.TryGetComponent<Terrain>(out Terrain terrain))
         {
@@ -102,21 +149,15 @@ public class PlayerSounds : EntitySound
             Vector3 splatMapPosition = new Vector3(terrainPos.x / terrain.terrainData.size.x, 0, terrainPos.z / terrain.terrainData.size.z);
             float[,,] alphaMap = terrain.terrainData.GetAlphamaps((int)(splatMapPosition.x * terrain.terrainData.alphamapWidth), (int)(splatMapPosition.y * terrain.terrainData.alphamapHeight), 1, 1);
 
-            bool soundStoppedOnce = false;
             for (int i = 0; i < alphaMap.Length; i++)
             {
                 if (alphaMap[0, 0, i] > 0)
                 {
-                    data = GetSoundData(terrain.terrainData.terrainLayers[i].diffuseTexture);
-                    if (_currentStepSounds.Count == 0 || !_currentStepSounds.Contains(data))
+                    data = FindSoundDataByTexture(terrain.terrainData.terrainLayers[i].diffuseTexture);
+                    if (!IsCurrentlyInPlaylist(data.GroundType, out _))
                     {
-                        if (!soundStoppedOnce)
-                        {
-                            StopAllStepSounds();
-                            soundStoppedOnce = true;
-                        }
-                        data.SoundInstance = InstantiateEvent(data.SoundReference);
                         data.Volume = alphaMap[0, 0, i];
+                        data.AutoRemoveFromList = true;
                         _currentStepSounds.Add(data);
                     }
                 }
@@ -124,16 +165,15 @@ public class PlayerSounds : EntitySound
         }
         else if (_hits[0].collider.TryGetComponent<MeshRenderer>(out MeshRenderer renderer))
         {
-            data = GetSoundData(renderer.sharedMaterial.GetTexture(_textureName));
-            if (_currentStepSounds.Count == 0 || !_currentStepSounds.Contains(data))
+            data = FindSoundDataByTexture(renderer.sharedMaterial.GetTexture(_albedoTextureName));
+            if (!IsCurrentlyInPlaylist(data.GroundType, out _))
             {
-                StopAllStepSounds();
-                data.SoundInstance = InstantiateEvent(data.SoundReference);
+                data.AutoRemoveFromList = true;
                 _currentStepSounds.Add(data);
             }
         }
 
-        StepSoundData GetSoundData(Texture texture)
+        StepSoundData FindSoundDataByTexture(Texture texture)
         {
             for (int i = 0; i < _stepSoundsData.Length; i++)
             {
@@ -143,15 +183,14 @@ public class PlayerSounds : EntitySound
                 }
             }
             return StepSoundData.Empty;
-        }
-
-        void StopAllStepSounds()
+        }       
+        
+        void ClearUnusedStepSounds()
         {
-            for (int i = 0; i < _currentStepSounds.Count; i++)
+            for(int i = 0; i < _currentStepSounds.Count; i++)
             {
-                _currentStepSounds[i].SoundInstance.release();
+                if (_currentStepSounds[i].AutoRemoveFromList) _currentStepSounds.RemoveAt(i);
             }
-            _currentStepSounds.Clear();
         }
     }
     #endregion
