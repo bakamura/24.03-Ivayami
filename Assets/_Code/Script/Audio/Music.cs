@@ -3,7 +3,6 @@ using UnityEngine;
 using FMODUnity;
 using FMOD.Studio;
 using Ivayami.Player;
-using Ivayami.Save;
 using System.Collections.Generic;
 using Ivayami.UI;
 
@@ -161,7 +160,7 @@ namespace Ivayami.Audio
                 {
                     fadeOut -= Time.deltaTime / _musicCurrent.Fade.Max;
                     if (fadeOut < 0) _currentVolume = 0f;
-                    else _currentVolume = fadeOut * SaveSystem.Instance.Options.musicVol;
+                    else _currentVolume = fadeOut;
                     _musicCurrent.MusicInstance.setVolume(_currentVolume);
 
                     yield return null;
@@ -234,7 +233,7 @@ namespace Ivayami.Audio
                     {
                         crossFade -= Time.deltaTime / _musicCurrent.Fade.Max;//Max is Fade Out duration
                         if (crossFade < 0) _currentVolume = 0f;
-                        else _currentVolume = crossFade * SaveSystem.Instance.Options.musicVol;
+                        else _currentVolume = crossFade;
                         _musicCurrent.MusicInstance.setVolume(_currentVolume);
 
                         yield return null;
@@ -263,7 +262,7 @@ namespace Ivayami.Audio
             {
                 crossFade += Time.deltaTime / _musicCurrent.Fade.Min;//Min is FadeInDuration
                 if (crossFade > 1) _currentVolume = 1f;
-                else _currentVolume = crossFade * SaveSystem.Instance.Options.musicVol;
+                else _currentVolume = crossFade;
                 _musicCurrent.MusicInstance.setVolume(_currentVolume);
 
                 yield return null;
@@ -285,7 +284,7 @@ namespace Ivayami.Audio
                 {
                     fade -= Time.deltaTime / _musicCurrent.Fade.Max;//Max is Fade Out
                     if (fade < 0) _currentVolume = 0f;
-                    else _currentVolume = fade * SaveSystem.Instance.Options.musicVol;
+                    else _currentVolume = fade;
                     _musicCurrent.MusicInstance.setVolume(_currentVolume);
 
                     yield return null;
@@ -298,7 +297,7 @@ namespace Ivayami.Audio
                 {
                     fade += Time.deltaTime / _musicCurrent.Fade.Min;
                     if (fade > 1) _currentVolume = 1f;
-                    else _currentVolume = fade * SaveSystem.Instance.Options.musicVol;
+                    else _currentVolume = fade;
                     _musicCurrent.MusicInstance.setVolume(_currentVolume);
 
                     yield return null;
