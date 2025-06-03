@@ -23,21 +23,7 @@ namespace Ivayami.Audio
             }
         }
 
-        public class ExtraData
-        {
-            public string VariableName;
-            public string StringValue = null;
-            public float FloatValue = -1;    
-            
-            public ExtraData(string variableName, string str = null, float flt = -1)
-            {
-                VariableName = variableName;
-                StringValue = str;
-                FloatValue = flt;
-            }
-        }
-
-        protected void PlayOneShot(EventInstance sound, bool fadeOut, Range attenuation, EVENT_CALLBACK onAudioEnd = null, float volume = 0, ExtraData extraData = null)
+        protected void PlayOneShot(EventInstance sound, bool fadeOut, Range attenuation, EVENT_CALLBACK onAudioEnd = null, float volume = 0)
         {
             sound.getPlaybackState(out PLAYBACK_STATE state);
             if (state == PLAYBACK_STATE.PLAYING) sound.stop(fadeOut ? FMOD.Studio.STOP_MODE.ALLOWFADEOUT : FMOD.Studio.STOP_MODE.IMMEDIATE);
@@ -56,11 +42,6 @@ namespace Ivayami.Audio
 
             if (onAudioEnd != null) sound.setCallback(onAudioEnd, EVENT_CALLBACK_TYPE.SOUND_STOPPED);
             if (volume > 0) sound.setVolume(volume * SaveSystem.Instance.Options.sfxVol);
-            if(extraData != null)
-            {
-                if (extraData.FloatValue > -1) sound.setParameterByName(extraData.VariableName, extraData.FloatValue);
-                if (!string.IsNullOrEmpty(extraData.StringValue)) sound.setParameterByNameWithLabel(extraData.VariableName, extraData.StringValue);
-            }
             sound.start();
         }
 
