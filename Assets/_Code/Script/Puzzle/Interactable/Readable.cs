@@ -15,9 +15,11 @@ namespace Ivayami.UI {
             public Sprite[] displayImages;
         }
 
-        public Sprite[] GetPagesContentImages(int pageId) => _pagesContent[pageId].displayImages;
         public string DisplayName => $"{name}/Name";
-        public string DisplayContent => LocalizationSettings.StringDatabase.GetLocalizedString("Items", $"{name}/Description");
+        public string[] Content => LocalizationSettings.StringDatabase.GetLocalizedString("Items", $"{name}/Description").Split(SPLIT_CHAR);
+        public Sprite[] GetPageSprites(int pageId) => _pagesContent[pageId].displayImages;
+
+        private const char SPLIT_CHAR = '@';
 
 #if UNITY_EDITOR
         public TextContent[] DisplayTexts;
@@ -28,7 +30,7 @@ namespace Ivayami.UI {
                 for (int i = 0; i < _pagesContent.Length; i++) {
                     if (!PagePresets[i]) continue;
                     // Resize Text
-                    if (_pagesContent[i].displayImages.Length != PagePresets[i].PageImages.Length) Array.Resize(ref _pagesContent[i].displayImages, PagePresets[i].PageImages.Length);
+                    //if (_pagesContent[i].displayImages.Length != PagePresets[i].PageImages.Length) Array.Resize(ref _pagesContent[i].displayImages, PagePresets[i].PageImages.Length);
                 }
             }
 

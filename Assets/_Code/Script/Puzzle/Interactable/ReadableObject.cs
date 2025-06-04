@@ -1,9 +1,9 @@
 using UnityEngine;
+using UnityEngine.Events;
 using Ivayami.Player;
 using Ivayami.UI;
 using Ivayami.Dialogue;
 using Ivayami.Audio;
-using UnityEngine.Events;
 
 namespace Ivayami.Puzzle {
     [RequireComponent(typeof(InteractableSounds))]
@@ -15,7 +15,7 @@ namespace Ivayami.Puzzle {
         [Header("Reading")]
 
         [SerializeField] private Readable _readable;
-        [SerializeField] private bool _goesToInventory;
+        [SerializeField] private bool _goesToInventory; // Rethink system
 
         [Header("Callbacks")]
         [SerializeField] private UnityEvent _onInteract;
@@ -37,13 +37,12 @@ namespace Ivayami.Puzzle {
 
         public PlayerActions.InteractAnimation Interact() {
             PlayerActions.Instance.ChangeInputMap("Menu");
-            Pause.Instance.ToggleCanPause(BLOCKER_KEY, false);
             PlayerActions.Instance.ToggleInteract(nameof(ReadableObject), false);
+            Pause.Instance.ToggleCanPause(BLOCKER_KEY, false);
             InteratctableFeedbacks.UpdateFeedbacks(false, true);
             _focusCamera.StartMovement();
 
-            ReadableUI.Instance.ShowReadable(_readable.DisplayName, _readable.DisplayContent);
-
+            ReadableUI.Instance.ShowReadable(_readable);
             ReturnAction.Instance.Set(StopReading);
 
             if (_goesToInventory) {

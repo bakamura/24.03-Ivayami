@@ -168,16 +168,16 @@ namespace Ivayami.UI {
                 Debug.LogWarning("Description Not Found");
                 return;
             }
-            if (_presets.Length > entry.TemplateID) _presets[entry.TemplateID].DisplayEntry(entry);
+            if (_presets.Length > entry.TemplateID) _presets[entry.TemplateID].DisplayContent(new string[1] { entry.DisplayDescription() }, new Sprite[0]);
             else Debug.LogError($"'{entry.name}' tried using journal preset {entry.TemplateID} which doesn't exist!");
         }
 
-        private void DisplayEntry(Readable entry) {
-            if (entry == null) {
+        private void DisplayEntry(Readable readable) {
+            if (readable == null) {
                 Debug.LogWarning("Description Not Found");
                 return;
             }
-            _presets[0].DisplayEntry(entry);
+            _presets[0].DisplayContent(readable.Content, readable.GetPageSprites(0));
         }
     }
 }

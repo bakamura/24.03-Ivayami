@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Localization.Components;
 using Ivayami.UI;
+using System.Linq;
 
 namespace Ivayami.Puzzle {
     public class ReadableUI : MonoSingleton<ReadableUI> {
@@ -12,11 +13,13 @@ namespace Ivayami.Puzzle {
         public Menu Menu { get; private set; }
 
         [SerializeField] private LocalizeStringEvent _title;
-        [SerializeField] private TextMeshProUGUI _content;
+        [SerializeField] private RectTransform _contentsParent;
+
         [SerializeField] private Button _closeBtn;
         [SerializeField] private Button _nextPageBtn;
         [SerializeField] private Button _previousPageBtn;
-        private List<TextMeshProUGUI> _contents = new List<TextMeshProUGUI>();
+
+        private List<PagePreset> _contents = new List<PagePreset>();
         private int _pageCurrent;
         private int _pageLimitCurrent;
 
@@ -24,33 +27,17 @@ namespace Ivayami.Puzzle {
             base.Awake();
 
             Menu = GetComponent<Menu>();
-            _contents.Add(_content);
         }
 
-        public void ShowReadable(string title, string content) {
-            _title.SetEntry(title);
-            int contentIndex = 0;
-            int contentBreakPoint;
-            string openTag = "";
-            while (true) {
-                if (_contents.Count <= contentIndex) _contents.Add(Instantiate(_content, _content.transform.parent));
-                _contents[contentIndex].text = openTag + content;
-                _contents[contentIndex].gameObject.SetActive(true);
-                _contents[contentIndex].ForceMeshUpdate();
-                _contents[contentIndex].gameObject.SetActive(false);
+        public void ShowReadable(Readable readable) {
+            _title.SetEntry(readable.DisplayName);
 
-                contentBreakPoint = _contents[contentIndex].firstOverflowCharacterIndex;
-                if (contentBreakPoint != -1) {
-                    contentBreakPoint = FindSafeBreakPoint(_contents[contentIndex].text, contentBreakPoint);
-                    _contents[contentIndex].text = _contents[contentIndex].text.Substring(0, contentBreakPoint);
-                    content = content.Substring(contentBreakPoint);
-                    openTag = FindOpenRichText(_contents[contentIndex].text);
-                    contentIndex++;
-                }
-                else {
-                    _pageLimitCurrent = contentIndex;
-                    break;
-                }
+            foreach (PagePreset preset in _contents) Destroy(preset.gameObject);
+            int textsInserted = 0;
+            for (int i = 0; i < readable.PagePresets.Length; i++) {
+                _contents.Add(Instantiate(readable.PagePresets[i], _contentsParent));
+                _contents[i].DisplayContent(readable.Content.ToList().GetRange(textsInserted, readable.PagePresets[i].TextBoxAmount).ToArray(), // Unoptimized
+                                            readable.GetPageSprites(i));
             }
 
             ChangePage(0);
