@@ -1,11 +1,10 @@
 using System.Collections.Generic;
-using TMPro;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Localization.Components;
 using Ivayami.UI;
-using System.Linq;
 
 namespace Ivayami.Puzzle {
     public class ReadableUI : MonoSingleton<ReadableUI> {
@@ -33,6 +32,7 @@ namespace Ivayami.Puzzle {
             _title.SetEntry(readable.DisplayName);
 
             foreach (PagePreset preset in _contents) Destroy(preset.gameObject);
+            _contents.Clear();
             int textsInserted = 0;
             for (int i = 0; i < readable.PagePresets.Length; i++) {
                 _contents.Add(Instantiate(readable.PagePresets[i], _contentsParent));

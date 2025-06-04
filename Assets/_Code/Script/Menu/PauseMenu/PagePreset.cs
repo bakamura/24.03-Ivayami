@@ -8,8 +8,8 @@ namespace Ivayami.UI {
 
         [Header("References")]
 
-        private TextMeshProUGUI[] _textBoxes;
-        private Image[] _images;
+        [SerializeField] private TextMeshProUGUI[] _textBoxes;
+        [SerializeField] private Image[] _images;
 
         public int TextBoxAmount => _textBoxes.Length;
         public int ImageAmount => _images.Length;
@@ -21,18 +21,6 @@ namespace Ivayami.UI {
                 if(_images[i].enabled) _images[i].sprite = images[i];
             }
         }
-
-        //private void FitEntryText(string text) {
-        //    foreach (TextMeshProUGUI content in PageTextBoxes) {
-        //        content.text = text;
-        //        content.ForceMeshUpdate();
-        //        if (!content.isTextOverflowing) break;
-
-        //        text = text.Substring(content.firstOverflowCharacterIndex); // Doesn't update until frame passes
-        //        content.text = content.text.Substring(0, content.firstOverflowCharacterIndex);
-        //    }
-        //    if (text.Length > 0) Debug.LogWarning($"Note couldn't fit entire text from scriptable object. Reduce total text or change entry preset to fit properly.");
-        //}
 
     }
 }
