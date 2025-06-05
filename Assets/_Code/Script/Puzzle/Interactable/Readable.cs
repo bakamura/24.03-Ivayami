@@ -25,15 +25,24 @@ namespace Ivayami.UI {
         public TextContent[] DisplayTexts;
 
         private void OnValidate() {
+            if (PagePresets.Length == 0) PagePresets = new PagePreset[1];
+            for (int i = 0; i < PagePresets.Length; i++) if (PagePresets[i] == null) PagePresets[i] = Resources.Load<PagePreset>("Menu/PagePresets/PagePreset_0");
+            ResizeToPresets();
+            ResizeText();
+        }
+
+        private void ResizeToPresets() {
             if (_pagesContent.Length != PagePresets.Length) {
                 Array.Resize(ref _pagesContent, PagePresets.Length);
                 for (int i = 0; i < _pagesContent.Length; i++) {
                     if (!PagePresets[i]) continue;
-                    // Resize Text
-                    //if (_pagesContent[i].displayImages.Length != PagePresets[i].PageImages.Length) Array.Resize(ref _pagesContent[i].displayImages, PagePresets[i].PageImages.Length);
+                    //if (_pagesContent[i].textBoxes.Length != PagePresets[i].TextBoxAmount) Array.Resize(ref _pagesContent[i].textBoxes, PagePresets[i].TextBoxAmount);
+                    if (_pagesContent[i].displayImages.Length != PagePresets[i].ImageAmount) Array.Resize(ref _pagesContent[i].displayImages, PagePresets[i].ImageAmount);
                 }
             }
+        }
 
+        private void ResizeText() {
             if (DisplayTexts == null || DisplayTexts.Length == 0) return;
             int languagesCount = LocalizationSettings.AvailableLocales.Locales.Count;
             if (languagesCount > 0 && DisplayTexts.Length != languagesCount) {

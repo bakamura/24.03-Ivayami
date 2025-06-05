@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Localization.Components;
+using UnityEngine.UI;
 using Ivayami.UI;
 
 namespace Ivayami.Puzzle {
@@ -36,8 +36,10 @@ namespace Ivayami.Puzzle {
             int textsInserted = 0;
             for (int i = 0; i < readable.PagePresets.Length; i++) {
                 _contents.Add(Instantiate(readable.PagePresets[i], _contentsParent));
-                _contents[i].DisplayContent(readable.Content.ToList().GetRange(textsInserted, readable.PagePresets[i].TextBoxAmount).ToArray(), // Unoptimized
+                _contents[i].DisplayContent(new ArraySegment<string>(readable.Content, textsInserted, readable.PagePresets[i].TextBoxAmount).ToArray(), // Unoptimized
                                             readable.GetPageSprites(i));
+                _contents[i].gameObject.SetActive(false);
+                textsInserted += readable.PagePresets[i].TextBoxAmount;
             }
 
             ChangePage(0);
