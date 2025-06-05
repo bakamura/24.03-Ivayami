@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Ivayami.Player;
+using System.Linq;
 
 namespace Ivayami.UI {
     public class Bag : MonoSingleton<Bag> {
@@ -27,6 +28,20 @@ namespace Ivayami.UI {
 
         public void DisplayItemInfo(InventoryItem item) {
             _itemDescriptor.text = item ? $"{item.GetDisplayName()}\n{item.GetDisplayDescription()}" : "";
+        }
+
+        public void UpdateItemDisplayText(InventoryItem item, string text)
+        {
+            if (!PlayerInventory.Instance.CheckInventoryFor(item.name).Item) return;
+            BagItem[] allItems = _itemNormalBtns.Union(_itemSpecialBtns).ToArray();
+            for(int i = 0; i < allItems.Length; i++)
+            {
+                if (allItems[i].Item == item && allItems[i].Item.DisplayTextFormatedExternaly)
+                {
+                    allItems[i].UpdateDisplayText(text);
+                    break;
+                }
+            }
         }
 
     }
