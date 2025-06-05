@@ -24,10 +24,10 @@ namespace Ivayami.Audio
 
         private EventInstance _stepSoundInstance;
         private EventInstance _heavyBreathSound;
-        private readonly List<StepSoundData> _currentStepSounds = new List<StepSoundData>();
+        private List<StepSoundData> _currentStepSounds = new List<StepSoundData>();
         private RaycastHit[] _hits = new RaycastHit[1];
         private PARAMETER_ID _stepSoundTypeVariableID;
-        private const float _raycastDistance = .2f;
+        private const float _raycastDistance = .1f;
         private const string _albedoTextureName = "_MainTex";
 
         [Serializable]
@@ -149,7 +149,7 @@ namespace Ivayami.Audio
             {
                 Vector3 terrainPos = _hits[0].point - terrain.transform.position;
                 Vector3 splatMapPosition = new Vector3(terrainPos.x / terrain.terrainData.size.x, 0, terrainPos.z / terrain.terrainData.size.z);
-                float[,,] alphaMap = terrain.terrainData.GetAlphamaps((int)(splatMapPosition.x * terrain.terrainData.alphamapWidth), (int)(splatMapPosition.y * terrain.terrainData.alphamapHeight), 1, 1);
+                float[,,] alphaMap = terrain.terrainData.GetAlphamaps(Mathf.FloorToInt(splatMapPosition.x * terrain.terrainData.alphamapWidth), Mathf.FloorToInt(splatMapPosition.z * terrain.terrainData.alphamapHeight), 1, 1);
 
                 for (int i = 0; i < alphaMap.Length; i++)
                 {
@@ -159,10 +159,9 @@ namespace Ivayami.Audio
                         data.AutoRemoveFromList = true;
                         data.Volume = alphaMap[0, 0, i];
 
-                        if (!IsCurrentlyInPlaylist(data.GroundType, out int index)) _currentStepSounds.Add(data);                        
+                        if (!IsCurrentlyInPlaylist(data.GroundType, out int index)) _currentStepSounds.Add(data);
                         else _currentStepSounds[index] = data;
-                        Debug.Log($"the sound terrain of {data.GroundType} with volume {data.Volume} will play");
-                        
+                        //Debug.Log($"the sound terrain of {data.GroundType} with volume {data.Volume} will play");
                     }
                 }
             }
@@ -171,6 +170,7 @@ namespace Ivayami.Audio
                 data = FindSoundDataByTexture(renderer.sharedMaterial.GetTexture(_albedoTextureName));
                 if (!IsCurrentlyInPlaylist(data.GroundType, out _))
                 {
+                    //Debug.Log($"the sound mesh renderer of {data.GroundType} will play");
                     data.AutoRemoveFromList = true;
                     _currentStepSounds.Add(data);
                 }
@@ -186,11 +186,11 @@ namespace Ivayami.Audio
                     }
                 }
                 return StepSoundData.Empty;
-            }       
-        
+            }
+
             void ClearUnusedStepSounds()
             {
-                for(int i = 0; i < _currentStepSounds.Count; i++)
+                for (int i = 0; i < _currentStepSounds.Count; i++)
                 {
                     if (_currentStepSounds[i].AutoRemoveFromList) _currentStepSounds.RemoveAt(i);
                 }
