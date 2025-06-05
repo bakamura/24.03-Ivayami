@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
+using static Ivayami.UI.Readable.PageContent;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -17,14 +19,14 @@ namespace Ivayami.UI {
         [field: SerializeField] public TextTranslation[] TitleTranslations { get; private set; }
         [Serializable]
         public struct TextTranslation {
-            public string text;
+            [TextArea(1, 50)] public string text;
             [ReadOnly] public string language;
         }
 
         public string GetTextBoxesTranslated(int pageId, int language) => string.Join(SPLIT_CHAR, _pagesContent[pageId].textBoxes.Select(b => b.textTranslations[language].text));
 #endif
 
-        private PageContent[] _pagesContent;
+        [SerializeField] private PageContent[] _pagesContent;
 
         [Serializable]
         public struct PageContent {
@@ -58,12 +60,17 @@ namespace Ivayami.UI {
         }
 
         private void ResizeToPresets() {
-            if (_pagesContent == null) _pagesContent = new PageContent[1];
+            if (_pagesContent == null) _pagesContent = new PageContent[0];
             if (_pagesContent.Length != PagePresets.Length) {
                 Array.Resize(ref _pagesContent, PagePresets.Length);
                 for (int i = 0; i < _pagesContent.Length; i++) {
+                    if (_pagesContent[i].textBoxes == null) _pagesContent[i].textBoxes = new PageTextBox[0];
                     if (_pagesContent[i].textBoxes.Length != PagePresets[i].TextBoxAmount) Array.Resize(ref _pagesContent[i].textBoxes, PagePresets[i].TextBoxAmount); // Text Boxes
-                    for (int j = 0; j < _pagesContent[i].textBoxes.Length; j++) _pagesContent[i].textBoxes[j].textTranslations = ResizeTextTranslations(_pagesContent[i].textBoxes[j].textTranslations); // Text Translations
+                    for (int j = 0; j < _pagesContent[i].textBoxes.Length; j++) {
+                        if (_pagesContent[i].textBoxes[j].textTranslations == null) _pagesContent[i].textBoxes[j].textTranslations = new TextTranslation[0];
+                        _pagesContent[i].textBoxes[j].textTranslations = ResizeTextTranslations(_pagesContent[i].textBoxes[j].textTranslations); // Text Translations
+                    }
+                    if (_pagesContent[i].images == null) _pagesContent[i].images = new Sprite[0];
                     if (_pagesContent[i].images.Length != PagePresets[i].ImageAmount) Array.Resize(ref _pagesContent[i].images, PagePresets[i].ImageAmount); // Images
                 }
             }
