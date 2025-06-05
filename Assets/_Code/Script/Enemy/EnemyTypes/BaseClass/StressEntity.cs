@@ -62,7 +62,7 @@ namespace Ivayami.Enemy
         public void EnterArea()
         {
             _targetInsideArea = true;
-            if (isStressAreaActive && PlayerMovement.Instance) _stressIncreaseCoroutine ??= StartCoroutine(StressIncreaseCoroutine());
+            if (isStressAreaActive && PlayerMovement.Instance && _stressAreas.Length > 0) _stressIncreaseCoroutine ??= StartCoroutine(StressIncreaseCoroutine());
         }
 
         public void ExitArea()
