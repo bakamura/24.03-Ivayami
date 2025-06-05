@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using Ivayami.Localization;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Ivayami.UI {
     [CreateAssetMenu(menuName = "Ivayami/UI/Readable")]
@@ -25,13 +28,16 @@ namespace Ivayami.UI {
         public TextContent[] DisplayTexts;
 
         private void OnValidate() {
-            if (PagePresets.Length == 0) PagePresets = new PagePreset[1];
-            for (int i = 0; i < PagePresets.Length; i++) if (PagePresets[i] == null) PagePresets[i] = Resources.Load<PagePreset>("Menu/PagePresets/PagePreset_0");
+            if (PagePresets == null || PagePresets.Length == 0) PagePresets = new PagePreset[1];
+            for (int i = 0; i < PagePresets.Length; i++) {
+                if (PagePresets[i] == null) PagePresets[i] = AssetDatabase.LoadAssetAtPath<PagePreset>("Assets/_Game/Prefab/Menu/PagePresets/PagePreset_0.prefab");
+            }
             ResizeToPresets();
             ResizeText();
         }
 
         private void ResizeToPresets() {
+            if (_pagesContent == null) _pagesContent = new PageContent[1];
             if (_pagesContent.Length != PagePresets.Length) {
                 Array.Resize(ref _pagesContent, PagePresets.Length);
                 for (int i = 0; i < _pagesContent.Length; i++) {
