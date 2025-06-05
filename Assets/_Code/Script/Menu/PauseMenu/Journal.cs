@@ -111,7 +111,7 @@ namespace Ivayami.UI {
             btn.onClick.RemoveAllListeners();
             btn.onClick.AddListener(() => DisplayEntry(entry));
             btn.onClick.AddListener(_btnSound.GoForth);
-            btn.GetComponent<TextMeshProUGUI>().text = entry.DisplayName;
+            btn.GetComponent<TextMeshProUGUI>().text = entry.TitleLocalizationString;
             if (shouldSelect) btn.onClick.Invoke();
         }
 
@@ -177,7 +177,7 @@ namespace Ivayami.UI {
                 Debug.LogWarning("Description Not Found");
                 return;
             }
-            _presets[0].DisplayContent(readable.Content, readable.GetPageSprites(0));
+            _presets[0].DisplayContent(readable.GetTextBoxes(0), readable.GetPageSprites(0));
         }
     }
 }

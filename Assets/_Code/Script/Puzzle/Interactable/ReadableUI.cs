@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -29,15 +28,14 @@ namespace Ivayami.Puzzle {
         }
 
         public void ShowReadable(Readable readable) {
-            _title.SetEntry(readable.DisplayName);
+            _title.SetEntry(readable.TitleLocalizationString);
 
             foreach (PagePreset preset in _contents) Destroy(preset.gameObject);
             _contents.Clear();
             int textsInserted = 0;
             for (int i = 0; i < readable.PagePresets.Length; i++) {
                 _contents.Add(Instantiate(readable.PagePresets[i], _contentsParent));
-                _contents[i].DisplayContent(new ArraySegment<string>(readable.Content, textsInserted, readable.PagePresets[i].TextBoxAmount).ToArray(), // Unoptimized
-                                            readable.GetPageSprites(i));
+                _contents[i].DisplayContent(readable.GetTextBoxes(i), readable.GetPageSprites(i));
                 _contents[i].gameObject.SetActive(false);
                 textsInserted += readable.PagePresets[i].TextBoxAmount;
             }
