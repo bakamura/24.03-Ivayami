@@ -7,12 +7,14 @@ namespace Ivayami.Audio
         [SerializeField] private PlayerSounds.GroundTypes _groundType;
         public void AddSound()
         {
-            PlayerSoundsSingleton.Instance.AddStepToPlaylist(_groundType);
+            if (!PlayerSoundsRef.Instance) return;
+            PlayerSoundsRef.Instance.PlayerSounds.AddStepToPlaylist(_groundType);
         }
 
         public void RemoveSound()
         {
-            PlayerSoundsSingleton.Instance.RemoveStepFromPlaylist(_groundType);
+            if (!PlayerSoundsRef.Instance) return;
+            PlayerSoundsRef.Instance.PlayerSounds.RemoveStepFromPlaylist(_groundType);
         }
     }
 }
