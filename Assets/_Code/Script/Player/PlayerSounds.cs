@@ -145,6 +145,7 @@ namespace Ivayami.Audio
             StepSoundData data;
             ClearUnusedStepSounds();
             Physics.RaycastNonAlloc(transform.position, Vector3.down, _hits, _raycastDistance, _groundLayers);
+            if (!_hits[0].collider) return;
             if (_hits[0].collider.TryGetComponent<Terrain>(out Terrain terrain))
             {
                 Vector3 terrainPos = _hits[0].point - terrain.transform.position;
