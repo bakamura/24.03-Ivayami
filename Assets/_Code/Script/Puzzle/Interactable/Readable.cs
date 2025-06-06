@@ -13,8 +13,6 @@ namespace Ivayami.UI {
     [CreateAssetMenu(menuName = "Ivayami/UI/Readable")]
     public class Readable : ScriptableObject {
 
-        [field: SerializeField] public PagePreset[] PagePresets { get; private set; }
-
 #if UNITY_EDITOR
         [field: SerializeField] public TextTranslation[] TitleTranslations { get; private set; }
         [Serializable]
@@ -26,6 +24,7 @@ namespace Ivayami.UI {
         public string GetTextBoxesTranslated(int pageId, int language) => string.Join(SPLIT_CHAR, _pagesContent[pageId].textBoxes.Select(b => b.textTranslations[language].text));
 #endif
 
+        [field: SerializeField] public PagePreset[] PagePresets { get; private set; }
         [SerializeField] private PageContent[] _pagesContent;
 
         [Serializable]
@@ -61,18 +60,16 @@ namespace Ivayami.UI {
 
         private void ResizeToPresets() {
             if (_pagesContent == null) _pagesContent = new PageContent[0];
-            if (_pagesContent.Length != PagePresets.Length) {
-                Array.Resize(ref _pagesContent, PagePresets.Length);
-                for (int i = 0; i < _pagesContent.Length; i++) {
-                    if (_pagesContent[i].textBoxes == null) _pagesContent[i].textBoxes = new PageTextBox[0];
-                    if (_pagesContent[i].textBoxes.Length != PagePresets[i].TextBoxAmount) Array.Resize(ref _pagesContent[i].textBoxes, PagePresets[i].TextBoxAmount); // Text Boxes
-                    for (int j = 0; j < _pagesContent[i].textBoxes.Length; j++) {
-                        if (_pagesContent[i].textBoxes[j].textTranslations == null) _pagesContent[i].textBoxes[j].textTranslations = new TextTranslation[0];
-                        _pagesContent[i].textBoxes[j].textTranslations = ResizeTextTranslations(_pagesContent[i].textBoxes[j].textTranslations); // Text Translations
-                    }
-                    if (_pagesContent[i].images == null) _pagesContent[i].images = new Sprite[0];
-                    if (_pagesContent[i].images.Length != PagePresets[i].ImageAmount) Array.Resize(ref _pagesContent[i].images, PagePresets[i].ImageAmount); // Images
+            if (_pagesContent.Length != PagePresets.Length) Array.Resize(ref _pagesContent, PagePresets.Length);
+            for (int i = 0; i < _pagesContent.Length; i++) {
+                if (_pagesContent[i].textBoxes == null) _pagesContent[i].textBoxes = new PageTextBox[0];
+                if (_pagesContent[i].textBoxes.Length != PagePresets[i].TextBoxAmount) Array.Resize(ref _pagesContent[i].textBoxes, PagePresets[i].TextBoxAmount); // Text Boxes
+                for (int j = 0; j < _pagesContent[i].textBoxes.Length; j++) {
+                    if (_pagesContent[i].textBoxes[j].textTranslations == null) _pagesContent[i].textBoxes[j].textTranslations = new TextTranslation[0];
+                    _pagesContent[i].textBoxes[j].textTranslations = ResizeTextTranslations(_pagesContent[i].textBoxes[j].textTranslations); // Text Translations
                 }
+                if (_pagesContent[i].images == null) _pagesContent[i].images = new Sprite[0];
+                if (_pagesContent[i].images.Length != PagePresets[i].ImageAmount) Array.Resize(ref _pagesContent[i].images, PagePresets[i].ImageAmount); // Images
             }
         }
 
