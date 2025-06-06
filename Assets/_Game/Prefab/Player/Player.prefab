@@ -2367,7 +2367,10 @@ PrefabInstance:
       addedObject: {fileID: 3882931163682858306}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1145761265743361691}
+      addedObject: {fileID: 3358522392969723647}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6728761832899963330}
   m_SourcePrefab: {fileID: 100100000, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
 --- !u!1 &1516828375664336438 stripped
 GameObject:
@@ -2428,7 +2431,7 @@ MonoBehaviour:
   - InteractType: 8
     Animation: {fileID: -4592604891502308166, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
     Speed: 2
---- !u!114 &1145761265743361691
+--- !u!114 &3358522392969723647
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2437,19 +2440,33 @@ MonoBehaviour:
   m_GameObject: {fileID: 1516828375664336438}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfa28f4a4a906694fa772d2ad602b8c8, type: 3}
+  m_Script: {fileID: 11500000, guid: fa52eb7d9cfba9a47a1bb70626dee447, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _stepSoundRef:
+  _stepSound:
     Guid:
       Data1: 1398361362
       Data2: 1155552564
       Data3: -971913837
       Data4: 1145049184
     Path: event:/Player_SFX/Passos_Geral
-  _stepSoundRange:
-    Min: 0
-    Max: 0
+  _groundLayers:
+    serializedVersion: 2
+    m_Bits: 9
+  _stepSoundsData:
+  - GroundType: 0
+    Textures:
+    - {fileID: 2800000, guid: ed0067e0eabc17c41bdac28c06ad2d9b, type: 3}
+    - {fileID: 2800000, guid: 88f6e6076b38cd44581ba581c51979d3, type: 3}
+    - {fileID: 2800000, guid: 00c1aa021bd5fc7498fa27608ba020c2, type: 3}
+    - {fileID: 2800000, guid: 50fddc63c61384c4da0536758d3b5da1, type: 3}
+    - {fileID: 2800000, guid: 7bc8533c591d19c449434823291665e7, type: 3}
+  - GroundType: 1
+    Textures:
+    - {fileID: 2800000, guid: 8349e97b70c6ab0479e7f86e3a02c7ca, type: 3}
+  - GroundType: 2
+    Textures:
+    - {fileID: 2800000, guid: 0c532d014add1174fa4bf10feb74ce00, type: 3}
   _heavyBreathStressMin: 81
   _heavyBreathSoundRef:
     Guid:
@@ -2458,6 +2475,18 @@ MonoBehaviour:
       Data3: -735275854
       Data4: 67989903
     Path: "event:/Player_SFX/Respira\xE7\xE3o_Player"
+--- !u!114 &6728761832899963330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1516828375664336438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69de1dd850b163b4083c400f68ea2e3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1809464102610504153 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 58881653578279614, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
