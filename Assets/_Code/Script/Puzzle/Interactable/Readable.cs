@@ -50,6 +50,8 @@ namespace Ivayami.UI {
             AssignEmptyPresets();
             TitleTranslations = ResizeTextTranslations(TitleTranslations);
             ResizeToPresets();
+
+            if(false) CopyFromTables(); // Use / Adapt when making the inverse path (Tables => Asset, instead of Asset => Tables)
         }
 
         private void AssignEmptyPresets() {
@@ -82,6 +84,12 @@ namespace Ivayami.UI {
 
             for (int i = 0; i < textTranslations.Length; i++) textTranslations[i].language = LocalizationSettings.AvailableLocales.Locales[i].LocaleName;
             return textTranslations;
+        }
+
+        private void CopyFromTables() {
+            for (int i = 0; i < LocalizationSettings.AvailableLocales.Locales.Count; i++)
+                _pagesContent[0].textBoxes[0].textTranslations[i].text =
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Items", $"{name}/Description", LocalizationSettings.AvailableLocales.Locales[i]);
         }
 #endif
 
