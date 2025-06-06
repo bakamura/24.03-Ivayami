@@ -14,6 +14,8 @@ namespace Ivayami.Audio
         [SerializeField] private EventReference _stepSound;
         [SerializeField] private LayerMask _groundLayers;
         [SerializeField] private StepSoundData[] _stepSoundsData;
+        [SerializeField] private bool _debugLogStepSounds;
+        [SerializeField, Tooltip("The step sounds will always play at max volume + will always have only 1 step sound")] private bool _simplifyStepSounds;
 
         [Space(16)]
 
@@ -156,13 +158,15 @@ namespace Ivayami.Audio
                 {
                     if (alphaMap[0, 0, i] > 0)
                     {
+
                         data = FindSoundDataByTexture(terrain.terrainData.terrainLayers[i].diffuseTexture);
                         data.AutoRemoveFromList = true;
-                        data.Volume = alphaMap[0, 0, i];
+                        if (_simplifyStepSounds) data.Volume = alphaMap[0, 0, i];
 
                         if (!IsCurrentlyInPlaylist(data.GroundType, out int index)) _currentStepSounds.Add(data);
                         else _currentStepSounds[index] = data;
-                        //Debug.Log($"the sound terrain of {data.GroundType} with volume {data.Volume} will play");
+                        if (_debugLogStepSounds) Debug.Log($"the sound terrain of {data.GroundType} with volume {data.Volume} will play");
+                        if (_simplifyStepSounds) break;
                     }
                 }
             }
@@ -171,7 +175,7 @@ namespace Ivayami.Audio
                 data = FindSoundDataByTexture(renderer.sharedMaterial.GetTexture(_albedoTextureName));
                 if (!IsCurrentlyInPlaylist(data.GroundType, out _))
                 {
-                    //Debug.Log($"the sound mesh renderer of {data.GroundType} will play");
+                    if (_debugLogStepSounds) Debug.Log($"the sound mesh renderer of {data.GroundType} will play");
                     data.AutoRemoveFromList = true;
                     _currentStepSounds.Add(data);
                 }
