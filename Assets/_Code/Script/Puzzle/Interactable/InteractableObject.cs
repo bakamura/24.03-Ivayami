@@ -1,6 +1,6 @@
 using UnityEngine;
-using Ivayami.Player;
 using UnityEngine.Events;
+using Ivayami.Player;
 using Ivayami.Audio;
 
 namespace Ivayami.Puzzle
@@ -12,6 +12,7 @@ namespace Ivayami.Puzzle
         [SerializeField] private UnityEvent _onInteract;
         [SerializeField] private bool _isLongInteraction;
         [SerializeField] private bool _playItemCollectedFeedbacks = true;
+        [SerializeField] private bool _emphasizeCollect;
 
         private InteractableSounds _interactableSounds
         {
@@ -46,7 +47,7 @@ namespace Ivayami.Puzzle
         {
             for (int i = 0; i < _itens.Length; i++)
             {
-                PlayerInventory.Instance.AddToInventory(_itens[i], shouldPlayFeedbacks : _playItemCollectedFeedbacks);
+                PlayerInventory.Instance.AddToInventory(_itens[i], _emphasizeCollect, _playItemCollectedFeedbacks);
             }
             _onInteract?.Invoke();
         }
