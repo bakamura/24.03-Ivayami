@@ -52,12 +52,12 @@ namespace Ivayami.Puzzle
         }
 
         public void LoadData(DeliverUISave.Data deliverUIData, PedestalGroupSave.Data data)
-        {            
+        {
             InventoryItem[] items = Resources.LoadAll<InventoryItem>("Items");
-            for(int i = 0; i < data.PedestalDatas.Length; i++)
+            for (int i = 0; i < data.PedestalDatas.Length; i++)
             {
                 _pedestals[data.PedestalDatas[i].Index].LoadData(deliverUIData, items.First(x => x.name == data.PedestalDatas[i].ItemID));
-            }            
+            }
             Resources.UnloadUnusedAssets();
         }
     }

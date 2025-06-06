@@ -3,10 +3,12 @@ using FMODUnity;
 
 namespace Ivayami.Audio
 {
+    [RequireComponent(typeof(Collider))]
     public class MusicTrigger : MonoBehaviour
     {
         [SerializeField] private EventReference _music;
         [SerializeField] private bool _forceStopCurrentMusicOnEnter;
+        [SerializeField] private bool _removeFromPlaylistOnNewTransition;
         [SerializeField] private bool _useDefaultFade;
         [SerializeField] private Music.Range _fadeDuration;
         [SerializeField] private bool _useDefaultStartDelay;
@@ -19,7 +21,8 @@ namespace Ivayami.Audio
         {
             if (!Music.Instance) return;
             if (_forceStopCurrentMusicOnEnter) Music.Instance.ForceStop();
-            Music.Instance.SetMusic(_music, _shouldStopPeriodicaly, _useDefaultFade, _useDefaultReplay, _useDefaultStartDelay, _fadeDuration, _replay, _startDelay);
+            Music.Instance.SetMusic(_music, _shouldStopPeriodicaly, _removeFromPlaylistOnNewTransition,
+                _useDefaultFade, _useDefaultReplay, _useDefaultStartDelay, _fadeDuration, _replay, _startDelay);
         }
 
         private void OnTriggerExit(Collider other)
