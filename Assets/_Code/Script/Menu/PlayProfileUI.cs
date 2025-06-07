@@ -37,8 +37,7 @@ namespace Ivayami.UI
         private void OnDropdownValueChanged(int index)
         {
             _currentProfile = _playProfiles[index];
-            SceneTransition.Instance.OnOpenEnd.AddListener(StartPlayProfile);
-            SceneTransition.Instance.Open();
+            StartPlayProfile(_currentProfile);
         }
         /// <summary>
         /// to use in the Play Btn
@@ -47,18 +46,19 @@ namespace Ivayami.UI
         public void StartPlayProfile(PlayProfile profile)
         {
             _currentProfile = profile;
-            StartPlayProfile();
+            SceneTransition.Instance.OnOpenEnd.AddListener(StartPlayProfile);
+            SceneTransition.Instance.Open();
         }
 
         private void StartPlayProfile()
         {
-            SaveSystem.Instance.DeleteProgress(byte.MaxValue);
-            SaveSystem.Instance.LoadProgress(byte.MaxValue, OnSaveFileInitialized);            
+            SaveSystem.Instance.DeleteProgress(4);
+            SaveSystem.Instance.LoadProgress(4, OnSaveFileInitialized);            
         }
 
         private void OnSaveFileInitialized()
         {
-            if(_currentProfile.InitialSavePoint != -1) SaveSystem.Instance.Progress.pointId = _currentProfile.InitialSavePoint;
+            if(_currentProfile.InitialSavePoint != -1) SaveSystem.Instance.Progress.pointId = _currentProfile.InitialSavePoint;            
             _teleporter.transform.SetPositionAndRotation(_currentProfile.PlayerStartPosition, Quaternion.Euler(0, _currentProfile.PlayerStartRotation, 0));
             PlayerStress.Instance.AddStress(_currentProfile.InitialStress);
             for (int i = 0; i < _currentProfile.Items.Length; i++)
@@ -72,9 +72,9 @@ namespace Ivayami.UI
             {
                 SaveSystem.Instance.Progress.SaveProgressOfType(_currentProfile.AreaProgress[i].AreaProgress.Id, _currentProfile.AreaProgress[i].Step);
             }
-            for (int i = 0; i < _currentProfile.AreaProgress.Length; i++)
+            for (int i = 0; i < _currentProfile.EntryProgress.Length; i++)
             {
-                SaveSystem.Instance.Progress.SaveEntryProgressOfType(_currentProfile.AreaProgress[i].AreaProgress.Id, _currentProfile.AreaProgress[i].Step);
+                SaveSystem.Instance.Progress.SaveEntryProgressOfType(_currentProfile.EntryProgress[i].AreaProgress.Id, _currentProfile.EntryProgress[i].Step);
             }
             //SaveSystem.Instance.OnlySaveSpawnPosition = _currentProfile.OnlySaveSpawnPosition;
             _teleporter.Teleport();

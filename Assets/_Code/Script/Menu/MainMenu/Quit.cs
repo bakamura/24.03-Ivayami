@@ -1,14 +1,17 @@
 #if UNITY_EDITOR
-using Ivayami.Player;
 using UnityEditor;
 #endif
+using Ivayami.Player;
 using UnityEngine;
+using Ivayami.Player.Ability;
 
 namespace Ivayami.UI {
     public class Quit : MonoBehaviour {
 
-        private void Awake() {
+        private void Awake()
+        {
             PlayerActions.Instance.ResetAbilities(); // Should be elsewhere?
+            FindObjectOfType<Lantern>().ForceTurnOff();
         }
 
         public void QuitGame() {

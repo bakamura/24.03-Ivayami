@@ -72,9 +72,9 @@ namespace Ivayami.Puzzle
         public PlayerActions.InteractAnimation Interact()
         {
             Setup();
-            _onInteract?.Invoke();
             _interatctableFeedbacks.UpdateFeedbacks(false, true);
             UpdateInputs(true);
+            _onInteract?.Invoke();
             UpdateUI(true);
             return PlayerActions.InteractAnimation.Default;
         }

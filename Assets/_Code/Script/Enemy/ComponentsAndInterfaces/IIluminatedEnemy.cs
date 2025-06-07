@@ -5,7 +5,7 @@ namespace Ivayami.Enemy
     public interface IIluminatedEnemy
     {
         public void ChangeSpeed(float speed);
-        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped, object lightType);
+        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped, bool forceTargetDetect);
         public void ChangeTargetPoint(Vector3 targetPoint);
         public float CurrentSpeed { get; }
     }

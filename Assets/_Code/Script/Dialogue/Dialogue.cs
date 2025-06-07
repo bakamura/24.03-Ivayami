@@ -5,7 +5,7 @@ using UnityEngine.Localization;
 
 namespace Ivayami.Dialogue
 {
-    [CreateAssetMenu(menuName = "DialogueSystem/Dialogue")]
+    [CreateAssetMenu(menuName = "Ivayami/UI/Dialogue")]
     public class Dialogue : ScriptableObject
     {
         [HideInInspector] public int ID => GetInstanceID();
@@ -31,7 +31,7 @@ namespace Ivayami.Dialogue
             if (!_hasBeenInstantiated)
             {
                 _hasBeenInstantiated = true;
-                DialogueEventsInspector.UpdateDialoguesList();
+                DialogueEventsInspector.UpdateDatabaseOnInspectorSelected = true;
             }
             if (dialogue == null) return;
             if (_previousSize > 0 && _previousSize < dialogue.Length)
@@ -58,7 +58,7 @@ namespace Ivayami.Dialogue
 
         private void OnDestroy()
         {
-            DialogueEventsInspector.UpdateDialoguesList();
+            DialogueEventsInspector.UpdateDatabaseOnInspectorSelected = true;
         }
 #endif
     }

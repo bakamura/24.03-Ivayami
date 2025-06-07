@@ -52,7 +52,6 @@ namespace Ivayami.Enemy
         }
         private bool _onPathEndEventTrigger;
         //private bool _pointsInitialized;
-        public EnemyMovementData MovementData => _movementData;
 
         [Serializable]
         public struct Point
@@ -156,7 +155,7 @@ namespace Ivayami.Enemy
                         return _enemiesCurrentPathPointDic[id];
                     case PatrolBehaviour.OnlyOnce:
                         temp = _enemiesCurrentPathPointDic[id];
-                        if(temp.CurrentPointIndex + 1 >= _points.Length)
+                        if (temp.CurrentPointIndex + 1 >= _points.Length)
                         {
                             if (!_onPathEndEventTrigger)
                             {
@@ -218,13 +217,9 @@ namespace Ivayami.Enemy
         public void AddEnemyToArea(IEnemyWalkArea enemy, string enemyName)
         {
             //InitializePointsIndex();
-            if (!_enemiesCurrentPathPointDic.ContainsKey(enemy.ID))
+            if (!_enemiesCurrentPathPointDic.ContainsKey(enemy.ID) && enemy.SetWalkArea(this))
             {
-                if (enemy.CanChangeWalkArea)
-                {
-                    enemy.SetWalkArea(this);
-                    if (_movementData) enemy.SetMovementData(_movementData);
-                }
+                if (_movementData) enemy.SetMovementData(_movementData);
                 EnemyData data = new EnemyData(new Point(), 1, -1);
                 _enemiesCurrentPathPointDic.Add(enemy.ID, data);
                 data = GoToNextPoint(enemy.ID);
@@ -235,11 +230,10 @@ namespace Ivayami.Enemy
             }
         }
 
-        public void RemoveEnemyFromArea(IEnemyWalkArea enemy)
+        private void RemoveEnemyFromArea(IEnemyWalkArea enemy)
         {
-            if (_enemiesCurrentPathPointDic.ContainsKey(enemy.ID) && enemy.CanChangeWalkArea)
+            if (_enemiesCurrentPathPointDic.ContainsKey(enemy.ID) && enemy.SetWalkArea(this))
             {
-                if (enemy.CanChangeWalkArea) enemy.SetWalkArea(null);
                 _enemiesCurrentPathPointDic.Remove(enemy.ID);
             }
         }

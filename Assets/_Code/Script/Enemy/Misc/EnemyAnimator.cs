@@ -56,6 +56,12 @@ namespace Ivayami.Enemy
         private EnemySounds m_enemySound;
         private Coroutine _waitAnimationEndCoroutine;
         private Action _currentAnimationEndEvent;
+
+        private void OnDisable()
+        {
+            StopWaitAnimationEndCoroutine();
+        }
+
         /// <param name="onAnimationEnd">
         /// will only activate once
         /// </param>
@@ -149,6 +155,7 @@ namespace Ivayami.Enemy
 
         private void StartAnimationEvent(int stateHash, int layer, Action onAnimationEnd, bool playPreviousAnimationEndEvent, Action<float> currentAnimationStepCallback = null)
         {
+            if (!gameObject.activeInHierarchy) return;
             if (playPreviousAnimationEndEvent)
             {
                 StopWaitAnimationEndCoroutine();

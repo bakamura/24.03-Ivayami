@@ -4,6 +4,8 @@ using UnityEngine.AI;
 using Ivayami.Player;
 using Ivayami.Audio;
 using System;
+using UnityEngine.Events;
+using System.Collections.Generic;
 
 namespace Ivayami.Enemy
 {
@@ -43,6 +45,7 @@ namespace Ivayami.Enemy
         [SerializeField, Min(1f)] private float _leapAttackJumpHeight;
         [SerializeField] private AnimationCurve _leapAttackHeightCurve;
         [SerializeField, Min(0f)] private float _leapAttackPredictDistance;
+        [SerializeField] private UnityEvent _onLeapAttackLand;
         [SerializeField, Min(0f)] private float _fallDuration;
         [SerializeField] private HitboxInfo[] _attackAreaInfos;
 
@@ -115,7 +118,7 @@ namespace Ivayami.Enemy
         private Coroutine _behaviourCoroutine;
         private Coroutine _leapCoroutine;
         private Coroutine _fallCoroutine;
-        private EnemyWalkArea _currentWalkArea;
+        private List<EnemyWalkArea> _currentWalkAreas = new List<EnemyWalkArea>();
         private EnemyMovementData _currentMovementData;
         private Quaternion _initialRotation;
         private Vector3 _lastTargetPosition;
@@ -138,8 +141,6 @@ namespace Ivayami.Enemy
         public bool IsActive { get; private set; }
         public float CurrentSpeed => _navMeshAgent.speed;
 
-        public bool CanChangeWalkArea => !_fixedWalkArea;
-
         public int ID => gameObject.GetInstanceID();
 
         protected override void Awake()
@@ -157,12 +158,7 @@ namespace Ivayami.Enemy
             if (_navMeshAgent.stoppingDistance == 0) _navMeshAgent.stoppingDistance = _collision.radius + .2f;
             _baseStoppingDistance = _navMeshAgent.stoppingDistance;
 
-            if (_fixedWalkArea)
-            {
-                SetMovementData(_fixedWalkArea.MovementData);
-                SetWalkArea(_fixedWalkArea);
-                _fixedWalkArea.AddEnemyToArea(this, gameObject.name);
-            }
+            if (_fixedWalkArea) _fixedWalkArea.AddEnemyToArea(this, gameObject.name);
         }
 
         private void OnEnable()
@@ -175,7 +171,7 @@ namespace Ivayami.Enemy
         {
             StopBehaviour();
         }
-
+        #region BaseBehaviour
         private IEnumerator InitializeAgent()
         {
             yield return null;
@@ -248,7 +244,7 @@ namespace Ivayami.Enemy
                         if (!_isChasing)
                         {
                             if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
-                            _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
+                            _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected, () => _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing));
                             _isChasing = true;
                             if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());
                             SetToChaseSpeed();
@@ -316,17 +312,17 @@ namespace Ivayami.Enemy
                                         }
                                         break;
                                     case PatrolTypes.EnemyWalkArea:
-                                        if (_currentWalkArea && _currentWalkArea.GetCurrentPoint(ID, out EnemyWalkArea.EnemyData point))
+                                        if (_currentWalkAreas.Count > 0 && _currentWalkAreas[^1].GetCurrentPoint(ID, out EnemyWalkArea.EnemyData point))
                                         {
                                             if (Vector3.Distance(transform.position, point.Point.Position) <= _navMeshAgent.stoppingDistance)
                                             {
                                                 _navMeshAgent.velocity = Vector3.zero;
                                                 _enemyAnimator.Walking(0);
                                                 yield return new WaitForSeconds(point.Point.DelayToNextPoint);
-                                                _navMeshAgent.SetDestination(_currentWalkArea.GoToNextPoint(ID).Point.Position);
+                                                _navMeshAgent.SetDestination(_currentWalkAreas[^1].GoToNextPoint(ID).Point.Position);
                                                 if (_debugLogsEnemyPatrol)
                                                 {
-                                                    _currentWalkArea.GetCurrentPoint(ID, out point);
+                                                    _currentWalkAreas[^1].GetCurrentPoint(ID, out point);
                                                     Debug.Log($"Change Patrol Point to {point.CurrentPointIndex}");
                                                 }
                                             }
@@ -366,7 +362,7 @@ namespace Ivayami.Enemy
                 if (_directContactWithTarget && _hitsCache[0].CompareTag("Player"))
                 {
                     if (_debugLogsEnemyPatrol) Debug.Log($"Chasing Stress added {_stressIncreaseWhileChasing * _behaviourTickFrequency}");
-                    PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * _behaviourTickFrequency, _stressMaxWhileChasing);
+                    PlayerStress.Instance.AddStress(_stressIncreaseWhileChasing * _behaviourTickFrequency, _stressMaxWhileChasing, PlayerAnimation.DamageAnimation.Mental);
                 }
                 yield return _behaviourTickDelay;
             }
@@ -413,6 +409,7 @@ namespace Ivayami.Enemy
             _navMeshAgent.stoppingDistance = _directContactWithTarget ? _collision.radius + _currentTargetColliderSizeFactor + .1f : _baseStoppingDistance;
             return _directContactWithTarget;
         }
+        #endregion
 
         #region LeapAttack
         /// <summary>
@@ -447,7 +444,7 @@ namespace Ivayami.Enemy
         {
             for (int i = 0; i < _attackAreaInfos.Length; i++)
             {
-                _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+                _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
             }
             _isInLeapAnimation = false;
             //Debug.Log("EndAttack");
@@ -473,12 +470,12 @@ namespace Ivayami.Enemy
             {
                 if (!_attackAreaInfos[i].WillInterpolateAnySize() && _attackAreaInfos[i].AnimationIndex == currentAnimIndex && normalizedTime >= _attackAreaInfos[i].MinInterval && normalizedTime <= _attackAreaInfos[i].MaxInterval)
                 {
-                    _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
+                    _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, _attackAreaInfos[i].Size, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay, _attackAreaInfos[i].DamageType);
                 }
                 else
                 {
                     //deactivates all hitboxes that dont lerp size
-                    if (!_attackAreaInfos[i].WillInterpolateAnySize()) _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+                    if (!_attackAreaInfos[i].WillInterpolateAnySize()) _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
                 }
             }
             if (currentAnimIndex == 1 && normalizedTime >= _startLeapMovementInterval && !_isInLeapAnimation)
@@ -517,16 +514,17 @@ namespace Ivayami.Enemy
                         _currentLeapAnimationTime >= _attackAreaInfos[i].MinInterval && _currentLeapAnimationTime <= _attackAreaInfos[i].MaxInterval)
                     {
                         colliderSize = new Vector3(_attackAreaInfos[i].Size.x, _attackAreaInfos[i].Size.y, Vector3.Distance(transform.position, _initialLeapPosition));
-                        _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, colliderSize, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay);
+                        _attackAreaInfos[i].Hitbox.UpdateHitbox(true, _attackAreaInfos[i].Center, colliderSize, _attackAreaInfos[i].StressIncreaseOnEnter, _attackAreaInfos[i].StressIncreaseOnStay, _attackAreaInfos[i].DamageType);
                     }
                     else
                     {
                         //deactivate all hitboxes that lerp size
-                        if (_attackAreaInfos[i].WillInterpolateAnySize()) _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0);
+                        if (_attackAreaInfos[i].WillInterpolateAnySize()) _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
                     }
                 }
                 yield return delay;
             }
+            _onLeapAttackLand?.Invoke();
             _leapCoroutine = null;
 
             Vector3 GetFinalPos()
@@ -574,6 +572,7 @@ namespace Ivayami.Enemy
                 transform.position = Vector3.Lerp(transform.position, finalPos, count);
                 yield return delay;
             }
+            _onLeapAttackLand?.Invoke();
             _navMeshAgent.enabled = true;
             _navMeshAgent.isStopped = false;
             _fallCoroutine = null;
@@ -589,9 +588,31 @@ namespace Ivayami.Enemy
             _navMeshAgent.speed = _currentMovementData ? _currentMovementData.WalkSpeed : _baseSpeed;
         }
 
-        public void SetWalkArea(EnemyWalkArea area)
+        public bool SetWalkArea(EnemyWalkArea area)
         {
-            _currentWalkArea = area;
+            if (_fixedWalkArea == area && !_currentWalkAreas.Contains(area))
+            {
+                _currentWalkAreas.Add(area);
+                return true;
+            }
+            if (!_fixedWalkArea)
+            {
+                if (!_currentWalkAreas.Contains(area))
+                {
+                    _currentWalkAreas.Add(area);
+                    return true;
+                }
+                if (_currentWalkAreas.Contains(area))
+                {
+                    if (_currentWalkAreas.Count - 1 <= 0) return false;
+                    else
+                    {
+                        _currentWalkAreas.Remove(area);
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public void SetMovementData(EnemyMovementData data)
@@ -609,16 +630,16 @@ namespace Ivayami.Enemy
             _navMeshAgent.speed = speed;
         }
 
-        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped, object lightType)
+        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped, bool forceTargetDetect)
         {
             _canChaseTarget = canChaseTarget;
             _canWalkPath = canWalkPath;
             if (!canWalkPath && !canChaseTarget)
             {
-                if (lightType is Ivayami.Player.Ability.Lantern)
+                if (forceTargetDetect)
                 {
                     _chaseTargetPatience = _delayToLoseTarget;
-                    _hitsCache[0] = PlayerMovement.Instance.GetComponent<CharacterController>();
+                    _hitsCache[0] = PlayerMovement.Instance.CharacterController;
                     _lastTargetPosition = _hitsCache[0].transform.position;
                 }
                 HandleAttackAnimationEnd();

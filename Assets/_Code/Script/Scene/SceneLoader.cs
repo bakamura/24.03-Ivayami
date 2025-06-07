@@ -1,11 +1,16 @@
 using UnityEngine;
 using UnityEngine.Events;
+using Ivayami.Player;
 
 namespace Ivayami.Scene
 {
     public class SceneLoader : MonoBehaviour
-    {        
+    {
         [SceneDropdown, SerializeField] private string _sceneId;
+        [SerializeField] private bool _setAsActiveScene;
+        [SerializeField] private bool _changeSkybox;
+        [SerializeField] private PlayerCamera.CameraBackgroundTypes _backgroundType;
+        [SerializeField] private Color _backgroundColor;
         [SerializeField] private UnityEvent _onSceneLoad;
         [SerializeField] private UnityEvent _onSceneUnload;
         [SerializeField] private UnityEvent _onAllScenesRequestEnd;
@@ -15,15 +20,16 @@ namespace Ivayami.Scene
         private BoxCollider _boxCollider;
 #endif
         private bool _isActive;
+
         private void OnTriggerEnter(Collider other)
         {
-            SceneController.Instance.LoadScene(_sceneId, _onSceneLoad);
+            LoadScene();
             _isActive = true;
         }
 
         private void OnTriggerExit(Collider other)
         {
-            SceneController.Instance.UnloadScene(_sceneId, _onSceneUnload);
+            UnloadScene();
             _isActive = false;
         }
 
@@ -31,14 +37,15 @@ namespace Ivayami.Scene
         {
             if (_isActive)
             {
-                SceneController.Instance.UnloadScene(_sceneId, _onSceneUnload);
+                UnloadScene();
                 _isActive = false;
             }
         }
 
         public void LoadScene()
         {
-            SceneController.Instance.LoadScene(_sceneId, _onSceneLoad);
+            if (_changeSkybox) PlayerCamera.Instance.SetSkybox(_backgroundType, _backgroundColor);
+            SceneController.Instance.LoadScene(_sceneId, _setAsActiveScene, _onSceneLoad);
         }
 
         public void UnloadScene()
@@ -57,11 +64,6 @@ namespace Ivayami.Scene
             SceneController.Instance.OnAllSceneRequestEnd -= HandleOnAllScenesUnload;
         }
 
-        //public void UpdateSceneLoadersActiveState(bool isActive)
-        //{
-        //    SceneLoadersManager.Instance.gameObject.SetActive(isActive);
-        //}
-
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
@@ -71,7 +73,7 @@ namespace Ivayami.Scene
                 if (_boxCollider)
                 {
                     Gizmos.color = _gizmoColor;
-                    Gizmos.DrawCube(transform.position, new Vector3(
+                    Gizmos.DrawCube(transform.position + _boxCollider.center, new Vector3(
                         _boxCollider.size.x * transform.localScale.x,
                         _boxCollider.size.y * transform.localScale.y,
                         _boxCollider.size.z * transform.localScale.z));

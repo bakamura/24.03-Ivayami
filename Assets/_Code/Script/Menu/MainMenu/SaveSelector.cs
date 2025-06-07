@@ -69,6 +69,16 @@ namespace Ivayami.UI {
             Pause.Instance.ToggleCanPause(BLOCKER_KEY, true);
         }
 
+        public void UpdateSaveBtnInfo(byte saveId)
+        {
+            _saveSelectBtns[saveId].Setup(null, saveId);
+        }
+
+        public bool CheckForSaveInSlot(byte saveId)
+        {
+           return _saveSelectBtns[saveId].HasSaveInSlot;
+        }
+
 #if UNITY_EDITOR
         private void OnValidate()
         {

@@ -12,7 +12,7 @@ public class EnemyAngelInspector : Editor
     //Enemy Patrol variables
     SerializedProperty minDetectionRange, minDetectionRangeInChase, detectionRange, delayToLoseTarget, visionAngle, visionOffset, delayBetweenPatrolPoints, delayToStopSearchTarget, delayToFinishTargetSearch, behaviourTickFrequency, /*stressIncreaseOnTargetDetected,*/
         stressIncreaseWhileChasing, stressMaxWhileChasing, chaseSpeed, startActive, goToLastTargetPosition, attackAreaInfos, loseTargetWhenHidden, patrolType, fixedWalkArea, targetLayer, blockVisionLayer, patrolPoints,
-        distanceToLeapAttack, distanceToFogAttack, leapAttackRange, leapAttackDuration, startLeapMovementInterval, leapAttackJumpHeight, leapAttackPredictDistance, leapAttackHeightCurve, fallDuration,
+        distanceToLeapAttack, distanceToFogAttack, leapAttackRange, leapAttackDuration, startLeapMovementInterval, leapAttackJumpHeight, leapAttackPredictDistance, leapAttackHeightCurve, fallDuration, onLeapAttackLand,
         debugLogsEnemyPatrol, drawMinDistance, minDistanceAreaColor, drawMinDistanceInChase, minDistanceInChaseAreaColor, drawDetectionRange, detectionRangeAreaColor, drawPatrolPoints, patrolPointsColor, drawStoppingDistance, stoppingDistanceColor, patrolPointRadius,
         drawFogAttackDistance, fogAttackColor, drawLeapAttackDistance, leapAttackColor, drawPredictPosition, predictPositionColor, drawLeapAttackRange, leapAttackRangeColor;
     private NavMeshAgent _navMeshAgent;
@@ -75,6 +75,7 @@ public class EnemyAngelInspector : Editor
         EditorGUILayout.PropertyField(leapAttackPredictDistance, new GUIContent("Leap Attack Predict Buffer", "Extra distance from the predicted position"));
         EditorGUILayout.PropertyField(leapAttackHeightCurve, new GUIContent("Leap Attack Height Curve"));
         EditorGUILayout.PropertyField(fallDuration, new GUIContent("Fall Duration", "The time it takes to the enemy fall if is paralised while in the air"));
+        EditorGUILayout.PropertyField(onLeapAttackLand, new GUIContent("On Leap Attack Land"));
         EditorGUILayout.PropertyField(attackAreaInfos, new GUIContent("Attacks Hitbox Info"));
 
         RenderHeader("Enemy Patrol Debug", true);
@@ -194,6 +195,7 @@ public class EnemyAngelInspector : Editor
         leapAttackPredictDistance = serializedObject.FindProperty("_leapAttackPredictDistance");
         leapAttackHeightCurve = serializedObject.FindProperty("_leapAttackHeightCurve");
         fallDuration = serializedObject.FindProperty("_fallDuration");
+        onLeapAttackLand = serializedObject.FindProperty("_onLeapAttackLand");
 
         debugLogsEnemyPatrol = serializedObject.FindProperty("_debugLogsEnemyPatrol");
         drawMinDistance = serializedObject.FindProperty("_drawMinDistance");

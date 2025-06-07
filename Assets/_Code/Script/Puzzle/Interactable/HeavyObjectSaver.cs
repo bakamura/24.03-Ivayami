@@ -35,7 +35,7 @@ namespace Ivayami.Puzzle {
                         Resources.UnloadUnusedAssets();
                     }
                 }
-                else Debug.Log($"'{name}' found no Save Instance");
+                //else Debug.Log($"'{name}' found no Save Instance");
             }
             if (_dataCurrent == null) _dataCurrent = new Data(_heavyObjectParent.childCount > 0 ? _heavyObjectParent.GetChild(0).name : "");
             if (TryGetComponent(out HeavyObjectPlacement placement)) placement.Setup();
@@ -60,7 +60,7 @@ namespace Ivayami.Puzzle {
                 else Debug.LogError($"Heavy Saver Couldn't get HeavyPlacement in '{name}'");
             }
             else Debug.LogError($"Heavy Saver couldn't get object from other script through reflection!");
-#endif
         }
+#endif
     }
 }
