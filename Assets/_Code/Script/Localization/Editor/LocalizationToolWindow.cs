@@ -96,8 +96,8 @@ namespace Ivayami.Localization
                         {
                             if (items[i].DisplayTexts != null && items[i].DisplayTexts.Length > 0)
                             {
-                                table.AddEntry($"{readables[i].name}/Name", readables[i].DisplayTexts[index].Name);
-                                table.AddEntry($"{readables[i].name}/Description", readables[i].DisplayTexts[index].Description);
+                                table.AddEntry($"{readables[i].name}/Name", readables[i].TitleTranslations[index].text); // Naka
+                                for(int pageId = 0; pageId < readables[i].PagePresets.Length; pageId++) table.AddEntry($"{readables[i].name}/Description_{pageId}", readables[i].GetTextBoxesTranslated(pageId, index)); // Naka
                             }
                             else Debug.LogWarning($"The readable {readables[i].name} is empty");
                         }
