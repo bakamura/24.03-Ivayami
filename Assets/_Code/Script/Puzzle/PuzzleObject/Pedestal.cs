@@ -93,10 +93,16 @@ namespace Ivayami.Puzzle
             onActivate?.Invoke();
         }
 
-        public void LoadData(DeliverUISave.Data _, InventoryItem item)
+        public void LoadData(DeliverUISave.Data _, string itemName)
         {
-            //_deliverUI.LoadData(deliverUIData);
-            HandleItemDeliver(item);
+            for(int i = 0; i < _deliverUI.ItemsRequestsId.Length; i++)
+            {
+                if(itemName == _deliverUI.ItemsRequestsId[i].Item.name)
+                {
+                    HandleItemDeliver(_deliverUI.ItemsRequestsId[i].Item);
+                    break;
+                }
+            }            
         }
 
         public void DeactivatePedestal()
