@@ -192,7 +192,7 @@ namespace Ivayami.Player.Ability
                 StopCoroutine(_flickeringCoroutine);
                 _flickeringCoroutine = null;
             }
-            //if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
+            Bag.Instance.UpdateItemDisplayText(_item, $"{(100 * _durationCurrent / _durationMaxCap).ToString("0.")}");
         }
 
         private void UpdateLights()
@@ -222,7 +222,7 @@ namespace Ivayami.Player.Ability
                 _focusedOrigin.enabled = false;
                 ActivateBlocker.Toggle(nameof(Lantern), false);
             }
-            Bag.Instance.UpdateItemDisplayText(_item, $"{_durationCurrent}/{_durationMaxCap}");
+            Bag.Instance.UpdateItemDisplayText(_item, $"{(100 * _durationCurrent / _durationMaxCap).ToString("0.")}");
         }
 
         private IEnumerator FlickeringInterpolationCoroutine()
