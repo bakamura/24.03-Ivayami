@@ -39,6 +39,23 @@ namespace Ivayami.debug {
             Debug.Log("Enum migration complete.");
         }
 
+        //[MenuItem("Tools/Show all InteractAnimation")]
+        static void ShowInteractAnimation() {
+            var allObjs = Object.FindObjectsOfType<MonoBehaviour>(true);
+            foreach (var obj in allObjs) {
+                var so = new SerializedObject((Object)obj);
+                var prop = so.GetIterator();
+                bool shouldDisplayName = false;
+                while (prop.NextVisible(true)) {
+                    var type = obj.GetType();
+                    var field = type.GetField(prop.name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance);
+                    if (field != null && field.FieldType == typeof(PlayerActions.InteractAnimation) && prop.enumValueIndex > 0) shouldDisplayName = true;
+                }
+                if (shouldDisplayName) Debug.LogFormat(obj.name);
+            }
+            Debug.Log("A");
+        }
     }
+
 }
 #endif
