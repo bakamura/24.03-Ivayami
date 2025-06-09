@@ -2065,10 +2065,10 @@ GameObject:
   m_Component:
   - component: {fileID: 188950922}
   - component: {fileID: 188950927}
-  - component: {fileID: 188950926}
   - component: {fileID: 188950925}
   - component: {fileID: 188950924}
   - component: {fileID: 188950923}
+  - component: {fileID: 188950928}
   m_Layer: 0
   m_Name: ExitFromMainMenu
   m_TagString: Untagged
@@ -2128,7 +2128,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _blockKey: GetUp
---- !u!114 &188950926
+--- !u!65 &188950927
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 188950921}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4, y: 2.3383484, z: 4}
+  m_Center: {x: 0, y: 0.6691742, z: 0}
+--- !u!114 &188950928
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2137,7 +2158,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 188950921}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aac85a56f977a09419cd6c3c1df8cb43, type: 3}
+  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _triggerType: 0
@@ -2196,28 +2217,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _framesUntilDeactivate: 3
---- !u!65 &188950927
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 188950921}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 4, y: 2.3383484, z: 4}
-  m_Center: {x: 0, y: 0.6691742, z: 0}
+      - m_Target: {fileID: 188950921}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &189915029
 PrefabInstance:
   m_ObjectHideFlags: 0
