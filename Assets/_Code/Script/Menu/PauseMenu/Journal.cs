@@ -174,6 +174,7 @@ namespace Ivayami.UI {
                 Debug.LogWarning("Description Not Found");
                 return;
             }
+            return; // TEMP until Journal rework
             if (_presets.Length > entry.TemplateID) _presets[entry.TemplateID].DisplayContent(new string[1] { entry.DisplayDescription() }, new Sprite[0]);
             else Debug.LogError($"'{entry.name}' tried using journal preset {entry.TemplateID} which doesn't exist!");
         }
