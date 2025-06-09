@@ -73,7 +73,7 @@ namespace Ivayami.Save
             if (SaveSystem.Instance.Progress.GetSaveObjectOfType<Data>(ID, out Data data))
             {
                 _currentData = new Data(data);
-                _pedestalGroup.LoadData(null, data);
+                _pedestalGroup.LoadData(null, _currentData);
             }
         }
 
