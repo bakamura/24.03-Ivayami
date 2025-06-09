@@ -8,7 +8,7 @@ using Ivayami.Player;
 namespace Ivayami.debug {
     public class AdjustPlayerAnimEnum {
 
-        [MenuItem("Tools/Migrate Enum Values")]
+        //[MenuItem("Tools/Migrate Enum Values")]
         static void Migrate() {
             var scenes = AssetDatabase.FindAssets("t:Scene");
             foreach (var guid in scenes) {
