@@ -40,9 +40,9 @@ namespace Ivayami.Puzzle
         public bool SkipDeliverUI => _skipDeliverUI;
         public bool IsActive { get; private set; }
         public List<InventoryItem> ItemsDelivered => _itemsDelivered;
-        public List<InventoryItem> CurrentRequests => _currentRequests.Select(x => x.Item).ToList();
+        public ItemRequestData[] ItemsRequestsId => _itemsRequired;        
         [System.Serializable]
-        private struct ItemRequestData
+        public struct ItemRequestData
         {
             public InventoryItem Item;
             public bool UseItem;
@@ -281,27 +281,21 @@ namespace Ivayami.Puzzle
 
         public void LoadData(DeliverUISave.Data data)
         {
-            InventoryItem[] assets = Resources.LoadAll<InventoryItem>("Items");
             int i;
+            InventoryItem item;
             for(i = 0; i < data.ItemsDeliveredIDs.Length; i++)
             {
-                _itemsDelivered.Add(assets.First(x => x.name == data.ItemsDeliveredIDs[i]));
-            }
-            InventoryItem item;
-            for(i = 0; i < data.RequestsDoneItemIDs.Length; i++)
-            {
-                item = assets.First(x => x.name == data.RequestsDoneItemIDs[i]);
+                item = _itemsRequired.First(x => x.Item.name == data.ItemsDeliveredIDs[i]).Item;
+                _itemsDelivered.Add(item);                
                 for (int a = 0; a < _currentRequests.Count; a++)
                 {
-                    if (_currentRequests[a].Item == item)
+                    if (_currentRequests[a].Item.name == item.name)
                     {
                         _currentRequests.RemoveAt(a);
                         break;
                     }
                 }
             }
-            Resources.UnloadUnusedAssets();
-            //salvar 2 array de itemID q são int, ai coloca os valores na ItemsCache e remove os q tem da CurrentRequests
         }
 
 #if UNITY_EDITOR

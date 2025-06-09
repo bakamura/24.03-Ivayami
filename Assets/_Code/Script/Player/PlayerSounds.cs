@@ -15,7 +15,7 @@ namespace Ivayami.Audio
         [SerializeField] private LayerMask _groundLayers;
         [SerializeField] private StepSoundData[] _stepSoundsData;
         [SerializeField] private bool _debugLogStepSounds;
-        [SerializeField, Tooltip("The step sounds will always play at max volume + will always have only 1 step sound")] private bool _simplifyStepSounds;
+        [SerializeField, Tooltip("The step sounds will always play at max volume + will always have only 1 step sound tha will be the texture with the highest alpha")] private bool _simplifyStepSounds;
 
         [Space(16)]
 
@@ -40,6 +40,11 @@ namespace Ivayami.Audio
             [NonSerialized] public float Volume;
             [NonSerialized] public bool AutoRemoveFromList;
             public static StepSoundData Empty = new StepSoundData();
+
+            public bool Equals(StepSoundData data)
+            {
+                return Textures == data.Textures;
+            }
         }
 
         public enum GroundTypes
@@ -153,26 +158,48 @@ namespace Ivayami.Audio
                 Vector3 terrainPos = _hits[0].point - terrain.transform.position;
                 Vector3 splatMapPosition = new Vector3(terrainPos.x / terrain.terrainData.size.x, 0, terrainPos.z / terrain.terrainData.size.z);
                 float[,,] alphaMap = terrain.terrainData.GetAlphamaps(Mathf.FloorToInt(splatMapPosition.x * terrain.terrainData.alphamapWidth), Mathf.FloorToInt(splatMapPosition.z * terrain.terrainData.alphamapHeight), 1, 1);
+                float currentMaxAlpha = 0;
+                StepSoundData currentMaxAlphaData = StepSoundData.Empty;
 
                 for (int i = 0; i < alphaMap.Length; i++)
                 {
-                    if (alphaMap[0, 0, i] > 0)
+                    if (_simplifyStepSounds)
                     {
-
                         data = FindSoundDataByTexture(terrain.terrainData.terrainLayers[i].diffuseTexture);
-                        data.AutoRemoveFromList = true;
-                        if (_simplifyStepSounds) data.Volume = alphaMap[0, 0, i];
-
-                        if (!IsCurrentlyInPlaylist(data.GroundType, out int index)) _currentStepSounds.Add(data);
-                        else _currentStepSounds[index] = data;
-                        if (_debugLogStepSounds) Debug.Log($"the sound terrain of {data.GroundType} with volume {data.Volume} will play");
-                        if (_simplifyStepSounds) break;
+                        if (data.Equals(StepSoundData.Empty)) continue;
+                        if (alphaMap[0, 0, i] > currentMaxAlpha)
+                        {
+                            currentMaxAlpha = alphaMap[0, 0, i];
+                            currentMaxAlphaData = data;
+                            currentMaxAlphaData.AutoRemoveFromList = true;
+                        }
                     }
+                    else
+                    {
+                        if (alphaMap[0, 0, i] > 0)
+                        {
+                            data = FindSoundDataByTexture(terrain.terrainData.terrainLayers[i].diffuseTexture);
+                            if (data.Equals(StepSoundData.Empty)) continue;
+                            data.AutoRemoveFromList = true;
+                            data.Volume = alphaMap[0, 0, i];
+
+                            if (!IsCurrentlyInPlaylist(data.GroundType, out int index)) _currentStepSounds.Add(data);
+                            else _currentStepSounds[index] = data;
+                            if (_debugLogStepSounds) Debug.Log($"the sound terrain of {data.GroundType} with volume {data.Volume} will play");
+                        }
+                    }
+                }
+                if (_simplifyStepSounds && currentMaxAlphaData.Equals(StepSoundData.Empty))
+                {
+                    if (!IsCurrentlyInPlaylist(currentMaxAlphaData.GroundType, out int index)) _currentStepSounds.Add(currentMaxAlphaData);
+                    else _currentStepSounds[index] = currentMaxAlphaData;
+                    if (_debugLogStepSounds) Debug.Log($"the sound terrain of {currentMaxAlphaData.GroundType} with volume 1 will play");
                 }
             }
             else if (_hits[0].collider.TryGetComponent<MeshRenderer>(out MeshRenderer renderer))
             {
                 data = FindSoundDataByTexture(renderer.sharedMaterial.GetTexture(_albedoTextureName));
+                if (data.Equals(StepSoundData.Empty)) return;
                 if (!IsCurrentlyInPlaylist(data.GroundType, out _))
                 {
                     if (_debugLogStepSounds) Debug.Log($"the sound mesh renderer of {data.GroundType} will play");
