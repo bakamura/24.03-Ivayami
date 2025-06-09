@@ -101,8 +101,8 @@ namespace Ivayami.Puzzle
         private IEnumerator UnlockFeedbackCoroutine()
         {
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
-            yield return _unlockWait;
             UpdateUIs(false);
+            yield return _unlockWait;
             UpdateInputs(false);
             IsActive = !IsActive;
             onActivate?.Invoke();

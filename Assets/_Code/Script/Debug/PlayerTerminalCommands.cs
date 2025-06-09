@@ -59,13 +59,13 @@ public static class PlayerTerminalCommands
         Debug.Log($"Fly Mode is now {isActive}");
     }
 
-    [ConsoleMethod("GiveItem", "", "itemID")]
-    public static void GiveItem(string itemID)
+    [ConsoleMethod("GiveItem", "", "itemID", "amount")]
+    public static void GiveItem(string itemID, int amount = 1)
     {
         InventoryItem result = _allItemsList.Find(x => x.name.ToUpper() == itemID.ToUpper());
         if (result != null)
         {
-            PlayerInventory.Instance.AddToInventory(result);
+            for(int i = 0; i < amount; i++) PlayerInventory.Instance.AddToInventory(result);
             Debug.Log($"The item {itemID} has been added to inventory");
         }
         else Debug.LogWarning($"The item: {itemID} doesn't exist");

@@ -146,7 +146,7 @@ namespace Ivayami.Puzzle
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, changes.UIPanelRect.height);
 
             EditorUtility.SetDirty(instance);
-            Debug.Log($"Changes Applied for {nameof(InteractableObjectsGroup)}");
+            Debug.Log($"Changes Applied for {nameof(FuseBox)}");
         }
     }
 }

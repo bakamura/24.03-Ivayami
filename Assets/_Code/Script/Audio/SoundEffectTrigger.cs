@@ -81,6 +81,7 @@ namespace Ivayami.Audio
         [ContextMenu("Stop")]
         public void Stop()
         {
+            if (!_currentSounData.AudioInstance.isValid()) return;
             _currentSounData.AudioInstance.getPlaybackState(out PLAYBACK_STATE state);
             if (state == PLAYBACK_STATE.PLAYING)
             {
