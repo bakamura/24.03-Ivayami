@@ -22,7 +22,7 @@ namespace Ivayami.Puzzle
         public override void OnInspectorGUI()
         {
             EditorGUILayout.PropertyField(cancelInteractionInput, new GUIContent("Cancel Interaction Input"));
-            EditorGUILayout.PropertyField(buttonsInteractAutoWithInteractable, new GUIContent("Button Auto Interact With Interactable", "If True teh button will automaticaly interact with the defined interactable and close the InteractableObjectsGroup UI"));
+            EditorGUILayout.PropertyField(buttonsInteractAutoWithInteractable, new GUIContent("Button Auto Exit Group Interface", "If True the button will automaticaly Exit the UI of InteractableObjectsGroup"));
             EditorGUILayout.PropertyField(options, new GUIContent("Buttons Configuration"));
             EditorGUILayout.PropertyField(onInteract, new GUIContent("On Interact"));
             EditorGUILayout.PropertyField(onCancelInteraction, new GUIContent("On Cancel Interaction"));

@@ -35,13 +35,21 @@ namespace Ivayami.Puzzle
             }
         }
 
-        public PlayerActions.InteractAnimation Interact()
+        private void Start()
         {
             Setup();
+            if (IsCorrect()) _onCorrectShadow?.Invoke();
+            OnRotateObjectEnd?.Invoke();
+        }
+
+        public PlayerActions.InteractAnimation Interact()
+        {
+            //Setup();
             _rotatingCoroutine ??= StartCoroutine(RotateCoroutine());
             return PlayerActions.InteractAnimation.Default;
         }
 
+        public void ForceInteract() => Interact();
         private void Setup()
         {
             if (!_hasDoneSetup)

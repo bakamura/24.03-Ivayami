@@ -281,6 +281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2877e786c09dd5e4f9b4d64f601936fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _item: {fileID: 11400000, guid: 2351db1c3e4d71c40b8321b503e48ddc, type: 2}
   _wideOrigin: {fileID: 8590640417675001210}
   _focusedOrigin: {fileID: 9105448352692248756}
   _visuals: {fileID: 1455203641934398067}
@@ -303,8 +304,15 @@ MonoBehaviour:
   _focusedCamArmDistance: 0.4
   _focusedDurationComsumptionMultiplier: 1.5
   _focusedSourceDistance: 1.5
-  _durationMaxBase: 120
+  _durationMaxCap: 300
   _durationIncreaseFromItem: 60
+  _flickeringStartTreshold: 0
+  _flickeringChance: 0
+  _flickeringInterpolationDuration: 0.02
+  _randomFlickeringIntensities: []
+  _reduceIntensityStartTreshold: 0.2
+  _wideLightFinalIntensity: 1
+  _focusedLightFinalIntensity: 8
   _coneColor: {r: 0.75, g: 0.75, b: 0.1875, a: 0.25490198}
 --- !u!1 &6095032890854906305
 GameObject:

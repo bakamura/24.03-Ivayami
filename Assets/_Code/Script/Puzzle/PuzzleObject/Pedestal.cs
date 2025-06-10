@@ -34,9 +34,12 @@ namespace Ivayami.Puzzle
             _interactableSounds = GetComponent<InteractableSounds>();
             _activatorAnimated = GetComponent<ActivatorAnimated>();
             _deliverUI.OnDeliver.AddListener(HandleItemDeliver);
-            if (_currentItem)
+            if (_itemToStart)
             {
                 _currentItemVisual = Instantiate(_itemToStart.Model, _itemVisualPosition);
+                _currentItemVisual.transform.localScale = _itemToStart.Model.transform.lossyScale;
+                _currentItemVisual.transform.localRotation = Quaternion.Euler(-_itemVisualPosition.transform.localRotation.eulerAngles.x, 0, -_itemVisualPosition.transform.localRotation.eulerAngles.z);
+                _currentItem = _itemToStart;
                 IsActive = true;
                 onActivate?.Invoke();
             }
@@ -90,10 +93,16 @@ namespace Ivayami.Puzzle
             onActivate?.Invoke();
         }
 
-        public void LoadData(DeliverUISave.Data deliverUIData, InventoryItem item)
+        public void LoadData(DeliverUISave.Data _, string itemName)
         {
-            //_deliverUI.LoadData(deliverUIData);
-            HandleItemDeliver(item);
+            for(int i = 0; i < _deliverUI.ItemsRequestsId.Length; i++)
+            {
+                if(itemName == _deliverUI.ItemsRequestsId[i].Item.name)
+                {
+                    HandleItemDeliver(_deliverUI.ItemsRequestsId[i].Item);
+                    break;
+                }
+            }            
         }
 
         public void DeactivatePedestal()

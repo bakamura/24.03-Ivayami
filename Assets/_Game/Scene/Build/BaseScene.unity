@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.040639684, g: 0.047823314, b: 0.06296477, a: 1}
+  m_IndirectSpecularColor: {r: 0.040684536, g: 0.04780908, b: 0.0629266, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -927,6 +927,10 @@ PrefabInstance:
       propertyPath: _onSelect.m_PersistentCalls.m_Calls.Array.data[2].m_Target
       value: 
       objectReference: {fileID: 2004499856}
+    - target: {fileID: 2783396868117458308, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 950
+      objectReference: {fileID: 0}
     - target: {fileID: 2837540969861527846, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
       propertyPath: _onSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -951,6 +955,18 @@ PrefabInstance:
       propertyPath: _onSelect.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2004499856}
+    - target: {fileID: 3802211754367123551, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802211754367123551, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802211754367123551, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3854628556734785787, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[4].m_Target
       value: 
@@ -1289,6 +1305,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7947475355566103653, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8014942162273361455, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8014942162273361455, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8040017260853344084, guid: 67ded2beb127a6b4dba66431cdbff00c, type: 3}
@@ -2118,6 +2142,88 @@ MonoBehaviour:
       m_Calls: []
   _drawGizmos: 0
   _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!1 &484557967
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 484557968}
+  - component: {fileID: 484557970}
+  - component: {fileID: 484557969}
+  m_Layer: 10
+  m_Name: TrainYardCargo_LoadingSceneCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &484557968
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 484557967}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 12.2, y: 355.42548, z: 196.4}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1628160131}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &484557969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 484557967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sceneId: TrainYardCargo
+  _setAsActiveScene: 0
+  _changeSkybox: 0
+  _backgroundType: 0
+  _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  _onSceneLoad:
+    m_PersistentCalls:
+      m_Calls: []
+  _onSceneUnload:
+    m_PersistentCalls:
+      m_Calls: []
+  _onAllScenesRequestEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  _drawGizmos: 0
+  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!65 &484557970
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 484557967}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 178.15431, y: 65.10428, z: 291.5318}
+  m_Center: {x: -33.129707, y: -9.294296, z: 2.8069763}
 --- !u!1001 &561378722
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3162,6 +3268,72 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9208313675154015547, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
   m_PrefabInstance: {fileID: 848734463}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &864432192
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 907351661}
+    m_Modifications:
+    - target: {fileID: 990530649068817009, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+      propertyPath: _pointId
+      value: 23
+      objectReference: {fileID: 0}
+    - target: {fileID: 7956725836395521751, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+      propertyPath: m_Name
+      value: SavePoint_23
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208313675154015547, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 12.39
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208313675154015547, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 349.362
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208313675154015547, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 289.48
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208313675154015547, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.249273
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208313675154015547, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.006530227
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208313675154015547, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.96814877
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208313675154015547, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0.02254577
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208313675154015547, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 2.315
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208313675154015547, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -151.095
+      objectReference: {fileID: 0}
+    - target: {fileID: 9208313675154015547, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 1.37
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+--- !u!4 &864432193 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9208313675154015547, guid: a4e0131de94b4c64db1bb1c72260affc, type: 3}
+  m_PrefabInstance: {fileID: 864432192}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &870663639
 GameObject:
   m_ObjectHideFlags: 0
@@ -3331,6 +3503,7 @@ Transform:
   - {fileID: 700804926}
   - {fileID: 206285747}
   - {fileID: 565163757}
+  - {fileID: 864432193}
   - {fileID: 561378723}
   - {fileID: 848734464}
   m_Father: {fileID: 1764966827}
@@ -4353,6 +4526,7 @@ Transform:
   - {fileID: 1581217699}
   - {fileID: 976742490}
   - {fileID: 940164323}
+  - {fileID: 1902033121}
   - {fileID: 1251837464}
   m_Father: {fileID: 1775166547}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4922,6 +5096,7 @@ Transform:
   - {fileID: 1307910342}
   - {fileID: 815135939}
   - {fileID: 1773088050}
+  - {fileID: 484557968}
   m_Father: {fileID: 2146609545}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1637794197
@@ -5438,7 +5613,7 @@ GameObject:
   - component: {fileID: 1773088052}
   - component: {fileID: 1773088051}
   m_Layer: 10
-  m_Name: TrainYard_LoadingSceneCollider
+  m_Name: TrainYardPassenger_LoadingSceneCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5471,7 +5646,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _sceneId: TrainYard
+  _sceneId: TrainYardPassanger
   _setAsActiveScene: 0
   _changeSkybox: 0
   _backgroundType: 0
@@ -5506,8 +5681,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 200.74586, y: 65.10428, z: 410.84366}
-  m_Center: {x: -9.126152, y: -9.294296, z: 47.63716}
+  m_Size: {x: 199.50853, y: 65.10428, z: 215.96753}
+  m_Center: {x: -8.507484, y: -9.294296, z: 60.938263}
 --- !u!1001 &1774124243
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5647,6 +5822,88 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7427fb8840518d4cbea36aebf30a92d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1902033120
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1902033121}
+  - component: {fileID: 1902033123}
+  - component: {fileID: 1902033122}
+  m_Layer: 10
+  m_Name: TrainYardBasement
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &1902033121
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902033120}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -69.25, y: 86.59, z: 71.3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1471170006}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1902033122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902033120}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5e36e779237184b82f842b830f343a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sceneId: TrainYardBasement
+  _setAsActiveScene: 1
+  _changeSkybox: 0
+  _backgroundType: 0
+  _backgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  _onSceneLoad:
+    m_PersistentCalls:
+      m_Calls: []
+  _onSceneUnload:
+    m_PersistentCalls:
+      m_Calls: []
+  _onAllScenesRequestEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  _drawGizmos: 0
+  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
+--- !u!65 &1902033123
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1902033120}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 43.28, y: 20, z: 52.550003}
+  m_Center: {x: -11, y: 5, z: 5}
 --- !u!1 &1980639071
 GameObject:
   m_ObjectHideFlags: 0
@@ -6462,6 +6719,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1981174680}
     m_Modifications:
+    - target: {fileID: 5204436951782914022, guid: f3133a7b9ac46cd4a90beb4b9ed434bb, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 2004499856}
+    - target: {fileID: 6745612057596164119, guid: f3133a7b9ac46cd4a90beb4b9ed434bb, type: 3}
+      propertyPath: OnSelectSelectable.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2004499856}
+    - target: {fileID: 6745612057596164119, guid: f3133a7b9ac46cd4a90beb4b9ed434bb, type: 3}
+      propertyPath: OnPointerEnterSelectable.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1702687375}
     - target: {fileID: 7119918674196880708, guid: f3133a7b9ac46cd4a90beb4b9ed434bb, type: 3}
       propertyPath: m_Name
       value: EmphasisItemUI

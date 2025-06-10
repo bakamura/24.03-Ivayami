@@ -11,12 +11,18 @@ namespace Ivayami.Dialogue
     {
         SerializedProperty /*debugLogs,*/ events;
         private static Dialogue[] _dialogueAssets;
+        public static bool UpdateDatabaseOnInspectorSelected;
         private Dictionary<int, string> _eventsDic = new Dictionary<int, string>();
         private int _previousSize;
         private int _currentEventIndex;
         public override void OnInspectorGUI()
         {
-            if (_dialogueAssets == null) UpdateDialoguesList();
+            if (_dialogueAssets == null || UpdateDatabaseOnInspectorSelected)
+            {
+                Debug.Log("DATABASE UPDATE");
+                _dialogueAssets = Resources.LoadAll<Dialogue>("Dialogues");
+                UpdateDatabaseOnInspectorSelected = false;
+            }
 
             //EditorGUILayout.PropertyField(debugLogs, new GUIContent("Debug Log"));
             EditorGUILayout.PropertyField(events, new GUIContent("Events"));
@@ -116,11 +122,6 @@ namespace Ivayami.Dialogue
                     }
                 }
             }
-        }
-
-        public static void UpdateDialoguesList()
-        {
-            _dialogueAssets = Resources.LoadAll<Dialogue>("Dialogues");
         }
 
         //assumes that there will be no duplicate ID in the Dialoge Assets
