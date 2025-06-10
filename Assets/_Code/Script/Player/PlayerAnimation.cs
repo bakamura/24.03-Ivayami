@@ -124,6 +124,7 @@ namespace Ivayami.Player
 
         private void Interact(PlayerActions.InteractAnimation animation)
         {
+            if (animation == PlayerActions.InteractAnimation.None) return;
             _animator.SetFloat(INTERACT_INDEX, (int)animation);
             _animator.SetFloat(INTERACT_SPEED, _interactAnimationDuration[animation].Speed);
             _animator.SetTrigger(INTERACT);
