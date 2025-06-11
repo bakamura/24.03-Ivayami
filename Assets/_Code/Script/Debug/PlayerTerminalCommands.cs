@@ -31,8 +31,8 @@ public static class PlayerTerminalCommands
         PlayerStress.Instance.AddStress(amount);
     }
 
-    [ConsoleMethod("UpdateAutoRegenStress", "", "isActive")]
-    public static void UpdateAutoRegenStress(bool isActive)
+    [ConsoleMethod("SetAutoRegenStress", "", "isActive")]
+    public static void SetAutoRegenStress(bool isActive)
     {
         PlayerStress.Instance.UpdateAutoRegenerateStress(isActive);
         Debug.Log($"Auto Regen is now {isActive}");
@@ -47,8 +47,8 @@ public static class PlayerTerminalCommands
         Debug.Log($"Release Player Complete");
     }
 
-    [ConsoleMethod("ChangePlayerRunSpeed", "", "value")]
-    public static void ChangePlayerRunSpeed(float value)
+    [ConsoleMethod("SetPlayerRunSpeed", "", "value")]
+    public static void SetPlayerRunSpeed(float value)
     {
         PlayerMovement.Instance.ChangeRunSpeed(value);
         Debug.Log($"New run speed {value}");
@@ -90,6 +90,12 @@ public static class PlayerTerminalCommands
         char[] temp = abilityName.ToCharArray();
         temp[0] = char.ToUpper(temp[0]);
         _abilityGiver.GiveAbility(new string(temp));
+    }
+
+    [ConsoleMethod("GiveLanternOil", "", "value")]
+    public static void GiveLanternOil(float value)
+    {
+        LanternRef.Instance.Lantern.Fill(value);
     }
 
     [ConsoleMethod("ToggleRun", "", "canRun")]
