@@ -34,11 +34,13 @@ namespace Ivayami.Puzzle
         }
         private InteractableFeedbacks m_interatctableHighlight;
 
+        [SerializeField] private PlayerActions.InteractAnimation _playerAnimation = PlayerActions.InteractAnimation.Default;
+
         public PlayerActions.InteractAnimation Interact()
         {
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.Interact);
             GiveItem();
-            return PlayerActions.InteractAnimation.Default;
+            return _playerAnimation;
         }
 
         public void ForceInteract() => Interact();
