@@ -184,6 +184,11 @@ namespace Ivayami.Enemy
                     _enemySounds.PlaySound(EnemySounds.SoundTypes.Attack);
                     _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange/*, _currentAttackAnimIndex*/);
 
+                    if (LanternRef.Instance.AbilityAquired())
+                    {
+                        LanternRef.Instance.Lantern.Fill(-_fuelRemoveFromLantern);
+                        LanternRef.Instance.Lantern.ForceTurnOff();
+                    }
                     if (PlayerActions.Instance.CheckAbility(typeof(Lantern), out PlayerAbility ability))
                     {
                         Lantern lantern = (Lantern)ability;
