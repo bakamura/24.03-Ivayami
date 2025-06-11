@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 using TMPro;
 using Ivayami.Player;
-using System.Linq;
 
 namespace Ivayami.UI {
     public class Bag : MonoSingleton<Bag> {
@@ -12,6 +14,15 @@ namespace Ivayami.UI {
         [SerializeField] private BagItem[] _itemNormalBtns;
         [SerializeField] private BagItem[] _itemSpecialBtns;
         [SerializeField] private TextMeshProUGUI _itemDescriptor;
+
+        [Header("Quick Open")]
+
+        [SerializeField] private InputActionReference _quickOpenInput;
+        [SerializeField] private Button _quickOpenBtn;
+
+        private void Start() {
+            _quickOpenInput.action.performed += QuickOpen;
+        }
 
         public void InventoryUpdate() {
             PlayerInventory.InventoryItemStack[] items = PlayerInventory.Instance.CheckInventory();
@@ -41,6 +52,13 @@ namespace Ivayami.UI {
                     allItems[i].UpdateDisplayText(text);
                     break;
                 }
+            }
+        }
+
+        private void QuickOpen(InputAction.CallbackContext context) {
+            if (!Pause.Instance.Paused) {
+                Pause.Instance.PauseGame(true);
+                _quickOpenBtn.onClick.Invoke();
             }
         }
 

@@ -164,7 +164,9 @@ namespace Ivayami.Player {
 
         private void Start() {
             //SceneController.Instance.OnAllSceneRequestEnd += RemoveCrouch;
-            PlayerActions.Instance.onInteract.AddListener((animation) => BlockMovementFor(INTERACT_BLOCK_KEY, PlayerAnimation.Instance.GetInteractAnimationDuration(animation)));
+            PlayerActions.Instance.onInteract.AddListener((animation) => {
+                if (animation != PlayerActions.InteractAnimation.None) BlockMovementFor(INTERACT_BLOCK_KEY, PlayerAnimation.Instance.GetInteractAnimationDuration(animation));
+            });
             PlayerStress.Instance.onStressChange.AddListener(OnStressChange);
             PlayerStress.Instance.onFail.AddListener(RemoveCrouch);
             InputCallbacks.Instance.SubscribeToOnChangeControls(UpdateHoldToRun);
