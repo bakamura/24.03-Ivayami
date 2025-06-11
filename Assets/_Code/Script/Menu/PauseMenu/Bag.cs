@@ -20,9 +20,12 @@ namespace Ivayami.UI {
         [SerializeField] private InputActionReference _quickOpenInput;
         [SerializeField] private Button _quickOpenBtn;
 
+        private Dictionary<int, BagItem> _itemBtnsByCurrentItem = new Dictionary<int, BagItem>();
+
         private void Start() {
             _quickOpenInput.action.performed += QuickOpen;
-        }
+            PlayerInventory.Instance.onItemStackUpdate += HandleItemRemoved;
+        }       
 
         public void InventoryUpdate() {
             PlayerInventory.InventoryItemStack[] items = PlayerInventory.Instance.CheckInventory();
@@ -43,22 +46,35 @@ namespace Ivayami.UI {
 
         public void UpdateItemDisplayText(InventoryItem item, string text)
         {
+            //perhaps because of the lantern metter, the bag UI will need to have its own canvas for optimize draw call
             if (!PlayerInventory.Instance.CheckInventoryFor(item.name).Item) return;
-            BagItem[] allItems = _itemNormalBtns.Union(_itemSpecialBtns).ToArray();
-            for(int i = 0; i < allItems.Length; i++)
+            if (!_itemBtnsByCurrentItem.ContainsKey(item.GetInstanceID()))
             {
-                if (allItems[i].Item == item && allItems[i].Item.DisplayTextFormatedExternaly)
+                BagItem[] allItems = _itemNormalBtns.Union(_itemSpecialBtns).ToArray();
+                for(int i = 0; i < allItems.Length; i++)
                 {
-                    allItems[i].UpdateDisplayText(text);
-                    break;
+                    if (allItems[i].Item == item && allItems[i].Item.DisplayTextFormatedExternaly)
+                    {
+                        _itemBtnsByCurrentItem.Add(item.GetInstanceID(), allItems[i]);
+                        break;
+                    }
                 }
             }
+            _itemBtnsByCurrentItem[item.GetInstanceID()].UpdateDisplayText(text);
         }
 
         private void QuickOpen(InputAction.CallbackContext context) {
             if (!Pause.Instance.Paused) {
                 Pause.Instance.PauseGame(true);
                 _quickOpenBtn.onClick.Invoke();
+            }
+        }
+
+        private void HandleItemRemoved(PlayerInventory.InventoryItemStack itemStack)
+        {
+            if (_itemBtnsByCurrentItem.ContainsKey(itemStack.Item.GetInstanceID()))
+            {
+                _itemBtnsByCurrentItem.Remove(itemStack.Item.GetInstanceID());
             }
         }
 
