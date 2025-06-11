@@ -50,7 +50,7 @@ namespace Ivayami.Enemy
                 Debug.LogError("No Illuminated enemy found in hierarchy");
                 return;
             }
-            _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
+            if (_lightBehaviour != LightBehaviours.Aggressive) _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
         }
 
         private void OnEnable()

@@ -345,7 +345,7 @@ namespace Ivayami.Enemy
                     UpdateMovement(true);
                     _enemyAnimator.TargetDetected(true);
                     _enemySounds.PlaySound(EnemySounds.SoundTypes.TargetDetected);
-                    if (_debugLogsEnemyPatrol) Debug.Log("Target Detected");
+                    if (_debugLogsEnemyPatrol) Debug.Log("Start Alert State");
                 }
                 else if (_currentAlertCount >= _soundDetectedToStartChase)
                 {
@@ -354,7 +354,7 @@ namespace Ivayami.Enemy
                     _enemySounds.PlaySound(EnemySounds.SoundTypes.Chasing);
                     _currentChasePatience = _durationInCurrentSoundTarget;
                     _isChasing = true;
-                    if (_debugLogsEnemyPatrol) Debug.Log("Start Attack");
+                    if (_debugLogsEnemyPatrol) Debug.Log("Start Chase");
                 }
             }
         }

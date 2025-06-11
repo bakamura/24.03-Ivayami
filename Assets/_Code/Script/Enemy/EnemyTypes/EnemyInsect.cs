@@ -3,11 +3,12 @@ using Ivayami.Player;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using Ivayami.Player.Ability;
 
 namespace Ivayami.Enemy
 {
     [RequireComponent(typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(EnemySounds))]
-    public class EnemyInsect : StressEntity
+    public class EnemyInsect : StressEntity, IIluminatedEnemy
     {
         [SerializeField, Min(.02f)] private float _behaviourTickFrequency = .5f;
         [SerializeField] private bool _startActive;
@@ -23,6 +24,7 @@ namespace Ivayami.Enemy
 
         [SerializeField, Min(0f)] private float _stressIncreaseWhileChasing;
         [SerializeField, Min(0f)] private float _stressMaxWhileChasing;
+        [SerializeField, Min(0f)] private float _fuelRemoveFromLantern;
         [SerializeField] private HitboxInfo[] _attackAreaInfos;
 
         //[Header("Enemy Debug")]
@@ -72,7 +74,6 @@ namespace Ivayami.Enemy
         private bool _isChasing;
         private bool _directContactWithTarget;
         private bool _isAttacking;
-        //private bool _isInAlertState;
         private float _currentTargetColliderSizeFactor;
         private float _baseSpeed;
         private float _baseStoppingDistance;
@@ -167,84 +168,77 @@ namespace Ivayami.Enemy
         {
             byte currentPatrolPointIndex = 0;
             sbyte indexFactor = 1;
+            bool inAttackCooldown;
             while (IsActive)
             {
-                if (_attackCooldownCoroutine == null)
+                inAttackCooldown = _attackCooldownCoroutine != null;
+                if (CheckForTarget() && !_isAttacking && !inAttackCooldown)
                 {
-                    //if (CheckForTarget() && !_isAttacking)
-                    //{
-                    //    _navMeshAgent.SetDestination(transform.position);
-                    //    UpdateMovement(true);
-                    //    isStressAreaActive = false;
-                    //    _isAttacking = true;
-                    //    _isChasing = false;
-                    //    _currentAlertCount = 0;
-                    //    PlayerMovement.Instance.ToggleMovement(nameof(EnemyDog) + gameObject.name, false);
-                    //    //_currentAttackAnimIndex = _currentAttackAnimIndex == 0 ? 1 : 0;
-                    //    _enemySounds.PlaySound(EnemySounds.SoundTypes.Attack);
-                    //    _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange/*, _currentAttackAnimIndex*/);
-                    //    PlayerMovement.Instance.SetTargetAngle(Quaternion.LookRotation(transform.position - _hitsCache[0].transform.position).eulerAngles.y);
-                    //    transform.SetPositionAndRotation(transform.position, Quaternion.LookRotation(_hitsCache[0].transform.position - transform.position));
-                    //    if (_debugLogsEnemyPatrol) Debug.Log("Attack Target");
-                    //    StopBehaviour();
-                    //}
-                    //else if (_isChasing)
-                    //{
-                    //    isStressAreaActive = false;
-                    //    if (_debugLogsEnemyPatrol) Debug.Log("Chasing");
-                    //    if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());
-                    //    _navMeshAgent.speed = _chaseSpeed;
-                    //    _navMeshAgent.SetDestination(_currentAttackPoint.Position);
-                    //    if (Vector3.Distance(_currentAttackPoint.Position, transform.position) <= _navMeshAgent.stoppingDistance)
-                    //    {
-                    //        _currentChasePatience -= _behaviourTickFrequency;
-                    //        if (_currentChasePatience <= 0) _isChasing = false;
-                    //    }
-                    //    else _currentChasePatience = _durationInCurrentSoundTarget;
-                    //}
-                    //else if (_currentAlertCount >= _soundDetectedToStartChase)
-                    //{
-                    //    _currentAlertStatePatience -= _behaviourTickFrequency;
-                    //    if (_currentAlertStatePatience <= 0)
-                    //    {
-                    //        UpdateMovement(false);
-                    //        _enemyAnimator.TargetDetected(false);
-                    //        _currentAlertCount = 0;
-                    //    }
-                    //}
-                    //else
-                    //{
-                        if (!_isAttacking)
-                        {
-                            isStressAreaActive = true;
-                            _navMeshAgent.speed = _baseSpeed;
-                            _enemySounds.PlaySound(EnemySounds.SoundTypes.IdleScreams);
-                            _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
-                            if (_debugLogsEnemyPatrol) Debug.Log("Patroling");
-                            if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
-                            {
-                                if (_patrolPoints.Length > 1)
-                                {
-                                    _enemyAnimator.Walking(0);
-                                    yield return _betweenPatrolPointsDelay;
-                                    currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
-                                    if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
-                                    else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
-                                    if (_debugLogsEnemyPatrol) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
-                                }
-                                else
-                                {
-                                    if (transform.rotation != _initialRotation && _rotateCoroutine == null) _rotateCoroutine = StartCoroutine(RotateCoroutine());
-                                }
-                            }
-                        }
-                    //}
-                    _enemyAnimator.Chasing(_isChasing);
-                    _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude/* / _navMeshAgent.speed*/);
+                    _navMeshAgent.SetDestination(transform.position);
+                    UpdateMovement(true);
+                    isStressAreaActive = false;
+                    _isAttacking = true;
+                    _isChasing = false;
+                    PlayerMovement.Instance.ToggleMovement(nameof(EnemyInsect) + gameObject.name, false);
+                    //_currentAttackAnimIndex = _currentAttackAnimIndex == 0 ? 1 : 0;
+                    _enemySounds.PlaySound(EnemySounds.SoundTypes.Attack);
+                    _enemyAnimator.Attack(HandleAttackAnimationEnd, OnAnimationStepChange/*, _currentAttackAnimIndex*/);
+
+                    if (PlayerActions.Instance.CheckAbility(typeof(Lantern), out PlayerAbility ability))
+                    {
+                        Lantern lantern = (Lantern)ability;
+                        lantern.Fill(-_fuelRemoveFromLantern);
+                    }
+
+                    PlayerMovement.Instance.SetTargetAngle(Quaternion.LookRotation(transform.position - _hitsCache[0].transform.position).eulerAngles.y);
+                    transform.SetPositionAndRotation(transform.position, Quaternion.LookRotation(_hitsCache[0].transform.position - transform.position));
+
+                    if (_debugLogsEnemyPatrol) Debug.Log("Attack Target");
+                    StopBehaviour();
                 }
+                else if (_isChasing && !inAttackCooldown)
+                {
+                    isStressAreaActive = false;
+                    if (_debugLogsEnemyPatrol) Debug.Log("Chasing");
+                    if (_stressIncreaseWhileChasing > 0) _chaseStressCoroutine ??= StartCoroutine(ChaseStressCoroutine());
+                    _navMeshAgent.speed = _chaseSpeed;
+                    _navMeshAgent.SetDestination(PlayerMovement.Instance.transform.position);
+                    //if (Vector3.Distance(PlayerMovement.Instance.transform.position, transform.position) <= _navMeshAgent.stoppingDistance)
+                    //{
+                    //    _currentChasePatience -= _behaviourTickFrequency;
+                    //    if (_currentChasePatience <= 0) _isChasing = false;
+                    //}
+                    //else _currentChasePatience = _durationInCurrentSoundTarget;
+                }
+                else
+                {
+                    isStressAreaActive = true;
+                    _navMeshAgent.speed = _baseSpeed;
+                    _enemySounds.PlaySound(EnemySounds.SoundTypes.IdleScreams);
+                    _navMeshAgent.SetDestination(_patrolPoints[currentPatrolPointIndex] + _initialPosition);
+                    if (_debugLogsEnemyPatrol) Debug.Log("Patroling");
+                    if (Vector3.Distance(transform.position, _patrolPoints[currentPatrolPointIndex] + _initialPosition) <= _navMeshAgent.stoppingDistance)
+                    {
+                        if (_patrolPoints.Length > 1)
+                        {
+                            _enemyAnimator.Walking(0);
+                            yield return _betweenPatrolPointsDelay;
+                            currentPatrolPointIndex = (byte)(currentPatrolPointIndex + indexFactor);
+                            if (currentPatrolPointIndex == _patrolPoints.Length - 1) indexFactor = -1;
+                            else if (currentPatrolPointIndex == 0 && indexFactor == -1) indexFactor = 1;
+                            if (_debugLogsEnemyPatrol) Debug.Log($"Change Patrol Point to {currentPatrolPointIndex}");
+                        }
+                        else
+                        {
+                            if (transform.rotation != _initialRotation && _rotateCoroutine == null) _rotateCoroutine = StartCoroutine(RotateCoroutine());
+                        }
+                    }
+                }
+                _enemyAnimator.Chasing(_isChasing);
+                _enemyAnimator.Walking(_navMeshAgent.velocity.magnitude/* / _navMeshAgent.speed*/);
                 yield return _behaviourTickDelay;
+                _behaviourCoroutine = null;
             }
-            _behaviourCoroutine = null;
         }
 
         private IEnumerator RotateCoroutine()
@@ -273,7 +267,6 @@ namespace Ivayami.Enemy
         {
             yield return new WaitForSeconds(_afterAttackCooldownDuration);
             _attackCooldownCoroutine = null;
-            StartBehaviour();
         }
 
         private void UpdateMovement(bool isStoped)
@@ -296,7 +289,7 @@ namespace Ivayami.Enemy
             _currentTargetColliderSizeFactor = _hitsCache[0].bounds.extents.z;
 
             if (_debugLogsEnemyPatrol)
-                Debug.Log($"blocking audio {blockingVision}, target Inside Radius {targetInsideRange}");
+                Debug.Log($"blocking vision {blockingVision}, target Inside Radius {targetInsideRange}");
             _directContactWithTarget = !blockingVision && targetInsideRange;
             _navMeshAgent.stoppingDistance = _directContactWithTarget ? _collision.radius + _currentTargetColliderSizeFactor + .1f : _baseStoppingDistance;
             return _directContactWithTarget;
@@ -304,14 +297,14 @@ namespace Ivayami.Enemy
 
         private void HandleAttackAnimationEnd()
         {
-            //_navMeshAgent.isStopped = false;
             for (int i = 0; i < _attackAreaInfos.Length; i++)
             {
                 _attackAreaInfos[i].Hitbox.UpdateHitbox(false, Vector3.zero, Vector3.zero, 0, 0, PlayerAnimation.DamageAnimation.None);
             }
             _isAttacking = false;
-            PlayerMovement.Instance.ToggleMovement(nameof(EnemyDog) + gameObject.name, true);
+            PlayerMovement.Instance.ToggleMovement(nameof(EnemyInsect) + gameObject.name, true);
             _attackCooldownCoroutine = StartCoroutine(AttackCooldownCoroutine());
+            StartBehaviour();
         }
 
         private void OnAnimationStepChange(float normalizedTime)
@@ -331,7 +324,7 @@ namespace Ivayami.Enemy
 
         private void HandleIluminatedByLantern(bool isIluminated)
         {
-
+            _isChasing = isIluminated;
         }
 
         #region Debug
@@ -375,6 +368,21 @@ namespace Ivayami.Enemy
             {
                 if (_attackAreaInfos[i].MinInterval > _attackAreaInfos[i].MaxInterval) _attackAreaInfos[i].MinInterval = _attackAreaInfos[i].MaxInterval;
             }
+        }
+
+        public void ChangeSpeed(float speed)
+        {
+            
+        }
+
+        public void UpdateBehaviour(bool canWalkPath, bool canChaseTarget, bool isStopped, bool forceTargetDetect)
+        {
+            
+        }
+
+        public void ChangeTargetPoint(Vector3 targetPoint)
+        {
+            
         }
 #endif
         #endregion
