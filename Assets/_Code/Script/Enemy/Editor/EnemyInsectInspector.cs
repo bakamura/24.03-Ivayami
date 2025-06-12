@@ -36,7 +36,7 @@ public class EnemyInsectInspector : Editor
         EditorGUILayout.PropertyField(minDetectionRange, new GUIContent("Min Detection Range"));
         EditorGUILayout.PropertyField(targetLayer, new GUIContent("Target Detection Layer"));
         EditorGUILayout.PropertyField(blockVisionLayer, new GUIContent("Block Vision Layer"));
-        EditorGUILayout.PropertyField(afterAttackCooldownDuration, new GUIContent("After Attack Cooldown Duration"));
+        EditorGUILayout.PropertyField(afterAttackCooldownDuration, new GUIContent("After Attack Cooldown Duration", "the time that will take to the enemy be able to attack again"));
 
         RenderHeader("Enemy Insect Behaviour Paramaters", true);
         if (patrolPoints.arraySize > 1) EditorGUILayout.PropertyField(delayBetweenPatrolPoints, new GUIContent("Delay Between Patrol Points"));
