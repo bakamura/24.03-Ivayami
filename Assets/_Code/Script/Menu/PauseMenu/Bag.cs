@@ -6,8 +6,10 @@ using UnityEngine.UI;
 using TMPro;
 using Ivayami.Player;
 
-namespace Ivayami.UI {
-    public class Bag : MonoSingleton<Bag> {
+namespace Ivayami.UI
+{
+    public class Bag : MonoSingleton<Bag>
+    {
 
         [Header("Parameters")]
 
@@ -22,25 +24,28 @@ namespace Ivayami.UI {
 
         private Dictionary<int, BagItem> _itemBtnsByCurrentItem = new Dictionary<int, BagItem>();
 
-        private void Start() {
+        private void Start()
+        {
             _quickOpenInput.action.performed += QuickOpen;
             PlayerInventory.Instance.onItemStackUpdate += HandleItemRemoved;
-        }       
+        }
 
-        public void InventoryUpdate() {
+        public void InventoryUpdate()
+        {
             PlayerInventory.InventoryItemStack[] items = PlayerInventory.Instance.CheckInventory();
             Queue<PlayerInventory.InventoryItemStack> normalQ = new Queue<PlayerInventory.InventoryItemStack>();
             Queue<PlayerInventory.InventoryItemStack> specialQ = new Queue<PlayerInventory.InventoryItemStack>();
-            foreach (PlayerInventory.InventoryItemStack item in items) {
+            foreach (PlayerInventory.InventoryItemStack item in items)
+            {
                 if (item.Item.Type == ItemType.Special) specialQ.Enqueue(item);
-                else if(item.Item.Type != ItemType.Document) normalQ.Enqueue(item);
+                else if (item.Item.Type != ItemType.Document) normalQ.Enqueue(item);
             }
             for (int i = 0; i < _itemNormalBtns.Length; i++) _itemNormalBtns[i].SetItemDisplay(normalQ.Count > 0 ? normalQ.Dequeue() : new PlayerInventory.InventoryItemStack());
             for (int i = 0; i < _itemSpecialBtns.Length; i++) _itemSpecialBtns[i].SetItemDisplay(specialQ.Count > 0 ? specialQ.Dequeue() : new PlayerInventory.InventoryItemStack());
-
         }
 
-        public void DisplayItemInfo(InventoryItem item) {
+        public void DisplayItemInfo(InventoryItem item)
+        {
             _itemDescriptor.text = item ? $"{item.GetDisplayName()}\n{item.GetDisplayDescription()}" : "";
         }
 
@@ -51,7 +56,7 @@ namespace Ivayami.UI {
             if (!_itemBtnsByCurrentItem.ContainsKey(item.GetInstanceID()))
             {
                 BagItem[] allItems = _itemNormalBtns.Union(_itemSpecialBtns).ToArray();
-                for(int i = 0; i < allItems.Length; i++)
+                for (int i = 0; i < allItems.Length; i++)
                 {
                     if (allItems[i].Item == item && allItems[i].Item.DisplayTextFormatedExternaly)
                     {
@@ -60,11 +65,13 @@ namespace Ivayami.UI {
                     }
                 }
             }
-            _itemBtnsByCurrentItem[item.GetInstanceID()].UpdateDisplayText(text);
+            if (_itemBtnsByCurrentItem.ContainsKey(item.GetInstanceID())) _itemBtnsByCurrentItem[item.GetInstanceID()].UpdateDisplayText(text);
         }
 
-        private void QuickOpen(InputAction.CallbackContext context) {
-            if (!Pause.Instance.Paused) {
+        private void QuickOpen(InputAction.CallbackContext context)
+        {
+            if (!Pause.Instance.Paused)
+            {
                 Pause.Instance.PauseGame(true);
                 _quickOpenBtn.onClick.Invoke();
             }
