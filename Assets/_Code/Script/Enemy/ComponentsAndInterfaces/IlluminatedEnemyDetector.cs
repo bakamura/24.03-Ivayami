@@ -23,7 +23,8 @@ namespace Ivayami.Enemy
         private enum LightBehaviours
         {
             Paralise,
-            FollowLight
+            FollowLight,
+            Aggressive
         }
         private IIluminatedEnemy _target;
         private Coroutine _slowMovementCoroutine;
@@ -49,21 +50,21 @@ namespace Ivayami.Enemy
                 Debug.LogError("No Illuminated enemy found in hierarchy");
                 return;
             }
-            _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
+            if (_lightBehaviour != LightBehaviours.Aggressive) _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
         }
 
         private void OnEnable()
         {
             if (!LightFocuses.Instance) return;
-            if (_lightBehaviour == LightBehaviours.Paralise) onIlluminated.AddListener(UpdateDirectLight);
-            _checkForLightCoroutine = StartCoroutine(CheckForLightCoroutine());
+            if (_lightBehaviour != LightBehaviours.FollowLight) onIlluminatedByLantern.AddListener(UpdateDirectLight);
+            if (_lightBehaviour != LightBehaviours.Aggressive) _checkForLightCoroutine = StartCoroutine(CheckForLightCoroutine());
         }
 
         private void OnDisable()
         {
             if (!LightFocuses.Instance) return;
-            if (_lightBehaviour == LightBehaviours.Paralise) ParaliseEnd();
-            else _target.UpdateBehaviour(true, true, false, false);
+            if (_lightBehaviour != LightBehaviours.FollowLight) ParaliseEnd();
+            else if (_lightBehaviour == LightBehaviours.FollowLight) _target.UpdateBehaviour(true, true, false, false);
             if (_checkForLightCoroutine != null)
             {
                 StopCoroutine(_checkForLightCoroutine);
@@ -120,6 +121,8 @@ namespace Ivayami.Enemy
                         break;
                     case LightBehaviours.FollowLight:
                         HandleChangePointLight();
+                        break;
+                    default:
                         break;
                 }
                 yield return delay;
@@ -224,7 +227,6 @@ namespace Ivayami.Enemy
 
         private void OnDrawGizmosSelected()
         {
-            //if (_lightBehaviour == LightBehaviours.Paralise) return;
             Gizmos.color = _gizmoColor;
             Gizmos.DrawWireSphere(transform.position, _detectLightRange);
             if (_currentLightData.IsValid())

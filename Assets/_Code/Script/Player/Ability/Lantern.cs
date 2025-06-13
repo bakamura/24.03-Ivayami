@@ -9,6 +9,8 @@ using Default;
 
 namespace Ivayami.Player.Ability
 {
+
+
     public class Lantern : PlayerAbility
     {
         [SerializeField] private InventoryItem _item;
@@ -178,19 +180,27 @@ namespace Ivayami.Player.Ability
         public void Fill(float fillAmount)
         {
             _durationCurrent = Mathf.Clamp(_durationCurrent + fillAmount, 0f, _durationMaxCap);
-            if (_noFuel)
+            if(_durationCurrent > 0)
             {
-                _noFuel = false;
-                _wideOrigin.enabled = !_focused;
-                _focusedOrigin.enabled = _focused;
-                ActivateBlocker.Toggle(nameof(Lantern), true);
+                if (_noFuel)
+                {
+                    _noFuel = false;
+                    _wideOrigin.enabled = !_focused;
+                    _focusedOrigin.enabled = _focused;
+                    ActivateBlocker.Toggle(nameof(Lantern), true);
+                }
+                _wideOrigin.intensity = _wideBaseIntensity;
+                _focusedOrigin.intensity = _focusedBaseIntensity;
+                if (_flickeringCoroutine != null)
+                {
+                    StopCoroutine(_flickeringCoroutine);
+                    _flickeringCoroutine = null;
+                }
             }
-            _wideOrigin.intensity = _wideBaseIntensity;
-            _focusedOrigin.intensity = _focusedBaseIntensity;
-            if (_flickeringCoroutine != null)
+            else
             {
-                StopCoroutine(_flickeringCoroutine);
-                _flickeringCoroutine = null;
+                _noFuel = true;
+                DisableLantern();
             }
             Bag.Instance.UpdateItemDisplayText(_item, $"{(100 * _durationCurrent / _durationMaxCap).ToString("0.")}");
         }
@@ -216,13 +226,18 @@ namespace Ivayami.Player.Ability
             }
             else if (!_noFuel)
             {
-                ClearAllLightData();
                 _noFuel = true;
-                _wideOrigin.enabled = false;
-                _focusedOrigin.enabled = false;
-                ActivateBlocker.Toggle(nameof(Lantern), false);
+                DisableLantern();
             }
             Bag.Instance.UpdateItemDisplayText(_item, $"{(100 * _durationCurrent / _durationMaxCap).ToString("0.")}");
+        }
+
+        private void DisableLantern()
+        {
+            ClearAllLightData();
+            _wideOrigin.enabled = false;
+            _focusedOrigin.enabled = false;
+            ActivateBlocker.Toggle(nameof(Lantern), false);
         }
 
         private IEnumerator FlickeringInterpolationCoroutine()
