@@ -36,7 +36,7 @@ namespace Ivayami.Save {
         [SerializeField, Min(0)] private float _delayUnlockMovement;
         private WaitForSeconds _delayUnlockMovementWait;
 
-        private const string BLOCK_KEY = "SavePointBlocker";
+        public const string BLOCKER_KEY = "SavePointBlocker";
 
         private void Awake() {
             InteratctableFeedbacks = GetComponent<InteractableFeedbacks>();
@@ -59,8 +59,8 @@ namespace Ivayami.Save {
             SaveSystem.Instance.Progress.pointId = _pointId;
             onSaveGame?.Invoke();
             
-            PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, false);
-            Pause.Instance.ToggleCanPause(BLOCK_KEY, false);
+            PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, false);
+            Pause.Instance.ToggleCanPause(BLOCKER_KEY, false);
             _interactableIcon.SetActive(false);
             SceneTransition.Instance.OnOpenEnd.AddListener(OnSaveFadeOutEnd);
             SceneTransition.Instance.Open();
@@ -78,7 +78,7 @@ namespace Ivayami.Save {
             }
             onSaveGameWithAnimation?.Invoke();
             Save();
-            return PlayerActions.InteractAnimation.Default;
+            return PlayerActions.InteractAnimation.None;
         }
 
         public void ForceSave() {
@@ -119,7 +119,7 @@ namespace Ivayami.Save {
             _movementInput.action.performed -= OnSaveFadeInEnd;
 
             PlayerAnimation.Instance.GetUpSit();
-            Pause.Instance.ToggleCanPause(BLOCK_KEY, true);
+            Pause.Instance.ToggleCanPause(BLOCKER_KEY, true);
             StartCoroutine(OnSaveFadeInEndRoutine());
         }
         
@@ -127,7 +127,7 @@ namespace Ivayami.Save {
             yield return _delayUnlockMovementWait;
 
             _interactableIcon.SetActive(true);
-            PlayerMovement.Instance.ToggleMovement(BLOCK_KEY, true);
+            PlayerMovement.Instance.ToggleMovement(BLOCKER_KEY, true);
             onSaveSequenceEnd?.Invoke();
         }
 

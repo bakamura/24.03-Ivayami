@@ -10,6 +10,7 @@ namespace Ivayami.Player
         [SerializeField] private Transform _cameraAimPoint;
         [SerializeField] private Transform _cameraAimRotator;
         public Camera MainCamera { get; private set; }
+        public Camera UICamera { get; private set; }
         public CinemachineBrain CinemachineBrain { get; private set; }
         public CinemachineFreeLook FreeLookCam { get; private set; }
         public CinemachineInputProvider InputProvider { get; private set; }
@@ -33,6 +34,7 @@ namespace Ivayami.Player
             FreeLookCam = GetComponent<CinemachineFreeLook>();
             InputProvider = GetComponent<CinemachineInputProvider>();
             MainCamera = Camera.main;
+            UICamera = MainCamera.GetComponentsInChildren<Camera>()[1];
             CinemachineBrain = MainCamera.GetComponent<CinemachineBrain>();
             _defaultOrbits = CloneOrbits(FreeLookCam.m_Orbits);
         }

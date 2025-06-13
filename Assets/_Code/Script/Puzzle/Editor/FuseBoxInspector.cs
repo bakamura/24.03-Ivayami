@@ -12,7 +12,7 @@ namespace Ivayami.Puzzle
     public class FuseBoxInspector : Editor
     {
         SerializedProperty matrixDimensions, distanceBetweenLeds, fusesParent, fuseUIParent,
-            fuseLayer, onInteract, onInteractionCancelled, onActivate, selectedColor, activatedColor, cancelInteractionInput, fusePrefab,
+            fuseLayer, onInteract, onInteractionCancelled, onActivate, selectedColor, activatedColor, cancelInteractionInput, resetInput, fusePrefab,
             ledsParent, fusesOffset, ledPrefab, elementsOffset, deactivatedColor;
         [Serializable]
         public class SaveSceneChanges
@@ -28,6 +28,7 @@ namespace Ivayami.Puzzle
             GUILayout.Label("INPUTS", EditorStyles.boldLabel);
             EditorGUILayout.Space(5);
             EditorGUILayout.PropertyField(cancelInteractionInput, new GUIContent("Exit Puzzle Input Reference"));
+            EditorGUILayout.PropertyField(resetInput, new GUIContent("Reset Puzzle Input"));
             EditorGUILayout.Space(10);
 
             GUILayout.Label("FUSE BOX SETTINGS", EditorStyles.boldLabel);
@@ -86,6 +87,7 @@ namespace Ivayami.Puzzle
             selectedColor = serializedObject.FindProperty("_selectedColor");
             activatedColor = serializedObject.FindProperty("_activatedColor");
             cancelInteractionInput = serializedObject.FindProperty("_cancelInteractionInput");
+            resetInput = serializedObject.FindProperty("_resetInput");
             fusePrefab = serializedObject.FindProperty("_fusePrefab");
             ledsParent = serializedObject.FindProperty("_ledsParent");
             fusesOffset = serializedObject.FindProperty("_fusesOffset");
@@ -144,7 +146,7 @@ namespace Ivayami.Puzzle
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, changes.UIPanelRect.height);
 
             EditorUtility.SetDirty(instance);
-            Debug.Log($"Changes Applied for {nameof(InteractableObjectsGroup)}");
+            Debug.Log($"Changes Applied for {nameof(FuseBox)}");
         }
     }
 }

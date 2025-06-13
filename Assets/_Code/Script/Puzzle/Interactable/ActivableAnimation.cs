@@ -33,6 +33,8 @@ namespace Ivayami.Puzzle
         private InteractableSounds _interactableSounds;
         private bool _activatedOnce;
 
+        [SerializeField] private PlayerActions.InteractAnimation _playerAnimation = PlayerActions.InteractAnimation.Default;
+
         [System.Serializable]
         private class AnimationEvent
         {
@@ -85,7 +87,7 @@ namespace Ivayami.Puzzle
                 }
                 CheckCallbacks(_interactBoolHash);
             }
-            return PlayerActions.InteractAnimation.Default;
+            return _playerAnimation;
         }
 
         public void ForceInteract() => Interact();

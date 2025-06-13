@@ -15,13 +15,16 @@ namespace Ivayami.Enemy
         [SerializeField] private EnemyAnimator _enemyAnimator;
         [SerializeField, Min(0)] private int _paraliseAnimationRandomAmount;
         [SerializeField, Min(0f)] private float _detectLightRange;
+#if UNITY_EDITOR
         [SerializeField] private Color _gizmoColor;
+#endif
         [SerializeField] private AnimationCurve _interpolateCurve;
 
         private enum LightBehaviours
         {
             Paralise,
-            FollowLight
+            FollowLight,
+            Aggressive
         }
         private IIluminatedEnemy _target;
         private Coroutine _slowMovementCoroutine;
@@ -44,24 +47,24 @@ namespace Ivayami.Enemy
             _target = GetComponentInParent<IIluminatedEnemy>();
             if (_target == null)
             {
-                Debug.LogWarning("No Illuminated enemy found in hierarchy");
+                Debug.LogError("No Illuminated enemy found in hierarchy");
                 return;
             }
-            _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
+            if (_lightBehaviour != LightBehaviours.Aggressive) _hasParaliseAnim = _enemyAnimator.HasParaliseAnimation();
         }
 
         private void OnEnable()
         {
             if (!LightFocuses.Instance) return;
-            if (_lightBehaviour == LightBehaviours.Paralise) onIlluminated.AddListener(UpdateDirectLight);
-            _checkForLightCoroutine = StartCoroutine(CheckForLightCoroutine());
+            if (_lightBehaviour != LightBehaviours.FollowLight) onIlluminatedByLantern.AddListener(UpdateDirectLight);
+            if (_lightBehaviour != LightBehaviours.Aggressive) _checkForLightCoroutine = StartCoroutine(CheckForLightCoroutine());
         }
 
         private void OnDisable()
         {
             if (!LightFocuses.Instance) return;
-            if (_lightBehaviour == LightBehaviours.Paralise) ParaliseEnd();
-            else _target.UpdateBehaviour(true, true, false, false);
+            if (_lightBehaviour != LightBehaviours.FollowLight) ParaliseEnd();
+            else if (_lightBehaviour == LightBehaviours.FollowLight) _target.UpdateBehaviour(true, true, false, false);
             if (_checkForLightCoroutine != null)
             {
                 StopCoroutine(_checkForLightCoroutine);
@@ -119,6 +122,8 @@ namespace Ivayami.Enemy
                     case LightBehaviours.FollowLight:
                         HandleChangePointLight();
                         break;
+                    default:
+                        break;
                 }
                 yield return delay;
             }
@@ -173,13 +178,12 @@ namespace Ivayami.Enemy
 
         private void HandleChangePointLight()
         {
-            LightFocuses.LightData data = LightFocuses.Instance.GetClosestPointToAllLights(transform.position);
+            LightFocuses.LightData data = LightFocuses.Instance.GetClosestPointToAllLights(transform.position, _detectLightRange);
 #if UNITY_EDITOR
             _currentLightData = data;
 #endif
             if (data.IsValid() &&
-                !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers)
-                && Vector3.Distance(transform.position, data.Position) <= _detectLightRange)
+                !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
             {
                 _target.UpdateBehaviour(false, true, false, false);
                 _target.ChangeTargetPoint(data.Position);
@@ -201,13 +205,12 @@ namespace Ivayami.Enemy
             }
             else
             {
-                LightFocuses.LightData data = LightFocuses.Instance.GetClosestPointToAreaLight(transform.position);
+                LightFocuses.LightData data = LightFocuses.Instance.GetClosestPointToAreaLight(transform.position, _detectLightRange);
 #if UNITY_EDITOR
                 _currentLightData = data;
 #endif
                 if (data.IsValid() &&
-                    !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers)
-                    && Vector3.Distance(transform.position, data.Position) <= _detectLightRange + data.Radius)
+                    !Physics.Raycast(data.Position, (transform.position - data.Position).normalized, Vector3.Distance(data.Position, transform.position), _blockLayers))
                 {
                     isIuminated = true;
                 }
@@ -224,7 +227,6 @@ namespace Ivayami.Enemy
 
         private void OnDrawGizmosSelected()
         {
-            //if (_lightBehaviour == LightBehaviours.Paralise) return;
             Gizmos.color = _gizmoColor;
             Gizmos.DrawWireSphere(transform.position, _detectLightRange);
             if (_currentLightData.IsValid())

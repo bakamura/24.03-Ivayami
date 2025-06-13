@@ -87,7 +87,7 @@ namespace Ivayami.Puzzle
                 else
                 {
                     _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionFailed);
-                    if (_deliveryUI.SkipDeliverUI)
+                    if (_deliveryUI && _deliveryUI.SkipDeliverUI)
                     {
                         _interatctableFeedbacks.UpdateFeedbacks(true, true);
                         UpdateUIs(false);
@@ -101,8 +101,8 @@ namespace Ivayami.Puzzle
         private IEnumerator UnlockFeedbackCoroutine()
         {
             _interactableSounds.PlaySound(InteractableSounds.SoundTypes.ActionSuccess);
-            yield return _unlockWait;
             UpdateUIs(false);
+            yield return _unlockWait;
             UpdateInputs(false);
             IsActive = !IsActive;
             onActivate?.Invoke();

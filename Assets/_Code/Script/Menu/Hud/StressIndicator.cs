@@ -1,5 +1,4 @@
 using UnityEngine;
-using Ivayami.Player;
 
 namespace Ivayami.UI {
     public class StressIndicator : MonoBehaviour {
@@ -16,7 +15,7 @@ namespace Ivayami.UI {
         private bool _gamePaused = false;
 
         private void Start() {
-            PlayerStress.Instance.onStressChange.AddListener(UpdateDisplayTarget);
+            StressIndicatorSmoother.Instance.OnStressSmoothed.AddListener(UpdateDisplayTarget);
         }
 
         private void Update() {
