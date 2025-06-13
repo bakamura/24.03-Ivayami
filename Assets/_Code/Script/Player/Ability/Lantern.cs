@@ -9,9 +9,11 @@ using Default;
 
 namespace Ivayami.Player.Ability
 {
+
+
     public class Lantern : PlayerAbility
     {
-
+        [SerializeField] private InventoryItem _item;
         [SerializeField] private Light _wideOrigin;
         [SerializeField] private Light _focusedOrigin;
         [SerializeField] private Transform _visuals;
@@ -33,9 +35,17 @@ namespace Ivayami.Player.Ability
 
         [Header("Header")]
 
-        [SerializeField, Min(0f)] private float _durationMaxBase;
+        //[SerializeField, Min(0f)] private float _durationMaxBase;
+        [SerializeField, Min(0f)] private float _durationMaxCap;
         [SerializeField, Min(0f)] private float _durationIncreaseFromItem;
-        private float _durationMax;
+        [SerializeField, Range(0f, 1f), Tooltip("If the value is smaller than this percentage it will start flickering")] private float _flickeringStartTreshold;
+        [SerializeField, Range(0f, 1f)] private float _flickeringChance;
+        [SerializeField, Min(.02f)] private float _flickeringInterpolationDuration;
+        [SerializeField, Min(0f)] private float[] _randomFlickeringIntensities;
+        [SerializeField, Range(0f, 1f)] private float _reduceIntensityStartTreshold;
+        [SerializeField, Min(0f)] private float _wideLightFinalIntensity;
+        [SerializeField, Min(0f)] private float _focusedLightFinalIntensity;
+        //private float _durationMax;
         private float _durationCurrent;
 
         [Header("Cache")]
@@ -45,8 +55,12 @@ namespace Ivayami.Player.Ability
         private Collider[] _lightHits;
 
         private Transform _lightsOriginCurrent;
+        private Coroutine _flickeringCoroutine;
         private float _coneAngleHalf;
         private float _lightDistance;
+        private float _wideBaseIntensity;
+        private float _focusedBaseIntensity;
+        private bool _noFuel;
         public HashKeyBlocker ActivateBlocker { get; private set; } = new HashKeyBlocker();
 
 
@@ -59,7 +73,9 @@ namespace Ivayami.Player.Ability
             _lightsOriginCurrent = _wideOrigin.transform;
             PlayerMovement.Instance.AddAdditionalVisuals(HandleUpdateVisuals);
             _visuals.gameObject.SetActive(false);
-            _durationMax = _durationMaxBase * (_durationIncreaseFromItem * PlayerInventory.Instance.CheckInventoryFor("ID").Amount); // Change the ID for the proper ID
+            //_durationMax = Mathf.Clamp(_durationMaxBase * (_durationIncreaseFromItem * PlayerInventory.Instance.CheckInventoryFor("ID").Amount), 0f, _durationMaxCap); // Change the ID for the proper ID
+            _wideBaseIntensity = _wideOrigin.intensity;
+            _focusedBaseIntensity = _focusedOrigin.intensity;
 
             Focus(false);
         }
@@ -79,9 +95,10 @@ namespace Ivayami.Player.Ability
             if (_focused)
             {
                 _visuals.localRotation = Quaternion.Euler(PlayerCamera.Instance.MainCamera.transform.eulerAngles.x, 0f, 0f);
-                _durationCurrent -= Time.deltaTime;
+                _durationCurrent = Mathf.Clamp(_durationCurrent - _focusedDurationComsumptionMultiplier * Time.deltaTime, 0f, _durationMaxCap);
             }
-            _durationCurrent -= _focusedDurationComsumptionMultiplier * Time.deltaTime;
+            else _durationCurrent = Mathf.Clamp(_durationCurrent - Time.deltaTime, 0f, _durationMaxCap);
+            UpdateLights();
         }
 
         private void OnDestroy()
@@ -120,7 +137,7 @@ namespace Ivayami.Player.Ability
 
         public override void AbilityStart()
         {
-            if (!ActivateBlocker.IsAllowed) return;
+            if (!ActivateBlocker.IsAllowed || _durationCurrent <= 0) return;
             _enabled = !_enabled;
             Toggle(_enabled);
         }
@@ -131,21 +148,20 @@ namespace Ivayami.Player.Ability
         {
             if (_focusedOrigin.transform.localPosition.z == 0) Setup(); //
 
+            _enabled = enabled;
             _visuals.gameObject.SetActive(_enabled);
             PlayerAnimation.Instance.Hold(_enabled);
             if (_enabled) StartCoroutine(CheckInterval());
             else
             {
-                Focus(false);
+                ClearAllLightData();
                 StopAllCoroutines();
-                foreach (Lightable lightable in _illuminatedObjects) lightable.Illuminate(ILLUMINATION_KEY, false);
-                _illuminatedObjects.Clear();
-                LightFocuses.Instance.LightPointFocusRemove(ILLUMINATION_KEY);
             }
         }
 
         private void Focus(bool isFocusing)
         {
+            if (_noFuel) return;
             if (isFocusing && (!_enabled || !ActivateBlocker.IsAllowed)) return;
             _focused = isFocusing;
             _wideOrigin.enabled = !_focused;
@@ -163,12 +179,104 @@ namespace Ivayami.Player.Ability
 
         public void Fill(float fillAmount)
         {
-            _durationCurrent += fillAmount;
-            if (_durationCurrent > _durationMax) _durationMax = _durationCurrent;
+            _durationCurrent = Mathf.Clamp(_durationCurrent + fillAmount, 0f, _durationMaxCap);
+            if(_durationCurrent > 0)
+            {
+                if (_noFuel)
+                {
+                    _noFuel = false;
+                    _wideOrigin.enabled = !_focused;
+                    _focusedOrigin.enabled = _focused;
+                    ActivateBlocker.Toggle(nameof(Lantern), true);
+                }
+                _wideOrigin.intensity = _wideBaseIntensity;
+                _focusedOrigin.intensity = _focusedBaseIntensity;
+                if (_flickeringCoroutine != null)
+                {
+                    StopCoroutine(_flickeringCoroutine);
+                    _flickeringCoroutine = null;
+                }
+            }
+            else
+            {
+                _noFuel = true;
+                DisableLantern();
+            }
+            Bag.Instance.UpdateItemDisplayText(_item, $"{(100 * _durationCurrent / _durationMaxCap).ToString("0.")}");
+        }
+
+        private void UpdateLights()
+        {
+            if (_durationCurrent > 0 && !_noFuel)
+            {
+                if (_durationCurrent <= _reduceIntensityStartTreshold * _durationMaxCap && _durationCurrent > _flickeringStartTreshold * _durationMaxCap)
+                {
+                    float count = 1f - (_durationCurrent / (_durationMaxCap * _reduceIntensityStartTreshold));
+                    _wideOrigin.intensity = Mathf.Lerp(_wideBaseIntensity, _wideLightFinalIntensity, count);
+                    _focusedOrigin.intensity = Mathf.Lerp(_focusedBaseIntensity, _focusedLightFinalIntensity, count);
+                }
+
+                if (_durationCurrent <= _flickeringStartTreshold * _durationMaxCap)
+                {
+                    if (Random.Range(0f, 1f) <= _flickeringChance && _flickeringCoroutine == null)
+                    {
+                        _flickeringCoroutine = StartCoroutine(FlickeringInterpolationCoroutine());
+                    }
+                }
+            }
+            else if (!_noFuel)
+            {
+                _noFuel = true;
+                DisableLantern();
+            }
+            Bag.Instance.UpdateItemDisplayText(_item, $"{(100 * _durationCurrent / _durationMaxCap).ToString("0.")}");
+        }
+
+        private void DisableLantern()
+        {
+            ClearAllLightData();
+            _wideOrigin.enabled = false;
+            _focusedOrigin.enabled = false;
+            ActivateBlocker.Toggle(nameof(Lantern), false);
+        }
+
+        private IEnumerator FlickeringInterpolationCoroutine()
+        {
+            float count = 0;
+            float intensity = _randomFlickeringIntensities[Random.Range(0, _randomFlickeringIntensities.Length)];
+            float wideBaseIntensity = _wideOrigin.intensity;
+            float focusedBaseIntensity = _focusedOrigin.intensity;
+            while (count < 1)
+            {
+                count += Time.deltaTime / _flickeringInterpolationDuration;
+                _wideOrigin.intensity = Mathf.Lerp(wideBaseIntensity, intensity, count);
+                _focusedOrigin.intensity = Mathf.Lerp(focusedBaseIntensity, intensity, count);
+                if (count >= 1)
+                {
+                    _wideOrigin.intensity = intensity;
+                    _focusedOrigin.intensity = intensity;
+                }
+                yield return null;
+            }
+            _flickeringCoroutine = null;
+        }
+
+        private void ClearAllLightData()
+        {
+            Focus(false);
+            foreach (Lightable lightable in _illuminatedObjects) lightable.Illuminate(ILLUMINATION_KEY, false);
+            _illuminatedObjects.Clear();
+            LightFocuses.Instance.LightPointFocusRemove(ILLUMINATION_KEY);
+            if (_flickeringCoroutine != null)
+            {
+                StopCoroutine(_flickeringCoroutine);
+                _flickeringCoroutine = null;
+            }
         }
 
         private void Illuminate()
         {
+            if (_noFuel) return;
             if (Physics.Raycast(_lightsOriginCurrent.position, _lightsOriginCurrent.forward, out RaycastHit hitLine, _lightDistance, _lightableLayer))
                 LightFocuses.Instance.LightPointFocusUpdate(ILLUMINATION_KEY, new LightFocuses.LightData(hitLine.point));
             else
@@ -277,6 +385,11 @@ namespace Ivayami.Player.Ability
                     }
                 }
             }
+        }
+
+        private void OnValidate()
+        {
+            if (_reduceIntensityStartTreshold < _flickeringStartTreshold) _reduceIntensityStartTreshold = _flickeringStartTreshold;
         }
 #endif
 
