@@ -13,8 +13,10 @@ using Ivayami.Dialogue;
 using Ivayami.Save;
 using UnityEngine.EventSystems;
 
-namespace Ivayami.Player {
-    public class PlayerActions : MonoSingleton<PlayerActions> {
+namespace Ivayami.Player
+{
+    public class PlayerActions : MonoSingleton<PlayerActions>
+    {
 
         [Header("Inputs")]
 
@@ -50,8 +52,10 @@ namespace Ivayami.Player {
         public bool Interacting { get; private set; } = false;
         public IInteractable InteractableTarget { get; private set; } // Should be private now?
 
-        public enum InteractAnimation {
+        public enum InteractAnimation
+        {
             Default,
+            None,
             EnterLocker,
             EnterTrash,
             Seat,
@@ -88,7 +92,8 @@ namespace Ivayami.Player {
         private const string INTERACT_LONG_BLOCK_KEY = "InteractLong";
         private const string HEAVY_HOLD_KEY = "HeavyHold";
 
-        protected override void Awake() {
+        protected override void Awake()
+        {
             base.Awake();
 
             _interactInput.action.started += Interact;
@@ -106,20 +111,25 @@ namespace Ivayami.Player {
             _abilityCurrent = (sbyte)(_abilities.Count > 0 ? 0 : -1); //
         }
 
-        private void Start() {
+        private void Start()
+        {
             DialogueController.Instance.OnDialogueStart += () => { if (DialogueController.Instance.LockInput) ToggleInteract("Dialogue", false); };
             DialogueController.Instance.OnDialogueEnd += () => { if (DialogueController.Instance.LockInput) ToggleInteract("Dialogue", true); };
             _brain = PlayerCamera.Instance.CinemachineBrain;
             StartCoroutine(InteractObjectDetect());
         }
 
-        private void Interact(InputAction.CallbackContext context) {
-            if (context.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _interactBlock.Count == 0) {
-                if (InteractableTarget != null) {
+        private void Interact(InputAction.CallbackContext context)
+        {
+            if (context.phase == InputActionPhase.Started && PlayerMovement.Instance.CanMove && _interactBlock.Count == 0)
+            {
+                if (InteractableTarget != null)
+                {
                     _interactAnimationCache = InteractableTarget.Interact();
                     Vector3 directionToInteractable = InteractableTarget.InteratctableFeedbacks.IconPosition - transform.position;
                     PlayerMovement.Instance.SetTargetAngle(Mathf.Atan2(directionToInteractable[0], directionToInteractable[2]) * Mathf.Rad2Deg, false);
-                    if (InteractableTarget is IInteractableLong) {
+                    if (InteractableTarget is IInteractableLong)
+                    {
                         PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, false);
                         onInteractLong?.Invoke(true);
                         onInteract?.Invoke(_interactAnimationCache);
@@ -127,8 +137,10 @@ namespace Ivayami.Player {
                     else onInteract?.Invoke(_interactAnimationCache);
                 }
             }
-            else if (context.phase == InputActionPhase.Canceled && Interacting) {
-                if (InteractableTarget is IInteractableLong) {
+            else if (context.phase == InputActionPhase.Canceled && Interacting)
+            {
+                if (InteractableTarget is IInteractableLong)
+                {
                     PlayerMovement.Instance.BlockMovementFor("Wait Animation End", PlayerAnimation.Instance.GetInteractAnimationDuration(_interactAnimationCache));
                     PlayerMovement.Instance.ToggleMovement(INTERACT_LONG_BLOCK_KEY, true);
                     Interacting = false;
@@ -138,22 +150,29 @@ namespace Ivayami.Player {
             }
         }
 
-        private IEnumerator InteractObjectDetect() {
-            while (true) {
-                if (!Interacting && _actionMapCurrent?.name == "Player" && !_brain.IsBlending) {
+        private IEnumerator InteractObjectDetect()
+        {
+            while (true)
+            {
+                if (!Interacting && _actionMapCurrent?.name == "Player" && !_brain.IsBlending)
+                {
                     _interactableClosestCache = null;
 
                     IInteractable[] interactables = _interactableDetector.InteractablesDetected.OrderBy(interactable => Vector3.Distance(interactable.gameObject.transform.position, _interactableDetector.transform.position)).ToArray();
-                    for (int i = 0; i < interactables.Length; i++) {
-                        if (Physics.Raycast(_interactableDetector.transform.position, interactables[i].gameObject.transform.position - _interactableDetector.transform.position, out _interactableHitCache, 99f, _interactLayer)) {
-                            if (!Physics.Raycast(_interactableDetector.transform.position, _interactableHitCache.point - _interactableDetector.transform.position, /*out _blockerHitCache,*/ Vector3.Distance(_interactableDetector.transform.position, _interactableHitCache.point), _blockLayers, QueryTriggerInteraction.Ignore)) {
+                    for (int i = 0; i < interactables.Length; i++)
+                    {
+                        if (Physics.Raycast(_interactableDetector.transform.position, interactables[i].gameObject.transform.position - _interactableDetector.transform.position, out _interactableHitCache, 99f, _interactLayer))
+                        {
+                            if (!Physics.Raycast(_interactableDetector.transform.position, _interactableHitCache.point - _interactableDetector.transform.position, /*out _blockerHitCache,*/ Vector3.Distance(_interactableDetector.transform.position, _interactableHitCache.point), _blockLayers, QueryTriggerInteraction.Ignore))
+                            {
                                 _interactableClosestCache = interactables[i];
                                 break;
                             }
                         }
                     }
-                    if (InteractableTarget != _interactableClosestCache) {
-                        if(InteractableTarget as MonoBehaviour) InteractableTarget.InteratctableFeedbacks.UpdateFeedbacks(false);
+                    if (InteractableTarget != _interactableClosestCache)
+                    {
+                        if (InteractableTarget as MonoBehaviour) InteractableTarget.InteratctableFeedbacks.UpdateFeedbacks(false);
                         InteractableTarget = _interactableClosestCache;
                         InteractableTarget?.InteratctableFeedbacks.UpdateFeedbacks(true);
                         onInteractTargetChange?.Invoke(InteractableTarget);
@@ -164,9 +183,12 @@ namespace Ivayami.Player {
             }
         }
 
-        public void HeavyObjectHold(GameObject objToHold) {
-            if (_heavyObjectCurrent == null) {
-                if (objToHold != null) {
+        public void HeavyObjectHold(GameObject objToHold)
+        {
+            if (_heavyObjectCurrent == null)
+            {
+                if (objToHold != null)
+                {
                     _heavyObjectCurrent = objToHold;
                     _heavyObjectCurrent.transform.parent = HoldPointHeavy;
                     _heavyObjectCurrent.transform.localPosition = Vector3.zero;
@@ -180,8 +202,10 @@ namespace Ivayami.Player {
             (_abilities.FirstOrDefault(ability => ability is Lantern) as Lantern)?.ActivateBlocker.Toggle(HEAVY_HOLD_KEY, false);
         }
 
-        public GameObject HeavyObjectRelease() {
-            if (_heavyObjectCurrent) {
+        public GameObject HeavyObjectRelease()
+        {
+            if (_heavyObjectCurrent)
+            {
                 if (_heavyObjectCurrent.TryGetComponent(out Collider collider)) collider.enabled = true;
                 GameObject releasedObject = _heavyObjectCurrent;
                 _heavyObjectCurrent = null;
@@ -194,20 +218,25 @@ namespace Ivayami.Player {
         }
 
         #region Abilities
-        private void Ability(InputAction.CallbackContext input) {
-            if (_abilityCurrent >= 0 && !PlayerStress.Instance.StressIsMaxed) {
-                if (input.phase == InputActionPhase.Started) {
+        private void Ability(InputAction.CallbackContext input)
+        {
+            if (_abilityCurrent >= 0 && !PlayerStress.Instance.StressIsMaxed)
+            {
+                if (input.phase == InputActionPhase.Started)
+                {
                     _abilities[_abilityCurrent].AbilityStart();
                     onAbility?.Invoke(_abilities[_abilityCurrent].GetType().Name);
                 }
-                else if (input.phase == InputActionPhase.Canceled) {
+                else if (input.phase == InputActionPhase.Canceled)
+                {
                     _abilities[_abilityCurrent].AbilityEnd();
                     onAbility?.Invoke($"{_abilities[_abilityCurrent].name}End");
                 }
             }
         }
 
-        public void AddAbility(PlayerAbility ability) {
+        public void AddAbility(PlayerAbility ability)
+        {
             Quaternion localRotation = ability.transform.rotation;
             ability.transform.parent = HoldPointLeft;
             ability.transform.localPosition = Vector3.zero;
@@ -218,7 +247,8 @@ namespace Ivayami.Player {
             if (_abilityCurrent < 0) _abilityCurrent = 0;
         }
 
-        public void RemoveAbility(PlayerAbility ability) {
+        public void RemoveAbility(PlayerAbility ability)
+        {
             PlayerAbility abilityInList = _abilities.OrderBy(abilityIterator => abilityIterator.GetType() == ability.GetType()).First();
             if (_abilityCurrent >= _abilities.FindIndex((abilityIterator) => abilityIterator == abilityInList)) _abilityCurrent--;
             _abilities.Remove(abilityInList);
@@ -227,15 +257,30 @@ namespace Ivayami.Player {
             Logger.Log(LogType.Player, $"Ability Remove: {ability.name}");
         }
 
-        public bool CheckAbility(PlayerAbility abilityChecking) {
+        public bool CheckAbility(PlayerAbility abilityChecking)
+        {
             foreach (PlayerAbility ability in _abilities) if (ability.GetType() == abilityChecking.GetType()) return true;
             return false;
         }
 
-        public void ResetAbilities() {
-            foreach (AbilityGiver giver in FindObjectsOfType<AbilityGiver>()) {
+        public bool CheckAbility(Type abilityChecking, out PlayerAbility result)
+        {
+            foreach (PlayerAbility ability in _abilities) if (ability.GetType() == abilityChecking)
+                {
+                    result = ability;
+                    return true;
+                }
+            result = null;
+            return false;
+        }
+
+        public void ResetAbilities()
+        {
+            foreach (AbilityGiver giver in FindObjectsOfType<AbilityGiver>())
+            {
                 foreach (PlayerAbility ability in _abilities)
-                    if (ability.GetType().Name == giver.name) {
+                    if (ability.GetType().Name == giver.name)
+                    {
                         ability.transform.parent = giver.transform;
                         break;
                     }
@@ -245,24 +290,29 @@ namespace Ivayami.Player {
         }
         #endregion
 
-        private void UseHealthItem(InputAction.CallbackContext obj) {
+        private void UseHealthItem(InputAction.CallbackContext obj)
+        {
             if (PlayerUseItemUI.Instance && !PlayerStress.Instance.FailState) PlayerUseItemUI.Instance.UpdateUI(!PlayerUseItemUI.Instance.IsActive);
         }
 
-        public void ChangeInputMap(string mapId) {
+        public void ChangeInputMap(string mapId)
+        {
             _actionMapCurrent?.Disable();
             _actionMapCurrent = mapId != null ? _interactInput.asset.actionMaps.FirstOrDefault(actionMap => actionMap.name == mapId) : null;
             _actionMapCurrent?.Enable();
-            if(mapId != "Menu") EventSystem.current.SetSelectedGameObject(null);
+            if (mapId != "Menu") EventSystem.current.SetSelectedGameObject(null);
             Cursor.lockState = InputCallbacks.Instance.IsGamepad || mapId == "Player" ? CursorLockMode.Locked : CursorLockMode.None;
             if (string.Equals(mapId, "Player")) EventSystem.current.SetSelectedGameObject(null);
             if (_actionMapCurrent != null) onActionMapChange?.Invoke(_actionMapCurrent.name);
         }
 
-        public void ToggleInteract(string key, bool canInteract, float releaseDelay = _interactCoodlown) {
-            if (canInteract) {
+        public void ToggleInteract(string key, bool canInteract, float releaseDelay = _interactCoodlown)
+        {
+            if (canInteract)
+            {
                 if (!_interactBlock.Contains(key)) Debug.LogWarning($"'{key}' tried to unlock interact but key isn't blocking");
-                else {
+                else
+                {
                     if (_interactReleaseDelay.ContainsKey(key)) Debug.LogWarning($"The object {key} asked multiple interact releases at the same time");
                     else _interactReleaseDelay.Add(key, StartCoroutine(ReleaseInteractDelay(key, releaseDelay)));
                 }
@@ -270,22 +320,26 @@ namespace Ivayami.Player {
             else if (!_interactBlock.Add(key)) Debug.LogWarning($"'{key}' tried to lock interact but key is already blocking");
         }
 
-        private IEnumerator ReleaseInteractDelay(string key, float delay) {
+        private IEnumerator ReleaseInteractDelay(string key, float delay)
+        {
             yield return new WaitForSeconds(delay);
 
             _interactBlock.Remove(key);
             _interactReleaseDelay.Remove(key);
         }
 
-        private void FocusToggle(InputAction.CallbackContext context) {
+        private void FocusToggle(InputAction.CallbackContext context)
+        {
             if (context.phase == InputActionPhase.Started) onLanternFocus.Invoke(true);
             else if (context.phase == InputActionPhase.Canceled) onLanternFocus.Invoke(false);
         }
 
 #if UNITY_EDITOR
-        private void OnDrawGizmosSelected() {
+        private void OnDrawGizmosSelected()
+        {
             IInteractable[] interactables = _interactableDetector.InteractablesDetected.OrderBy(interactable => Vector3.Distance(interactable.gameObject.transform.position, _interactableDetector.transform.position)).ToArray();
-            for (int i = 0; i < interactables.Length; i++) {
+            for (int i = 0; i < interactables.Length; i++)
+            {
                 Physics.Raycast(_interactableDetector.transform.position, (interactables[i].gameObject.transform.position - _interactableDetector.transform.position), out RaycastHit hit, 99f, _interactLayer, QueryTriggerInteraction.Ignore);
                 Physics.Raycast(_interactableDetector.transform.position, (hit.point - _interactableDetector.transform.position), out RaycastHit hit2, Vector3.Distance(_interactableDetector.transform.position, hit.point), _blockLayers, QueryTriggerInteraction.Ignore);
 

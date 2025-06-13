@@ -246,6 +246,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1293006972315110293}
   - component: {fileID: 7321519590106291172}
+  - component: {fileID: 3365989716081837204}
   m_Layer: 0
   m_Name: Lantern
   m_TagString: Untagged
@@ -281,6 +282,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2877e786c09dd5e4f9b4d64f601936fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _item: {fileID: 11400000, guid: 2351db1c3e4d71c40b8321b503e48ddc, type: 2}
   _wideOrigin: {fileID: 8590640417675001210}
   _focusedOrigin: {fileID: 9105448352692248756}
   _visuals: {fileID: 1455203641934398067}
@@ -303,9 +305,28 @@ MonoBehaviour:
   _focusedCamArmDistance: 0.4
   _focusedDurationComsumptionMultiplier: 1.5
   _focusedSourceDistance: 1.5
-  _durationMaxBase: 120
+  _durationMaxCap: 300
   _durationIncreaseFromItem: 60
+  _flickeringStartTreshold: 0
+  _flickeringChance: 0
+  _flickeringInterpolationDuration: 0.02
+  _randomFlickeringIntensities: []
+  _reduceIntensityStartTreshold: 0.2
+  _wideLightFinalIntensity: 1
+  _focusedLightFinalIntensity: 8
   _coneColor: {r: 0.75, g: 0.75, b: 0.1875, a: 0.25490198}
+--- !u!114 &3365989716081837204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4235770715402109826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d359aa7c7d08f5499a759c6904d5022, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6095032890854906305
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,6 +10,7 @@ namespace Ivayami.Player {
     public class PlayerInventory : MonoSingleton<PlayerInventory> {
 
         public UnityEvent<InventoryItemStack[]> onInventoryUpdate = new UnityEvent<InventoryItemStack[]>();
+        public Action<InventoryItemStack> onItemStackUpdate;
 
         private List<InventoryItemStack> _itemList = new List<InventoryItemStack>();
         [SerializeField] private Sprite[] _itemTypeDefaultIcons;
@@ -47,9 +48,19 @@ namespace Ivayami.Player {
 
         public void AddToInventory(InventoryItem item, bool shouldEmphasize = false, bool shouldPlayFeedbacks = true) {
             _checkInventoryIndexCache = _itemList.FindIndex((inventoryItem) => inventoryItem.Item.name == item.name);
-            if (_checkInventoryIndexCache == -1) _itemList.Add(new InventoryItemStack(item, 1));
-            else _itemList[_checkInventoryIndexCache] = new InventoryItemStack(_itemList[_checkInventoryIndexCache].Item, _itemList[_checkInventoryIndexCache].Amount + 1);
+            InventoryItemStack itemStack;
+            if (_checkInventoryIndexCache == -1)
+            {
+                itemStack = new InventoryItemStack(item, 1);
+                _itemList.Add(itemStack);
+            }
+            else
+            {
+                itemStack = new InventoryItemStack(_itemList[_checkInventoryIndexCache].Item, _itemList[_checkInventoryIndexCache].Amount + 1);
+                _itemList[_checkInventoryIndexCache] = itemStack;
+            }
             onInventoryUpdate.Invoke(CheckInventory());
+            onItemStackUpdate?.Invoke(itemStack);
             if (shouldPlayFeedbacks)
             {
                 if (shouldEmphasize) ItemEmphasisDisplay.Instance.DisplayItem(item.Sprite,
@@ -67,12 +78,14 @@ namespace Ivayami.Player {
             if (_checkInventoryIndexCache == -1) return;
             else
             {
-                _itemList[_checkInventoryIndexCache] = new InventoryItemStack(_itemList[_checkInventoryIndexCache].Item, _itemList[_checkInventoryIndexCache].Amount - 1);
+                InventoryItemStack itemStack = new InventoryItemStack(_itemList[_checkInventoryIndexCache].Item, _itemList[_checkInventoryIndexCache].Amount - 1);
+                _itemList[_checkInventoryIndexCache] = itemStack;
                 if (_itemList[_checkInventoryIndexCache].Amount <= 0)
                 {
                     itemRemoved = true;
                     _itemList.RemoveAt(_checkInventoryIndexCache);
                 }
+                onItemStackUpdate?.Invoke(itemStack);
             }
             onInventoryUpdate.Invoke(CheckInventory());
 

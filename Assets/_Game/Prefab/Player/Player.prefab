@@ -107,6 +107,117 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1809464102610504153}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 56.096}
+--- !u!1 &3917480405481466933
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7007673017439117370}
+  - component: {fileID: 8176155417813628695}
+  - component: {fileID: 7530709689299256330}
+  m_Layer: 7
+  m_Name: MP3EnemyAudio
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7007673017439117370
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3917480405481466933}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6519695437581581274}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8176155417813628695
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3917480405481466933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77d6f1143b37cb0419467b76e3a36802, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _onItemActivationEventSubscribeOnStart: 1
+  _onItemActivation:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7530709689299256330}
+        m_TargetAssemblyTypeName: Ivayami.Enemy.EnemySoundArea, Assembly-CSharp
+        m_MethodName: GenerateSoundRepeatedly
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onItemEffectEndEventSubscribeOnStart: 1
+  _onItemEffectEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7530709689299256330}
+        m_TargetAssemblyTypeName: Ivayami.Enemy.EnemySoundArea, Assembly-CSharp
+        m_MethodName: StopGenerateSoundRepeatedly
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _onNotRequiredItemEventSubscribeOnStart: 0
+  _onNotRequiredItem:
+    m_PersistentCalls:
+      m_Calls: []
+  _onItemAlreadyInEffectEventSubscribeOnStart: 0
+  _onItemAlreadyInEffect:
+    m_PersistentCalls:
+      m_Calls: []
+  _onNotRequiredConsumableItemOnStart: 0
+  _onNotRequiredConsumableItem:
+    m_PersistentCalls:
+      m_Calls: []
+  _onItemActivationFailOnStart: 0
+  _onItemActivationFail:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &7530709689299256330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3917480405481466933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a0a7bb52d9a1be458cc93e44bba9e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _radius: 5
+  _sendSoundRepeatedlyInterval: 0.5
+  _soundDuration: 1
+  _generateSoundOnEnable: 0
+  _debugColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _gizmoAlwaysOn: 0
 --- !u!1 &4627871391428053008
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,6 +409,7 @@ Transform:
   - {fileID: 7636177159492648005}
   - {fileID: 2181725685440365708}
   - {fileID: 9087933524707385343}
+  - {fileID: 7007673017439117370}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &946872833709151729
@@ -2375,6 +2487,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6728761832899963330}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 516316487045370047}
   m_SourcePrefab: {fileID: 100100000, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
 --- !u!1 &1516828375664336438 stripped
 GameObject:
@@ -2420,19 +2535,19 @@ MonoBehaviour:
   - InteractType: 0
     Animation: {fileID: 1701519168366769839, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
     Speed: 1
-  - InteractType: 1
+  - InteractType: 2
     Animation: {fileID: 4866158927099243651, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
     Speed: 2
-  - InteractType: 2
+  - InteractType: 3
     Animation: {fileID: -5374507017704117377, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
     Speed: 1
-  - InteractType: 3
+  - InteractType: 4
     Animation: {fileID: -1443209977815985297, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
     Speed: 1
-  - InteractType: 7
+  - InteractType: 8
     Animation: {fileID: -4592604891502308166, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
     Speed: 2
-  - InteractType: 8
+  - InteractType: 9
     Animation: {fileID: -4592604891502308166, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
     Speed: 2
 --- !u!114 &3358522392969723647
@@ -2471,6 +2586,8 @@ MonoBehaviour:
   - GroundType: 2
     Textures:
     - {fileID: 2800000, guid: 0c532d014add1174fa4bf10feb74ce00, type: 3}
+  _debugLogStepSounds: 0
+  _simplifyStepSounds: 0
   _heavyBreathStressMin: 81
   _heavyBreathSoundRef:
     Guid:
@@ -2491,6 +2608,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69de1dd850b163b4083c400f68ea2e3a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &516316487045370047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1516828375664336438}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a0a7bb52d9a1be458cc93e44bba9e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _radius: 5
+  _sendSoundRepeatedlyInterval: 0.5
+  _soundDuration: 2
+  _generateSoundOnEnable: 0
+  _debugColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _gizmoAlwaysOn: 0
 --- !u!4 &1809464102610504153 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 58881653578279614, guid: 436a2154c734e874cb2bd5fdc60e841c, type: 3}
