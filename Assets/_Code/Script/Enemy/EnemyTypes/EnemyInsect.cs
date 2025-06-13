@@ -189,11 +189,6 @@ namespace Ivayami.Enemy
                         LanternRef.Instance.Lantern.Fill(-_fuelRemoveFromLantern);
                         LanternRef.Instance.Lantern.ForceTurnOff();
                     }
-                    if (PlayerActions.Instance.CheckAbility(typeof(Lantern), out PlayerAbility ability))
-                    {
-                        Lantern lantern = (Lantern)ability;
-                        lantern.Fill(-_fuelRemoveFromLantern);
-                    }
 
                     PlayerMovement.Instance.SetTargetAngle(Quaternion.LookRotation(transform.position - _hitsCache[0].transform.position).eulerAngles.y);
                     transform.SetPositionAndRotation(transform.position, Quaternion.LookRotation(_hitsCache[0].transform.position - transform.position));
