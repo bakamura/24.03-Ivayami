@@ -88,6 +88,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8559428ec5775144db9671f7430c97d5, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9061714562790297892}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 8559428ec5775144db9671f7430c97d5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5466845638694273887}
   m_SourcePrefab: {fileID: 100100000, guid: 8559428ec5775144db9671f7430c97d5, type: 3}
 --- !u!4 &1390642369674738026 stripped
 Transform:
@@ -148,6 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _triggerType: 0
   _targetNeedToStayInside: 0
+  _executeEventOnDisable: 1
   _delayToActivateEvent: 0
   _optionalTag: 
   _onExecute:
@@ -156,6 +160,18 @@ MonoBehaviour:
       - m_Target: {fileID: 9061714562790297892}
         m_TargetAssemblyTypeName: Ivayami.Audio.SoundEffectTrigger, Assembly-CSharp
         m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5466845638694273887}
+        m_TargetAssemblyTypeName: Ivayami.Enemy.EnemySoundArea, Assembly-CSharp
+        m_MethodName: GenerateSound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -200,6 +216,24 @@ MonoBehaviour:
   _replayIntervalRange:
     Min: 0
     Max: 0
+--- !u!114 &5466845638694273887
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731455328582738896}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a0a7bb52d9a1be458cc93e44bba9e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _radius: 5
+  _sendSoundRepeatedlyInterval: 0.5
+  _soundDuration: 2
+  _generateSoundOnEnable: 0
+  _debugColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  _gizmoAlwaysOn: 0
 --- !u!1001 &4322521247397458259
 PrefabInstance:
   m_ObjectHideFlags: 0

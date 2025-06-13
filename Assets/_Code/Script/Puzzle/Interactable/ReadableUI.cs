@@ -39,7 +39,7 @@ namespace Ivayami.Puzzle {
                 _contents[i].gameObject.SetActive(false);
                 textsInserted += readable.PagePresets[i].TextBoxAmount;
             }
-
+            _pageLimitCurrent = readable.PagePresets.Length - 1;
             ChangePage(0);
             Menu.Open();
         }

@@ -65,7 +65,7 @@ namespace Ivayami.Puzzle {
                 if (TryPlace()) return PlayerActions.InteractAnimation.HeavyPlace;
             }
             else if (TryCollect()) return PlayerActions.InteractAnimation.HeavyPickup;
-            return PlayerActions.InteractAnimation.Default;
+            return PlayerActions.InteractAnimation.None;
         }
 
         public bool TryCollect() {

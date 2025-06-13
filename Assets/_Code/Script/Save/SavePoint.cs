@@ -78,7 +78,7 @@ namespace Ivayami.Save {
             }
             onSaveGameWithAnimation?.Invoke();
             Save();
-            return PlayerActions.InteractAnimation.Default;
+            return PlayerActions.InteractAnimation.None;
         }
 
         public void ForceSave() {

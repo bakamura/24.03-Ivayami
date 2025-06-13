@@ -13,6 +13,10 @@ namespace Ivayami.UI
         [SerializeField] private UnityEvent _onNotRequiredItem;
         [SerializeField] private bool _onItemAlreadyInEffectEventSubscribeOnStart;
         [SerializeField] private UnityEvent _onItemAlreadyInEffect;
+        [SerializeField] private bool _onNotRequiredConsumableItemOnStart;
+        [SerializeField] private UnityEvent _onNotRequiredConsumableItem;
+        [SerializeField] private bool _onItemActivationFailOnStart;
+        [SerializeField] private UnityEvent _onItemActivationFail;
         //[SerializeField] private bool _onNotEnoughStressToHealEventSubscribeOnStart;
         //[SerializeField] private UnityEvent _onNotEnoughStressToHeal;
 
@@ -20,6 +24,8 @@ namespace Ivayami.UI
         private bool _onItemEffectEndEventSubscribed;
         private bool _onNotRequiredItemEventSubscribed;
         private bool _onItemAlreadyInEffectEventSubscribed;
+        private bool _onNotRequiredConsumableItemEventSubscribed;
+        private bool _onItemActivationFailEventSubscribed;
         //private bool _onNotEnoughStressToHealEventSubscribed;
 
         private void Start()
@@ -28,6 +34,8 @@ namespace Ivayami.UI
             if (_onItemEffectEndEventSubscribeOnStart) SubscribeOnItemEffectEnd();
             if (_onNotRequiredItemEventSubscribeOnStart) SubscribeOnNotRequiredItem();
             if (_onItemAlreadyInEffectEventSubscribeOnStart) SubscribeOnItemAlreadyInEffect();
+            if (_onNotRequiredConsumableItemOnStart) SubscribeOnNotRequiredConsumableItem();
+            if (_onItemActivationFailOnStart) SubscribeOnItemActivationFail();
             //if (_onNotEnoughStressToHealEventSubscribeOnStart) SubscribeOnNotEnoughStressToHeal();
         }
 
@@ -37,6 +45,8 @@ namespace Ivayami.UI
             if (_onItemEffectEndEventSubscribed) UnsubscribeOnItemEffectEnd();
             if (_onNotRequiredItemEventSubscribed) UnsubscribeOnNotRequiredItem();
             if (_onItemAlreadyInEffectEventSubscribed) UnsubscribeOnItemAlreadyInEffect();
+            if (_onNotRequiredConsumableItemEventSubscribed) UnsubscribeOnNotRequiredConsumableItem();
+            if (_onItemActivationFailEventSubscribed) UnsubscribeOnItemActivationFail();
             //if (_onNotEnoughStressToHealEventSubscribed) UnsubscribeOnNotEnoughStressToHeal();
         }
 
@@ -68,6 +78,20 @@ namespace Ivayami.UI
             if (_onItemAlreadyInEffectEventSubscribed) return;
             PlayerUseItemUI.Instance.OnItemAlreadyInEffect.AddListener(_onItemAlreadyInEffect.Invoke);
             _onItemAlreadyInEffectEventSubscribed = true;
+        }
+
+        public void SubscribeOnNotRequiredConsumableItem()
+        {
+            if (_onNotRequiredConsumableItemEventSubscribed) return;
+            PlayerUseItemUI.Instance.OnNotRequiredConsumableItem.AddListener(_onNotRequiredConsumableItem.Invoke);
+            _onNotRequiredConsumableItemEventSubscribed = true;
+        }
+
+        public void SubscribeOnItemActivationFail()
+        {
+            if (_onItemActivationFailEventSubscribed) return;
+            PlayerUseItemUI.Instance.OnItemActivationFail.AddListener(_onItemActivationFail.Invoke);
+            _onItemActivationFailEventSubscribed = true;
         }
 
         //public void SubscribeOnNotEnoughStressToHeal()
@@ -107,6 +131,20 @@ namespace Ivayami.UI
             _onItemAlreadyInEffectEventSubscribed = false;
         }
 
+        public void UnsubscribeOnNotRequiredConsumableItem()
+        {
+            if (!_onNotRequiredConsumableItemEventSubscribed) return;
+            PlayerUseItemUI.Instance.OnNotRequiredConsumableItem.RemoveListener(_onNotRequiredConsumableItem.Invoke);
+            _onNotRequiredConsumableItemEventSubscribed = false;
+        }
+
+
+        public void UnsubscribeOnItemActivationFail()
+        {
+            if (!_onItemActivationFailEventSubscribed) return;
+            PlayerUseItemUI.Instance.OnItemActivationFail.RemoveListener(_onItemActivationFail.Invoke);
+            _onItemActivationFailEventSubscribed = false;
+        }
         //public void UnsubscribeOnNotEnoughStressToHeal()
         //{
         //    if (!_onNotEnoughStressToHealEventSubscribed) return;

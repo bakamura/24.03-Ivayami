@@ -47,6 +47,7 @@ namespace Ivayami.debug
 
         private static void OnSaveLoad()
         {
+            PlayerMovement.Instance.ToggleMovement(nameof(CustomSettingsHandler), false);
             if (CurrentSceneIsInBuildSettings) SceneLoadersManager.Instance.gameObject.SetActive(true);
             else
             {
@@ -62,6 +63,7 @@ namespace Ivayami.debug
 
         public static void OnGameplayScenesLoad()
         {
+            PlayerMovement.Instance.ToggleMovement(nameof(CustomSettingsHandler), true);
             PlayerActions.Instance.ChangeInputMap("Player");
             PlayerMovement.Instance.RemoveAllBlockers();
             SceneController.Instance.OnAllSceneRequestEndDebug -= OnGameplayScenesLoad;
@@ -69,6 +71,7 @@ namespace Ivayami.debug
 
         public static void OnGameplayScenesLoad(AsyncOperation _)
         {
+            PlayerMovement.Instance.ToggleMovement(nameof(CustomSettingsHandler), true);
             PlayerActions.Instance.ChangeInputMap("Player");
             PlayerMovement.Instance.RemoveAllBlockers();
         }

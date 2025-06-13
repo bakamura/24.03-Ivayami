@@ -1,6 +1,6 @@
 using UnityEngine;
 using Ivayami.Player.Ability;
-using Ivayami.Player;
+//using Ivayami.Player;
 
 namespace Ivayami.Puzzle
 {
@@ -10,10 +10,14 @@ namespace Ivayami.Puzzle
 
         public void RefilLantern()
         {
-            if (PlayerActions.Instance.CheckAbility(typeof(Lantern), out PlayerAbility ability))
+            //if (PlayerActions.Instance.CheckAbility(typeof(Lantern), out PlayerAbility ability))
+            //{
+            //    Lantern lantern = (Lantern)ability;
+            //    lantern.Fill(_fillAmount);
+            //}
+            if (LanternRef.Instance.AbilityAquired())
             {
-                Lantern lantern = (Lantern)ability;
-                lantern.Fill(_fillAmount);
+                LanternRef.Instance.Lantern.Fill(_fillAmount);
             }
         }
     }

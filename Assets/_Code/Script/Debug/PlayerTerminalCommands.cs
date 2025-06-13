@@ -5,11 +5,13 @@ using IngameDebugConsole;
 using Ivayami.Player;
 using Ivayami.UI;
 using Ivayami.debug;
+using Ivayami.Player.Ability;
 
 public static class PlayerTerminalCommands
 {
 
     private static List<InventoryItem> _allItemsList = Resources.LoadAll<InventoryItem>("Items").ToList();
+    private static AbilityGiverRef _abilityGiver;
 
     [ConsoleMethod("TogglePlayerMovement", "Toggles Player's Movement", "key", "canMove")]
     public static void TogglePlayerMovement(string key, bool canMove)
@@ -29,8 +31,8 @@ public static class PlayerTerminalCommands
         PlayerStress.Instance.AddStress(amount);
     }
 
-    [ConsoleMethod("UpdateAutoRegenStress", "", "isActive")]
-    public static void UpdateAutoRegenStress(bool isActive)
+    [ConsoleMethod("SetAutoRegenStress", "", "isActive")]
+    public static void SetAutoRegenStress(bool isActive)
     {
         PlayerStress.Instance.UpdateAutoRegenerateStress(isActive);
         Debug.Log($"Auto Regen is now {isActive}");
@@ -45,8 +47,8 @@ public static class PlayerTerminalCommands
         Debug.Log($"Release Player Complete");
     }
 
-    [ConsoleMethod("ChangePlayerRunSpeed", "", "value")]
-    public static void ChangePlayerRunSpeed(float value)
+    [ConsoleMethod("SetPlayerRunSpeed", "", "value")]
+    public static void SetPlayerRunSpeed(float value)
     {
         PlayerMovement.Instance.ChangeRunSpeed(value);
         Debug.Log($"New run speed {value}");
@@ -69,6 +71,31 @@ public static class PlayerTerminalCommands
             Debug.Log($"The item {itemID} has been added to inventory");
         }
         else Debug.LogWarning($"The item: {itemID} doesn't exist");
+    }
+
+    [ConsoleMethod("GiveAllTapes", "")]
+    public static void GiveAllTapes()
+    {
+        InventoryItem[] tapes = Resources.LoadAll<InventoryItem>("Items/Tapes");
+        for(int i = 0; i < tapes.Length; i++)
+        {
+            PlayerInventory.Instance.AddToInventory(tapes[i]);
+        }
+    }
+
+    [ConsoleMethod("GiveAbility", "", "abilityName")]
+    public static void GiveAbility(string abilityName)
+    {
+        if (!_abilityGiver) _abilityGiver = DebugLogManager.Instance.GetComponent<AbilityGiverRef>();
+        char[] temp = abilityName.ToCharArray();
+        temp[0] = char.ToUpper(temp[0]);
+        _abilityGiver.GiveAbility(new string(temp));
+    }
+
+    [ConsoleMethod("GiveLanternOil", "", "value")]
+    public static void GiveLanternOil(float value)
+    {
+        LanternRef.Instance.Lantern.Fill(value);
     }
 
     [ConsoleMethod("ToggleRun", "", "canRun")]

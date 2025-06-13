@@ -12,11 +12,14 @@ public class IlluminatedEnemyDetectorInspector : Editor
         EditorGUILayout.LabelField("Basic Parameters", EditorStyles.boldLabel);
         EditorGUILayout.Space(1);
         EditorGUI.indentLevel++;
-        EditorGUILayout.PropertyField(lightBehaviour, new GUIContent("Light Behaviour"));
-        EditorGUILayout.PropertyField(detectLightRange, new GUIContent("Detection Light Range"));
-        EditorGUILayout.PropertyField(checkLightTickFrequency, new GUIContent("Check For Light Tick Frequency"));
-        EditorGUILayout.PropertyField(blockLayers, new GUIContent("Light Block Layers"));
-        EditorGUILayout.PropertyField(gizmoColor, new GUIContent("Gizmo Color"));
+        EditorGUILayout.PropertyField(lightBehaviour, new GUIContent("Light Behaviour", "the mode AttackLightSource only detects the light from the lantern"));
+        if(lightBehaviour.enumValueIndex != 2)
+        {
+            EditorGUILayout.PropertyField(detectLightRange, new GUIContent("Detection Light Range"));
+            EditorGUILayout.PropertyField(checkLightTickFrequency, new GUIContent("Check For Light Tick Frequency"));
+            EditorGUILayout.PropertyField(blockLayers, new GUIContent("Light Block Layers"));
+            EditorGUILayout.PropertyField(gizmoColor, new GUIContent("Gizmo Color"));
+        }
         EditorGUI.indentLevel--;
 
         if (lightBehaviour.enumValueIndex == 0)

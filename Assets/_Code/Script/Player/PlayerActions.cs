@@ -55,6 +55,7 @@ namespace Ivayami.Player
         public enum InteractAnimation
         {
             Default,
+            None,
             EnterLocker,
             EnterTrash,
             Seat,

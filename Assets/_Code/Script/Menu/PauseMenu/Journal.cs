@@ -1,13 +1,13 @@
+using System.Collections;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Localization.Components;
 using UnityEngine.UI;
 using TMPro;
+using Ivayami.Audio;
 using Ivayami.Player;
 using Ivayami.Save;
-using Ivayami.Audio;
-using System.Collections;
-using Ivayami.Puzzle;
-using UnityEngine.Localization.Components;
 
 namespace Ivayami.UI {
     public class Journal : MonoBehaviour {
@@ -28,6 +28,11 @@ namespace Ivayami.UI {
         [SerializeField] private Menu _noEntriesMenu;
         private bool _shouldResetToStory;
 
+        [Header("Quick Open")]
+
+        [SerializeField] private InputActionReference _quickOpenInput;
+        [SerializeField] private Button _quickOpenBtn;
+
         private static int _containerChange = Animator.StringToHash("Forward");
 
         private void Start() {
@@ -38,6 +43,7 @@ namespace Ivayami.UI {
             menu.OnCloseStart.AddListener(() => {
                 _shouldResetToStory = false;
             });
+            _quickOpenInput.action.performed += QuickOpen;
         }
 
         public void ChangeAnimation() {
@@ -168,6 +174,7 @@ namespace Ivayami.UI {
                 Debug.LogWarning("Description Not Found");
                 return;
             }
+            return; // TEMP until Journal rework
             if (_presets.Length > entry.TemplateID) _presets[entry.TemplateID].DisplayContent(new string[1] { entry.DisplayDescription() }, new Sprite[0]);
             else Debug.LogError($"'{entry.name}' tried using journal preset {entry.TemplateID} which doesn't exist!");
         }
@@ -179,5 +186,13 @@ namespace Ivayami.UI {
             }
             _presets[0].DisplayContent(readable.GetTextBoxes(0), readable.GetPageSprites(0));
         }
+
+        private void QuickOpen(InputAction.CallbackContext context) {
+            if (!Pause.Instance.Paused) {
+                Pause.Instance.PauseGame(true);
+                _quickOpenBtn.onClick.Invoke();
+            }
+        }
+
     }
 }
