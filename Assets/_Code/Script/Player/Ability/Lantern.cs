@@ -161,7 +161,6 @@ namespace Ivayami.Player.Ability
 
         private void Focus(bool isFocusing)
         {
-            if (_noFuel) return;
             if (isFocusing && (!_enabled || !ActivateBlocker.IsAllowed)) return;
             _focused = isFocusing;
             _wideOrigin.enabled = !_focused;
