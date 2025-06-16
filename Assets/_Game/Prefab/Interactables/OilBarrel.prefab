@@ -56,6 +56,61 @@ MonoBehaviour:
   m_Offset: {x: 0, y: 0, z: 0.5}
   m_Size: {x: 1, y: 1, z: 1}
   m_FadeFactor: 1
+--- !u!1 &1097858420830825049
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 366726787898269945}
+  - component: {fileID: 9086273841433729106}
+  m_Layer: 6
+  m_Name: Dialogue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &366726787898269945
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097858420830825049}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4109349930996665560}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9086273841433729106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1097858420830825049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dialogue: {fileID: 11400000, guid: ebac0ddc0c9426149a16d0622a3b66d5, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  _dialogueName: OilRefill
+  _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
+  _lockPlayerInput: 1
 --- !u!1 &7255725224984184598
 GameObject:
   m_ObjectHideFlags: 0
@@ -70,7 +125,6 @@ GameObject:
   - component: {fileID: 3670925692593726826}
   - component: {fileID: 7625175766270848733}
   - component: {fileID: 2146167407657372932}
-  - component: {fileID: 1215054322033287927}
   m_Layer: 6
   m_Name: OilBarrel
   m_TagString: Untagged
@@ -94,6 +148,7 @@ Transform:
   - {fileID: 1803378446740563369}
   - {fileID: 6187860719822593941}
   - {fileID: 5137643826879303571}
+  - {fileID: 366726787898269945}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &437163725000054644
@@ -124,7 +179,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1215054322033287927}
+      - m_Target: {fileID: 9086273841433729106}
         m_TargetAssemblyTypeName: Ivayami.Dialogue.DialogueTrigger, Assembly-CSharp
         m_MethodName: StartDialogue
         m_Mode: 1
@@ -223,6 +278,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _fillAmount: 100
+  _lanternItemSprite: {fileID: 0}
+  _fillMessageText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!136 &2146167407657372932
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -246,29 +314,6 @@ CapsuleCollider:
   m_Height: 1.9008789
   m_Direction: 1
   m_Center: {x: 0, y: 0.60632324, z: 0}
---- !u!114 &1215054322033287927
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7255725224984184598}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _dialogue: {fileID: 11400000, guid: ebac0ddc0c9426149a16d0622a3b66d5, type: 2}
-  _onDialogueStart:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDialogueEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  _dialogueName: OilRefill
-  _activateOnce: 0
-  _deactivateObjectOnFirstActivate: 0
-  _lockPlayerInput: 1
 --- !u!1001 &5268557939607264540
 PrefabInstance:
   m_ObjectHideFlags: 0

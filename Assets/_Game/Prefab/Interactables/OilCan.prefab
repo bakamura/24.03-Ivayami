@@ -48,6 +48,61 @@ MonoBehaviour:
   _id: OilCan_TrainYardPassanger_1665836
   _objectsToSave:
   - {fileID: 5858712256652231094}
+--- !u!1 &5199121626856760646
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2085893541032927736}
+  - component: {fileID: 4591734375562084274}
+  m_Layer: 6
+  m_Name: Dialogue
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2085893541032927736
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5199121626856760646}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 299087374116199975}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4591734375562084274
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5199121626856760646}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dialogue: {fileID: 11400000, guid: 5bc41541b09103941b7b7d0ecbc78a91, type: 2}
+  _onDialogueStart:
+    m_PersistentCalls:
+      m_Calls: []
+  _onDialogueEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  _dialogueName: OilPartialRefill
+  _activateOnce: 0
+  _deactivateObjectOnFirstActivate: 0
+  _lockPlayerInput: 1
 --- !u!1 &5858712256652231094
 GameObject:
   m_ObjectHideFlags: 0
@@ -62,7 +117,6 @@ GameObject:
   - component: {fileID: 1418508183007326314}
   - component: {fileID: 743231680303726074}
   - component: {fileID: 7925432613937731213}
-  - component: {fileID: 3764505880625521527}
   m_Layer: 6
   m_Name: OilCan
   m_TagString: Untagged
@@ -85,6 +139,7 @@ Transform:
   m_Children:
   - {fileID: 6442494286235807812}
   - {fileID: 6083683394383384606}
+  - {fileID: 2085893541032927736}
   m_Father: {fileID: 5635560752336494080}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8102978334405232148
@@ -127,7 +182,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 3764505880625521527}
+      - m_Target: {fileID: 4591734375562084274}
         m_TargetAssemblyTypeName: Ivayami.Dialogue.DialogueTrigger, Assembly-CSharp
         m_MethodName: StartDialogue
         m_Mode: 1
@@ -226,6 +281,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _fillAmount: 50
+  _lanternItemSprite: {fileID: 0}
+  _fillMessageText:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!136 &7925432613937731213
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -249,29 +317,6 @@ CapsuleCollider:
   m_Height: 1.9008789
   m_Direction: 1
   m_Center: {x: 0, y: 0.60632324, z: 0}
---- !u!114 &3764505880625521527
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5858712256652231094}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _dialogue: {fileID: 11400000, guid: 5bc41541b09103941b7b7d0ecbc78a91, type: 2}
-  _onDialogueStart:
-    m_PersistentCalls:
-      m_Calls: []
-  _onDialogueEnd:
-    m_PersistentCalls:
-      m_Calls: []
-  _dialogueName: OilPartialRefill
-  _activateOnce: 0
-  _deactivateObjectOnFirstActivate: 0
-  _lockPlayerInput: 1
 --- !u!1001 &6502260595493847697
 PrefabInstance:
   m_ObjectHideFlags: 0
