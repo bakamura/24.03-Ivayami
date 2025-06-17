@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -6175,7 +6175,10 @@ PrefabInstance:
       objectReference: {fileID: 4583407886439279732, guid: 8ae1a13884705f245b4ab352323849e3, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 710802402}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5060189078975801761, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
       insertIndex: -1
@@ -6408,7 +6411,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.6996536
+      value: 4.148
       objectReference: {fileID: 0}
     - target: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -10019,6 +10022,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1046352704943468253, guid: 1ff6eeeba5b03e8449ff5fe65ea097dc, type: 3}
   m_PrefabInstance: {fileID: 414429887}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &422768178 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2133751496939983271, guid: f28ccc3c682eefb49a1df6af25923cd9, type: 3}
+  m_PrefabInstance: {fileID: 215837178}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &424668990
 PrefabInstance:
@@ -14143,7 +14151,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 596534834}
-  - component: {fileID: 596534835}
   m_Layer: 0
   m_Name: BlockFlashlightEvent
   m_TagString: Untagged
@@ -14164,54 +14171,12 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1981301367}
   - {fileID: 1978605371}
   - {fileID: 1151668916}
+  - {fileID: 1995158781}
   m_Father: {fileID: 83425239}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &596534835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 596534833}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d74e5c4dd631c2d4f9b5d9951c476bf0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _triggerOnStart: 1
-  _progressConditions:
-  - AreaProgress: {fileID: 11400000, guid: ba408379013cfd4488c6b25cf8dcbc60, type: 2}
-    ProgressStepMin: 2
-    ProgressStepMax: 3
-  _onTrigger:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1978605370}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1151668915}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &598307289
 GameObject:
   m_ObjectHideFlags: 0
@@ -15735,6 +15700,89 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.86663055, y: 4.044365, z: 4.776455}
   m_Center: {x: 0.8008156, y: 1.5221825, z: 1.871191}
+--- !u!1 &710802401
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 710802402}
+  - component: {fileID: 710802404}
+  - component: {fileID: 710802403}
+  m_Layer: 0
+  m_Name: Plane
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &710802402
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710802401}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0.99669087, w: 0.08128514}
+  m_LocalPosition: {x: -17.6354, y: 6.2959, z: -17.811}
+  m_LocalScale: {x: 0.26012197, y: 1, z: 0.1459164}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 422768178}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -170.675}
+--- !u!23 &710802403
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710802401}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9e3ec4ef7c13446468f265c0ee283f45, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &710802404
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 710802401}
+  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &724164728
 GameObject:
   m_ObjectHideFlags: 0
@@ -19887,8 +19935,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.88928986, y: 4.8293686, z: 39.155773}
-  m_Center: {x: 0.74409103, y: 1.9146843, z: 19.077887}
+  m_Size: {x: 0.88928986, y: 4.8293686, z: 34.96096}
+  m_Center: {x: 0.74409103, y: 1.9146843, z: 21.175293}
 --- !u!1001 &987720898
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24006,10 +24054,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1151668916}
-  - component: {fileID: 1151668918}
   - component: {fileID: 1151668917}
   m_Layer: 10
-  m_Name: Dialogue
+  m_Name: NoLightDialogue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -24042,38 +24089,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d48cad774311018428d36dafad71b3cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _dialogue: {fileID: 0}
+  _dialogue: {fileID: 11400000, guid: f6d867a2b9b64394a9ade85a5e047f3e, type: 2}
   _onDialogueStart:
     m_PersistentCalls:
       m_Calls: []
   _onDialogueEnd:
     m_PersistentCalls:
-      m_Calls: []
-  _dialogueName: 
+      m_Calls:
+      - m_Target: {fileID: 1995158783}
+        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
+        m_MethodName: FadeIn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _dialogueName: NoFlashlight
   _activateOnce: 0
   _deactivateObjectOnFirstActivate: 0
   _lockPlayerInput: 1
---- !u!65 &1151668918
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1151668915}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 3.8598175, y: 7, z: 7}
-  m_Center: {x: 0.95399475, y: -2, z: -3}
 --- !u!1 &1152332954
 GameObject:
   m_ObjectHideFlags: 0
@@ -25887,6 +25925,107 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 11.944244, y: 4.044365, z: 0.5026016}
   m_Center: {x: 6.593109, y: 1.5221825, z: 5.602581}
+--- !u!1001 &1253954364
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2088111171}
+    m_Modifications:
+    - target: {fileID: 469249965916987943, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_Name
+      value: HangingLight_On_8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.06
+      objectReference: {fileID: 0}
+    - target: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 5.82
+      objectReference: {fileID: 0}
+    - target: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -35.811333
+      objectReference: {fileID: 0}
+    - target: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3306807597799025905, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.5620885
+      objectReference: {fileID: 0}
+    - target: {fileID: 3306807597799025905, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.00006
+      objectReference: {fileID: 0}
+    - target: {fileID: 5710261752518582073, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5710261752518582073, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_Range
+      value: 4.224499
+      objectReference: {fileID: 0}
+    - target: {fileID: 5710261752518582073, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_SpotAngle
+      value: 179
+      objectReference: {fileID: 0}
+    - target: {fileID: 5710261752518582073, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_InnerSpotAngle
+      value: 56.42369
+      objectReference: {fileID: 0}
+    - target: {fileID: 8361783577780993608, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8605160794109956715, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.70710653
+      objectReference: {fileID: 0}
+    - target: {fileID: 8605160794109956715, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.70710707
+      objectReference: {fileID: 0}
+    - target: {fileID: 8605160794109956715, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 8605160794109956715, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
 --- !u!1001 &1254523204
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29703,6 +29842,11 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: 2033135845771977428, guid: 1deae57597763564aa4e302611d2dd04, type: 3}
   m_PrefabInstance: {fileID: 1071230889}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &1479834098 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1059423253202667782, guid: 68f47e176f27776499329a0c5d74f72f, type: 3}
+  m_PrefabInstance: {fileID: 1253954364}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1480568764
 PrefabInstance:
@@ -44121,9 +44265,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1978605371}
-  - component: {fileID: 1978605372}
+  - component: {fileID: 1978605373}
   m_Layer: 0
-  m_Name: BlockFlashlight
+  m_Name: ProgressTriggerEvent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -44144,13 +44288,110 @@ Transform:
   m_Children: []
   m_Father: {fileID: 596534834}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &1978605372
-BoxCollider:
+--- !u!114 &1978605373
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1978605370}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d74e5c4dd631c2d4f9b5d9951c476bf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerOnStart: 0
+  _progressConditions:
+  - AreaProgress: {fileID: 11400000, guid: ba408379013cfd4488c6b25cf8dcbc60, type: 2}
+    ProgressStepMin: 0
+    ProgressStepMax: 4
+  _onTrigger:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1151668917}
+        m_TargetAssemblyTypeName: Ivayami.Dialogue.DialogueTrigger, Assembly-CSharp
+        m_MethodName: StartDialogue
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!1 &1981301366
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1981301367}
+  - component: {fileID: 1981301369}
+  - component: {fileID: 1981301368}
+  m_Layer: 0
+  m_Name: TriggerArea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1981301367
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981301366}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 9.390625, y: 3.2740402, z: -32.820312}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 596534834}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1981301368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981301366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b4179b60f019014087a9752dc9ea842, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _triggerType: 0
+  _targetNeedToStayInside: 0
+  _executeEventOnDisable: 1
+  _delayToActivateEvent: 0
+  _optionalTag: 
+  _onExecute:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1978605373}
+        m_TargetAssemblyTypeName: Ivayami.Save.ProgressTriggerEvent, Assembly-CSharp
+        m_MethodName: TryTrigger
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!65 &1981301369
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1981301366}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -44159,12 +44400,12 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4.67894, y: 7, z: 7}
-  m_Center: {x: 2.16053, y: -2, z: -3}
+  m_Size: {x: 5.4171677, y: 7, z: 7}
+  m_Center: {x: 1.7914162, y: -2, z: -3}
 --- !u!1 &1986239952
 GameObject:
   m_ObjectHideFlags: 0
@@ -44400,6 +44641,161 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 7b13085d39ce885458aeb4bb366bd9eb, type: 3}
   m_PrefabInstance: {fileID: 1994363815}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1995158780
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1995158781}
+  - component: {fileID: 1995158785}
+  - component: {fileID: 1995158784}
+  - component: {fileID: 1995158783}
+  - component: {fileID: 1995158782}
+  m_Layer: 0
+  m_Name: Teleporter/Ref
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1995158781
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995158780}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0.70710707, z: -0, w: 0.70710653}
+  m_LocalPosition: {x: 7.623, y: 0.397, z: -35.771}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 596534834}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!114 &1995158782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995158780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _delayToFadeOut: 0.5
+  _beforeFade:
+    m_PersistentCalls:
+      m_Calls: []
+  _afterFade:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1995158785}
+        m_TargetAssemblyTypeName: Ivayami.Player.PlayerMovementRef, Assembly-CSharp
+        m_MethodName: ToggleMovement
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  _duration: 0.5
+--- !u!114 &1995158783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995158780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3c4e14c2a16f4b4e995871fbe5f6b2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _delayToFadeOut: 0.5
+  _beforeFade:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1995158785}
+        m_TargetAssemblyTypeName: Ivayami.Player.PlayerMovementRef, Assembly-CSharp
+        m_MethodName: ToggleMovement
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _afterFade:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1995158784}
+        m_TargetAssemblyTypeName: Ivayami.Scene.ManualTeleporter, Assembly-CSharp
+        m_MethodName: Teleport
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _duration: 1
+--- !u!114 &1995158784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995158780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d130a63402c1b4449dcea371989edb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _teleportType: 0
+  _teleportTarget: {fileID: 0}
+  _onTeleportEnd:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1995158782}
+        m_TargetAssemblyTypeName: Ivayami.UI.ScreenFade, Assembly-CSharp
+        m_MethodName: FadeOut
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _gizmoColor: {r: 1, g: 0, b: 0, a: 1}
+  _gizmoSize: 0.2
+--- !u!114 &1995158785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1995158780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2435c04b3ec98dd4ea49d5782274add2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _blockKey: blockNoLight
 --- !u!1001 &1996456119
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -47897,6 +48293,7 @@ Transform:
   - {fileID: 152895575}
   - {fileID: 1177008627}
   - {fileID: 238270258}
+  - {fileID: 1479834098}
   - {fileID: 1419028558}
   - {fileID: 1383731208}
   - {fileID: 1977946394}
