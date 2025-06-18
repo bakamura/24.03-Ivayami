@@ -65,7 +65,7 @@ namespace Ivayami.Puzzle
                 instance.CreateFuses();
                 instance.RepositionFuses();
                 instance.UpdateFusesActiveState();
-                //instance.RenameObjects();
+                instance.RenameObjects();
             }
 
             if (Application.isPlaying && GUILayout.Button("SaveUIChangesDuringPlay")) Save();
