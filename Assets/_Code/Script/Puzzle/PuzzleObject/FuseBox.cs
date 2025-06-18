@@ -3,6 +3,9 @@ using UnityEngine.InputSystem;
 using UnityEngine.Events;
 using Ivayami.Player;
 using Ivayami.Audio;
+#if UNITY_EDITOR
+using UnityEngine.UI;
+#endif
 
 namespace Ivayami.Puzzle
 {
@@ -215,43 +218,43 @@ namespace Ivayami.Puzzle
             if (_previousButtonSelected) _meshRendererFuses[_previousButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _baseFuseColor);
             _meshRendererFuses[_currentButtonSelected.ButtonIndex].material.SetColor(_colorEmissionVarID, _selectedColor);
             _previousButtonSelected = _currentButtonSelected;
-        }        
+        }
 #if UNITY_EDITOR
         #region Utilities
-        //public void RenameObjects()
-        //{
-        //    MeshRenderer[] temp = null;
-        //    if (_ledsParent)
-        //    {
-        //        temp = _ledsParent.GetComponentsInChildren<MeshRenderer>(false);
-        //        for (int i = 0; i < temp.Length; i++)
-        //        {
-        //            temp[i].name = $"{i}";
-        //        }
-        //    }
-        //    if (_fusesParent)
-        //    {
-        //        temp = _fusesParent.GetComponentsInChildren<MeshRenderer>(false);
-        //        for (int i = 0; i < temp.Length; i++)
-        //        {
-        //            temp[i].name = $"{i}";
-        //        }
-        //    }
-        //    if (_fuseUIParent)
-        //    {
-        //        Button[] btn = _fuseUIParent.GetComponentsInChildren<Button>(false);
-        //        for (int i = 0; i < btn.Length; i++)
-        //        {
-        //            btn[i].name = $"{i}";
-        //        }
-        //    }
-        //}
+        public void RenameObjects()
+        {
+            MeshRenderer[] temp = null;
+            if (_ledsParent)
+            {
+                temp = _ledsParent.GetComponentsInChildren<MeshRenderer>(false);
+                for (int i = 0; i < temp.Length; i++)
+                {
+                    temp[i].name = $"{i}";
+                }
+            }
+            if (_fusesParent)
+            {
+                temp = _fusesParent.GetComponentsInChildren<MeshRenderer>(false);
+                for (int i = 0; i < temp.Length; i++)
+                {
+                    temp[i].name = $"{i}";
+                }
+            }
+            if (_fuseUIParent)
+            {
+                Button[] btn = _fuseUIParent.GetComponentsInChildren<Button>(false);
+                for (int i = 0; i < btn.Length; i++)
+                {
+                    btn[i].name = $"{i}";
+                }
+            }
+        }
 
         private void OnValidate()
         {
             if (_fuseUIParent)
             {
-                _fuseUIParent.GetComponent<UnityEngine.UI.GridLayoutGroup>().constraintCount = (int)_matrixDimensions.y;
+                _fuseUIParent.GetComponent<UnityEngine.UI.GridLayoutGroup>().constraintCount = (int)_matrixDimensions.x;
             }
         }
 
