@@ -19,7 +19,7 @@ namespace Ivayami.UI {
         public Highlightable Highlightable { get { return _highlightable; } }
 
         private void Awake() {
-            if(TryGetComponent(out _highlightable)) Debug.LogError($"Couldn't get {nameof(Highlightable)} from '{name}'");
+            if(!TryGetComponent(out _highlightable)) Debug.LogError($"Couldn't get {nameof(Highlightable)} from '{name}'");
         }
 
         public void SetItemDisplay(PlayerInventory.InventoryItemStack item) {

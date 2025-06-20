@@ -1,10 +1,11 @@
+using Ivayami.Audio;
+using Ivayami.Player;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using TMPro;
-using Ivayami.Player;
-using Ivayami.Audio;
 
 namespace Ivayami.UI {
     public class Bag : MonoSingleton<Bag> {
@@ -12,9 +13,12 @@ namespace Ivayami.UI {
         [Header("Parameters")]
 
         [SerializeField] private RectTransform _bagPagePrefab;
-        private List<BagItem> _bagItemDisplays;
-        [SerializeField] private GameObject _pageForwardBtn;
-        [SerializeField] private GameObject _pageBackBtn;
+        private List<Menu> _pages = new List<Menu>();
+        private int _pageCurrent;
+        private int _pageLimitCurrent;
+        private List<BagItem> _bagItemDisplays = new List<BagItem>();
+        [SerializeField] private Button _pageForwardBtn;
+        [SerializeField] private Button _pageBackBtn;
         [SerializeField] private TextMeshProUGUI _itemDescriptor;
 
         [Header("Quick Open")]
@@ -33,9 +37,9 @@ namespace Ivayami.UI {
         protected override void Awake() {
             base.Awake();
 
-            if(TryGetComponent(out _menuGroup)) Debug.LogError($"Couldn't get {nameof(MenuGroup)} from '{name}'");
-            if(TryGetComponent(out _highlightGroup)) Debug.LogError($"Couldn't get {nameof(HighlightGroup)} from '{name}'");
-            if(TryGetComponent(out _uiSound)) Debug.LogError($"Couldn't get {nameof(UiSound)} from '{name}'");
+            if (!TryGetComponent(out _menuGroup)) Debug.LogError($"Couldn't get {nameof(MenuGroup)} from '{name}'");
+            if (!TryGetComponent(out _highlightGroup)) Debug.LogError($"Couldn't get {nameof(HighlightGroup)} from '{name}'");
+            if (!TryGetComponent(out _uiSound)) Debug.LogError($"Couldn't get {nameof(UiSound)} from '{name}'");
         }
 
         private void Start() {
@@ -52,19 +56,21 @@ namespace Ivayami.UI {
                 }
             }
             while (_bagItemDisplays.Count < bagDisplay.Count) PageInstantiate(); //
+            ChangePage(0);
             for (int i = 0; i < _bagItemDisplays.Count; i++) _bagItemDisplays[i].SetItemDisplay(i < bagDisplay.Count ? bagDisplay[i] : new PlayerInventory.InventoryItemStack());
+            _pageLimitCurrent = (bagDisplay.Count / _bagPagePrefab.childCount) - 1;
         }
 
         public void PageInstantiate() {
-            BagItem[] bagItemsNew = Instantiate(_bagPagePrefab, transform).GetComponentsInChildren<BagItem>();
+            _pages.Add(Instantiate(_bagPagePrefab, transform).GetComponent<Menu>());
+            BagItem[] bagItemsNew = _pages[_pages.Count - 1].GetComponentsInChildren<BagItem>();
             _bagItemDisplays.AddRange(bagItemsNew);
-            ButtonEvents iterator;
             foreach (BagItem bagItem in bagItemsNew) {
-                if (bagItem.TryGetComponent(out iterator)) {
-                    iterator.OnSelectEvent.AddListener((data) => BtnSelectEvent(bagItem));
-                    iterator.OnPointerEnterEvent.AddListener((data) => BtnPointerEnterEvent(iterator.gameObject));
+                if (bagItem.TryGetComponent(out ButtonEvents btnEvents)) {
+                    btnEvents.OnSelectEvent.AddListener((data) => BtnSelectEvent(bagItem));
+                    btnEvents.OnPointerEnterEvent.AddListener((data) => BtnPointerEnterEvent(btnEvents.gameObject));
                 }
-                else Debug.LogError($"Couldn't get {nameof(ButtonEvents)} from '{iterator.name}'");
+                else Debug.LogError($"Couldn't get {nameof(ButtonEvents)} from '{btnEvents.name}'");
             }
         }
 
@@ -75,6 +81,29 @@ namespace Ivayami.UI {
 
         private void BtnPointerEnterEvent(GameObject btn) {
             _menuGroup.SetSelected(btn);
+        }
+
+        private void ChangePage(int page) {
+            _pageCurrent = page;
+            _menuGroup.CloseCurrentThenOpen(_pages[_pageCurrent]);
+            UpdateButtonStates();
+        }
+
+        public void PageNext() {
+            if (_pageCurrent < _pageLimitCurrent) ChangePage(_pageCurrent + 1);
+        }
+
+        public void PagePrevious() {
+            if (_pageCurrent > 0) ChangePage(_pageCurrent - 1);
+        }
+
+        private void UpdateButtonStates() {
+            _pageForwardBtn.gameObject.SetActive(_pageCurrent < _pageLimitCurrent);
+            _pageBackBtn.gameObject.SetActive(_pageCurrent > 0);
+            if (EventSystem.current.currentSelectedGameObject && !EventSystem.current.currentSelectedGameObject.activeInHierarchy) {
+                if (_pageForwardBtn.gameObject.activeInHierarchy) _pageForwardBtn.Select();
+                else if (_pageBackBtn.gameObject.activeInHierarchy) _pageBackBtn.Select();
+            }
         }
 
         public void DisplayItemInfo(InventoryItem item) {
