@@ -21,16 +21,11 @@ namespace Ivayami.UI {
             bool isValid = item.Item;
             _icon.sprite = isValid ? item.Item.Sprite : null;
             _icon.color = isValid ? Color.white : new Color(0, 0, 0, 0);
-            if (isValid && !item.Item.DisplayTextFormatedExternaly)
-            {
-                _textAmount.text = item.Amount > 1 ? item.Amount.ToString() : null;
-            }
+            if (isValid && !item.Item.DisplayTextFormatedExternaly) _textAmount.text = item.Amount > 1 ? item.Amount.ToString() : null;
         }
 
-        public void UpdateDisplayText(string text)
-        {
-            if (!item.Item.DisplayTextFormatedExternaly) return;
-            _textAmount.text = text;
+        public void UpdateDisplayText(string text) {
+            if (item.Item.DisplayTextFormatedExternaly) _textAmount.text = text;
         }
 
         public void DisplayInfo() {
