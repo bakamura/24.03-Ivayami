@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 using Ivayami.Player;
+using Ivayami.Audio;
 
 namespace Ivayami.UI {
     public class Bag : MonoSingleton<Bag> {
@@ -24,6 +25,8 @@ namespace Ivayami.UI {
         [Header("Cache")]
 
         private MenuGroup _menuGroup;
+        private HighlightGroup _highlightGroup;
+        private UiSound _uiSound;
 
         private Dictionary<int, BagItem> _itemBtnsByCurrentItem = new Dictionary<int, BagItem>();
 
@@ -31,6 +34,8 @@ namespace Ivayami.UI {
             base.Awake();
 
             if(TryGetComponent(out _menuGroup)) Debug.LogError($"Couldn't get {nameof(MenuGroup)} from '{name}'");
+            if(TryGetComponent(out _highlightGroup)) Debug.LogError($"Couldn't get {nameof(HighlightGroup)} from '{name}'");
+            if(TryGetComponent(out _uiSound)) Debug.LogError($"Couldn't get {nameof(UiSound)} from '{name}'");
         }
 
         private void Start() {
@@ -46,6 +51,7 @@ namespace Ivayami.UI {
                     else bagDisplay.Insert(0, inventoryItemStack);
                 }
             }
+            while (_bagItemDisplays.Count < bagDisplay.Count) PageInstantiate(); //
             for (int i = 0; i < _bagItemDisplays.Count; i++) _bagItemDisplays[i].SetItemDisplay(i < bagDisplay.Count ? bagDisplay[i] : new PlayerInventory.InventoryItemStack());
         }
 
@@ -55,15 +61,16 @@ namespace Ivayami.UI {
             ButtonEvents iterator;
             foreach (BagItem bagItem in bagItemsNew) {
                 if (bagItem.TryGetComponent(out iterator)) {
-                    iterator.OnSelectEvent.AddListener((data) => BtnSelectEvent(iterator.gameObject));
+                    iterator.OnSelectEvent.AddListener((data) => BtnSelectEvent(bagItem));
                     iterator.OnPointerEnterEvent.AddListener((data) => BtnPointerEnterEvent(iterator.gameObject));
                 }
                 else Debug.LogError($"Couldn't get {nameof(ButtonEvents)} from '{iterator.name}'");
             }
         }
 
-        private void BtnSelectEvent(GameObject btn) {
-
+        private void BtnSelectEvent(BagItem bagItem) {
+            _highlightGroup.SetHighlightTo(bagItem.Highlightable);
+            _uiSound.ChangeSelected();
         }
 
         private void BtnPointerEnterEvent(GameObject btn) {

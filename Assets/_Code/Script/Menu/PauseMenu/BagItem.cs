@@ -15,6 +15,12 @@ namespace Ivayami.UI {
 
         private PlayerInventory.InventoryItemStack item;
         public InventoryItem Item => item.Item;
+        private Highlightable _highlightable;
+        public Highlightable Highlightable { get { return _highlightable; } }
+
+        private void Awake() {
+            if(TryGetComponent(out _highlightable)) Debug.LogError($"Couldn't get {nameof(Highlightable)} from '{name}'");
+        }
 
         public void SetItemDisplay(PlayerInventory.InventoryItemStack item) {
             this.item = item;
