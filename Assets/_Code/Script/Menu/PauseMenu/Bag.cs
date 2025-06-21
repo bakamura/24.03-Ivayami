@@ -58,9 +58,9 @@ namespace Ivayami.UI {
                 }
             }
             while (_bagItemDisplays.Count < bagDisplay.Count) PageInstantiate(); //
-            ChangePage(0);
             for (int i = 0; i < _bagItemDisplays.Count; i++) _bagItemDisplays[i].SetItemDisplay(i < bagDisplay.Count ? bagDisplay[i] : new PlayerInventory.InventoryItemStack());
             _pageLimitCurrent = (bagDisplay.Count - 1) / _bagPagePrefab.childCount;
+            ChangePage(0);
         }
 
         public void PageInstantiate() {
