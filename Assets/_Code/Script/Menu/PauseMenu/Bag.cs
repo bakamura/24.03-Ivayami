@@ -40,6 +40,7 @@ namespace Ivayami.UI {
             if (!TryGetComponent(out _menuGroup)) Debug.LogError($"Couldn't get {nameof(MenuGroup)} from '{name}'");
             if (!TryGetComponent(out _highlightGroup)) Debug.LogError($"Couldn't get {nameof(HighlightGroup)} from '{name}'");
             if (!TryGetComponent(out _uiSound)) Debug.LogError($"Couldn't get {nameof(UiSound)} from '{name}'");
+            PageInstantiate();
         }
 
         private void Start() {
@@ -49,16 +50,17 @@ namespace Ivayami.UI {
 
         public void InventoryUpdate() {
             List<PlayerInventory.InventoryItemStack> bagDisplay = new List<PlayerInventory.InventoryItemStack>();
+            int specialCount = 0;
             foreach (PlayerInventory.InventoryItemStack inventoryItemStack in PlayerInventory.Instance.CheckInventory()) {
-                if (inventoryItemStack.Item.Type != ItemType.Special) {
+                if (inventoryItemStack.Item.Type != ItemType.Document) {
                     if (inventoryItemStack.Item.Type != ItemType.Special) bagDisplay.Add(inventoryItemStack);
-                    else bagDisplay.Insert(0, inventoryItemStack);
+                    else bagDisplay.Insert(specialCount++, inventoryItemStack);
                 }
             }
             while (_bagItemDisplays.Count < bagDisplay.Count) PageInstantiate(); //
             ChangePage(0);
             for (int i = 0; i < _bagItemDisplays.Count; i++) _bagItemDisplays[i].SetItemDisplay(i < bagDisplay.Count ? bagDisplay[i] : new PlayerInventory.InventoryItemStack());
-            _pageLimitCurrent = (bagDisplay.Count / _bagPagePrefab.childCount) - 1;
+            _pageLimitCurrent = (bagDisplay.Count - 1) / _bagPagePrefab.childCount;
         }
 
         public void PageInstantiate() {
